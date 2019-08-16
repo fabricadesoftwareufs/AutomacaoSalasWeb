@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Business;
-using Microsoft.AspNetCore.Http;
+﻿using Business;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -20,22 +15,36 @@ namespace WebAPI.Controllers
         }
         // GET: api/UsuarioOrganizacao
         [HttpGet]
-        public List<UsuarioOrganizacaoModel> Get() => _service.GetAll();
+        public ActionResult Get()
+        {
+            var usuariosOrganizacao = _service.GetAll();
+            if (usuariosOrganizacao.Count == 0)
+                return NoContent();
+
+            return Ok(usuariosOrganizacao);
+        }
 
         // GET: api/UsuarioOrganizacao/5
-        [HttpGet("{id}", Name = "Get")]
-        public UsuarioOrganizacaoModel Get(int id) => _service.GetById(id);
+        [HttpGet("{id}")]
+        public ActionResult Get(int id)
+        {
+            var usuarioOrganizacao = _service.GetById(id);
+            if (usuarioOrganizacao == null)
+                return NoContent();
+
+            return Ok(usuarioOrganizacao);
+        }
 
         // POST: api/UsuarioOrganizacao
         [HttpPost]
-        public bool Post([FromBody] UsuarioOrganizacaoModel usuarioOrganizacao) => _service.Insert(usuarioOrganizacao);
+        public ActionResult Post([FromBody] UsuarioOrganizacaoModel usuarioOrganizacao) => _service.Insert(usuarioOrganizacao) ? Ok(true) : Ok(false);
 
         // PUT: api/UsuarioOrganizacao/5
         [HttpPut("{id}")]
-        public bool Put([FromBody] UsuarioOrganizacaoModel usuarioOrganizacao) => _service.Update(usuarioOrganizacao);
+        public ActionResult Put([FromBody] UsuarioOrganizacaoModel usuarioOrganizacao) => _service.Update(usuarioOrganizacao) ? Ok(true) : Ok(false);
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public bool Delete(int id) => _service.Remove(id);
+        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
     }
 }

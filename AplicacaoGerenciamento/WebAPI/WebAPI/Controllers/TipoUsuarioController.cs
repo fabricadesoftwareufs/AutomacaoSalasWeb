@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Business;
-using Microsoft.AspNetCore.Http;
+﻿using Business;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -20,22 +15,36 @@ namespace WebAPI.Controllers
         }
         // GET: api/TipoUsuario
         [HttpGet]
-        public ActionResult<List<TipoUsuarioModel>> Get() => _service.GetAll();
+        public ActionResult Get()
+        {
+            var tipoUser = _service.GetAll();
+            if (tipoUser.Count == 0)
+                return NoContent();
+
+            return Ok(tipoUser);
+        }
 
         // GET: api/TipoUsuario/5
         [HttpGet("{id}")]
-        public ActionResult<TipoUsuarioModel> Get(int id) => _service.GetById(id);
+        public ActionResult Get(int id)
+        {
+            var tipo = _service.GetById(id);
+            if (tipo == null)
+                return NoContent();
+
+            return Ok(tipo);
+        }
 
         // POST: api/TipoUsuario
         [HttpPost]
-        public bool Post([FromBody] TipoUsuarioModel tipoUsuario) => _service.Insert(tipoUsuario);
+        public ActionResult Post([FromBody] TipoUsuarioModel tipoUsuario) => _service.Insert(tipoUsuario) ? Ok(true) : Ok(false);
 
         // PUT: api/TipoUsuario/5
         [HttpPut("{id}")]
-        public bool Put([FromBody] TipoUsuarioModel tipoUsuario) => _service.Update(tipoUsuario);
+        public ActionResult Put([FromBody] TipoUsuarioModel tipoUsuario) => _service.Update(tipoUsuario) ? Ok(true) : Ok(false);
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public bool Delete(int id) => _service.Remove(id);
+        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
     }
 }

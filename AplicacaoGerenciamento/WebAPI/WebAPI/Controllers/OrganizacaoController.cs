@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Business;
-using Microsoft.AspNetCore.Http;
+﻿using Business;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -20,22 +15,36 @@ namespace WebAPI.Controllers
         }
         // GET: api/Organizacao
         [HttpGet]
-        public List<OrganizacaoModel> Get() => _service.GetAll();
+        public ActionResult Get()
+        {
+            var organizacoes = _service.GetAll();
+            if (organizacoes.Count == 0)
+                return NoContent();
+
+            return Ok(organizacoes);
+        }
 
         // GET: api/Organizacao/5
         [HttpGet("{id}")]
-        public OrganizacaoModel Get(int id) => _service.GetById(id);
+        public ActionResult Get(int id)
+        {
+            var org = _service.GetById(id);
+            if (org == null)
+                return NoContent();
+
+            return Ok(org);
+        }
 
         // POST: api/Organizacao
         [HttpPost]
-        public bool Post([FromBody] OrganizacaoModel organizacao) => _service.Insert(organizacao);
+        public ActionResult Post([FromBody] OrganizacaoModel organizacao) => _service.Insert(organizacao) ? Ok(true) : Ok(false);
 
         // PUT: api/Organizacao/5
         [HttpPut("{id}")]
-        public bool Put([FromBody] OrganizacaoModel organizacao) => _service.Update(organizacao);
+        public ActionResult Put([FromBody] OrganizacaoModel organizacao) => _service.Update(organizacao) ? Ok(true) : Ok(false);
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public bool Delete(int id) => _service.Remove(id);
+        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
     }
 }

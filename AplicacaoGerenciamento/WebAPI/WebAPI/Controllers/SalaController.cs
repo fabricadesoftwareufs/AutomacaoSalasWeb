@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Business;
-using Microsoft.AspNetCore.Http;
+﻿using Business;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -20,22 +15,36 @@ namespace WebAPI.Controllers
         }
         // GET: api/Sala
         [HttpGet]
-        public List<SalaModel> Get() => _service.GetAll();
+        public ActionResult Get()
+        {
+            var salas = _service.GetAll();
+            if (salas.Count == 0)
+                return NoContent();
+
+            return Ok(salas);
+        }
 
         // GET: api/Sala/5
         [HttpGet("{id}")]
-        public SalaModel Get(int id) => _service.GetById(id);
+        public ActionResult Get(int id)
+        {
+            var sala = _service.GetById(id);
+            if (sala == null)
+                return NoContent();
+
+            Ok(sala);
+        }
 
         // POST: api/Sala
         [HttpPost]
-        public bool Post([FromBody] SalaModel salaModel) => _service.Insert(salaModel);
+        public ActionResult Post([FromBody] SalaModel salaModel) => _service.Insert(salaModel) ? Ok(true) : Ok(false);
 
         // PUT: api/Sala/5
         [HttpPut("{id}")]
-        public bool Put([FromBody] SalaModel salaModel) => _service.Update(salaModel);
+        public ActionResult Put([FromBody] SalaModel salaModel) => _service.Update(salaModel) ? Ok(true) : Ok(false);
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public bool Delete(int id) => _service.Remove(id);
+        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
     }
 }

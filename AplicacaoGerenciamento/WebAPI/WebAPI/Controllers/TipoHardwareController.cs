@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Business;
+﻿using Business;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -20,22 +16,36 @@ namespace WebAPI.Controllers
 
         // GET api/TipoHardware
         [HttpGet]
-        public ActionResult<List<TipoHardwareModel>> Get() => _service.GetAll();
+        public ActionResult Get()
+        {
+            var tipoHard = _service.GetAll();
+            if (tipoHard.Count == 0)
+                return NoContent();
+
+            return Ok(tipoHard);
+        }
 
         // GET api/TipoHardware/6
         [HttpGet("{id}")]
-        public ActionResult<TipoHardwareModel> Get(int id) => _service.GetById(id);
+        public ActionResult Get(int id)
+        {
+            var tipo = _service.GetById(id);
+            if (tipo == null)
+                return NoContent();
+
+            return Ok(tipo);
+        }
 
         // POST api/TipoHardware
         [HttpPost]
-        public bool Post([FromBody] TipoHardwareModel tipoHardware) => _service.Insert(tipoHardware);
+        public ActionResult Post([FromBody] TipoHardwareModel tipoHardware) => _service.Insert(tipoHardware) ? Ok(true) : Ok(false);
 
         // PUT api/TipoHardware/5
         [HttpPut("{id}")]
-        public bool Put([FromBody] TipoHardwareModel tipoHardware) => _service.Update(tipoHardware);
+        public ActionResult Put([FromBody] TipoHardwareModel tipoHardware) => _service.Update(tipoHardware) ? Ok(true) : Ok(false);
 
         // DELETE api/TipoHardware/5
         [HttpDelete("{id}")]
-        public bool Delete(int id) => _service.Remove(id);
+        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
     }
 }
