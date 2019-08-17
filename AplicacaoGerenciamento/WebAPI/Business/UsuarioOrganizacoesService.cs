@@ -1,9 +1,7 @@
 ﻿using Models;
 using Persistences;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Business
 {
@@ -14,7 +12,7 @@ namespace Business
         {
             _context = context;
         }
-        public List<UsuarioOrganizacaoModel> GetAll() => _context.UsuarioOrganizacoes.Select(uo => new UsuarioOrganizacaoModel { UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao}).ToList();
+        public List<UsuarioOrganizacaoModel> GetAll() => _context.UsuarioOrganizacoes.Select(uo => new UsuarioOrganizacaoModel { UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao }).ToList();
 
         public UsuarioOrganizacaoModel GetById(int id) => _context.UsuarioOrganizacoes.Where(uo => uo.Id == id).Select(uo => new UsuarioOrganizacaoModel { UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao }).FirstOrDefault();
 

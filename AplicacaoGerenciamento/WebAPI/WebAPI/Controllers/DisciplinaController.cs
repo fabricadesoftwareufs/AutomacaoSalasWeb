@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Business;
-using Microsoft.AspNetCore.Http;
+﻿using Business;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -20,22 +15,36 @@ namespace WebAPI.Controllers
         }
         // GET: api/Disciplina
         [HttpGet]
-        public List<DisciplinaModel> Get() => _service.GetAll();
+        public ActionResult Get()
+        {
+            var disciplinas = _service.GetAll();
+            if (disciplinas.Count == 0)
+                return NoContent();
+
+            return Ok(disciplinas);
+        }
 
         // GET: api/Disciplina/5
         [HttpGet("{id}")]
-        public DisciplinaModel Get(int id) => _service.GetById(id);
+        public ActionResult Get(int id)
+        {
+            var disciplina = _service.GetById(id);
+            if (disciplina == null)
+                return NoContent();
+
+            return Ok(disciplina);
+        }
 
         // POST: api/Disciplina
         [HttpPost]
-        public bool Post([FromBody] DisciplinaModel disciplina) => _service.Insert(disciplina);
+        public ActionResult Post([FromBody] DisciplinaModel disciplina) => _service.Insert(disciplina) ? Ok(true) : Ok(false);
 
         // PUT: api/Disciplina/5
         [HttpPut("{id}")]
-        public bool Put([FromBody] DisciplinaModel disciplina) => _service.Update(disciplina);
+        public ActionResult Put([FromBody] DisciplinaModel disciplina) => _service.Update(disciplina) ? Ok(true) : Ok(false);
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public bool Delete(int id) => _service.Remove(id);
+        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Persistences
+﻿namespace Persistences
 {
     public partial class Hardware
     {

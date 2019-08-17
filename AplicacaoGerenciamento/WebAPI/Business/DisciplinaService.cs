@@ -1,9 +1,7 @@
 ﻿using Models;
 using Persistences;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Business
 {
@@ -14,7 +12,7 @@ namespace Business
         {
             _context = context;
         }
-        public List<DisciplinaModel> GetAll() => _context.Disciplina.Select(d => new DisciplinaModel { Id = d.Id, Codigo = d.Codigo, Nome = d.Nome}).ToList();
+        public List<DisciplinaModel> GetAll() => _context.Disciplina.Select(d => new DisciplinaModel { Id = d.Id, Codigo = d.Codigo, Nome = d.Nome }).ToList();
 
         public DisciplinaModel GetById(int id) => _context.Disciplina.Where(d => d.Id == id).Select(d => new DisciplinaModel { Id = d.Id, Codigo = d.Codigo, Nome = d.Nome }).FirstOrDefault();
 
@@ -27,7 +25,7 @@ namespace Business
         public bool Remove(int id)
         {
             var disc = _context.Disciplina.Where(d => d.Id == id).FirstOrDefault();
-            if(disc != null)
+            if (disc != null)
             {
                 _context.Remove(disc);
                 return _context.SaveChanges() == 1 ? true : false;
