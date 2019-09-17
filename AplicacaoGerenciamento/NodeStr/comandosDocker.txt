@@ -1,0 +1,15 @@
+-- Subindo a imagem do mongoDB.
+docker run --name mongodb -p 27017:27017 -d mongo
+
+-- Baixar o Robo 3T pra manusear o mongo
+https://robomongo.org/download
+
+-- Fazer um dockerfile depois!
+
+-- Usa algumas dependencias
+cors
+express
+mongoose (se for usar mongo)
+mongoose-paginate (paginar as consultas, pra retornar poucos (desempenho))
+require-dir (p n precisar importar todas as models, importa a pasta)
+nodemon (dev dependencia)
