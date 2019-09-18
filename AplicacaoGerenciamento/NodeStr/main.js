@@ -12,9 +12,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.disable('x-powered-by');
 
 // Rotas
-app.use('/api/usuario', require('./src/routes/UsuarioRouter'))
-app.use('/api/tipoUsuario', require('./src/routes/TipoUsuarioRouter'))
+app.use('/api/bloco', require('./src/routes/BlocoRouter'))
 app.use('/api/disciplina', require('./src/routes/DisciplinaRouter'))
+app.use('/api/hardware', require('./src/routes/HardwareRouter'))
+app.use('/api/horarioSala', require('./src/routes/HorarioSalaRouter'))
+app.use('/api/organizacao', require('./src/routes/OrganizacaoRouter'))
+app.use('/api/sala', require('./src/routes/SalaRouter'))
+app.use('/api/tipoHardware', require('./src/routes/TipoHardware'))
+app.use('/api/tipoUsuario', require('./src/routes/TipoUsuarioRouter'))
+app.use('/api/usuarioOrganizacao', require('./src/routes/UsuarioOrganizacoesRouter'))
+app.use('/api/usuario', require('./src/routes/UsuarioRouter'))
 
 // Porta
 app.listen(20074);

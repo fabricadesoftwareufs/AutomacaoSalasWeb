@@ -1,4 +1,4 @@
-const PersistenciaUsuarioOrganizacao = require('../persistences/usuarioorganizacaoPersistence')
+const PersistenciaUsuarioOrganizacao = require('../persistences/UsuarioOrganizacoesPersistence')
 
 module.exports = {
     async GetAll(req, res) {

@@ -1,6 +1,6 @@
 const Sala = {
     nome: {
-        ttype: String,
+        type: String,
         required: true
     },
 

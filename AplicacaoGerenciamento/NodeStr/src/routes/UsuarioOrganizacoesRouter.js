@@ -2,7 +2,7 @@ const express = require('express')
 const routerUsuarioOrganizacoes = express.Router()
 
 // Controllers
-const UsuarioOrganizacoesController = require('../controllers/UsuarioOrganizacoesController');
+const UsuarioOrganizacoesController = require('../controllers/UsuarioOrganizacaoController');
 
 // Rotas de Products
 routerUsuarioOrganizacoes.get('/', UsuarioOrganizacoesController.GetAll)
