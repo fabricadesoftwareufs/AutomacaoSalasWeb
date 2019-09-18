@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 // Instanciando o servidor
 const app = express();
@@ -7,9 +8,12 @@ const app = express();
 // Configurações do Servidor
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 // Removendo o header que informa o driver utilizado no sistema
 app.disable('x-powered-by');
+
+app.get('/', (req, res) => { return res.send() });
 
 // Rotas
 app.use('/api/bloco', require('./src/routes/BlocoRouter'))
