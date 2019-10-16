@@ -3435,7 +3435,7 @@
 											"top": 539.5,
 											"width": 132,
 											"height": 13,
-											"text": "Monitorar Movimento"
+											"text": "Detectar Movimento"
 										},
 										{
 											"_type": "LabelView",
@@ -3468,7 +3468,7 @@
 									"font": "Arial;13;0",
 									"left": 645.5,
 									"top": 532.5,
-									"width": 142.16455078125,
+									"width": 142,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAFrsDnWdCGergc="
@@ -3634,7 +3634,7 @@
 											"top": 459.5,
 											"width": 141,
 											"height": 13,
-											"text": "Monitorar Temperatura"
+											"text": "Detectar Temperatura"
 										},
 										{
 											"_type": "LabelView",
@@ -3667,7 +3667,7 @@
 									"font": "Arial;13;0",
 									"left": 647.5,
 									"top": 452.5,
-									"width": 151.3369140625,
+									"width": 151,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAFrsDoFkCI135g="
@@ -3818,7 +3818,7 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": -432,
+											"left": -448,
 											"top": 64,
 											"height": 13
 										},
@@ -3829,11 +3829,11 @@
 												"$ref": "AAAAAAFrsDpCmiMmbBs="
 											},
 											"font": "Arial;13;1",
-											"left": 640.5,
+											"left": 632.5,
 											"top": 579.5,
 											"width": 237,
 											"height": 13,
-											"text": "Monitorar Acionamento de Lampadas*"
+											"text": "Detectar Acionamento de Lampadas*"
 										},
 										{
 											"_type": "LabelView",
@@ -3843,7 +3843,7 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": -432,
+											"left": -448,
 											"top": 64,
 											"width": 134.3671875,
 											"height": 13,
@@ -3857,16 +3857,16 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": -432,
+											"left": -448,
 											"top": 64,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
-									"left": 635.5,
+									"left": 627.5,
 									"top": 572.5,
-									"width": 247.64990234375,
+									"width": 247,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAFrsDpCmiMnixs="
@@ -3892,7 +3892,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": -216,
+									"left": -224,
 									"top": 32,
 									"width": 10,
 									"height": 10
@@ -3908,7 +3908,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": -216,
+									"left": -224,
 									"top": 32,
 									"width": 10,
 									"height": 10
@@ -3924,7 +3924,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": -216,
+									"left": -224,
 									"top": 32,
 									"width": 10,
 									"height": 10
@@ -3940,7 +3940,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": -216,
+									"left": -224,
 									"top": 32,
 									"width": 10,
 									"height": 10
@@ -3956,7 +3956,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": -216,
+									"left": -224,
 									"top": 32,
 									"width": 10,
 									"height": 10
@@ -3964,7 +3964,7 @@
 							],
 							"font": "Arial;13;0",
 							"containerChangeable": true,
-							"left": 584,
+							"left": 576,
 							"top": 568,
 							"width": 350,
 							"height": 35,
@@ -4279,7 +4279,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 906,
+									"left": 903,
 									"top": 564,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -4300,7 +4300,7 @@
 									},
 									"visible": null,
 									"font": "Arial;13;0",
-									"left": 909,
+									"left": 906,
 									"top": 579,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -4321,7 +4321,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 901,
+									"left": 898,
 									"top": 535,
 									"height": 13,
 									"alpha": -1.5707963267948966,
@@ -4405,7 +4405,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 877,
+									"left": 872,
 									"top": 570,
 									"height": 13,
 									"alpha": -0.5235987755982988,
@@ -4425,7 +4425,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 882,
+									"left": 877,
 									"top": 583,
 									"height": 13,
 									"alpha": -0.7853981633974483,
@@ -4445,7 +4445,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 867,
+									"left": 862,
 									"top": 544,
 									"height": 13,
 									"alpha": 0.5235987755982988,
@@ -4491,7 +4491,7 @@
 								"$ref": "AAAAAAFrrWXqtKBkx1s="
 							},
 							"lineStyle": 1,
-							"points": "959:545;849:567",
+							"points": "959:545;844:567",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAFrsDrMLiXXYIA="
@@ -7841,7 +7841,7 @@
 											"top": 499.5,
 											"width": 141,
 											"height": 13,
-											"text": "Monitorar Porta Aberta"
+											"text": "Detectar Porta Aberta"
 										},
 										{
 											"_type": "LabelView",
@@ -7874,7 +7874,7 @@
 									"font": "Arial;13;0",
 									"left": 639.5,
 									"top": 492.5,
-									"width": 151.57177734375,
+									"width": 151,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAFrsq+U0S0HOSs="
@@ -9042,7 +9042,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFElm6BOFNpegQ="
 					},
-					"name": "Monitorar Movimento"
+					"name": "Detectar Movimento"
 				},
 				{
 					"_type": "UMLUseCase",
@@ -9050,7 +9050,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFElm6BOFNpegQ="
 					},
-					"name": "Monitorar Temperatura"
+					"name": "Detectar Temperatura"
 				},
 				{
 					"_type": "UMLUseCase",
@@ -9058,7 +9058,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFElm6BOFNpegQ="
 					},
-					"name": "Monitorar Acionamento de Lampadas*"
+					"name": "Detectar Acionamento de Lampadas*"
 				},
 				{
 					"_type": "UMLUseCase",
@@ -9148,7 +9148,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFElm6BOFNpegQ="
 					},
-					"name": "Monitorar Porta Aberta",
+					"name": "Detectar Porta Aberta",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
