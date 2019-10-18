@@ -1,0 +1,4 @@
+=== 
+Sensor nos interruptores para checagem de passagem de corrente.
+	- Caso nao esteja passando corrente (luzes apagadas), notificar o controlador de sala para realizar uma checagem de presença.
+		- Caso nao haja presença, desligar AC após 2m.
