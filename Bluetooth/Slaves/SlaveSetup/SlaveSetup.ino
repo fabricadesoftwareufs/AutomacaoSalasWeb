@@ -6,9 +6,10 @@ void setup()
 {
   Serial.begin(BAUD);
   Serial.println("HM10 serial started at 9600");
-  setupSlave();
+  //setupSlave();
 }
 
+/*
 //Passos para configurar o escravo
 void setupSlave() {
   HMSlave.begin(BAUD);
@@ -16,7 +17,7 @@ void setupSlave() {
   HMSlave.println("AT+RESET");
   HMSlave.println("AT+IMME0");
 }
-
+*/
 
 void loop() {  
   char c = ' ';
