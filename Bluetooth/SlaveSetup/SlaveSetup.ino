@@ -6,6 +6,7 @@ void setup()
 {
   Serial.begin(BAUD);
   Serial.println("HM10 serial started at 9600");
+  setupSlave();
 }
 
 //Passos para configurar o escravo

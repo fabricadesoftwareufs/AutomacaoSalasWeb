@@ -7,7 +7,20 @@ void setup()
 {
   Serial.begin(BAUD);
   Serial.println("HM10 serial started at 9600");
+  setupMaster();
  }
+
+void setupMaster(){
+  HMMaster.begin(BAUD);
+  HMMaster.println("AT1");
+  HMMaster.println("AT+ROLE1");
+  HMMaster.println("AT+RESET");
+  HMMaster.println("AT+IMME0");
+  HMMaster.println("AT+INQ");
+  HMMaster.println("AT+CONN1");
+}
+
+
 
 void loop() {
   char c = ' ';
