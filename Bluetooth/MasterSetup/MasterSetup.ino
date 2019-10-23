@@ -2,7 +2,7 @@
 SoftwareSerial HMSlave(12, 11); // RX = 2, TX = 3
 SoftwareSerial HMMaster(12, 11); // RX = 2, TX = 3
 int BAUD = 9600;
-String inData = "";
+
 void setup()
 {
   Serial.begin(BAUD);
@@ -12,7 +12,6 @@ void setup()
 void loop() {
   char c = ' ';
   HMMaster.begin(BAUD);
-  Serial.println("Reiniciando LoopTest");
   while (c != 'X') {
     if (Serial.available()) {
       c = Serial.read();
