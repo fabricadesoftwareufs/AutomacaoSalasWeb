@@ -56,15 +56,15 @@ void loop()
             temGente = false;
             iPresenca = 0;
     	}
-       //HMSlave.println("detectado");
-    	Serial.println("detectado");
+    //  HMSlave.println("detectado");
+    	//Serial.println("detectado");
     	digitalWrite(pinoLED, HIGH);
     }
     else {
        iPresenca = 0;
        temGente = false;
-       // HMSlave.println("não detectado");
-       Serial.println("não detectado");
+       //HMSlave.println("não detectado");
+     //  Serial.println("não detectado");
        digitalWrite(pinoLED, LOW);
     }
     delay(2000); // intervalo para verificar presenca
