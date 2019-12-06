@@ -19,6 +19,12 @@ static boolean doScan = false;
 static BLERemoteCharacteristic* pRemoteCharacteristic;
 static BLEAdvertisedDevice* myDevice;
 
+// Parametros para detecção
+const int portaPresenca = GPIO_NUM_12;
+const int qtdConsideravel = 3; // quantidade de vezes que é considerado ter alguem presente - valor a ser definido
+int iPresenca = 0;
+long contadorTempo;
+
 static void notifyCallback(
   BLERemoteCharacteristic* pBLERemoteCharacteristic,
   uint8_t* pData,
@@ -115,8 +121,9 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting Arduino BLE Client application...");
-  BLEDevice::init("ESP32SLAVE");
+  BLEDevice::init("ESP32SLAVE01");
 
+  pinMode(portaPresenca, INPUT);  
   // Retrieve a Scanner and set the callback we want to use to be informed when we
   // have detected a new device.  Specify that we want active scanning and start the
   // scan to run for 5 seconds.
@@ -150,12 +157,26 @@ void loop() {
   // If we are connected to a peer BLE Server, update the characteristic each time we are reached
   // with the current time since boot.
   if (connected) {
-    String newValue = "Na onde?!";
-    Serial.println("Setting new characteristic value to \"" + newValue + "\"");
-    
-    // Set the characteristic's value to be the array of bytes that is actually a string.
-    pRemoteCharacteristic->writeValue(newValue.c_str(), newValue.length());
+    while(connected){
+        long tempo = millis();
+        bool leitura = digitalRead(portaPresenca);
+        if (leitura) {
+            iPresenca++;  
+            if (iPresenca == qtdConsideravel) {
+                Serial.println("Tem gente!");
+                iPresenca = 0;
 
+                // Enviando detecção de presença
+                String newValue = "Tem gente!";
+                pRemoteCharacteristic->writeValue(newValue.c_str(), newValue.length());
+            }
+            Serial.println("detectado");
+        } else {
+            iPresenca = 0;
+            Serial.println("não detectado");
+        }        
+        delay(2000); // intervalo para verificar presenca  
+    }    
     Serial.println("Connected");
   }else if(doScan){
     BLEDevice::getScan()->start(0);  // this is just eample to start scan after disconnect, most likely there is better way to do it in arduino
