@@ -21,18 +21,22 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
+#include "FileManager.h"
+
 BLEServer* pServer = NULL;
 BLECharacteristic* pCharacteristic = NULL;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 uint32_t value = 0;
-
+    int l = 0;
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
 
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
+  //create new file 
+   FileManager fileManager("/logServer.txt");
 
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
@@ -76,6 +80,14 @@ void setup() {
   // Start the service
   pService->start();
 
+  // init file manager
+    if(!fileManager.init()){
+        Serial.println("File system error");
+        delay(1000);
+       ESP.restart();
+   }
+    Serial.print("Orientadoress: ");
+
   // Start advertising
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
@@ -93,7 +105,12 @@ void loop() {
       Serial.print("Orientadores: ");
       Serial.println(value.c_str());
       pCharacteristic->notify();
-      delay(1000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
+      delay(3000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
+    //  fileManager.writeInFile(value.c_str());
+      Serial.println("Arq log Server: ");
+      Serial.println(fileManager.readFile());
     }
-   
+      Serial.println("Arq log Server: ");
+      Serial.println(fileManager.readFile());
+       
 }
