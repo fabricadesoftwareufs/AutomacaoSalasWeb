@@ -6,8 +6,6 @@
  */
 
 #include "BLEDevice.h"
-//#include "BLEScan.h"
-#include "DHT.h"
 
 // The remote service we wish to connect to.
 static BLEUUID serviceUUID("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
@@ -20,12 +18,13 @@ static boolean doScan = false;
 static BLERemoteCharacteristic* pRemoteCharacteristic;
 static BLEAdvertisedDevice* myDevice;
 
-// Parametros para detecção de temperatura
-DHT dht(4, DHT11);
-float t; //Temperatura
-float h; // Umidade
+// Parametros para detecção
+const int portaPresenca = GPIO_NUM_12;
+const int qtdConsideravel = 3; // quantidade de vezes que é considerado ter alguem presente - valor a ser definido
+int iPresenca = 0;
+long contadorTempo;
 
-// led
+// mostrar que estão conectados
 #define LED 2
 
 static void notifyCallback(
@@ -48,7 +47,7 @@ class MyClientCallback : public BLEClientCallbacks {
   void onDisconnect(BLEClient* pclient) {
     connected = false;
     digitalWrite(LED,LOW);
-   // Serial.println("onDisconnect");
+    Serial.println("onDisconnect");
   }
 };
 
@@ -125,8 +124,9 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting Arduino BLE Client application...");
-  BLEDevice::init("ESP32SLAVE01");
+  BLEDevice::init("ESP32SLAVE00");
 
+  pinMode(portaPresenca, INPUT);  
   pinMode(LED,OUTPUT);
   // Retrieve a Scanner and set the callback we want to use to be informed when we
   // have detected a new device.  Specify that we want active scanning and start the
@@ -142,6 +142,7 @@ void setup() {
 
 // This is the Arduino main loop function.
 void loop() {
+
   // If the flag "doConnect" is true then we have scanned for and found the desired
   // BLE Server with which we wish to connect.  Now we connect to it.  Once we are 
   // connected we set the connected flag to be true.
@@ -156,21 +157,31 @@ void loop() {
   }else{   
     //Serial.println("DoConnected false");
   }
-  
-  String tempEhum;
-  
+
   // If we are connected to a peer BLE Server, update the characteristic each time we are reached
   // with the current time since boot.
   if (connected) {
-     digitalWrite(LED,HIGH);
     while(connected){
-          h = dht.readHumidity();
-          t = dht.readTemperature();
-          tempEhum = "Temperatura " + (String)t + "°C" + " Umidade " + (String)h + "%";
-          pRemoteCharacteristic->writeValue(tempEhum.c_str(), tempEhum.length());
-          delay(2000);
-        }            
-   // Serial.println("Connected");
+        digitalWrite(LED,HIGH);
+        long tempo = millis();
+        bool leitura = digitalRead(portaPresenca);
+        if (leitura) {
+            iPresenca++;  
+            if (iPresenca == qtdConsideravel) {
+                Serial.println("Tem gente!");
+                iPresenca = 0;
+                // Enviando detecção de presença
+                String newValue = "Tem gente!";
+                pRemoteCharacteristic->writeValue(newValue.c_str(), newValue.length());
+            }
+            Serial.println("detectado");
+        } else {
+            iPresenca = 0;
+            Serial.println("não detectado");
+        }        
+        delay(2000); // intervalo para verificar presenca  
+    }    
+    Serial.println("Connected");
   }else if(doScan){
     BLEDevice::getScan()->start(0);  // this is just eample to start scan after disconnect, most likely there is better way to do it in arduino
   }
