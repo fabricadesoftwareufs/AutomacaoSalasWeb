@@ -1,4 +1,4 @@
-n/**
+/**
  * A BLE client example that is rich in capabilities.
  * There is a lot new capabilities implemented.
  * author unknown
@@ -125,7 +125,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting Arduino BLE Client application...");
-  BLEDevice::init("ESP32SLAVE01");
+  BLEDevice::init("ESP32SLAVE01T");
 
   pinMode(LED,OUTPUT);
   // Retrieve a Scanner and set the callback we want to use to be informed when we

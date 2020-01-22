@@ -28,15 +28,15 @@ BLECharacteristic* pCharacteristic = NULL;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 uint32_t value = 0;
-    int l = 0;
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
 
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
-  //create new file 
-   FileManager fileManager("/logServer.txt");
+//------------------------------------------
+//create new file
+FileManager fileManager("/Log.txt");
 
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
@@ -49,13 +49,11 @@ class MyServerCallbacks: public BLEServerCallbacks {
     }
 };
 
-
-
 void setup() {
   Serial.begin(115200);
 
   // Create the BLE Device
-  BLEDevice::init("ESP32");
+  BLEDevice::init("ESP32MASTER");
 
   // Create the BLE Server
   pServer = BLEDevice::createServer();
@@ -80,13 +78,12 @@ void setup() {
   // Start the service
   pService->start();
 
-  // init file manager
-    if(!fileManager.init()){
-        Serial.println("File system error");
-        delay(1000);
-       ESP.restart();
-   }
-    Serial.print("Orientadoress: ");
+//  init file manager
+  if (!fileManager.init()) {
+    Serial.println("File system error");
+    delay(1000);
+    ESP.restart();
+  }
 
   // Start advertising
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
@@ -98,19 +95,20 @@ void setup() {
 }
 
 void loop() {
-    // notify changed value
-    if (deviceConnected) {
-      // Read the value of the characteristic.
-      std::string value = pCharacteristic->getValue();
-      Serial.print("Orientadores: ");
-      Serial.println(value.c_str());
-      pCharacteristic->notify();
-      delay(3000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
-    //  fileManager.writeInFile(value.c_str());
-      Serial.println("Arq log Server: ");
+  // notify changed value
+  if (deviceConnected) {
+    // Read the value of the characteristic.
+    std::string value = pCharacteristic->getValue();
+    Serial.print("Orientadores: ");
+    Serial.println(value.c_str());
+    pCharacteristic->notify();
+    delay(3000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
+    std::string val = value.erase(value.find_last_not_of(" \n\r\t")+1);
+    if (val.length() > 0) {
+      fileManager.writeInFile(val.c_str());
+      Serial.println("Arq log: ");
       Serial.println(fileManager.readFile());
     }
-      Serial.println("Arq log Server: ");
-      Serial.println(fileManager.readFile());
-       
+  }
+
 }
