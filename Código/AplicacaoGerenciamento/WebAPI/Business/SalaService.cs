@@ -7,8 +7,8 @@ namespace Business
 {
     public class SalaService : IService<SalaModel>
     {
-        private readonly ContextDb _context;
-        public SalaService(ContextDb context)
+        private readonly str_dbContext _context;
+        public SalaService(str_dbContext context)
         {
             _context = context;
         }

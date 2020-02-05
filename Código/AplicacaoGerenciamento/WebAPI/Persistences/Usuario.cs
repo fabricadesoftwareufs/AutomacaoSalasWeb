@@ -8,6 +8,8 @@ namespace Persistences
         public Usuario()
         {
             Horariosala = new HashSet<Horariosala>();
+            Minhasala = new HashSet<Minhasala>();
+            Planejamento = new HashSet<Planejamento>();
             UsuarioOrganizacoes = new HashSet<UsuarioOrganizacoes>();
         }
 
@@ -20,6 +22,8 @@ namespace Persistences
 
         public Tipousuario TipoUsuarioNavigation { get; set; }
         public ICollection<Horariosala> Horariosala { get; set; }
+        public ICollection<Minhasala> Minhasala { get; set; }
+        public ICollection<Planejamento> Planejamento { get; set; }
         public ICollection<UsuarioOrganizacoes> UsuarioOrganizacoes { get; set; }
     }
 }

@@ -7,8 +7,8 @@ namespace Business
 {
     public class TipoHardwareService : IService<TipoHardwareModel>
     {
-        private readonly ContextDb _context;
-        public TipoHardwareService(ContextDb context)
+        private readonly str_dbContext _context;
+        public TipoHardwareService(str_dbContext context)
         {
             _context = context;
         }

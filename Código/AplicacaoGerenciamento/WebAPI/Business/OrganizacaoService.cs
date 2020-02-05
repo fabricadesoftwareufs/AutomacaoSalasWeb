@@ -7,8 +7,8 @@ namespace Business
 {
     public class OrganizacaoService : IService<OrganizacaoModel>
     {
-        private readonly ContextDb _context;
-        public OrganizacaoService(ContextDb context)
+        private readonly str_dbContext _context;
+        public OrganizacaoService(str_dbContext context)
         {
             _context = context;
         }

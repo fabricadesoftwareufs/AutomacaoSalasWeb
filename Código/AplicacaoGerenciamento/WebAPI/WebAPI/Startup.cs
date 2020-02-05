@@ -21,7 +21,7 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ContextDb>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
+            services.AddDbContext<str_dbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
 
             // Injections
             services.AddScoped<BlocoService>();

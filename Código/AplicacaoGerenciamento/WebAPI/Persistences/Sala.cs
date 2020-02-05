@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Persistences
 {
@@ -8,6 +9,8 @@ namespace Persistences
         {
             Hardware = new HashSet<Hardware>();
             Horariosala = new HashSet<Horariosala>();
+            Minhasala = new HashSet<Minhasala>();
+            Planejamento = new HashSet<Planejamento>();
         }
 
         public int Id { get; set; }
@@ -17,5 +20,7 @@ namespace Persistences
         public Bloco BlocoNavigation { get; set; }
         public ICollection<Hardware> Hardware { get; set; }
         public ICollection<Horariosala> Horariosala { get; set; }
+        public ICollection<Minhasala> Minhasala { get; set; }
+        public ICollection<Planejamento> Planejamento { get; set; }
     }
 }

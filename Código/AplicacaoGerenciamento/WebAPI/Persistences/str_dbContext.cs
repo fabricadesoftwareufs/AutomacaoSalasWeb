@@ -1,23 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Persistences
 {
-    public partial class ContextDb : DbContext
+    public partial class str_dbContext : DbContext
     {
-        public ContextDb()
+        public str_dbContext()
         {
         }
 
-        public ContextDb(DbContextOptions<ContextDb> options)
+        public str_dbContext(DbContextOptions<str_dbContext> options)
             : base(options)
         {
         }
 
         public virtual DbSet<Bloco> Bloco { get; set; }
-        public virtual DbSet<Disciplina> Disciplina { get; set; }
         public virtual DbSet<Hardware> Hardware { get; set; }
         public virtual DbSet<Horariosala> Horariosala { get; set; }
+        public virtual DbSet<Minhasala> Minhasala { get; set; }
         public virtual DbSet<Organizacao> Organizacao { get; set; }
+        public virtual DbSet<Planejamento> Planejamento { get; set; }
         public virtual DbSet<Sala> Sala { get; set; }
         public virtual DbSet<Tipohardware> Tipohardware { get; set; }
         public virtual DbSet<Tipousuario> Tipousuario { get; set; }
@@ -26,6 +29,11 @@ namespace Persistences
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=123456;database=str_db");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -46,23 +54,6 @@ namespace Persistences
                     .HasForeignKey(d => d.Organizacao)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Bloco_Organizacao1");
-            });
-
-            modelBuilder.Entity<Disciplina>(entity =>
-            {
-                entity.ToTable("disciplina", "str_db");
-
-                entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
-
-                entity.Property(e => e.Codigo)
-                    .IsRequired()
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Nome)
-                    .IsRequired()
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Hardware>(entity =>
@@ -104,48 +95,80 @@ namespace Persistences
             {
                 entity.ToTable("horariosala", "str_db");
 
-                entity.HasIndex(e => e.Disciplina)
-                    .HasName("fk_HorarioSala_Disciplina1_idx");
-
-                entity.HasIndex(e => e.Sala)
+                entity.HasIndex(e => e.SalaId)
                     .HasName("fk_HorarioSala_Sala1_idx");
 
-                entity.HasIndex(e => e.Usuario)
+                entity.HasIndex(e => e.UsuarioId)
                     .HasName("fk_HorarioSala_Usuario1_idx");
 
                 entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
 
-                entity.Property(e => e.Data).HasColumnType("date");
+                entity.Property(e => e.Objetivo)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Disciplina).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.SalaId)
+                    .HasColumnName("Sala_Id")
+                    .HasColumnType("int(10) unsigned");
 
-                entity.Property(e => e.QtdAlunos).HasColumnType("int(11)");
-
-                entity.Property(e => e.Sala).HasColumnType("int(10) unsigned");
-
-                entity.Property(e => e.Turno)
+                entity.Property(e => e.Situacao)
                     .IsRequired()
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Usuario).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.UsuarioId)
+                    .HasColumnName("Usuario_Id")
+                    .HasColumnType("int(10) unsigned");
 
-                entity.HasOne(d => d.DisciplinaNavigation)
+                entity.HasOne(d => d.Sala)
                     .WithMany(p => p.Horariosala)
-                    .HasForeignKey(d => d.Disciplina)
-                    .HasConstraintName("fk_HorarioSala_Disciplina1");
-
-                entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Horariosala)
-                    .HasForeignKey(d => d.Sala)
+                    .HasForeignKey(d => d.SalaId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_HorarioSala_Sala1");
 
-                entity.HasOne(d => d.UsuarioNavigation)
+                entity.HasOne(d => d.Usuario)
                     .WithMany(p => p.Horariosala)
-                    .HasForeignKey(d => d.Usuario)
+                    .HasForeignKey(d => d.UsuarioId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_HorarioSala_Usuario1");
+            });
+
+            modelBuilder.Entity<Minhasala>(entity =>
+            {
+                entity.HasKey(e => e.IdMinhaSala);
+
+                entity.ToTable("minhasala", "str_db");
+
+                entity.HasIndex(e => e.SalaId)
+                    .HasName("fk_SalasPessoais_Sala1_idx");
+
+                entity.HasIndex(e => e.UsuarioId)
+                    .HasName("fk_SalasPessoais_Usuario1_idx");
+
+                entity.Property(e => e.IdMinhaSala)
+                    .HasColumnName("idMinhaSala")
+                    .HasColumnType("int(10) unsigned");
+
+                entity.Property(e => e.SalaId)
+                    .HasColumnName("Sala_Id")
+                    .HasColumnType("int(10) unsigned");
+
+                entity.Property(e => e.UsuarioId)
+                    .HasColumnName("Usuario_Id")
+                    .HasColumnType("int(10) unsigned");
+
+                entity.HasOne(d => d.Sala)
+                    .WithMany(p => p.Minhasala)
+                    .HasForeignKey(d => d.SalaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_SalasPessoais_Sala1");
+
+                entity.HasOne(d => d.Usuario)
+                    .WithMany(p => p.Minhasala)
+                    .HasForeignKey(d => d.UsuarioId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_SalasPessoais_Usuario1");
             });
 
             modelBuilder.Entity<Organizacao>(entity =>
@@ -163,6 +186,62 @@ namespace Persistences
                     .IsRequired()
                     .HasMaxLength(45)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Planejamento>(entity =>
+            {
+                entity.HasKey(e => e.IdPlanejamento);
+
+                entity.ToTable("planejamento", "str_db");
+
+                entity.HasIndex(e => e.SalaId)
+                    .HasName("fk_Planejamento_Sala1_idx");
+
+                entity.HasIndex(e => e.UsuarioId)
+                    .HasName("fk_Planejamento_Usuario1_idx");
+
+                entity.Property(e => e.IdPlanejamento)
+                    .HasColumnName("idPlanejamento")
+                    .HasColumnType("int(10) unsigned");
+
+                entity.Property(e => e.DataFim)
+                    .IsRequired()
+                    .HasMaxLength(45)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DataInicio)
+                    .IsRequired()
+                    .HasMaxLength(45)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DiaSemana)
+                    .IsRequired()
+                    .HasColumnType("enum('SEG','TER','QUA','QUI','SEX','SAB','DOM')");
+
+                entity.Property(e => e.Objetivo)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SalaId)
+                    .HasColumnName("Sala_Id")
+                    .HasColumnType("int(10) unsigned");
+
+                entity.Property(e => e.UsuarioId)
+                    .HasColumnName("Usuario_Id")
+                    .HasColumnType("int(10) unsigned");
+
+                entity.HasOne(d => d.Sala)
+                    .WithMany(p => p.Planejamento)
+                    .HasForeignKey(d => d.SalaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_Planejamento_Sala1");
+
+                entity.HasOne(d => d.Usuario)
+                    .WithMany(p => p.Planejamento)
+                    .HasForeignKey(d => d.UsuarioId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_Planejamento_Usuario1");
             });
 
             modelBuilder.Entity<Sala>(entity =>

@@ -7,8 +7,8 @@ namespace Business
 {
     public class TipoUsuarioService : IService<TipoUsuarioModel>
     {
-        private readonly ContextDb _context;
-        public TipoUsuarioService(ContextDb context)
+        private readonly str_dbContext _context;
+        public TipoUsuarioService(str_dbContext context)
         {
             _context = context;
         }

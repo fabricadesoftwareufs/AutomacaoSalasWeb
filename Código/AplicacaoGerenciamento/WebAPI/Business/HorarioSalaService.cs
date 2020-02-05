@@ -7,8 +7,8 @@ namespace Business
 {
     public class HorarioSalaService : IService<HorarioSalaModel>
     {
-        private readonly ContextDb _context;
-        public HorarioSalaService(ContextDb context)
+        private readonly str_dbContext _context;
+        public HorarioSalaService(str_dbContext context)
         {
             _context = context;
         }

@@ -7,8 +7,8 @@ namespace Business
 {
     public class HardwareService : IService<HardwareModel>
     {
-        private readonly ContextDb _context;
-        public HardwareService(ContextDb context)
+        private readonly str_dbContext _context;
+        public HardwareService(str_dbContext context)
         {
             _context = context;
         }

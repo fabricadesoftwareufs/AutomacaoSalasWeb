@@ -7,8 +7,8 @@ namespace Business
 {
     public class DisciplinaService : IService<DisciplinaModel>
     {
-        private readonly ContextDb _context;
-        public DisciplinaService(ContextDb context)
+        private readonly str_dbContext _context;
+        public DisciplinaService(str_dbContext context)
         {
             _context = context;
         }
