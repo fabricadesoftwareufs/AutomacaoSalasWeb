@@ -169,7 +169,7 @@ void loop() {
           tempEhum = (String)t + "°C" + "/" + (String)h + "%";
           Serial.println(tempEhum);
           pRemoteCharacteristic->writeValue(tempEhum.c_str(), tempEhum.length());
-          delay(2000);
+          delay(59000);
         }            
    // Serial.println("Connected");
   }else if(doScan){
