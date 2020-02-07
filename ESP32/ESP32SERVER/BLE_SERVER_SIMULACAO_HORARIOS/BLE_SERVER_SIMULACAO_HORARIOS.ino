@@ -25,8 +25,8 @@ struct horario {
 }horaDesligarAr, horaLigarAr;
 
 /* ----- Configurações de Wi-fi ----- */
-const char* ssid = "Fazenda20"; // Substitua pelo nome da rede
-const char* password = "bezerrinhos";    // Substitua pela senha
+const char* ssid = "DSI-Public"; // Substitua pelo nome da rede
+const char* password = "sistem@s";    // Substitua pela senha
 
 /* ----- Configurações de relógio on-line ----- */
 WiFiUDP udp;
@@ -47,7 +47,7 @@ bool temGente = false;
 #define LED 2
 
 /* ----- Criando um novo arquio ----- */
-FileManager fileManager("/Simulacao.txt");
+FileManager fileManager("/LogSimulacao.txt");
 
 void splitHora() {
   int cont = 0;
@@ -137,10 +137,10 @@ void setup() {
   ntp.forceUpdate();         // Atualização .
 
   /* ----- Configurandos hoarios ficticios ----- */
-  horaLigarAr.hora = 21;
-  horaLigarAr.minuto = 52;
-  horaDesligarAr.hora = 22;
-  horaDesligarAr.minuto = 30;
+  horaLigarAr.hora = 16;
+  horaLigarAr.minuto = 50;
+  horaDesligarAr.hora = 18;
+  horaDesligarAr.minuto = 00;
 }
 
 void loop() {
@@ -160,17 +160,19 @@ void loop() {
 
     if (value.compare("Tem gente!") == 0)
       temGente = true;
-    /* ----- Configurando ar condicionado de acordo com a hora -----*/
+    /* ----- Configurando ar condicionado de acordo com a hora ----- */
 
     splitHora();
     Serial.println("Hora: ");
     Serial.println(stringHoraSistema);
     
     if (horaAtual >= horaLigarAr.hora && horaAtual <= horaDesligarAr.hora && !arLigado && temGente) {
+      
         if ((horaAtual == horaLigarAr.hora && minutoAtual >= horaLigarAr.minuto && horaLigarAr.hora != horaDesligarAr.hora)
          || (horaAtual == horaLigarAr.hora && minutoAtual >= horaLigarAr.minuto && minutoAtual < horaDesligarAr.minuto && horaLigarAr.hora == horaDesligarAr.hora)
          || (horaAtual == horaDesligarAr.hora && minutoAtual < horaDesligarAr.minuto)
          || (horaAtual > horaLigarAr.hora && horaAtual < horaDesligarAr.hora)){
+          
           Serial.println("Ligando ar condicionado");
           Serial.print("Hora: ");
           Serial.println(stringHoraSistema);
