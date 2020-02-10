@@ -16,6 +16,7 @@ BLEServer* pServer = NULL;
 BLECharacteristic* pCharacteristic = NULL;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
+bool receivedData = false;
 uint32_t value = 0;
 
 /* ----- Estrutura para guardar os horarios ficticios para LIGAR e desligar o AR ----- */
@@ -25,8 +26,8 @@ struct horario {
 }horaDesligarAr, horaLigarAr;
 
 /* ----- Configurações de Wi-fi ----- */
-const char* ssid = "DSI-Public"; // Substitua pelo nome da rede
-const char* password = "sistem@s";    // Substitua pela senha
+const char* ssid = "UFSM4"; // Substitua pelo nome da rede
+const char* password = "geomatlisibi"; // Substitua pela senha
 
 /* ----- Configurações de relógio on-line ----- */
 WiFiUDP udp;
@@ -39,6 +40,9 @@ String stringHoraSistema;
 bool arLigado = false;
 bool temGente = false;
 
+/* ----- Variaveis que armazenam dados recebidos de outros dispositivos ----- */
+std::string sensoriamento = "";
+std::string dadoSemEspaco = "";
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -73,6 +77,47 @@ void splitHora() {
   }
 }
 
+void ligarAr(){
+  
+   /* ----- Configurando ar condicionado de acordo com a hora ----- */
+   if (horaAtual >= horaLigarAr.hora && horaAtual <= horaDesligarAr.hora && !arLigado && temGente) {      
+        if ((horaAtual == horaLigarAr.hora && minutoAtual >= horaLigarAr.minuto && horaLigarAr.hora != horaDesligarAr.hora)
+         || (horaAtual == horaLigarAr.hora && minutoAtual >= horaLigarAr.minuto && minutoAtual < horaDesligarAr.minuto && horaLigarAr.hora == horaDesligarAr.hora)
+         || (horaAtual == horaDesligarAr.hora && minutoAtual < horaDesligarAr.minuto)
+         || (horaAtual > horaLigarAr.hora && horaAtual < horaDesligarAr.hora)){
+              
+         Serial.println("Ligando ar condicionado");
+         Serial.print("Hora: ");
+         Serial.println(stringHoraSistema);
+        
+         fileManager.writeInFile("Ligando ar condicionado no horario: ");
+         fileManager.writeInFile(stringHoraSistema);
+        
+         arLigado = true;
+         digitalWrite(LED, HIGH);
+      }
+   } 
+   
+}
+
+void desligarAr(){
+         
+   if (((horaAtual == horaDesligarAr.hora && minutoAtual >= horaDesligarAr.minuto) 
+                    || horaAtual < horaLigarAr.hora || horaAtual > horaDesligarAr.hora) && arLigado) {
+    
+          Serial.println("Desligando ar condicionado");
+          Serial.print("Hora: ");
+          Serial.println(stringHoraSistema);
+    
+          fileManager.writeInFile("Desligando ar condicionado no horario: ");
+          fileManager.writeInFile(stringHoraSistema);
+    
+          arLigado = false;
+          digitalWrite(LED, LOW);
+   }
+   
+}
+
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
       deviceConnected = true;
@@ -81,6 +126,15 @@ class MyServerCallbacks: public BLEServerCallbacks {
 
     void onDisconnect(BLEServer* pServer) {
       deviceConnected = false;
+    }
+};
+
+/* ----- classe usada para receber informações de outros dispositivos ----- */
+class MyCallbacks: public BLECharacteristicCallbacks {
+    void onWrite(BLECharacteristic *pCharacteristic) {
+      // Read the value of the characteristic.
+      sensoriamento = pCharacteristic->getValue();
+      receivedData = true;
     }
 };
 
@@ -106,20 +160,16 @@ void setup() {
                       BLECharacteristic::PROPERTY_INDICATE
                     );
 
+                    
+  pCharacteristic->setCallbacks(new MyCallbacks());
+  
   // https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
   // Create a BLE Descriptor
   pCharacteristic->addDescriptor(new BLE2902());
 
   // Start the service
   pService->start();
-
-  //  init file manager
-  if (!fileManager.init()) {
-    Serial.println("File system error");
-    delay(1000);
-    ESP.restart();
-  }
-
+  
   // Start advertising
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
@@ -127,6 +177,13 @@ void setup() {
   pAdvertising->setMinPreferred(0x0);  // set value to 0x00 to not advertise this parameter
   BLEDevice::startAdvertising();
   Serial.println("Waiting a client connection to notify...");
+
+  //  init file manager
+  if (!fileManager.init()) {
+    Serial.println("File system error");
+    delay(1000);
+    ESP.restart();
+  }
 
   pinMode(LED, OUTPUT);
   
@@ -136,66 +193,47 @@ void setup() {
   ntp.begin();               // Inicia o protocolo
   ntp.forceUpdate();         // Atualização .
 
+
   /* ----- Configurandos hoarios ficticios ----- */
-  horaLigarAr.hora = 16;
-  horaLigarAr.minuto = 50;
-  horaDesligarAr.hora = 18;
-  horaDesligarAr.minuto = 00;
+  horaLigarAr.hora = 19;
+  horaLigarAr.minuto = 00;
+  horaDesligarAr.hora = 19;
+  horaDesligarAr.minuto = 10;
 }
 
 void loop() {
-    if (deviceConnected) {
-    // Read the value of the characteristic.
-    std::string value = pCharacteristic->getValue();
-    Serial.print("sensores: ");
-    Serial.println(value.c_str());
-    pCharacteristic->notify();
-    delay(3000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
-    std::string val = value.erase(value.find_last_not_of(" \n\r\t") + 1);
-    if (val.length() > 0) {
-      fileManager.writeInFile(val.c_str());
-      Serial.println("Arq log: ");
-      Serial.println(fileManager.readFile());
+    if (deviceConnected && receivedData) {
+      
+        Serial.print("sensoriamento: ");
+        Serial.println(sensoriamento.c_str());
+        delay(1000);
+
+                        
+        dadoSemEspaco = sensoriamento.erase(sensoriamento.find_last_not_of(" \n\r\t") + 1);
+        
+        if (dadoSemEspaco.length() > 0) {
+          fileManager.writeInFile(dadoSemEspaco.c_str());
+          Serial.println("Arq log: ");
+          Serial.println(fileManager.readFile());
+        }
+        
+        delay(3000);
+
+        if (sensoriamento.compare("Tem gente!") == 0)
+          temGente = true;
+          
+        sensoriamento = "";
+        dadoSemEspaco = "";
+        receivedData = false;        
     }
-
-    if (value.compare("Tem gente!") == 0)
-      temGente = true;
-    /* ----- Configurando ar condicionado de acordo com a hora ----- */
-
+    
     splitHora();
     Serial.println("Hora: ");
     Serial.println(stringHoraSistema);
     
-    if (horaAtual >= horaLigarAr.hora && horaAtual <= horaDesligarAr.hora && !arLigado && temGente) {
-      
-        if ((horaAtual == horaLigarAr.hora && minutoAtual >= horaLigarAr.minuto && horaLigarAr.hora != horaDesligarAr.hora)
-         || (horaAtual == horaLigarAr.hora && minutoAtual >= horaLigarAr.minuto && minutoAtual < horaDesligarAr.minuto && horaLigarAr.hora == horaDesligarAr.hora)
-         || (horaAtual == horaDesligarAr.hora && minutoAtual < horaDesligarAr.minuto)
-         || (horaAtual > horaLigarAr.hora && horaAtual < horaDesligarAr.hora)){
-          
-          Serial.println("Ligando ar condicionado");
-          Serial.print("Hora: ");
-          Serial.println(stringHoraSistema);
-    
-          fileManager.writeInFile("Ligando ar condicionado no horario: ");
-          fileManager.writeInFile(stringHoraSistema);
-    
-          arLigado = true;
-          digitalWrite(LED, HIGH);
-        }
-    } else if (((horaAtual == horaDesligarAr.hora && minutoAtual >= horaDesligarAr.minuto) 
-                || horaAtual < horaLigarAr.hora || horaAtual > horaDesligarAr.hora) && arLigado) {
+    ligarAr();
+    desligarAr();
 
-      Serial.println("Desligando ar condicionado");
-      Serial.print("Hora: ");
-      Serial.println(stringHoraSistema);
-
-      fileManager.writeInFile("Desligando ar condicionado no horario: ");
-      fileManager.writeInFile(stringHoraSistema);
-
-      arLigado = false;
-      digitalWrite(LED, LOW);
-    }
     temGente = false;
-  }
+    delay(1000);
 }
