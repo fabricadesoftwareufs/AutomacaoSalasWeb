@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Models\Models.csproj" />
-    <ProjectReference Include="..\Persistences\Persistences.csproj" />
+    <ProjectReference Include="..\Models\Model.csproj" />
+    <ProjectReference Include="..\Persistences\Persistence.csproj" />
   </ItemGroup>
 
 </Project>

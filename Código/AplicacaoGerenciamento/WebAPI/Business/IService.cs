@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Business
+namespace Service
 {
     public interface IService<T>
     {

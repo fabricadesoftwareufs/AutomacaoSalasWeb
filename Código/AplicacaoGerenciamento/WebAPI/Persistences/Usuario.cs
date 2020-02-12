@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Persistences
+namespace Persistence
 {
     public partial class Usuario
     {

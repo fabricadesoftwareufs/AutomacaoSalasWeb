@@ -1,6 +1,6 @@
-﻿using Business;
+﻿using Service;
 using Microsoft.AspNetCore.Mvc;
-using Models;
+using Model;
 
 namespace WebAPI.Controllers
 {

@@ -1,9 +1,9 @@
-﻿using Models;
-using Persistences;
+﻿using Model;
+using Persistence;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Business
+namespace Service
 {
     public class HorarioSalaService : IService<HorarioSalaModel>
     {

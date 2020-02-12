@@ -1,4 +1,4 @@
-﻿namespace Models
+﻿namespace Model
 {
     public class HardwareModel
     {

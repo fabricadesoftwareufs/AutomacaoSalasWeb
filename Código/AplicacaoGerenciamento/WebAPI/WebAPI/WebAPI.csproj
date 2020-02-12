@@ -15,9 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Business\Business.csproj" />
-    <ProjectReference Include="..\Models\Models.csproj" />
-    <ProjectReference Include="..\Persistences\Persistences.csproj" />
+    <ProjectReference Include="..\Business\Service.csproj" />
+    <ProjectReference Include="..\Models\Model.csproj" />
+    <ProjectReference Include="..\Persistences\Persistence.csproj" />
   </ItemGroup>
 
 </Project>

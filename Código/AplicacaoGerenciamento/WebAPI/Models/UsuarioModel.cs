@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Models
+namespace Model
 {
     public class UsuarioModel
     {
