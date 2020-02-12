@@ -18,14 +18,13 @@ namespace Business
                 {
                     Id = hs.Id,
                     Data = hs.Data,
-                    HoraInicio = hs.HoraInicio,
-                    HoraFim = hs.HoraFim,
-                    Turno = hs.Turno,
-                    QtdAlunos = hs.QtdAlunos,
-                    UsuarioId = hs.Usuario,
-                    SalaId = hs.Sala,
-                    DisciplinaId = (int)hs.Disciplina
+                    SalaId = hs.SalaId,
+                    HorarioInicio = hs.HorarioInicio,
+                    HorarioFim = hs.HorarioFim,
+                    Situacao = hs.Situacao,
+                    Objetivo = hs.Objetivo
                 }).ToList();
+        public int Id { get; set; }
 
         public HorarioSalaModel GetById(int id)
             => _context.Horariosala
@@ -34,13 +33,11 @@ namespace Business
                 {
                     Id = hs.Id,
                     Data = hs.Data,
-                    HoraInicio = hs.HoraInicio,
-                    HoraFim = hs.HoraFim,
-                    Turno = hs.Turno,
-                    QtdAlunos = hs.QtdAlunos,
-                    UsuarioId = hs.Usuario,
-                    SalaId = hs.Sala,
-                    DisciplinaId = (int)hs.Disciplina
+                    SalaId = hs.SalaId,
+                    HorarioInicio = hs.HorarioInicio,
+                    HorarioFim = hs.HorarioFim,
+                    Situacao = hs.Situacao,
+                    Objetivo = hs.Objetivo
                 }).FirstOrDefault();
 
         public bool Insert(HorarioSalaModel entity)
@@ -77,13 +74,11 @@ namespace Business
         {
             entity.Id = model.Id;
             entity.Data = model.Data;
-            entity.HoraInicio = model.HoraInicio;
-            entity.HoraFim = model.HoraFim;
-            entity.Turno = model.Turno;
-            entity.QtdAlunos = model.QtdAlunos;
-            entity.Usuario = model.UsuarioId;
-            entity.Sala = model.SalaId;
-            entity.Disciplina = model.DisciplinaId;
+            entity.SalaId = model.SalaId;
+            entity.HorarioInicio = model.HorarioInicio;
+            entity.HorarioFim = model.HorarioFim;
+            entity.Situacao = model.Situacao;
+            entity.Objetivo = model.Objetivo;
 
             return entity;
         }

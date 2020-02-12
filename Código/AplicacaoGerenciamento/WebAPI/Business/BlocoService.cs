@@ -7,8 +7,8 @@ namespace Business
 {
     public class BlocoService : IService<BlocoModel>
     {
-        private readonly ContextDb _context;
-        public BlocoService(ContextDb context)
+        private readonly str_dbContext _context;
+        public BlocoService(str_dbContext context)
         {
             _context = context;
         }

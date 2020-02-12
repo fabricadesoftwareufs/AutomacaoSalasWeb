@@ -26,13 +26,14 @@ namespace WebAPI.Controllers
 
         // GET: api/Sala/5
         [HttpGet("{id}")]
+
         public ActionResult Get(int id)
         {
             var sala = _service.GetById(id);
             if (sala == null)
                 return NoContent();
 
-            Ok(sala);
+            return Ok(sala);
         }
 
         // POST: api/Sala
