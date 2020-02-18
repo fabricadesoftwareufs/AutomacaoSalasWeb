@@ -26,8 +26,8 @@ struct horario {
 }horaDesligarAr, horaLigarAr;
 
 /* ----- Configurações de Wi-fi ----- */
-const char* ssid = "UFSM4"; // Substitua pelo nome da rede
-const char* password = "geomatlisibi"; // Substitua pela senha
+const char* ssid = "DSI-Public"; // Substitua pelo nome da rede
+const char* password = "sistem@s"; // Substitua pela senha
 
 /* ----- Configurações de relógio on-line ----- */
 WiFiUDP udp;
@@ -44,11 +44,13 @@ bool temGente = false;
 std::string sensoriamento = "";
 std::string dadoSemEspaco = "";
 
+
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define LED 2
+#define RELE 13
 
 /* ----- Criando um novo arquio ----- */
 FileManager fileManager("/LogSimulacao.txt");
@@ -85,7 +87,9 @@ void ligarAr(){
          || (horaAtual == horaLigarAr.hora && minutoAtual >= horaLigarAr.minuto && minutoAtual < horaDesligarAr.minuto && horaLigarAr.hora == horaDesligarAr.hora)
          || (horaAtual == horaDesligarAr.hora && minutoAtual < horaDesligarAr.minuto)
          || (horaAtual > horaLigarAr.hora && horaAtual < horaDesligarAr.hora)){
-              
+
+           
+         
          Serial.println("Ligando ar condicionado");
          Serial.print("Hora: ");
          Serial.println(stringHoraSistema);
@@ -95,6 +99,9 @@ void ligarAr(){
         
          arLigado = true;
          digitalWrite(LED, HIGH);
+
+          //Ligando ventilador
+         digitalWrite(RELE, LOW);  
       }
    } 
    
@@ -104,7 +111,7 @@ void desligarAr(){
          
    if (((horaAtual == horaDesligarAr.hora && minutoAtual >= horaDesligarAr.minuto) 
                     || horaAtual < horaLigarAr.hora || horaAtual > horaDesligarAr.hora) && arLigado) {
-    
+
           Serial.println("Desligando ar condicionado");
           Serial.print("Hora: ");
           Serial.println(stringHoraSistema);
@@ -114,6 +121,9 @@ void desligarAr(){
     
           arLigado = false;
           digitalWrite(LED, LOW);
+
+          //Dslgando Ventilador
+          digitalWrite(RELE, HIGH);
    }
    
 }
@@ -186,6 +196,10 @@ void setup() {
   }
 
   pinMode(LED, OUTPUT);
+  pinMode(RELE, OUTPUT);
+  digitalWrite(RELE, HIGH);
+
+
   
   /* ----- Configurndo acesso ao WIFI ----- */
   WiFi.begin(ssid, password);
@@ -195,10 +209,10 @@ void setup() {
 
 
   /* ----- Configurandos hoarios ficticios ----- */
-  horaLigarAr.hora = 19;
-  horaLigarAr.minuto = 00;
-  horaDesligarAr.hora = 19;
-  horaDesligarAr.minuto = 10;
+  horaLigarAr.hora = 17;
+  horaLigarAr.minuto = 32;
+  horaDesligarAr.hora = 17;
+  horaDesligarAr.minuto = 35;
 }
 
 void loop() {
@@ -235,5 +249,5 @@ void loop() {
     desligarAr();
 
     temGente = false;
-    delay(1000);
+    delay(3000);
 }
