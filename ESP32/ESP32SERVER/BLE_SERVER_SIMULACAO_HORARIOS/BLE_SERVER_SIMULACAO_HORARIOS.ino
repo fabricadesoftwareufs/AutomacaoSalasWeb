@@ -209,10 +209,10 @@ void setup() {
 
 
   /* ----- Configurandos hoarios ficticios ----- */
-  horaLigarAr.hora = 17;
-  horaLigarAr.minuto = 32;
-  horaDesligarAr.hora = 17;
-  horaDesligarAr.minuto = 35;
+  horaLigarAr.hora = 15;
+  horaLigarAr.minuto = 30;
+  horaDesligarAr.hora = 16;
+  horaDesligarAr.minuto = 00;
 }
 
 void loop() {
