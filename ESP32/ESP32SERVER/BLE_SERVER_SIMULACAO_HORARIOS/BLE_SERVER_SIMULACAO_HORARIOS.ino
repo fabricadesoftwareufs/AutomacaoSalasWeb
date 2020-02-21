@@ -53,7 +53,7 @@ std::string dadoSemEspaco = "";
 #define RELE 13
 
 /* ----- Criando um novo arquio ----- */
-FileManager fileManager("/LogSimulacao.txt");
+FileManager fileManager("/Simulation.txt");
 
 void splitHora() {
   int cont = 0;
@@ -209,29 +209,29 @@ void setup() {
 
 
   /* ----- Configurandos hoarios ficticios ----- */
-  horaLigarAr.hora = 15;
-  horaLigarAr.minuto = 30;
-  horaDesligarAr.hora = 16;
-  horaDesligarAr.minuto = 00;
+  horaLigarAr.hora = 13;
+  horaLigarAr.minuto = 50;
+  horaDesligarAr.hora = 14;
+  horaDesligarAr.minuto = 30;
 }
 
 void loop() {
     if (deviceConnected && receivedData) {
       
-        Serial.print("sensoriamento: ");
-        Serial.println(sensoriamento.c_str());
-        delay(1000);
+        //Serial.print("sensoriamento: ");
+        //Serial.println(sensoriamento.c_str());
+        //delay(1000);
 
                         
         dadoSemEspaco = sensoriamento.erase(sensoriamento.find_last_not_of(" \n\r\t") + 1);
         
         if (dadoSemEspaco.length() > 0) {
           fileManager.writeInFile(dadoSemEspaco.c_str());
-          Serial.println("Arq log: ");
-          Serial.println(fileManager.readFile());
+         // Serial.println("Arq log: ");
+         // Serial.println(fileManager.readFile());
         }
         
-        delay(3000);
+        //delay(3000);
 
         if (sensoriamento.compare("Tem gente!") == 0)
           temGente = true;
@@ -249,5 +249,5 @@ void loop() {
     desligarAr();
 
     temGente = false;
-    delay(3000);
+    delay(5000);
 }
