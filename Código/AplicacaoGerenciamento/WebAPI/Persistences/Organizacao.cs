@@ -8,7 +8,7 @@ namespace Persistence
         public Organizacao()
         {
             Bloco = new HashSet<Bloco>();
-            UsuarioOrganizacoes = new HashSet<UsuarioOrganizacoes>();
+            Usuarioorganizacao = new HashSet<Usuarioorganizacao>();
         }
 
         public int Id { get; set; }
@@ -16,6 +16,6 @@ namespace Persistence
         public string RazaoSocial { get; set; }
 
         public ICollection<Bloco> Bloco { get; set; }
-        public ICollection<UsuarioOrganizacoes> UsuarioOrganizacoes { get; set; }
+        public ICollection<Usuarioorganizacao> Usuarioorganizacao { get; set; }
     }
 }

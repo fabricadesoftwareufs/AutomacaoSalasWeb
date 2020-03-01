@@ -8,8 +8,8 @@ namespace Service
 {
     public class UsuarioService : IService<UsuarioModel>
     {
-        private readonly str_dbContext _context;
-        public UsuarioService(str_dbContext context)
+        private readonly STR_DBContext _context;
+        public UsuarioService(STR_DBContext context)
         {
             _context = context;
         }

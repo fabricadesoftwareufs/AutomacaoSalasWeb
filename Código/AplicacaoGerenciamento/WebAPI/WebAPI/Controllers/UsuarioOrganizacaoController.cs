@@ -8,8 +8,8 @@ namespace WebAPI.Controllers
     [ApiController]
     public class UsuarioOrganizacaoController : ControllerBase
     {
-        private readonly UsuarioOrganizacoesService _service;
-        public UsuarioOrganizacaoController(UsuarioOrganizacoesService service)
+        private readonly UsuarioOrganizacaoService _service;
+        public UsuarioOrganizacaoController(UsuarioOrganizacaoService service)
         {
             _service = service;
         }

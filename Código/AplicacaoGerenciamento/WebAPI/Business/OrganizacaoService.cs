@@ -7,8 +7,8 @@ namespace Service
 {
     public class OrganizacaoService : IService<OrganizacaoModel>
     {
-        private readonly str_dbContext _context;
-        public OrganizacaoService(str_dbContext context)
+        private readonly STR_DBContext _context;
+        public OrganizacaoService(STR_DBContext context)
         {
             _context = context;
         }

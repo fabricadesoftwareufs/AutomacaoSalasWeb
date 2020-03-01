@@ -7,8 +7,8 @@ namespace Service
 {
     public class TipoUsuarioService : IService<TipoUsuarioModel>
     {
-        private readonly str_dbContext _context;
-        public TipoUsuarioService(str_dbContext context)
+        private readonly STR_DBContext _context;
+        public TipoUsuarioService(STR_DBContext context)
         {
             _context = context;
         }

@@ -7,14 +7,14 @@ namespace Service
 {
     public class SalaService : IService<SalaModel>
     {
-        private readonly str_dbContext _context;
-        public SalaService(str_dbContext context)
+        private readonly STR_DBContext _context;
+        public SalaService(STR_DBContext context)
         {
             _context = context;
         }
-        public List<SalaModel> GetAll() => _context.Sala.Select(s => new SalaModel { Id = s.Id, Nome = s.Nome, BlocoId = s.Bloco }).ToList();
+        public List<SalaModel> GetAll() => _context.Sala.Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).ToList();
 
-        public SalaModel GetById(int id) => _context.Sala.Where(s => s.Id == id).Select(s => new SalaModel { Id = s.Id, Nome = s.Nome, BlocoId = s.Bloco }).FirstOrDefault();
+        public SalaModel GetById(int id) => _context.Sala.Where(s => s.Id == id).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).FirstOrDefault();
 
         public bool Insert(SalaModel entity)
         {
@@ -49,7 +49,7 @@ namespace Service
         private static Sala SetEntity(SalaModel model, Sala entity)
         {
             entity.Id = model.Id;
-            entity.Nome = model.Nome;
+            entity.Titulo = model.Titulo;
             entity.Bloco = model.BlocoId;
 
             return entity;

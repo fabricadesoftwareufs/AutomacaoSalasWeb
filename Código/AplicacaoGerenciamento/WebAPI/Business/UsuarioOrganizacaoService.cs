@@ -5,26 +5,26 @@ using System.Linq;
 
 namespace Service
 {
-    public class UsuarioOrganizacoesService : IService<UsuarioOrganizacaoModel>
+    public class UsuarioOrganizacaoService : IService<UsuarioOrganizacaoModel>
     {
-        private readonly str_dbContext _context;
-        public UsuarioOrganizacoesService(str_dbContext context)
+        private readonly STR_DBContext _context;
+        public UsuarioOrganizacaoService(STR_DBContext context)
         {
             _context = context;
         }
-        public List<UsuarioOrganizacaoModel> GetAll() => _context.UsuarioOrganizacoes.Select(uo => new UsuarioOrganizacaoModel { UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao }).ToList();
+        public List<UsuarioOrganizacaoModel> GetAll() => _context.Usuarioorganizacao.Select(uo => new UsuarioOrganizacaoModel { UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao }).ToList();
 
-        public UsuarioOrganizacaoModel GetById(int id) => _context.UsuarioOrganizacoes.Where(uo => uo.Id == id).Select(uo => new UsuarioOrganizacaoModel { UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao }).FirstOrDefault();
+        public UsuarioOrganizacaoModel GetById(int id) => _context.Usuarioorganizacao.Where(uo => uo.Id == id).Select(uo => new UsuarioOrganizacaoModel { UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao }).FirstOrDefault();
 
         public bool Insert(UsuarioOrganizacaoModel entity)
         {
-            _context.Add(SetEntity(entity, new UsuarioOrganizacoes()));
+            _context.Add(SetEntity(entity, new Usuarioorganizacao()));
             return _context.SaveChanges() == 1 ? true : false;
         }
 
         public bool Remove(int id)
         {
-            var x = _context.UsuarioOrganizacoes.Where(uo => uo.Id == id).FirstOrDefault();
+            var x = _context.Usuarioorganizacao.Where(uo => uo.Id == id).FirstOrDefault();
             if (x != null)
             {
                 _context.Remove(x);
@@ -36,7 +36,7 @@ namespace Service
 
         public bool Update(UsuarioOrganizacaoModel entity)
         {
-            var x = _context.UsuarioOrganizacoes.Where(uo => uo.Id == entity.Id).FirstOrDefault();
+            var x = _context.Usuarioorganizacao.Where(uo => uo.Id == entity.Id).FirstOrDefault();
             if (x != null)
             {
                 _context.Update(SetEntity(entity, x));
@@ -46,7 +46,7 @@ namespace Service
             return false;
         }
 
-        private static UsuarioOrganizacoes SetEntity(UsuarioOrganizacaoModel model, UsuarioOrganizacoes entity)
+        private static Usuarioorganizacao SetEntity(UsuarioOrganizacaoModel model, Usuarioorganizacao entity)
         {
             entity.Id = model.Id;
             entity.Usuario = model.UsuarioId;

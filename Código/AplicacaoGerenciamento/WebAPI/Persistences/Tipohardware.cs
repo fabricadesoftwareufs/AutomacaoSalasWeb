@@ -7,12 +7,14 @@ namespace Persistence
     {
         public Tipohardware()
         {
-            Hardware = new HashSet<Hardware>();
+            Hardwaredebloco = new HashSet<Hardwaredebloco>();
+            Hardwaredesala = new HashSet<Hardwaredesala>();
         }
 
         public int Id { get; set; }
         public string Descricao { get; set; }
 
-        public ICollection<Hardware> Hardware { get; set; }
+        public ICollection<Hardwaredebloco> Hardwaredebloco { get; set; }
+        public ICollection<Hardwaredesala> Hardwaredesala { get; set; }
     }
 }
