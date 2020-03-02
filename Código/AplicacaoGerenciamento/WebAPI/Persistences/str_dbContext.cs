@@ -30,10 +30,9 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
-            /*if (!optionsBuilder.IsConfigured)
+           /* if (!optionsBuilder.IsConfigured)
             {
-                #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=igorb95;database=STR_DB");
             }*/
         }
@@ -209,15 +208,9 @@ namespace Persistence
                     .HasColumnName("id")
                     .HasColumnType("int(10) unsigned");
 
-                entity.Property(e => e.DataFim)
-                    .IsRequired()
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                entity.Property(e => e.DataFim).HasColumnType("date");
 
-                entity.Property(e => e.DataInicio)
-                    .IsRequired()
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                entity.Property(e => e.DataInicio).HasColumnType("date");
 
                 entity.Property(e => e.DiaSemana)
                     .IsRequired()

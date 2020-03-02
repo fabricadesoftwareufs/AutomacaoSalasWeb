@@ -6,8 +6,8 @@ namespace Persistence
     public partial class Planejamento
     {
         public int Id { get; set; }
-        public string DataInicio { get; set; }
-        public string DataFim { get; set; }
+        public DateTime DataInicio { get; set; }
+        public DateTime DataFim { get; set; }
         public TimeSpan HorarioInicio { get; set; }
         public TimeSpan HorarioFim { get; set; }
         public string DiaSemana { get; set; }
