@@ -1,0 +1,82 @@
+﻿@model IEnumerable<SalasUfsWeb.Models.ViewModels.PlanejamentoViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div>
+    <h2>
+        Planejamentos Cadastrados
+
+        <a class="btn btn-primary" style="float:right" asp-controller="Planejamento" asp-action="Create">Adicionar Planejamento</a>
+    </h2>
+
+</div>
+
+<div align="right">
+    <form asp-controller="Planejamento" asp-action="Index">
+        <p>
+            <input style="height: 28pt;width: 200pt;" type="text" placeholder="Pesquise por sala " name="pesquisa">
+            <button style="margin-bottom: 0.3%;" class="btn btn-primary text-right">Pesquisar</button>
+
+        </p>
+    </form>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.SalaId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UsuarioId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Periodo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Horario)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiaSemana)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SalaId.Titulo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UsuarioId.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Periodo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Horario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DiaSemana)
+                </td>
+
+                <td>
+                    <a href="@Url.Action("Details", "Planejamento", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
+                    <a href="@Url.Action("Edit", "Planejamento", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Editar </a>
+                    <a href="@Url.Action("Delete", "Planejamento", new { id = item.Id })" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Remover </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

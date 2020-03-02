@@ -1,0 +1,187 @@
+﻿@model Model.PlanejamentoModel
+
+@{
+    ViewData["Title"] = "Create";
+    //List<Model.PlanejamentoModel> planejamentos = new List<Model.PlanejamentoModel>();
+
+}
+<script>
+    var MyArray = [];
+</script>
+
+<link rel="stylesheet" href="~/css/site.css" />
+
+
+<h2>Adicionar Novo Planejamento</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div >
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="SalaId" class="control-label"></label>
+                @Html.DropDownListFor(model => model.Id, ViewBag.salas as SelectList, new
+           { @class = "form-control", @id = "sala" })
+                <span asp-validation-for="SalaId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UsuarioId" class="control-label"></label>
+                @Html.DropDownListFor(model => model.Id, ViewBag.usuarios as SelectList, new
+           { @class = "form-control", @id = "usuario" })
+                <span asp-validation-for="UsuarioId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Objetivo" class="control-label"></label>
+                <input asp-for="Objetivo" id="objetivo" class="form-control" />
+                <span asp-validation-for="Objetivo" class="text-danger"></span>
+            </div>
+
+            <div>
+                <div class="form-group" style="display: inline-block;margin-right: 20pt;">
+                    <label asp-for="DataInicio" class="control-label"></label>
+                    <input asp-for="DataInicio" id="dataInicio" class="form-control" />
+                    <span asp-validation-for="DataInicio" class="text-danger"></span>
+                </div>
+                <div class="form-group" style="display: inline-block;">
+                    <label asp-for="DataFim" class="control-label"></label>
+                    <input asp-for="DataFim" id="dataFim" class="form-control" />
+                    <span asp-validation-for="DataFim" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div>
+                <div class="form-group" style="display: inline-block; margin-right: 20pt;">
+                    <label asp-for="HorarioInicio" class="control-label"></label>
+                    <input asp-for="HorarioInicio" id="horarioInicio" class="form-control" />
+                    <span asp-validation-for="HorarioInicio" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" style="display: inline-block;margin-right: 20pt;">
+                    <label asp-for="HorarioFim" class="control-label"></label>
+                    <input asp-for="HorarioFim" id="horarioFim" class="form-control" />
+                    <span asp-validation-for="HorarioFim" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" style="display: inline-block;margin-right: 20pt;">
+                    <label asp-for="DiaSemana" class="control-label"></label>
+                    @Html.DropDownListFor(model => model.Id, ViewBag.dias as SelectList, new
+               { @class = "form-control", @id = "diaSemana" })
+                    <span asp-validation-for="DiaSemana" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" style="display: inline-block;">
+                    <input type="button" onclick="TakeInput()" value="Adicionar" class="btn btn-primary btn-file" />
+                </div>
+            </div>
+
+            <div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Horario
+                            </th>
+
+                            <th>
+                                Dia da Semana
+                            </th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <form asp-action="Create" id="form1" name="form1">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" /> |
+                <a class="btn btn-primary" asp-action="Index">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+<script type="text/javascript">
+
+    function TakeInput() {
+
+        var objeto = new Object();
+        objeto.SalaId = document.getElementById("sala").value;
+        objeto.UsuarioId = document.getElementById("usuario").value;
+        objeto.Objetivo = document.getElementById("objetivo").value;
+        objeto.DataInicio = document.getElementById("dataInicio").value;
+        objeto.DataFim = document.getElementById("dataFim").value;
+        objeto.HorarioInicio = document.getElementById("horarioInicio").value;
+        objeto.HorarioFim = document.getElementById("horarioFim").value;
+        objeto.DiaSemana = document.getElementById("diaSemana").value;
+
+        MyArray.push(objeto);
+
+        alert(MyArray[MyArray.length - 1].Objetivo);
+        alert(MyArray[MyArray.length - 1].SalaId);
+
+
+        $("tbody").append("<tr> <td> " + MyArray[MyArray.length - 1].HorarioInicio + " / " + MyArray[MyArray.length - 1].HorarioFim + " </td> <td> " + MyArray[MyArray.length - 1].DiaSemana + " </td> </tr > ");
+
+        $("#form1").append("<div hidden class='form-group'> <label asp-for='SalaId' class='control-label'></label>"
+            + " <input type='hidden' asp-for= 'Id' class= 'form-control' value = '" + MyArray[MyArray.length-1].SalaId + "' />"
+            + "<span asp-validation-for='SalaId' class='text-danger'></span>"
+            + "</div>");
+
+        $("#form1").append("<div  hidden class='form-group'> <label asp-for='UsuarioId' class='control-label'></label>"
+            + " <input type='hidden' asp-for= 'Id' class= 'form-control' value = '" + MyArray[MyArray.length-1].UsuarioId + "' />"
+            + "<span asp-validation-for='UsuarioId' class='text-danger'></span>"
+            + "</div>")
+
+        $("#form1").append("<div hidden class='form-group'> <label asp-for='Objetivo' class='control-label'></label>"
+            + " <input  asp-for='Objetivo' class= 'form-control' value = '" + MyArray[MyArray.length-1].Objetivo + "' />"
+            + "<span asp-validation-for='Objetivo' class='text-danger'></span>"
+            + "</div>");
+
+        $("#form1").append("<div hidden class='form-group'> <label asp-for='DataInicio' class='control-label'></label>"
+            + " <input  asp-for= 'DataInicio' class= 'form-control' value = '" + MyArray[MyArray.length-1].DataInicio + "' />"
+            + "<span asp-validation-for='DataInicio' class='text-danger'></span>"
+            + "</div>");
+
+        $("#form1").append("<div hidden class='form-group'> <label asp-for='HorarioFim' class='control-label'></label>"
+            + " <input  asp-for= 'HorarioFim' class= 'form-control' value = '" + MyArray[MyArray.length-1].DataFim + "' />"
+            + "<span asp-validation-for='HorarioFim' class='text-danger'></span>"
+            + "</div>");
+
+        $("#form1").append("<div hidden class='form-group'> <label asp-for='HorarioInicio' class='control-label'></label>"
+            + " <input  asp-for= 'HorarioInicio' class= 'form-control' value = '" + MyArray[MyArray.length-1].HorarioInicio + "' />"
+            + "<span asp-validation-for='HorarioInicio' class='text-danger'></span>"
+            + "</div>");
+
+        $("#form1").append("<div hidden class='form-group'> <label asp-for='HorarioFim' class='control-label'></label>"
+            + " <input hidden asp-for= 'HorarioFim' class= 'form-control' value = '" + MyArray[MyArray.length-1].HorarioFim + "' />"
+            + "<span asp-validation-for='HorarioFim' class='text-danger'></span>"
+            + "</div>");
+
+        $("#form1").append("<div hidden class='form-group'> <label asp-for='DiaSemana' class='control-label'></label>"
+            + " <input  asp-for= 'DiaSemana' class= 'form-control' value = '" + MyArray[MyArray.length-1].DiaSemana + "' />"
+            + "<span asp-validation-for='DiaSemana' class='text-danger'></span>"
+            + "</div>");    
+    }
+
+
+    function submitItens() {
+        document.forms["form1"].submit();
+    }
+</script>

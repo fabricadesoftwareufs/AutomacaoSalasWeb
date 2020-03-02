@@ -25,11 +25,13 @@ namespace WebAPI
 
             // Injections
             services.AddScoped<BlocoService>();
-       
+            services.AddScoped<HardwareDeBlocoService>();
             services.AddScoped<HardwareDeSalaService>();
             services.AddScoped<HorarioSalaService>();
             services.AddScoped<OrganizacaoService>();
             services.AddScoped<SalaService>();
+            services.AddScoped<SalaParticularService>();
+            services.AddScoped<PlanejamentoService>();
             services.AddScoped<TipoHardwareService>();
             services.AddScoped<TipoUsuarioService>();
             services.AddScoped<UsuarioOrganizacaoService>();
