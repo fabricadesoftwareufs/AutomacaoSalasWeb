@@ -13,13 +13,15 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="ListElements">
                 <label asp-for="BlocoId" class="control-label"></label>
-                <input asp-for="BlocoId" class="form-control" />
+                @*ViewBag.BlocoList is holding all the routs values*@
+                @Html.DropDownListFor(model => model.BlocoId, ViewBag.BlocoList as SelectList, new
+                { @class = "form-control" })
                 <span asp-validation-for="BlocoId" class="text-danger"></span>
             </div>
             <div class="form-group">

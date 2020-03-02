@@ -1,4 +1,4 @@
-﻿@model Model.SalaModel
+﻿@model Model.OrganizacaoModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -8,7 +8,7 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>SalaModel</h4>
+    <h4>OrganizacaoModel</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -18,16 +18,16 @@
             @Html.DisplayFor(model => model.Id)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Titulo)
+            @Html.DisplayNameFor(model => model.Cnpj)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Titulo)
+            @Html.DisplayFor(model => model.Cnpj)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.BlocoId)
+            @Html.DisplayNameFor(model => model.RazaoSocial)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.BlocoId)
+            @Html.DisplayFor(model => model.RazaoSocial)
         </dd>
     </dl>
     

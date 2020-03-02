@@ -1,10 +1,10 @@
-﻿@model IEnumerable<Model.SalaModel>
+﻿@model IEnumerable<Model.OrganizacaoModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Organizações Cadastradas";
 }
 
-<h2>Index</h2>
+<h2>@ViewData["Title"]</h2>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,10 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Titulo)
+                @Html.DisplayNameFor(model => model.Cnpj)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BlocoId)
+                @Html.DisplayNameFor(model => model.RazaoSocial)
             </th>
             <th></th>
         </tr>
@@ -25,14 +25,14 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Titulo)
+                @Html.DisplayFor(modelItem => item.Cnpj)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.BlocoId)
+                @Html.DisplayFor(modelItem => item.RazaoSocial)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new {  id=item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
                 @Html.ActionLink("Delete", "Delete", new { id=item.Id })
             </td>
         </tr>

@@ -4,18 +4,23 @@
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
-
-<h4>BlocoModel</h4>
+<h2>Cadastrar Bloco</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group" id="ListElements">
                 <label asp-for="OrganizacaoId" class="control-label"></label>
-                <input asp-for="OrganizacaoId" class="form-control" />
+                @*ViewBag.OrgList is holding all the routs values*@
+                @Html.DropDownListFor(model => model.OrganizacaoId, ViewBag.OrgList as SelectList, new
+                { @class = "form-control" })
                 <span asp-validation-for="OrganizacaoId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />

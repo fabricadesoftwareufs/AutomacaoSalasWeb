@@ -31,21 +31,18 @@
         <div class="wrapper">
             <!-- Content Wrapper. Contains page content -->
             <partial name="_MenuPartial" />
-            <!--  <partial name="_TopBarPartial" /> -->
-
-            <div class="content-wrapper">
-                <!-- Content Header (Page header) -->
-                <div class="content-header">
-                    <div class="container-fluid">
-                        <div class="row mb-2">
-                            <div class="col-sm-6">
-                                @RenderBody()
-                            </div>
-                        </div>
-                    </div>
+            <partial name="_TopBarPartial" />
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <!-- Small boxes (Stat box) -->
+                        @RenderBody()
+                </div>
+            </section>
+        </div>
                 </div>
             </div>
-            </div>
+        </div>
                                 
                             <footer class="main-footer">
                                 <strong>Copyright &copy; 2020 <a href="http://adminlte.io">SalaUFS</a>.</strong>

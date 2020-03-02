@@ -1,13 +1,13 @@
-﻿@model Model.BlocoModel
+﻿@model Model.OrganizacaoModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Organização";
 }
 
-<h2>Details</h2>
+<h2>@ViewData["Title"]</h2>
 
 <div>
-    <h4>BlocoModel</h4>
+    <h4>OrganizacaoModel</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -17,16 +17,16 @@
             @Html.DisplayFor(model => model.Id)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.OrganizacaoId)
+            @Html.DisplayNameFor(model => model.Cnpj)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.OrganizacaoId)
+            @Html.DisplayFor(model => model.Cnpj)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Titulo)
+            @Html.DisplayNameFor(model => model.RazaoSocial)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Titulo)
+            @Html.DisplayFor(model => model.RazaoSocial)
         </dd>
     </dl>
 </div>

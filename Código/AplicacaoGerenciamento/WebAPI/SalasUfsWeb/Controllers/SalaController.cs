@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Service;
 
@@ -8,10 +9,12 @@ namespace SalasUfsWeb.Controllers
     public class SalaController : Controller
     {
         private readonly SalaService _salaService;
+        private readonly BlocoService _blocoService;
 
-        public SalaController(SalaService salaService)
+        public SalaController(SalaService salaService, BlocoService blocoService)
         {
             _salaService = salaService;
+            _blocoService = blocoService;
         }
         // GET: Sala
         public ActionResult Index()
@@ -29,6 +32,7 @@ namespace SalasUfsWeb.Controllers
         // GET: Sala/Create
         public ActionResult Create()
         {
+            ViewBag.BlocoList = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
             return View();
         }
 
@@ -53,6 +57,7 @@ namespace SalasUfsWeb.Controllers
         // GET: Sala/Edit/5
         public ActionResult Edit(int id)
         {
+            ViewBag.BlocoList = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
             SalaModel salaModel = _salaService.GetById(id);
             return View(salaModel);
         }

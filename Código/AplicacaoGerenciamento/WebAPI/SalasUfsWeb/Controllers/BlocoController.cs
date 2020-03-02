@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Service;
 
@@ -12,10 +13,11 @@ namespace SalasUfsWeb.Controllers
     public class BlocoController : Controller
     {
         private readonly BlocoService _blocoService;
-
-        public BlocoController(BlocoService blocoService)
+        private readonly OrganizacaoService _organizacaoService;
+        public BlocoController(BlocoService blocoService, OrganizacaoService organizacaoService)
         {
             _blocoService = blocoService;
+            _organizacaoService = organizacaoService;
         }
 
         // GET: Bloco
@@ -34,6 +36,7 @@ namespace SalasUfsWeb.Controllers
         // GET: Bloco/Create
         public ActionResult Create()
         {
+            ViewBag.OrgList = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
             return View();
         }
 
@@ -58,6 +61,7 @@ namespace SalasUfsWeb.Controllers
         // GET: Bloco/Edit/5
         public ActionResult Edit(int id)
         {
+            ViewBag.OrgList = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
             BlocoModel blocoModel = _blocoService.GetById(id);
             return View(blocoModel);
         }
