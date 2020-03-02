@@ -6,10 +6,41 @@
     <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\css\adminlte.css.map" />
+    <None Include="wwwroot\css\adminlte.min.css.map" />
+    <None Include="wwwroot\css\alt\adminlte.components.css.map" />
+    <None Include="wwwroot\css\alt\adminlte.components.min.css.map" />
+    <None Include="wwwroot\css\alt\adminlte.core.css.map" />
+    <None Include="wwwroot\css\alt\adminlte.core.min.css.map" />
+    <None Include="wwwroot\css\alt\adminlte.extra-components.css.map" />
+    <None Include="wwwroot\css\alt\adminlte.extra-components.min.css.map" />
+    <None Include="wwwroot\css\alt\adminlte.pages.css.map" />
+    <None Include="wwwroot\css\alt\adminlte.pages.min.css.map" />
+    <None Include="wwwroot\css\alt\adminlte.plugins.css.map" />
+    <None Include="wwwroot\css\alt\adminlte.plugins.min.css.map" />
+    <None Include="wwwroot\js\adminlte.js" />
+    <None Include="wwwroot\js\adminlte.js.map" />
+    <None Include="wwwroot\js\adminlte.min.js" />
+    <None Include="wwwroot\js\adminlte.min.js.map" />
+    <None Include="wwwroot\js\ControlSidebar.js" />
+    <None Include="wwwroot\js\dashboard.js" />
+    <None Include="wwwroot\js\demo.js" />
+    <None Include="wwwroot\js\Layout.js" />
+    <None Include="wwwroot\js\PushMenu.js" />
+    <None Include="wwwroot\js\site.js" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
   </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\Business\Service.csproj" />
+    <ProjectReference Include="..\Models\Model.csproj" />
+    <ProjectReference Include="..\Persistences\Persistence.csproj" />
+  </ItemGroup>
+  
 </Project>
