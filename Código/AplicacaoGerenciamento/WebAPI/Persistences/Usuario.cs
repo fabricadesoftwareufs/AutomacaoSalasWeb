@@ -8,9 +8,9 @@ namespace Persistence
         public Usuario()
         {
             Horariosala = new HashSet<Horariosala>();
-            Minhasala = new HashSet<Minhasala>();
             Planejamento = new HashSet<Planejamento>();
-            UsuarioOrganizacoes = new HashSet<UsuarioOrganizacoes>();
+            Salaparticular = new HashSet<Salaparticular>();
+            Usuarioorganizacao = new HashSet<Usuarioorganizacao>();
         }
 
         public int Id { get; set; }
@@ -22,8 +22,8 @@ namespace Persistence
 
         public Tipousuario TipoUsuarioNavigation { get; set; }
         public ICollection<Horariosala> Horariosala { get; set; }
-        public ICollection<Minhasala> Minhasala { get; set; }
         public ICollection<Planejamento> Planejamento { get; set; }
-        public ICollection<UsuarioOrganizacoes> UsuarioOrganizacoes { get; set; }
+        public ICollection<Salaparticular> Salaparticular { get; set; }
+        public ICollection<Usuarioorganizacao> Usuarioorganizacao { get; set; }
     }
 }

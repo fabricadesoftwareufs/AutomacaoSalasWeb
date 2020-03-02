@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Persistence
 {
-    public partial class UsuarioOrganizacoes
+    public partial class Usuarioorganizacao
     {
         public int Id { get; set; }
         public int Organizacao { get; set; }

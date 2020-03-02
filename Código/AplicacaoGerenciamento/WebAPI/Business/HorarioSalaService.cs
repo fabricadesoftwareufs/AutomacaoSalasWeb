@@ -7,8 +7,8 @@ namespace Service
 {
     public class HorarioSalaService : IService<HorarioSalaModel>
     {
-        private readonly str_dbContext _context;
-        public HorarioSalaService(str_dbContext context)
+        private readonly STR_DBContext _context;
+        public HorarioSalaService(STR_DBContext context)
         {
             _context = context;
         }
@@ -18,11 +18,13 @@ namespace Service
                 {
                     Id = hs.Id,
                     Data = hs.Data,
-                    SalaId = hs.SalaId,
+                    SalaId = hs.Sala,
                     HorarioInicio = hs.HorarioInicio,
                     HorarioFim = hs.HorarioFim,
                     Situacao = hs.Situacao,
-                    Objetivo = hs.Objetivo
+                    Objetivo = hs.Objetivo,
+                    UsuarioId = hs.Usuario
+
                 }).ToList();
         public int Id { get; set; }
 
@@ -33,11 +35,12 @@ namespace Service
                 {
                     Id = hs.Id,
                     Data = hs.Data,
-                    SalaId = hs.SalaId,
+                    SalaId = hs.Sala,
                     HorarioInicio = hs.HorarioInicio,
                     HorarioFim = hs.HorarioFim,
                     Situacao = hs.Situacao,
-                    Objetivo = hs.Objetivo
+                    Objetivo = hs.Objetivo,
+                    UsuarioId = hs.Usuario
                 }).FirstOrDefault();
 
         public bool Insert(HorarioSalaModel entity)
@@ -74,11 +77,13 @@ namespace Service
         {
             entity.Id = model.Id;
             entity.Data = model.Data;
-            entity.SalaId = model.SalaId;
+            entity.Sala = model.SalaId;
             entity.HorarioInicio = model.HorarioInicio;
             entity.HorarioFim = model.HorarioFim;
             entity.Situacao = model.Situacao;
             entity.Objetivo = model.Objetivo;
+            entity.Usuario = model.UsuarioId;
+
 
             return entity;
         }

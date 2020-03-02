@@ -1,0 +1,50 @@
+﻿using Service;
+using Microsoft.AspNetCore.Mvc;
+using Model;
+
+namespace WebAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PlanejamentoController : ControllerBase
+    {
+        private readonly PlanejamentoService _service;
+        public PlanejamentoController(PlanejamentoService service)
+        {
+            _service = service;
+        }
+        // GET: api/Hardware
+        [HttpGet]
+        public ActionResult Get()
+        {
+            var planejamentos = _service.GetAll();
+            if (planejamentos.Count == 0)
+                return NoContent();
+
+            return Ok(planejamentos);
+        }
+
+        // GET: api/Hardware/5
+        [HttpGet("{id}")]
+        public ActionResult Get(int id)
+        {
+            var planejamento = _service.GetById(id);
+            if (planejamento == null)
+                return NoContent();
+
+            return Ok(planejamento);
+        }
+
+        // POST: api/Hardware
+        [HttpPost]
+        public ActionResult Post([FromBody] PlanejamentoModel planejamentoModel) => _service.Insert(planejamentoModel) ? Ok(true) : Ok(false);
+
+        // PUT: api/Hardware/5
+        [HttpPut("{id}")]
+        public ActionResult Put(int id, [FromBody] PlanejamentoModel planejamentoModel) => _service.Update(planejamentoModel) ? Ok(true) : Ok(false);
+
+        // DELETE: api/ApiWithActions/5
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
+    }
+}

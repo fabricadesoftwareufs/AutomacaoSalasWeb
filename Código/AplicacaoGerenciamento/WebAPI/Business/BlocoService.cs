@@ -7,8 +7,8 @@ namespace Service
 {
     public class BlocoService : IService<BlocoModel>
     {
-        private readonly str_dbContext _context;
-        public BlocoService(str_dbContext context)
+        private readonly STR_DBContext _context;
+        public BlocoService(STR_DBContext context)
         {
             _context = context;
         }
@@ -50,6 +50,7 @@ namespace Service
         {
             entity.Id = model.Id;
             entity.Organizacao = model.OrganizacaoId;
+            entity.Titulo = model.Titulo;
 
             return entity;
         }

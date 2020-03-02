@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Model
 {
-    class MinhaSalaModel
+    public class SalaParticularModel
     {
-        public int IdMinhaSala { get; set; }
+        public int Id { get; set; }
         public int UsuarioId { get; set; }
         public int SalaId { get; set; }
     }

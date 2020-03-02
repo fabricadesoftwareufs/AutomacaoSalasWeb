@@ -1,10 +1,10 @@
 ﻿namespace Model
 {
-    public class HardwareModel
+    public class HardwareDeBlocoModel
     {
         public int Id { get; set; }
         public string MAC { get; set; }
-        public int SalaId { get; set; }
+        public int BlocoId { get; set; }
         public int TipoHardwareId { get; set; }
     }
 }
