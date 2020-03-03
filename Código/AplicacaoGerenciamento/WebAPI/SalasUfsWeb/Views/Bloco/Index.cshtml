@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Model.BlocoModel>
+﻿@model IEnumerable<Model.ViewModel.BlocoViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +13,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.OrganizacaoId)
+                @Html.DisplayNameFor(model => model.OrganizacaoId.RazaoSocial)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Titulo)
@@ -25,7 +25,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.OrganizacaoId)
+                @Html.DisplayFor(modelItem => item.OrganizacaoId.RazaoSocial)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Titulo)

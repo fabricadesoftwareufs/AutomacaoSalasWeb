@@ -18,9 +18,16 @@ namespace SalasUfsWeb.Controllers
             _organizacaoService = organizacaoService;
         }
         // GET: Organizacao
-        public ActionResult Index()
+        public IActionResult Index(string pesquisa)
         {
-            return View(_organizacaoService.GetAll());
+            var organizacoes = ReturnAllViewModels();
+
+            if (!string.IsNullOrEmpty(pesquisa))
+            {
+                organizacoes = organizacoes.Where(o => o.RazaoSocial.Contains(pesquisa)).ToList();
+            }
+
+            return View(organizacoes);
         }
 
         // GET: Organizacao/Details/5
@@ -103,6 +110,18 @@ namespace SalasUfsWeb.Controllers
                 return View(organizacaoModel);
             }
             return View(organizacaoModel);
+        }
+
+        private List<OrganizacaoModel> ReturnAllViewModels()
+        {
+            List<OrganizacaoModel> orgAll = _organizacaoService.GetAll();
+            List<OrganizacaoModel> orgSel = new List<OrganizacaoModel>();
+            foreach (var item in orgAll)
+            {
+                orgSel.Add(item);
+            }
+
+            return orgSel;
         }
     }
 }

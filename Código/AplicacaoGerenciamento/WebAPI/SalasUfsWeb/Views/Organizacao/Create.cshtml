@@ -1,10 +1,10 @@
-﻿@model Persistence.Organizacao
+﻿@model Model.OrganizacaoModel
 
 @{
-    ViewData["Title"] = "Cadastrar Organização";
+    ViewData["Title"] = "Create";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2>Cadastrar Organização</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -21,7 +21,7 @@
                 <span asp-validation-for="RazaoSocial" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-default" />
+                <input type="submit" value="Salvar" class="btn btn-success" />
                 <a class="btn btn-primary" asp-action="Index">Voltar</a>
             </div>
         </form>

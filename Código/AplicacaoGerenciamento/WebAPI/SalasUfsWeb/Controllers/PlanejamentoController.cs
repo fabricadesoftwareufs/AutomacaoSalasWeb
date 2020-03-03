@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
-using SalasUfsWeb.Models;
-using SalasUfsWeb.Models.ViewModels;
+using Model.ViewModel;
 using Service;
 
 namespace SalasUfsWeb.Controllers

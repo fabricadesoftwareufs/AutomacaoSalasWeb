@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
+using Model.ViewModel;
 using Service;
 
 namespace SalasUfsWeb.Controllers
@@ -21,9 +22,16 @@ namespace SalasUfsWeb.Controllers
         }
 
         // GET: Bloco
-        public ActionResult Index()
+        public IActionResult Index(string pesquisa)
         {
-            return View(_blocoService.GetAll());
+            var blocos = ReturnAllViewModels();
+
+            if (!string.IsNullOrEmpty(pesquisa))
+            {
+                blocos = blocos.Where(o => o.Titulo.Contains(pesquisa)).ToList();
+            }
+
+            return View(blocos);
         }
 
         // GET: Bloco/Details/5
@@ -108,5 +116,27 @@ namespace SalasUfsWeb.Controllers
             }
             return View(blocoModel);
         }
+
+        private List<BlocoViewModel> ReturnAllViewModels()
+        {
+            List<BlocoModel> bs = _blocoService.GetAll();
+            List<BlocoViewModel> bvm = new List<BlocoViewModel>();
+            foreach (var item in bs)
+            {
+                bvm.Add(Cast(item));
+            }
+
+            return bvm;
+        }
+
+        private BlocoViewModel Cast(BlocoModel item)
+        {
+            BlocoViewModel b = new BlocoViewModel();
+            b.Id = item.Id;
+            b.Titulo = item.Titulo;
+            b.OrganizacaoId = _organizacaoService.GetById(item.OrganizacaoId);
+            return b;
+        }
+
     }
 }
