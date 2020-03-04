@@ -54,5 +54,8 @@ namespace Service
 
             return entity;
         }
+
+        public List<BlocoModel> GetSelectedList()
+           => _context.Bloco.Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} - {1}", s.Id, s.Titulo) }).ToList();
     }
 }
