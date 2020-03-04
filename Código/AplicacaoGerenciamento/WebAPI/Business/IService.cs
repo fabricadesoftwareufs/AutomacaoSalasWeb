@@ -9,5 +9,6 @@ namespace Service
         bool Remove(int id);
         T GetById(int id);
         List<T> GetAll();
+        List<T> GetSelectedList();
     }
 }

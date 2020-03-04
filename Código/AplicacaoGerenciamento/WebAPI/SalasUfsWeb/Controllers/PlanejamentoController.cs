@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
@@ -40,11 +41,8 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Create()
         {
-            var salas = _salaService.GetAll().Select(x => new { Value = x.Id, Text = string.Format("{0} - {1}", x.Id, x.Titulo)});
-            var users = _usuarioService.GetAll().Select(x => new { Value = x.Id, Text = string.Format("{0} - {1}", x.Id, x.Nome)});
-
-            ViewBag.salas = new SelectList(salas, "Value", "Text");
-            ViewBag.usuarios = new SelectList(users, "Value", "Text");
+            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
+            ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
             ViewBag.dias = new SelectList(GetDays(), "Dia", "Dia");
 
             return View();
@@ -52,23 +50,91 @@ namespace SalasUfsWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(List<PlanejamentoModel> planejamento)
+        public IActionResult Create(PlanejamentoModel planejamento)
         {
-            foreach (var item in planejamento)
+
+            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
+            ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
+            ViewBag.dias = new SelectList(GetDays(), "Dia", "Dia");
+
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                if ((DateTime.Compare(planejamento.DataFim, planejamento.DataInicio) > 0 && TimeSpan.Compare(planejamento.HorarioFim, planejamento.HorarioInicio) == 1))
                 {
-                    if (!_planejamentoService.Insert(item))
-                        return View(planejamento);
-                    else
-                        planejamento.Remove(item);
+                    if (_planejamentoService.Insert(planejamento))
+                        return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["aviso"] = "Sua Datas/Horarios possuem inconsistências, corrija e tente novamente";
+                    return View(planejamento);
                 }
             }
 
-            return RedirectToAction(nameof(Index));
+            return View(planejamento);
         }
 
-        private List<PlanejamentoViewModel> ReturnAllViewModels(){
+
+        public IActionResult Edit(int id)
+        {
+            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
+            ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
+            ViewBag.dias = new SelectList(GetDays(), "Dia", "Dia");
+
+            PlanejamentoModel planejamento = _planejamentoService.GetById(id);
+            return View(planejamento);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, PlanejamentoModel planejamento)
+        {
+            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
+            ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
+            ViewBag.dias = new SelectList(GetDays(), "Dia", "Dia");
+
+            if (ModelState.IsValid)
+            {
+                if ((DateTime.Compare(planejamento.DataFim, planejamento.DataInicio) > 0 && TimeSpan.Compare(planejamento.HorarioFim, planejamento.HorarioInicio) == 1))
+                {
+                    if (_planejamentoService.Update(planejamento))
+                        return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["aviso"] = "Sua Datas/Horarios possuem inconsistências, corrija e tente novamente";
+                    return View(planejamento);
+                }
+            }
+
+            return View(planejamento);
+        }
+
+
+        public IActionResult Details(int id)
+        {
+            return View(ReturnByIdViewModel(id));
+        }
+
+        public IActionResult Delete(int id)
+        {
+           
+            return View(ReturnByIdViewModel(id));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id, IFormCollection collection)
+        {
+            if (_planejamentoService.Remove(id))
+                return RedirectToAction(nameof(Index));
+
+            return View(ReturnByIdViewModel(id));
+        }
+
+        private List<PlanejamentoViewModel> ReturnAllViewModels()
+        {
             List<PlanejamentoModel> pl = _planejamentoService.GetAll();
             List<PlanejamentoViewModel> plvm = new List<PlanejamentoViewModel>();
             foreach (var item in pl)
@@ -79,16 +145,25 @@ namespace SalasUfsWeb.Controllers
             return plvm;
         }
 
+        private PlanejamentoViewModel ReturnByIdViewModel(int id)
+        {
+            PlanejamentoModel pl = _planejamentoService.GetById(id);
+           
+            return Cast(pl);
+        }
+
         private PlanejamentoViewModel Cast(PlanejamentoModel item)
         {
             PlanejamentoViewModel p = new PlanejamentoViewModel();
 
-            p.Periodo = item.DataFim.ToString("dd/MM/yyyy") + " à " + item.DataInicio.ToString("dd/MM/yyyy");
+            p.Periodo = item.DataInicio.ToString("dd/MM/yyyy") + " à " + item.DataFim.ToString("dd/MM/yyyy");
             p.DiaSemana = item.DiaSemana;
-            p.Horario = item.HorarioFim + " às " + item.HorarioInicio;
+            p.Horario = item.HorarioInicio + " às " + item.HorarioFim;
             p.Id = item.Id;
             p.UsuarioId = _usuarioService.GetById(item.UsuarioId);
             p.SalaId = _salaService.GetById(item.SalaId);
+            p.Objetivo = item.Objetivo;
+
 
 
             return p;

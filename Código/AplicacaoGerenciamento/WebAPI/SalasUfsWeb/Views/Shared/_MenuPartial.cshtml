@@ -147,63 +147,79 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <!-- Add icons to the links using the .nav-icon class
-                with font-awesome or any other icon font library -->
-                <li class="nav-header">SALAS</li>
+                <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
+
+                <li class="nav-header">COMPARTIMENTOS</li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
+                    <a class="nav-link" asp-controller="Organizacao" asp-action="Index">
+                        <i class="nav-icon fa fa-industry"></i>
                         <p>
-                            Widgets
+                            Organização
                         </p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-copy"></i>
+                    <a class="nav-link" asp-controller="Sala" asp-action="Index">
+                        <i class="nav-icon fa fa-home"></i>
                         <p>
-                            Widgets
+                            Sala
                         </p>
                     </a>
                 </li>
-                <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-chart-pie"></i>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Bloco" asp-action="Index">
+                        <i class="nav-icon fa fa-building"></i>
                         <p>
-                            Charts
+                            Bloco
                         </p>
                     </a>
                 </li>
-                <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-tree"></i>
-                        <p>
-                            UI Elements
-                        </p>
-                    </a>
+
                 <li class="nav-header">RESERVAS</li>
                 <li class="nav-item">
-                    <a href="pages/calendar.html" class="nav-link">
+                    <a class="nav-link" asp-controller="#" asp-action="#">
+                        <i class="nav-icon fas fa-ticket-alt"></i>
+                        <p>
+                            Reservar Sala
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Planejamento" asp-action="Index">
                         <i class="nav-icon far fa-calendar-alt"></i>
                         <p>
-                            Calendar
-                            <span class="badge badge-info right">2</span>
+                            Planejamento
                         </p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="pages/gallery.html" class="nav-link">
-                        <i class="nav-icon far fa-image"></i>
+                    <a class="nav-link" asp-controller="#" asp-action="#">
+                        <i class="nav-icon  fa fa-lock"></i>
                         <p>
-                            Gallery
+                            Sala Particular
                         </p>
                     </a>
                 </li>
+
                 <li class="nav-header">HARDWARES</li>
                 <li class="nav-item">
-                    <a href="https://adminlte.io/docs/3.0" class="nav-link">
+                    <a class="nav-link" asp-controller="HardwareDeBloco" asp-action="Index">
                         <i class="nav-icon fas fa-desktop"></i>
-                        <p>Hardwares</p>
+                        <p>Hardware de Bloco</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="HardwareDeSala" asp-action="Index">
+                        <i class="nav-icon fa fa-microchip"></i>
+                        <p>Hardware de Sala</p>
+                    </a>
+                </li>
+
+                <li class="nav-header">COLABORADORES</li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="#" asp-action="#">
+                        <i class="nav-icon fa fa-users"></i>
+                        <p>Usuários</p>
                     </a>
                 </li>
             </ul>

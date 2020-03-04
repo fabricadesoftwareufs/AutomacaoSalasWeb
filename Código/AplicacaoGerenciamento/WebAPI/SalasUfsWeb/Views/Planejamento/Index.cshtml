@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Index";
 }
+
 <div>
     <h2>
         Planejamentos Cadastrados
@@ -27,14 +28,14 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                Código
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.SalaId)
+               Sala
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UsuarioId)
+                Usuario
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Periodo)
@@ -43,7 +44,7 @@
                 @Html.DisplayNameFor(model => model.Horario)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DiaSemana)
+                Dia da Semana
             </th>
             <th></th>
         </tr>
@@ -73,8 +74,8 @@
 
                 <td>
                     <a href="@Url.Action("Details", "Planejamento", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
-                    <a href="@Url.Action("Edit", "Planejamento", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Editar </a>
-                    <a href="@Url.Action("Delete", "Planejamento", new { id = item.Id })" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Remover </a>
+                    <a href="@Url.Action("Edit", "Planejamento", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
+                    <a href="@Url.Action("Delete", "Planejamento", new { id = item.Id })" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Remover </a>
                 </td>
             </tr>
         }

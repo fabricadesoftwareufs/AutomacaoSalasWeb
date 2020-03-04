@@ -53,5 +53,9 @@ namespace Service
 
             return entity;
         }
+
+        public List<TipoUsuarioModel> GetSelectedList()
+         => _context.Tipousuario.Select(s => new TipoUsuarioModel { Id = s.Id, Descricao = string.Format("{0} - {1}", s.Id, s.Descricao) }).ToList();
+
     }
 }

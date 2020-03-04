@@ -68,6 +68,9 @@ namespace Service
             return false;
         }
 
+        public List<UsuarioModel> GetSelectedList()
+            => _context.Usuario.Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} - {1}", s.Cpf, s.Nome) }).ToList();
+
         private static Usuario SetEntity(UsuarioModel model, Usuario entity)
         {
             entity.Id = model.Id;
@@ -79,5 +82,6 @@ namespace Service
 
             return entity;
         }
+
     }
 }

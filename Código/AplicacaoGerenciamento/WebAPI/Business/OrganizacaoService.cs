@@ -55,5 +55,9 @@ namespace Service
 
             return entity;
         }
+
+        public List<OrganizacaoModel> GetSelectedList()
+           => _context.Organizacao.Select(s => new OrganizacaoModel { Id = s.Id, RazaoSocial = string.Format("{0} - {1}", s.Id, s.RazaoSocial) }).ToList();
+
     }
 }
