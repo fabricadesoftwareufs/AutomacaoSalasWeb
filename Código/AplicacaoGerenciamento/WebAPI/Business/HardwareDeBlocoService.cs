@@ -55,5 +55,8 @@ namespace Service
 
             return entity;
         }
+
+        public List<HardwareDeBlocoModel> GetSelectedList()
+            => _context.Hardwaredebloco.Select(s => new HardwareDeBlocoModel { Id = s.Id, MAC = string.Format("{0} - {1}", s.Id, s.Mac) }).ToList();
     }
 }

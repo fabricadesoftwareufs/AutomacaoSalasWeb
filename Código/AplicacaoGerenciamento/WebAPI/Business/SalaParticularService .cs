@@ -72,5 +72,10 @@ namespace Service
 
             return entity;
         }
+
+        public List<SalaParticularModel> GetSelectedList()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

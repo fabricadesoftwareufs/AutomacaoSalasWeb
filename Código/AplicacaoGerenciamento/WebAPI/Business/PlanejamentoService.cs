@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.ViewModel;
 using Persistence;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,5 +92,10 @@ namespace Service
 
             return entity;
         }
+
+  
+        public List<PlanejamentoModel> GetSelectedList()
+         => _context.Planejamento.Select(s => new PlanejamentoModel { Id = s.Id, Objetivo = string.Format("{0} - {1} à {2} - ", s.Id, s.DataInicio, s.DataFim, s.DiaSemana) }).ToList();
+
     }
 }

@@ -54,5 +54,8 @@ namespace Service
 
             return entity;
         }
+
+        public List<TipoHardwareModel> GetSelectedList()
+           => _context.Tipohardware.Select(s => new TipoHardwareModel { Id = s.Id, Descricao = string.Format("{0} - {1}", s.Id, s.Descricao)}).ToList();
     }
 }

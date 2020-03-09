@@ -54,5 +54,10 @@ namespace Service
 
             return entity;
         }
+
+        public List<UsuarioOrganizacaoModel> GetSelectedList()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

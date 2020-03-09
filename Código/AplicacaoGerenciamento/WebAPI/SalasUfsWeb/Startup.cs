@@ -38,6 +38,14 @@ namespace SalasUfsWeb
             services.AddScoped<PlanejamentoService>();
             services.AddScoped<UsuarioService>();
 
+
+
+
+            services.AddScoped<HardwareDeBlocoService>();
+            services.AddScoped<TipoHardwareService>();
+            services.AddScoped<HardwareDeSalaService>();
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

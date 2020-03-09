@@ -54,5 +54,8 @@ namespace Service
 
             return entity;
         }
+
+        public List<SalaModel> GetSelectedList()
+            => _context.Sala.Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} - {1}", s.Id, s.Titulo) }).ToList();
     }
 }
