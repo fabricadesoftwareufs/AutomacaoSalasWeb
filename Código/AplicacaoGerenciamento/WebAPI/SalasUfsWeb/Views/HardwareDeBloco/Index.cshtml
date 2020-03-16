@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Model.HardwareDeBlocoViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>
+    Hardwares Cadastrados
+
+    <a class="btn btn-primary" style="float:right" asp-controller="HardwareDeBloco" asp-action="Create">Adicionar Hardware</a>
+</h2>
+
+<div align="right">
+    <form asp-controller="HardwareDeBloco" asp-action="Index">
+        <p>
+            <input style="height: 28pt;width: 200pt;" type="text" placeholder="Pesquise por MAC " name="pesquisa">
+            <button style="margin-bottom: 0.3%;" class="btn btn-primary text-right">Pesquisar</button>
+
+        </p>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MAC)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BlocoId.Titulo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TipoHardwareId.Descricao)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MAC)
+                </td>
+                <th>
+                    @Html.DisplayFor(modelItem => item.BlocoId.Titulo)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.TipoHardwareId.Descricao)
+                </th>
+                <td>
+                    <a href="@Url.Action("Details", "HardwareDeBloco", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
+                    <a href="@Url.Action("Edit", "HardwareDeBloco", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
+                    <a href="@Url.Action("Delete", "HardwareDeBloco", new { id = item.Id })" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Remover </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,47 @@
+﻿@model Model.ViewModel.PlanejamentoViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Detalhes do Planejamento</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            <label asp-for="Id" class="control-label"></label>
+        </dt>
+        <dd>
+            Código
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Periodo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Periodo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Horario)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Horario)
+        </dd>
+        <dt>
+            Dia da Semana
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DiaSemana)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Objetivo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Objetivo)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a href="@Url.Action("Edit", "Planejamento", new { id = Model.Id })" class="btn btn-info"><i class="fa fa-pencil"></i> Editar </a>
+    <a class="btn btn-primary" asp-action="Index">Voltar</a>
+</div>

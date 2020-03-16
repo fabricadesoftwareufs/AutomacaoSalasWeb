@@ -1,0 +1,41 @@
+﻿@model Model.HardwareDeBlocoViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h3>Voce tem certeza que deseja excluir esse Hardware de Bloco?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MAC)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MAC)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BlocoId.Titulo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BlocoId.Titulo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TipoHardwareId.Descricao)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipoHardwareId.Descricao)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a class="btn btn-primary" asp-action="Index">Voltar</a>
+    </form>
+</div>

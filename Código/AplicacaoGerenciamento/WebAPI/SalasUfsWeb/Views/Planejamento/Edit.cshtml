@@ -1,0 +1,85 @@
+﻿@model Model.PlanejamentoModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Alterar Planejamento</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="SalaId" class="control-label"></label>
+                @Html.DropDownListFor(model => model.SalaId, ViewBag.salas as SelectList, new
+           { @class = "form-control", @id = "sala" })
+                <span asp-validation-for="SalaId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UsuarioId" class="control-label"></label>
+                @Html.DropDownListFor(model => model.UsuarioId, ViewBag.usuarios as SelectList, new
+           { @class = "form-control", @id = "usuario" })
+                <span asp-validation-for="UsuarioId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Objetivo" class="control-label"></label>
+                <input asp-for="Objetivo" id="objetivo" class="form-control" />
+                <span asp-validation-for="Objetivo" class="text-danger"></span>
+            </div>
+
+            <div class="ocupation">
+                <div class="form-group align-element">
+                    <label asp-for="DataInicio" class="control-label"></label>
+                    <input asp-for="DataInicio" id="dataInicio" class="form-control" />
+                    <span asp-validation-for="DataInicio" class="text-danger"></span>
+                </div>
+                <div class="form-group align-element">
+                    <label asp-for="DataFim" class="control-label"></label>
+                    <input asp-for="DataFim" id="dataFim" class="form-control" />
+                    <span asp-validation-for="DataFim" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="ocupation">
+                <div class="form-group align-element">
+                    <label asp-for="HorarioInicio" class="control-label"></label>
+                    <input asp-for="HorarioInicio" id="horarioInicio" class="form-control" />
+                    <span asp-validation-for="HorarioInicio" class="text-danger"></span>
+                </div>
+
+                <div class="form-group align-element">
+                    <label asp-for="HorarioFim" class="control-label"></label>
+                    <input asp-for="HorarioFim" id="horarioFim" class="form-control" />
+                    <span asp-validation-for="HorarioFim" class="text-danger"></span>
+                </div>
+
+                <div class="form-group align-element">
+                    <label asp-for="DiaSemana" class="control-label"></label>
+                    @Html.DropDownListFor(model => model.DiaSemana, ViewBag.dias as SelectList, new
+               { @class = "form-control"})
+                    <span asp-validation-for="DiaSemana" class="text-danger"></span>
+                </div>
+            </div>
+
+            @if (TempData["aviso"] != null)
+            {
+                <div class="field-error" id="error-div" style="color: red">
+                    @TempData["aviso"]
+                </div>
+                <br />
+            }
+
+            <div class="form-group">
+                <input type="submit" value="Salvar" class="btn btn-success" /> |
+                <a class="btn btn-primary" asp-action="Index">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
