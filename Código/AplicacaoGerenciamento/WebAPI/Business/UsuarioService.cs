@@ -38,6 +38,19 @@ namespace Service
                     TipoUsuarioId = u.TipoUsuario
                 }).FirstOrDefault();
 
+        public UsuarioModel GetByLoginAndPass(string login, string senha)
+            => _context.Usuario
+                .Where(u => u.Cpf.Equals(login) && u.Senha.Equals(senha))
+                .Select(u => new UsuarioModel
+                {
+                    Id = u.Id,
+                    Cpf = u.Cpf,
+                    Nome = u.Nome,
+                    DataNascimento = Convert.ToDateTime(u.DataNascimento),
+                    Senha = u.Senha,
+                    TipoUsuarioId = u.TipoUsuario
+                }).FirstOrDefault();
+
         public bool Insert(UsuarioModel entity)
         {
             _context.Add(SetEntity(entity, new Usuario()));
