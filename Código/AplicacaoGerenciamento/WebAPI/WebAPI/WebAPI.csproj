@@ -18,6 +18,7 @@
     <ProjectReference Include="..\Business\Service.csproj" />
     <ProjectReference Include="..\Models\Model.csproj" />
     <ProjectReference Include="..\Persistences\Persistence.csproj" />
+    <ProjectReference Include="..\Utils\Utils.csproj" />
   </ItemGroup>
 
 </Project>
