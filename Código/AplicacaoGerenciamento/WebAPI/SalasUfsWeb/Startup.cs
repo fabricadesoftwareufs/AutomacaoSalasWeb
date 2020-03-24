@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace SalasUfsWeb
 {
@@ -30,6 +31,16 @@ namespace SalasUfsWeb
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            // Configuração de Autenticação.
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    // User nao logado, é redirecionado a essa pagina.
+                    options.LoginPath = "/Login";
+                    // Redirecionado pra cá, caso não haja permissão para determinada ação.
+                    options.AccessDeniedPath = "/Login/AcessoNegado"; 
+                });
+
             services.AddDbContext<STR_DBContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
 
             services.AddScoped<OrganizacaoService>();
@@ -37,10 +48,6 @@ namespace SalasUfsWeb
             services.AddScoped<SalaService>();
             services.AddScoped<PlanejamentoService>();
             services.AddScoped<UsuarioService>();
-
-
-
-
             services.AddScoped<HardwareDeBlocoService>();
             services.AddScoped<TipoHardwareService>();
             services.AddScoped<HardwareDeSalaService>();
@@ -66,6 +73,10 @@ namespace SalasUfsWeb
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+
+            // Forçando a utilizar autenticação.
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

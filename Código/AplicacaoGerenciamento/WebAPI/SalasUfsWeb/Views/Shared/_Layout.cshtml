@@ -30,22 +30,29 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
-    <div class="wrapper">
-        <!-- Content Wrapper. Contains page content -->
-        <partial name="_MenuPartial" />
-        <partial name="_TopBarPartial" />
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <!-- Small boxes (Stat box) -->
-                @RenderBody()
-            </div>
-        </section>
+    @if (!User.Identity.IsAuthenticated)
+    {
+    <div style="padding: 10px 10px 10px 10px">
+        @RenderBody()
     </div>
+    }
+    else
+    {
 
+        <div class="wrapper">
+            <!-- Content Wrapper. Contains page content -->
+            <partial name="_MenuPartial" />
+            <partial name="_TopBarPartial" />
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <!-- Small boxes (Stat box) -->
+                    @RenderBody()
+                </div>
+            </section>
+        </div>
+    }
     </div> <!-- fechando a tag do menu-->
-
-
 
     <footer class="main-footer">
         <strong>Copyright &copy; 2020 <a href="http://adminlte.io">SalaUFS</a>.</strong>

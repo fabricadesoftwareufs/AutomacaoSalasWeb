@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Models\Model.cspro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Business\Service.csproj", "{C7FE22E2-2AC6-4E6B-964B-E384369FCA3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalasUfsWeb", "SalasUfsWeb\SalasUfsWeb.csproj", "{C96F64B9-8E7C-4ACC-958E-D94F54C9CE37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalasUfsWeb", "SalasUfsWeb\SalasUfsWeb.csproj", "{C96F64B9-8E7C-4ACC-958E-D94F54C9CE37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{5348066B-B049-47A0-86A0-5850BB514765}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{C96F64B9-8E7C-4ACC-958E-D94F54C9CE37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C96F64B9-8E7C-4ACC-958E-D94F54C9CE37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C96F64B9-8E7C-4ACC-958E-D94F54C9CE37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5348066B-B049-47A0-86A0-5850BB514765}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5348066B-B049-47A0-86A0-5850BB514765}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5348066B-B049-47A0-86A0-5850BB514765}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5348066B-B049-47A0-86A0-5850BB514765}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
