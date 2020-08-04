@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -7,6 +8,11 @@ namespace Model
 {
     public class PlanejamentoModel
     {
+        public PlanejamentoModel()
+        {
+            Horarios = new List<HorarioPlanejamento>();
+        }
+
         [Required]
         [Display(Name = "Código")]
         public int Id { get; set; }
@@ -42,5 +48,7 @@ namespace Model
         [Required]
         [Display(Name = "Usuario")]
         public int UsuarioId { get; set; }
+        public List<HorarioPlanejamento> Horarios { get; set; }
+
     }
 }

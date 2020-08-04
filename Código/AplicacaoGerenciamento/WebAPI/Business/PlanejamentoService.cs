@@ -1,6 +1,7 @@
 ﻿using Model;
 using Model.ViewModel;
 using Persistence;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,8 +50,54 @@ namespace Service
 
         public bool Insert(PlanejamentoModel entity)
         {
-            _context.Add(SetEntity(entity, new Planejamento()));
-            return _context.SaveChanges() == 1 ? true : false;
+            List<Planejamento> horariosEntity = new List<Planejamento>();
+                
+            using (var transcaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    if ((DateTime.Compare(entity.DataFim, entity.DataInicio) > 0))
+                    {
+                        foreach (var horario in entity.Horarios)
+                        {
+                            if (TimeSpan.Compare(horario.HorarioFim, horario.HorarioInicio) != 1)
+                                throw new ServiceException("Os horários possuem inconsistências, corrija e tente novamente");
+                            else 
+                            {
+                                horariosEntity.Add(new Planejamento
+                                {
+                                    Id = entity.Id,
+                                    Objetivo = entity.Objetivo,
+                                    DataInicio = entity.DataInicio,
+                                    DataFim = entity.DataFim,
+                                    HorarioFim = horario.HorarioFim,
+                                    HorarioInicio = horario.HorarioInicio,
+                                    DiaSemana = horario.DiaSemana,
+                                    Usuario = entity.UsuarioId,
+                                    Sala = entity.SalaId
+                                });
+                            }
+                        }
+
+                        foreach (var item in horariosEntity)
+                            _context.Add(item);
+
+                        _context.SaveChanges();
+                        transcaction.Commit();
+                        
+                        return true;
+                    }
+                    else
+                        throw new ServiceException("Sua Datas possuem inconsistências, corrija e tente novamente");
+                }
+                catch (Exception e)
+                {
+                    transcaction.Rollback();
+                    throw new ServiceException("Algo deu errado, por favor tente novamente em alguns minutos.");
+                }
+            }
+
+            
         }
 
         public bool Remove(int id)

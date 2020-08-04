@@ -43,9 +43,8 @@ namespace SalasUfsWeb.Controllers
         {
             ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
             ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
-            ViewBag.dias = new SelectList(GetDays(), "Dia", "Dia");
 
-            return View();
+            return View(new PlanejamentoModel());
         }
 
         [HttpPost]
@@ -55,23 +54,22 @@ namespace SalasUfsWeb.Controllers
 
             ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
             ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
-            ViewBag.dias = new SelectList(GetDays(), "Dia", "Dia");
 
-            if (ModelState.IsValid)
+            try
             {
-                if ((DateTime.Compare(planejamento.DataFim, planejamento.DataInicio) > 0 && TimeSpan.Compare(planejamento.HorarioFim, planejamento.HorarioInicio) == 1))
-                {
-                    if (_planejamentoService.Insert(planejamento))
-                        return RedirectToAction(nameof(Index));
-                }
+                if (ModelState.IsValid)
+                    _planejamentoService.Insert(planejamento);
                 else
-                {
-                    TempData["aviso"] = "Sua Datas/Horarios possuem inconsistências, corrija e tente novamente";
                     return View(planejamento);
-                }
+
+                TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
+            }
+            catch (ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
             }
 
-            return View(planejamento);
+            return View(new PlanejamentoModel());
         }
 
 
@@ -79,7 +77,7 @@ namespace SalasUfsWeb.Controllers
         {
             ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
             ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
-            ViewBag.dias = new SelectList(GetDays(), "Dia", "Dia");
+         
 
             PlanejamentoModel planejamento = _planejamentoService.GetById(id);
             return View(planejamento);
@@ -92,7 +90,6 @@ namespace SalasUfsWeb.Controllers
         {
             ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
             ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
-            ViewBag.dias = new SelectList(GetDays(), "Dia", "Dia");
 
             if (ModelState.IsValid)
             {
@@ -168,21 +165,5 @@ namespace SalasUfsWeb.Controllers
 
             return p;
         }
-
-        private List<DiaDaSemanaModel> GetDays()
-        {
-            List<DiaDaSemanaModel> days = new List<DiaDaSemanaModel>();
-
-            days.Add(new DiaDaSemanaModel { Id = 1, Dia = "SEG" });
-            days.Add(new DiaDaSemanaModel { Id = 2, Dia = "TER" });
-            days.Add(new DiaDaSemanaModel { Id = 3, Dia = "QUA" });
-            days.Add(new DiaDaSemanaModel { Id = 4, Dia = "QUI" });
-            days.Add(new DiaDaSemanaModel { Id = 5, Dia = "SEX" });
-            days.Add(new DiaDaSemanaModel { Id = 6, Dia = "SAB" });
-            days.Add(new DiaDaSemanaModel { Id = 7, Dia = "DOM" });
-
-            return days;
-        }
-
     }
 }
