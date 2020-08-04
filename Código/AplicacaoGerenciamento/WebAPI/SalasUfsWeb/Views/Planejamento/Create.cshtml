@@ -9,41 +9,42 @@
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form asp-action="Create" id="form" name="form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="SalaId" class="control-label"></label>
-                @Html.DropDownListFor(model => model.SalaId, ViewBag.salas as SelectList, new
-           { @class = "form-control", @id = "sala" })
-                <span asp-validation-for="SalaId" class="text-danger"></span>
+            <div class="ocupation col-md-6">
+                <div class="form-group">
+                    <label asp-for="SalaId" class="control-label"></label>
+                    @Html.DropDownListFor(model => model.SalaId, ViewBag.salas as SelectList, new
+               { @class = "form-control", @id = "sala" })
+                    <span asp-validation-for="SalaId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UsuarioId" class="control-label"></label>
+                    @Html.DropDownListFor(model => model.UsuarioId, ViewBag.usuarios as SelectList, new
+               { @class = "form-control", @id = "usuario" })
+                    <span asp-validation-for="UsuarioId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Objetivo" class="control-label"></label>
+                    <input asp-for="Objetivo" id="objetivo" class="form-control" />
+                    <span asp-validation-for="Objetivo" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="UsuarioId" class="control-label"></label>
-                @Html.DropDownListFor(model => model.UsuarioId, ViewBag.usuarios as SelectList, new
-           { @class = "form-control", @id = "usuario" })
-                <span asp-validation-for="UsuarioId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Objetivo" class="control-label"></label>
-                <input asp-for="Objetivo" id="objetivo" class="form-control" />
-                <span asp-validation-for="Objetivo" class="text-danger"></span>
-            </div>
-
-            <div class="ocupation">
-                <div class="form-group align-element">
+            <div class="ocupation col-md-8">
+                <div class="form-group align-element ">
                     <label asp-for="DataInicio" class="control-label"></label>
                     <input asp-for="DataInicio" id="dataInicio" class="form-control" />
                     <span asp-validation-for="DataInicio" class="text-danger"></span>
                 </div>
-                <div class="form-group align-element">
+                <div class="form-group align-element ">
                     <label asp-for="DataFim" class="control-label"></label>
                     <input asp-for="DataFim" id="dataFim" class="form-control" />
                     <span asp-validation-for="DataFim" class="text-danger"></span>
                 </div>
             </div>
 
-            <div class="ocupation">
+            <div class="ocupation col-md-10">
                 <div class="form-group align-element">
                     <label asp-for="HorarioInicio" class="control-label"></label>
                     <input asp-for="HorarioInicio" id="horarioInicio" class="form-control" />
@@ -55,7 +56,6 @@
                     <input asp-for="HorarioFim" id="horarioFim" class="form-control" />
                     <span asp-validation-for="HorarioFim" class="text-danger"></span>
                 </div>
-
 
                 <div class="form-group align-element">
                     <label asp-for="DiaSemana" class="control-label"></label>
@@ -73,43 +73,43 @@
                 <div class="form-group align-element">
                     <a id="add-novo-horario" onclick="AdicionarNovoHorario()" class="btn btn-primary text-white"><i class="nav-icon fa fa-plus"></i> </a>
                 </div>
-
-                <div class='col-sm-16'>
-                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                            </tr>
-                        </thead>
-                        <tbody id="container-horarios">
-                            @if (Model.Horarios != null)
-                            {
-                                @for (var i = 0; i < Model.Horarios.Count; i++)
-                                {
-                                    <tr id="novo-horario-@i " class="horarios-planejamento">
-                                        <td>
-                                            <input class="form-control" type="time" name="Horarios[@i].HorarioInicio" readonly value="@Model.Horarios[i].HorarioInicio" />
-                                        </td>
-
-                                        <td>
-                                            <input class="form-control" type="time" name="Horarios[@i].HorarioFim" readonly value="@Model.Horarios[i].HorarioFim" />
-                                        </td>
-
-                                        <td>
-                                            <input class="form-control" name="Horarios[@i].DiaSemana" readonly value="@Model.Horarios[i].DiaSemana" />
-                                        </td>
-
-                                        <td>
-                                            <a id="remove-novo-horario" onclick="RemoveNovoHorario('novo-horario-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
-            <div class="form-group">
+            <div class="ocupation col-sm-8">
+                <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                        </tr>
+                    </thead>
+                    <tbody id="container-horarios">
+                        @if (Model != null)
+                        {
+                            @for (var i = 0; i < Model.Horarios.Count; i++)
+                            {
+                                <tr id="novo-horario-@i " class="horarios-planejamento">
+                                    <td>
+                                        <input class="form-control" type="time" name="Horarios[@i].HorarioInicio" readonly value="@Model.Horarios[i].HorarioInicio" />
+                                    </td>
+
+                                    <td>
+                                        <input class="form-control" type="time" name="Horarios[@i].HorarioFim" readonly value="@Model.Horarios[i].HorarioFim" />
+                                    </td>
+
+                                    <td>
+                                        <input class="form-control" name="Horarios[@i].DiaSemana" readonly value="@Model.Horarios[i].DiaSemana" />
+                                    </td>
+
+                                    <td>
+                                        <a id="remove-novo-horario" onclick="RemoveNovoHorario('novo-horario-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-group col-sm-4">
                 <input type="submit" id="btn-create-planejamento" value="Salvar" class="btn btn-success" /> |
                 <a class="btn btn-primary" asp-action="Index">Voltar</a>
             </div>
@@ -132,7 +132,7 @@ else if (TempData["mensagemErro"] != null)
 
     <script src="~/js/planejamento-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script src="~/assets/js/sweet-alert.js"></script>
+    <script src="~/js/sweet-alert.js"></script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

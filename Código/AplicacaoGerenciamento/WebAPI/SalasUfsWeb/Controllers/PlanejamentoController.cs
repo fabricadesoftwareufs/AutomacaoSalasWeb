@@ -44,7 +44,7 @@ namespace SalasUfsWeb.Controllers
             ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
             ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
 
-            return View(new PlanejamentoModel());
+            return View();
         }
 
         [HttpPost]
@@ -58,18 +58,21 @@ namespace SalasUfsWeb.Controllers
             try
             {
                 if (ModelState.IsValid)
+                {
                     _planejamentoService.Insert(planejamento);
+                    TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
+                }
                 else
                     return View(planejamento);
 
-                TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
             }
             catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
+                return View(planejamento);
             }
 
-            return View(new PlanejamentoModel());
+            return View();
         }
 
 
@@ -77,9 +80,8 @@ namespace SalasUfsWeb.Controllers
         {
             ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
             ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
-         
-
             PlanejamentoModel planejamento = _planejamentoService.GetById(id);
+            
             return View(planejamento);
         }
 
@@ -91,18 +93,17 @@ namespace SalasUfsWeb.Controllers
             ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
             ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
 
-            if (ModelState.IsValid)
+            try
             {
-                if ((DateTime.Compare(planejamento.DataFim, planejamento.DataInicio) > 0 && TimeSpan.Compare(planejamento.HorarioFim, planejamento.HorarioInicio) == 1))
+                if (ModelState.IsValid)
                 {
-                    if (_planejamentoService.Update(planejamento))
-                        return RedirectToAction(nameof(Index));
+                    _planejamentoService.Update(planejamento);
+                     TempData["mensagemSucesso"] = "Planejamento Atualizado com sucesso!";
                 }
-                else
-                {
-                    TempData["aviso"] = "Sua Datas/Horarios possuem inconsistências, corrija e tente novamente";
-                    return View(planejamento);
-                }
+            }
+            catch (ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
             }
 
             return View(planejamento);
@@ -114,20 +115,24 @@ namespace SalasUfsWeb.Controllers
             return View(ReturnByIdViewModel(id));
         }
 
-        public IActionResult Delete(int id)
-        {
-           
-            return View(ReturnByIdViewModel(id));
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id, IFormCollection collection)
         {
-            if (_planejamentoService.Remove(id))
-                return RedirectToAction(nameof(Index));
+            try
+            {
+                if (_planejamentoService.Remove(id))
+                    TempData["mensagemSucesso"] = "Planejmento removido com sucesso!";
+                else
+                    TempData["mensagemErro"] = "Houve um problema ou remover o Planejamento, tente novamente em alguns minutos";
 
-            return View(ReturnByIdViewModel(id));
+            }
+            catch (ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         private List<PlanejamentoViewModel> ReturnAllViewModels()

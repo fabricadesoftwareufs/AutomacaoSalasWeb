@@ -32,7 +32,7 @@
             </th>
 
             <th>
-               Sala
+                Sala
             </th>
             <th>
                 Usuario
@@ -75,9 +75,54 @@
                 <td>
                     <a href="@Url.Action("Details", "Planejamento", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
                     <a href="@Url.Action("Edit", "Planejamento", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
-                    <a href="@Url.Action("Delete", "Planejamento", new { id = item.Id })" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Remover </a>
+                    <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
+
+                    <div class="modal fade bs-example-modal-sm" id="modal-remover-@item.Id" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content text-center" style="padding: 10pt">
+                                <h5> Confirmar Remoção do Aviso ? </h5>
+
+                                <h5>Código</h5><p>@item.Id</p>
+                                <h5>Sala</h5> <p>@item.SalaId </p>
+                                <h5>Responsável</h5> <p>@item.UsuarioId.Nome</p>
+                                <h5>Período de Tempo</h5> <p>@item.Periodo</p>
+                                <h5>Horário</h5> <p>@item.Horario</p>
+                                <h5>Dia</h5> <p>@item.DiaSemana</p>
+
+                                @using (Html.BeginForm("Delete", "Planejamento", new { id = item.Id }, FormMethod.Post))
+                                {
+                                    <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
+                                    <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!','@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function() {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

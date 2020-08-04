@@ -19,22 +19,22 @@ namespace Model
         [Required]
         [Display(Name = "Data de Início")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DataInicio { get; set; }
         [Required]
         [Display(Name = "Data de Término")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DataFim { get; set; }
         [Required]
         [Display(Name = "Horário de Início")]
         [DataType(DataType.Time)]
-        [DisplayFormat(DataFormatString = "HH:mm", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm}", ApplyFormatInEditMode = true)]
         public TimeSpan HorarioInicio { get; set; }
         [Required]
         [Display(Name = "Horário de Término")]
         [DataType(DataType.Time)]
-        [DisplayFormat(DataFormatString = "HH:mm", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm}", ApplyFormatInEditMode = true)]
         public TimeSpan HorarioFim { get; set; }
         [Required]
         [Display(Name = "Dia da Semana")]
