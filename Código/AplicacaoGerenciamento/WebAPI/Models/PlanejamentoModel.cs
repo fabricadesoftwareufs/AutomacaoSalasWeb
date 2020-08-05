@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -7,28 +8,33 @@ namespace Model
 {
     public class PlanejamentoModel
     {
+        public PlanejamentoModel()
+        {
+            Horarios = new List<HorarioPlanejamento>();
+        }
+
         [Required]
         [Display(Name = "Código")]
         public int Id { get; set; }
         [Required]
         [Display(Name = "Data de Início")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DataInicio { get; set; }
         [Required]
         [Display(Name = "Data de Término")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DataFim { get; set; }
         [Required]
         [Display(Name = "Horário de Início")]
         [DataType(DataType.Time)]
-        [DisplayFormat(DataFormatString = "HH:mm", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm}", ApplyFormatInEditMode = true)]
         public TimeSpan HorarioInicio { get; set; }
         [Required]
         [Display(Name = "Horário de Término")]
         [DataType(DataType.Time)]
-        [DisplayFormat(DataFormatString = "HH:mm", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm}", ApplyFormatInEditMode = true)]
         public TimeSpan HorarioFim { get; set; }
         [Required]
         [Display(Name = "Dia da Semana")]
@@ -42,5 +48,7 @@ namespace Model
         [Required]
         [Display(Name = "Usuario")]
         public int UsuarioId { get; set; }
+        public List<HorarioPlanejamento> Horarios { get; set; }
+
     }
 }
