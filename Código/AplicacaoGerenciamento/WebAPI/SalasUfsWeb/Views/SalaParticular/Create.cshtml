@@ -1,0 +1,82 @@
+﻿@model Model.SalaParticularViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<h4>Associar Nova Sala Exclusiva</h4>
+<hr />
+<div class="row">
+    <div class="col-md-16">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="ocupation col-md-8">
+                <div class="form-group">
+                    <label asp-for="BlocoId" class="form-control-label" for="select-bloco">Filtrar Salas por Bloco</label>
+                    @Html.DropDownListFor(model => model.BlocoId, ViewBag.blocos as SelectList, new
+                    { @class = "form-control", @id = "select-bloco", @onchange = "loadSalas()" })
+                </div>
+                <div class="form-group">
+                    <label asp-for="SalaId.Id" class="form-control-label" for="select-sala">Selecionar Sala</label>
+                    @Html.DropDownListFor(model => model.SalaId.Id, ViewBag.salas as SelectList, new
+                    { @class = "form-control", @id = "select-sala" })
+                    <span asp-validation-for="SalaId.Id" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group align-element">
+                    <label asp-for="Responsavel.Id" class="control-label">Ádicione os Responsáveis</label>
+                    @Html.DropDownListFor(model => model.Responsavel.Id, ViewBag.usuarios as SelectList, new
+                    { @class = "form-control", @id = "select-usuario" })
+                    <span asp-validation-for="Responsavel.Id" class="text-danger"></span>
+                </div>
+
+                <div class="form-group align-element">
+                    <a id="add-novo-responsavel" onclick="adicionarNovoResponsavel()" class="btn btn-primary text-white"><i class="nav-icon fa fa-plus"></i> </a>
+                </div>
+            </div>
+
+            <div class="ocupation col-sm-12">
+                <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                        </tr>
+                    </thead>
+                    <tbody id="container-responsaveis">
+                        @if (Model != null)
+                        {
+                            @for (var i = 0; i < Model.Responsaveis.Count;i++) 
+                            { 
+                            
+                            
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-group col-md-8">
+                <input type="submit" id="btn-create-sala-exclusiva" value="Salvar" class="btn btn-success" /> |
+                <a class="btn btn-primary" asp-action="Index">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+
+    <script src="~/js/sala-exclusiva-script.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

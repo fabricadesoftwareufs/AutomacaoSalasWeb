@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace Model
+{
+    public class SalaParticularViewModel
+    {
+        public SalaParticularViewModel()
+        {
+            Responsaveis = new List<UsuarioModel>();
+        }
+
+        [Display(Name = "Código")]
+        public int Id { get; set; }
+        [Display(Name = "Responsável")]
+        public UsuarioModel Responsavel { get; set; }
+        [Display(Name = "Sala")]
+        public SalaModel SalaId { get; set; }
+        public int BlocoId { get; set; }
+        public List<UsuarioModel> Responsaveis { get; set; }
+    }
+}

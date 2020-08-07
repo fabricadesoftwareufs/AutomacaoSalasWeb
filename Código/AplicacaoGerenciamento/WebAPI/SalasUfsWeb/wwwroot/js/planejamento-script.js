@@ -15,17 +15,16 @@ function AdicionarNovoHorario() {
     let horarioFim = $('#horarioFim').val();
     let dia = $('#input-dia-semana').val();
     let indice = 0;
-    var novoHorario = new Array();
+    
 
     if (horarioInicio.length > 0 && horarioFim.length > 0 && dia.length > 0) {
 
+        var novoHorario = new Array();
+        novoHorario.push(adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia));
+
         let horarios = document.getElementsByClassName('horarios-planejamento');
         if (document.querySelector('.horarios-planejamento')) {
-            novoHorario.push(adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia));
-
             for (indice = 0; indice < horarios.length; indice++) {
-
-                let idItem = 'novo-horario-' + (indice + 1);
 
                 dia = horarios[indice].childNodes[2].childNodes[0].value;
                 horarioInicio = horarios[indice].childNodes[0].childNodes[0].value;
@@ -34,15 +33,13 @@ function AdicionarNovoHorario() {
                 novoHorario.push(adicionaHorarioNaTabela(indice + 1, horarioInicio, horarioFim, dia));
             }
 
-        } else
-            novoHorario.push(adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia));
+        } 
 
         document.getElementById('container-horarios').innerHTML = "";
         for (var i = 0; i < novoHorario.length; i++)
             $('#container-horarios').append(novoHorario[i]);
 
         document.getElementById("btn-create-planejamento").disabled = false;
-
     }
 }
 
@@ -76,8 +73,17 @@ function RemoveNovoHorario(idItem) {
     document.getElementById(idItem).remove();
 
     let horarios = document.getElementsByClassName('horarios-planejamento');
-    for (var indice = 0; indice < horarios.length; indice++) 
-        var e = horarios[indice].id = 'novo-horario-' + indice;
+
+    var novosHorarios = new Array();
+    for (var indice = 0; indice < horarios.length; indice++)
+        novosHorarios.push(adicionaHorarioNaTabela(indice,
+            horarios[indice].childNodes[0].childNodes[0].value,
+            horarios[indice].childNodes[1].childNodes[0].value,
+            horarios[indice].childNodes[2].childNodes[0].value));
+
+    document.getElementById('container-horarios').innerHTML = "";
+    for (var indice = 0; indice < novosHorarios.length; indice++) 
+        $('#container-horarios').append(novosHorarios[indice]);
 
     if (!document.querySelector('.horarios-planejamento'))
         document.getElementById("btn-create-planejamento").disabled = true;     
