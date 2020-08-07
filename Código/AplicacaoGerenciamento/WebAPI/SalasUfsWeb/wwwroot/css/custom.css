@@ -11,6 +11,7 @@
 .invalid-msg {
     font-style: italic;
     font-size: 0.8em;
-    margin: 2px -5px 5px 0;
-
+    position: relative;
+    top: -10px;
+    margin-left: 5px;
 }
