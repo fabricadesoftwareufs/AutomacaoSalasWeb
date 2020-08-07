@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public IActionResult RequestToken([FromBody] LoginViewModel request)
         {
-            var user = _service.GetByLoginAndPass(StringManipulation.CleanString(request.Login), Criptography.GeneratePasswordHash(request.Senha));
+            var user = _service.GetByLoginAndPass(Methods.CleanString(request.Login), Criptography.GeneratePasswordHash(request.Senha));
             if (user != null)
             {
                 var claims = new List<Claim>

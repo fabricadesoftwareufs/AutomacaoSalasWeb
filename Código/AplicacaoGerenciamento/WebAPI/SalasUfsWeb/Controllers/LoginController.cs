@@ -29,7 +29,7 @@ namespace SalasUfsWeb.Controllers
             if (ModelState.IsValid)
             {
                 // Obtendo o usuario baseado nas informações passadas.
-                var user = _service.GetByLoginAndPass(StringManipulation.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));
+                var user = _service.GetByLoginAndPass(Methods.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));
                 if (user != null)
                 {
                     var claims = new List<Claim>
@@ -71,5 +71,7 @@ namespace SalasUfsWeb.Controllers
 
         [Authorize]
         public ActionResult AcessoNegado() => View();
+
+        public bool ValidaCpf(string cpf) => Methods.ValidarCpf(cpf);
     }
 }

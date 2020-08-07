@@ -48,7 +48,7 @@ namespace SalasUfsWeb.Controllers
 
 
                 // Informações do objeto
-                user.Cpf = StringManipulation.CleanString(user.Cpf);
+                user.Cpf = Methods.CleanString(user.Cpf);
                 user.Senha = Criptography.GeneratePasswordHash(user.Senha);
                 user.TipoUsuarioId = 1;
 

@@ -8,15 +8,18 @@
 
 <form asp-controller="login" asp-action="Authenticate">
     <div class="input-group mb-3">
-        <input asp-for="Login" class="form-control" placeholder="Login"/>
+
+        <input id="login_auth" asp-for="Login" class="form-control" placeholder="CPF" oninput="validaCpf()" />
         <div class="input-group-append">
             <div class="input-group-text">
                 <span class="fas fa-user"></span>
             </div>
         </div>
+
     </div>
+    <span asp-validation-for="Login" class="text-danger invalid-msg"></span>
     <div class="input-group mb-3">
-        <input asp-for="Senha" type="password" class="form-control" placeholder="Senha"/>
+        <input id="senha_auth" asp-for="Senha" type="password" class="form-control" placeholder="Senha" />
         <div class="input-group-append">
             <div class="input-group-text">
                 <span class="fas fa-lock"></span>
@@ -26,7 +29,7 @@
     <div class="row">
         <div class="col-8">
             <div class="icheck-primary">
-                <input type="checkbox" id="show_pass">
+                <input type="checkbox" id="show_pass" onchange="showPass(this)">
                 <label for="show_pass">
                     Mostrar Senha
                 </label>
@@ -48,3 +51,11 @@
 </p>
 
 
+@section Scripts {
+    <!-- Scripts -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/plugins/inputmask/min/inputmask/inputmask.min.js"></script>
+    <script src="~/plugins/inputmask/min/inputmask/jquery.inputmask.min.js"></script>
+    <script src="~/js/custom.js"></script>
+
+}

@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.css">
 
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/custom.css" />
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
@@ -34,18 +35,26 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <a href="#"><b>Salas </b>UFS</a>
+            <a href="#">Salas <b>UFS</b></a>
         </div>
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
-                <div style="padding: 10px 10px 10px 10px">
-                    @RenderBody()
-                </div>
+                @RenderBody()
             </div>
             <!-- /.login-card-body -->
         </div>
     </div>
+    <footer class="main-footer element-center transparent-background">
+        <strong>
+            Copyright &copy;
+            <script>document.write(new Date().getFullYear());</script> <a href="#">SalaUFS</a>.
+        </strong>
+        All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
+            <b>Version</b> 1.0
+        </div>
+    </footer>
     <!-- /.login-box -->
     <!-- jQuery -->
     <script src="~/plugins/jquery/jquery.min.js"></script>
@@ -53,6 +62,8 @@
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="~/js/adminlte.min.js"></script>
+    @RenderSection("Scripts", required: false)
+
 
 </body>
 }
@@ -77,7 +88,7 @@ else
         <footer class="main-footer">
             <strong>
                 Copyright &copy;
-                <script>Document.write(new Date().getFullYear());</script> <a href="#">SalaUFS</a>.
+                <script>document.write(new Date().getFullYear());</script> <a href="#">SalaUFS</a>.
             </strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">

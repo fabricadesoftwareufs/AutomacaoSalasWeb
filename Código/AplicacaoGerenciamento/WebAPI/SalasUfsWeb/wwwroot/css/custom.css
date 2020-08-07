@@ -1,0 +1,16 @@
+﻿/***** custom css *****/
+.element-center {
+    margin: auto !important;
+}
+
+.transparent-background {
+    background: none;
+    border: none;
+}
+
+.invalid-msg {
+    font-style: italic;
+    font-size: 0.8em;
+    margin: 2px -5px 5px 0;
+
+}
