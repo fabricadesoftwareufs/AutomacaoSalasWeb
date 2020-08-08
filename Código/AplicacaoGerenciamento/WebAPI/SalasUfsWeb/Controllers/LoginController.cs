@@ -26,13 +26,16 @@ namespace SalasUfsWeb.Controllers
 
         public async Task<IActionResult> Authenticate(LoginViewModel loginViewModel)
         {
+
             if (ModelState.IsValid)
             {
-                // Obtendo o usuario baseado nas informações passadas.
-                var user = _service.GetByLoginAndPass(Methods.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));
-                if (user != null)
+                if (ValidaCpf(loginViewModel.Login))
                 {
-                    var claims = new List<Claim>
+                    // Obtendo o usuario baseado nas informações passadas.
+                    var user = _service.GetByLoginAndPass(Methods.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));
+                    if (user != null)
+                    {
+                        var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.SerialNumber, user.Id.ToString()),
                         new Claim(ClaimTypes.UserData, user.Cpf),
@@ -41,20 +44,21 @@ namespace SalasUfsWeb.Controllers
                         new Claim(ClaimTypes.Role, user.TipoUsuarioId.ToString())
                     };
 
-                    // Adicionando uma identidade as claims.
-                    var identity = new ClaimsIdentity(claims, "login");
+                        // Adicionando uma identidade as claims.
+                        var identity = new ClaimsIdentity(claims, "login");
 
-                    // Propriedades da autenticação.
-                    var claimProperty = new AuthenticationProperties
-                    {
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1) // Expira em 1 dia
-                    };
+                        // Propriedades da autenticação.
+                        var claimProperty = new AuthenticationProperties
+                        {
+                            ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1) // Expira em 1 dia
+                        };
 
-                    // Logando efetivamente.
-                    await HttpContext.SignInAsync(new ClaimsPrincipal(identity), claimProperty);
+                        // Logando efetivamente.
+                        await HttpContext.SignInAsync(new ClaimsPrincipal(identity), claimProperty);
 
-                    // Redirecionando, com usuario logado.
-                    return RedirectToAction("Index", "Home");
+                        // Redirecionando, com usuario logado.
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
             }
 
@@ -71,7 +75,6 @@ namespace SalasUfsWeb.Controllers
 
         [Authorize]
         public ActionResult AcessoNegado() => View();
-
         public bool ValidaCpf(string cpf) => Methods.ValidarCpf(cpf);
     }
 }

@@ -8,16 +8,14 @@
     border: none;
 }
 
+.div-msg {
+    margin: 10px auto;
+}
+
 .invalid-msg {
-    font-style: italic;
-    font-size: 0.8em;
     position: relative;
     top: -10px;
     margin-left: 5px;
-}
-
-.logo-container {
-    padding-top: 20px;
 }
 
 .logo {
@@ -30,10 +28,6 @@
     transition: all 0.4s cubic-bezier(.8,1.8,.75,.75);
     cursor: pointer;
 }
-
-    .logo:hover {
-        transform: rotate(-10deg) scale(1.1);
-    }
 
 @keyframes bounceIn {
     0% {

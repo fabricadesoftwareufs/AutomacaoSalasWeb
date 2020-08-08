@@ -8,7 +8,6 @@ namespace Model.ViewModel
     public class LoginViewModel
     {
         [Required]
-        [StringLength(11, ErrorMessage = "CPF só possui 11 caracteres")]
         public string Login { get; set; }
         [Required]
         public string Senha { get; set; }

@@ -8,18 +8,16 @@
 
 <form asp-controller="login" asp-action="Authenticate">
     <div class="input-group mb-3">
-
-        <input id="login_auth" asp-for="Login" class="form-control" placeholder="CPF" oninput="validaCpf()" />
+        <input required id="login_auth" asp-for="Login" class="form-control" placeholder="CPF" oninput="validaCpf()" autocomplete="off" />
         <div class="input-group-append">
             <div class="input-group-text">
                 <span class="fas fa-user"></span>
             </div>
         </div>
-
     </div>
-    <span asp-validation-for="Login" class="text-danger invalid-msg"></span>
+    <span id="span_cpf" asp-validation-for="Login" class="invalid-msg invalid-feedback"></span>
     <div class="input-group mb-3">
-        <input id="senha_auth" asp-for="Senha" type="password" class="form-control" placeholder="Senha" />
+        <input required id="senha_auth" asp-for="Senha" type="password" class="form-control" placeholder="Senha" />
         <div class="input-group-append">
             <div class="input-group-text">
                 <span class="fas fa-lock"></span>
@@ -56,6 +54,6 @@
     <script src="~/plugins/jquery/jquery.min.js"></script>
     <script src="~/plugins/inputmask/min/inputmask/inputmask.min.js"></script>
     <script src="~/plugins/inputmask/min/inputmask/jquery.inputmask.min.js"></script>
-    <script src="~/js/custom.js"></script>
+    <script src="~/js/customLogin.js"></script>
 
 }
