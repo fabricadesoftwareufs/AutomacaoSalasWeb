@@ -4,7 +4,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h4>Editar Sala Exclusiva</h4>
+<h2>Editar Sala Exclusiva</h2>
 <hr />
 <div class="row">
     <div class="col-md-16">
@@ -42,6 +42,14 @@
     </div>
 </div>
 
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlertRedirectIndex('success','Parabéns!', '@TempData["mensagemSucesso"]','/SalaParticular/Index')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>

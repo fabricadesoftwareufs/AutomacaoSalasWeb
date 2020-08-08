@@ -80,6 +80,9 @@ namespace SalasUfsWeb.Controllers
                 TempData["mensagemErro"] = se.Message;
             }
 
+            for (var i = 0; i < salaParticularModel.Responsaveis.Count; i++)
+                salaParticularModel.Responsaveis[i] = _usuarioService.GetById(salaParticularModel.Responsaveis[i].Id); 
+
             return View(salaParticularModel);
         }
 
@@ -117,18 +120,17 @@ namespace SalasUfsWeb.Controllers
                 {
                     if (_salaParticularService.Update(new SalaParticularModel { Id = salaParticularModel.Id, SalaId = salaParticularModel.SalaId.Id, UsuarioId = salaParticularModel.Responsavel.Id}))
                     {
-                        TempData["menagemSucesso"] = "Registro atualizado com sucesso!.";
-                        return RedirectToAction(nameof(Index));
+                        TempData["mensagemSucesso"] = "Registro atualizado com sucesso!.";
                     }                        
                     else
                     {
-                        TempData["menagemErro"] = "Houve um probelma ao atualizar registro, tente novamente em alguns minutos!.";
+                        TempData["mensagemErro"] = "Houve um probelma ao atualizar registro, tente novamente em alguns minutos!.";
                     }
                 }
             }
             catch (ServiceException se)
             {
-                TempData["menagemErro"] = se.Message; 
+                TempData["mensagemErro"] = se.Message; 
             }
 
             return View(salaParticularModel);
@@ -156,8 +158,14 @@ namespace SalasUfsWeb.Controllers
 
         public ActionResult Details(int id)
         {
-            //SalaModel salaModel = _salaService.GetById(id);
-            return View();
+            SalaParticularModel salaParticular = _salaParticularService.GetById(id);
+
+            return View(new SalaParticularViewModel
+            {
+                Id = salaParticular.Id,
+                SalaId = _salaService.GetById(salaParticular.SalaId),
+                Responsavel = _usuarioService.GetById(salaParticular.UsuarioId),
+            });
         }
 
 

@@ -5,7 +5,7 @@
 }
 
 
-<h4>Associar Nova Sala Exclusiva</h4>
+<h2>Associar Nova Sala Exclusiva</h2>
 <hr />
 <div class="row">
     <div class="col-md-16">
@@ -26,7 +26,7 @@
             </div>
             <div class="col-md-12">
                 <div class="form-group align-element">
-                    <label asp-for="Responsavel.Id" class="control-label">Ádicione os Responsáveis</label>
+                    <label asp-for="Responsavel.Id" class="control-label">Adicione os Responsáveis</label>
                     @Html.DropDownListFor(model => model.Responsavel.Id, ViewBag.usuarios as SelectList, new
                     { @class = "form-control", @id = "select-usuario" })
                     <span asp-validation-for="Responsavel.Id" class="text-danger"></span>
@@ -46,10 +46,17 @@
                     <tbody id="container-responsaveis">
                         @if (Model != null)
                         {
-                            @for (var i = 0; i < Model.Responsaveis.Count;i++) 
-                            { 
-                            
-                            
+                            @for (var i = 0; i < Model.Responsaveis.Count;i++)
+                            {
+                                <tr id="novo-responsavel-@i" class="responsavel-sala">
+                                    <td>
+                                        <input class="form-control" name="Responsaveis[@i].Id" hidden  value = "@Model.Responsaveis[i].Id"/>
+                                        <p class="form-control" type="time"> @Model.Responsaveis[i].Cpf | @Model.Responsaveis[i].Nome </p>
+                                    </td>
+                                    <td>
+                                        <a id="remove-novo-horario"  onclick="removeNovoResponsavel('novo-responsavel-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
+                                    </td>
+                                </tr>
                             }
                         }
                     </tbody>

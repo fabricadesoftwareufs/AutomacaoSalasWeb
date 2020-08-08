@@ -3,7 +3,10 @@
     if (document.querySelector('#mensagem-retorno'))
         document.getElementById("mensagem-retorno").click();
 
-    //loadBlocos();
+    if (document.querySelector('.responsavel-sala'))
+        document.getElementById("btn-create-sala-exclusiva").disabled = false;
+    else
+        document.getElementById("btn-create-sala-exclusiva").disabled = true;
 });
 
 
@@ -90,24 +93,7 @@ function verificaResponsavelRepetido(idUser) {
 
 function clearSelect() {
     document.getElementById('select-sala').innerHTML = "";
-    /*for (let i = 0; i < selectSalas.length; i++)
-        selectSalas.options.remove(i);*/
 }
-
-/*function loadBlocos() {
-    let selectBlocos = document.getElementById('select-bloco');
-    let url = "/SalaParticular/GetBlocos";
-
-    $.get(url, function (data) {
-        for (let i = 0; i < data.length; i++) {
-            let option = document.createElement("option");
-            option.text = data[i].id + " | " + data[i].titulo;
-            option.value = data[i].id;
-
-            selectBlocos.add(option);
-        }
-    })
-}*/
 
 function loadSalas() {
     let selectSalas = document.getElementById('select-sala');

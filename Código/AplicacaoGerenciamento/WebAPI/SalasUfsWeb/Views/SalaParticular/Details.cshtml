@@ -1,0 +1,35 @@
+﻿@model Model.SalaParticularViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Sala Exclusiva</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Responsavel)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Responsavel.Cpf) | @Html.DisplayFor(model => model.Responsavel.Nome)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SalaId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SalaId.Titulo)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a href="@Url.Action("Edit", "SalaParticular", new { id = Model.Id })" class="btn btn-info"><i class="fa fa-pencil"></i> Editar </a>
+    <a class="btn btn-primary" asp-action="Index">Voltar</a>
+</div>

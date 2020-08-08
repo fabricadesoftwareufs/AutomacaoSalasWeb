@@ -59,7 +59,7 @@ namespace SalasUfsWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (_planejamentoService.Insert(planejamento))
+                    if (_planejamentoService.InsertListHorariosPlanjamento(planejamento))
                     {
                         TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
                         return View();

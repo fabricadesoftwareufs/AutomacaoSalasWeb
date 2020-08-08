@@ -47,6 +47,9 @@ namespace Service
 
         public bool InsertListSalasParticulares(SalaParticularViewModel entity)
         {
+            if (entity.Responsaveis.Count == 0)
+                throw new ServiceException("Você não adicionou nenhum responsável da sala!.");
+
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
@@ -73,7 +76,9 @@ namespace Service
 
         public bool Insert(SalaParticularModel entity)
         {
-            if (VerificaSalaExclusivaExistente(entity.UsuarioId,entity.SalaId)) {
+
+            if (!VerificaSalaExclusivaExistente(null,entity.UsuarioId, entity.SalaId))
+            {
                 try
                 {
                     _context.Add(SetEntity(entity, new Salaparticular()));
@@ -89,18 +94,32 @@ namespace Service
             return true;
         }
 
-        public bool VerificaSalaExclusivaExistente(int idUsuario, int idSala) 
+        public bool VerificaSalaExclusivaExistente(int? idSalaExclusiva,int idUsuario, int idSala)
         {
-            return GetByIdUsuarioAndIdSala(idUsuario, idSala) == null ? false : true;
+            var salaExclusiva = GetByIdUsuarioAndIdSala(idUsuario, idSala);
+
+            if (salaExclusiva == null)
+                return false;
+            else if (idSalaExclusiva != null)
+                return salaExclusiva.Id == idSalaExclusiva ? false : true;
+
+            return true;
         }
 
         public bool Remove(int id)
         {
-            var x = _context.Salaparticular.Where(th => th.Id == id).FirstOrDefault();
-            if (x != null)
+            try
             {
-                _context.Remove(x);
-                return _context.SaveChanges() == 1 ? true : false;
+                var x = _context.Salaparticular.Where(th => th.Id == id).FirstOrDefault();
+                if (x != null)
+                {
+                    _context.Remove(x);
+                    return _context.SaveChanges() == 1 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
 
             return false;
@@ -108,11 +127,21 @@ namespace Service
 
         public bool Update(SalaParticularModel entity)
         {
-            var x = _context.Salaparticular.Where(th => th.Id == entity.Id).FirstOrDefault();
-            if (x != null)
+            if (VerificaSalaExclusivaExistente(entity.Id,entity.UsuarioId, entity.SalaId))
+                throw new ServiceException("Atualização não pode ser concluida pois este usuário já esta associado a essa sala em outro registro!.");
+
+            try
             {
-                _context.Update(SetEntity(entity, x));
-                return _context.SaveChanges() == 1 ? true : false;
+                var x = _context.Salaparticular.Where(th => th.Id == entity.Id).FirstOrDefault();
+                if (x != null)
+                {
+                    _context.Update(SetEntity(entity, x));
+                    return _context.SaveChanges() == 1 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
 
             return false;
