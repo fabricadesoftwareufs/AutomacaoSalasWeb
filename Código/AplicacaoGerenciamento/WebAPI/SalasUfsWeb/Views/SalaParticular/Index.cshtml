@@ -4,86 +4,88 @@
     ViewData["Title"] = "Index";
 }
 
-<div>
-    <h2>
-        Salas Exclusivas
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2 class="card-title">
+                                    Salas Exclusivas
+                                </h2>
+                                <a class="btn btn-primary" style="float:right" asp-controller="SalaParticular" asp-action="Create">Associar Nova Sala Exclusiva</a>
 
-        <a class="btn btn-primary" style="float:right" asp-controller="SalaParticular" asp-action="Create">Associar Nova Sala Exclusiva</a>
-    </h2>
-
-</div>
-
-<div align="right">
-    <form asp-controller="SalaParticular" asp-action="Index">
-        <p>
-            <input style="height: 28pt;width: 200pt;" type="text" placeholder="Pesquise por sala " name="pesquisa">
-            <button style="margin-bottom: 0.3%;" class="btn btn-primary text-right">Pesquisar</button>
-        </p>
-    </form>
-</div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Responsavel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SalaId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Responsavel.Cpf) | @Html.DisplayFor(modelItem => item.Responsavel.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SalaId.Titulo)
-                </td>
-                <td>
-                    <a href="@Url.Action("Details", "SalaParticular", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
-                    <a href="@Url.Action("Edit", "SalaParticular", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
-                    <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
-
-                    <div class="modal fade bs-example-modal-sm" id="modal-remover-@item.Id" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog modal-sm">
-                            <div class="modal-content text-center" style="padding: 10pt">
-                                <h5> Desassociar responsável da sala ? </h5>
-
-                                <h5>Código</h5><p>@item.Id</p>
-                                <h5>Sala</h5> <p>@item.SalaId.Titulo </p>
-                                <h5>Responsável</h5> <p>@item.Responsavel.Cpf | @item.Responsavel.Nome</p>
-
-
-                                @using (Html.BeginForm("Delete", "SalaParticular", new { id = item.Id }, FormMethod.Post))
-                                {
-                                    <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
-                                    <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
-                                }
                             </div>
                         </div>
                     </div>
+                    <div class="card-body">
+                        <table id="table-search" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Id)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Responsavel)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.SalaId)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Id)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Responsavel.Cpf) | @Html.DisplayFor(modelItem => item.Responsavel.Nome)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.SalaId.Titulo)
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "SalaParticular", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
+                                            <a href="@Url.Action("Edit", "SalaParticular", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
+                                            <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                                            <div class="modal fade bs-example-modal-sm" id="modal-remover-@item.Id" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-sm">
+                                                    <div class="modal-content text-center" style="padding: 10pt">
+                                                        <h5> Desassociar responsável da sala ? </h5>
+
+                                                        <h5>Código</h5><p>@item.Id</p>
+                                                        <h5>Sala</h5> <p>@item.SalaId.Titulo </p>
+                                                        <h5>Responsável</h5> <p>@item.Responsavel.Cpf | @item.Responsavel.Nome</p>
 
 
+                                                        @using (Html.BeginForm("Delete", "SalaParticular", new { id = item.Id }, FormMethod.Post))
+                                                        {
+                                                            <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
+                                                            <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 @if (TempData["mensagemSucesso"] != null)
-{
-    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
+{<div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
 }
 else if (TempData["mensagemErro"] != null)
 {
@@ -98,6 +100,7 @@ else if (TempData["mensagemErro"] != null)
                 document.getElementById("mensagem-retorno").click();
         });
     </script>
+    
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>

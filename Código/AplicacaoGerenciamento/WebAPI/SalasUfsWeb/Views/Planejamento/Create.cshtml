@@ -88,15 +88,11 @@
                             {
                                 <tr id="novo-horario-@i " class="horarios-planejamento">
                                     <td>
-                                        <input class="form-control" type="time" name="Horarios[@i].HorarioInicio" readonly value="@Model.Horarios[i].HorarioInicio" />
-                                    </td>
+                                        <input class="form-control" type="time" name="Horarios[@i].HorarioInicio" hidden readonly value="@Model.Horarios[i].HorarioInicio" />
+                                        <input class="form-control" type="time" name="Horarios[@i].HorarioFim" hidden readonly value="@Model.Horarios[i].HorarioFim" />
+                                        <input class="form-control" name="Horarios[@i].DiaSemana" hidden readonly value="@Model.Horarios[i].DiaSemana" />
 
-                                    <td>
-                                        <input class="form-control" type="time" name="Horarios[@i].HorarioFim" readonly value="@Model.Horarios[i].HorarioFim" />
-                                    </td>
-
-                                    <td>
-                                        <input class="form-control" name="Horarios[@i].DiaSemana" readonly value="@Model.Horarios[i].DiaSemana" />
+                                        <p class="form-control"> @Model.Horarios[i].HorarioInicio / @Model.Horarios[i].HorarioFim - @Model.Horarios[i].DiaSemana</p>
                                     </td>
 
                                     <td>

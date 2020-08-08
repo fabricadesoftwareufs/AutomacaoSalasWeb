@@ -26,9 +26,9 @@ function AdicionarNovoHorario() {
         if (document.querySelector('.horarios-planejamento')) {
             for (indice = 0; indice < horarios.length; indice++) {
 
-                dia = horarios[indice].childNodes[2].childNodes[0].value;
+                dia = horarios[indice].childNodes[0].childNodes[2].value;
                 horarioInicio = horarios[indice].childNodes[0].childNodes[0].value;
-                horarioFim = horarios[indice].childNodes[1].childNodes[0].value;
+                horarioFim = horarios[indice].childNodes[0].childNodes[1].value;
 
                 novoHorario.push(adicionaHorarioNaTabela(indice + 1, horarioInicio, horarioFim, dia));
             }
@@ -48,19 +48,14 @@ function adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia){
     let horario =
         '<tr id="' + idItem + '" class="horarios-planejamento">' +
         '<td>' +
-        '<input class="form-control" type="time" name="Horarios[' + indice + '].HorarioInicio" readonly  value = "' + horarioInicio + '"/>' +
+            '<input class="form-control" type="time" name="Horarios[' + indice + '].HorarioInicio" hidden readonly  value = "' + horarioInicio + '"/>' +
+            '<input class="form-control" type="time" name="Horarios[' + indice + '].HorarioFim" hidden readonly  value = "' + horarioFim + '"/>' +
+            '<input class="form-control" name="Horarios[' + indice + '].DiaSemana" hidden readonly value = "' + dia + '"/>' +
+            '<p class="form-control">' + horarioInicio + ' / ' + horarioFim  + ' - '+ dia +'</p>' + 
         '</td>' +
-        ' / '+
+        
         '<td>' +
-        '<input class="form-control" type="time" name="Horarios[' + indice + '].HorarioFim" readonly  value = "' + horarioFim + '"/>' +
-        '</td>' +
-        ' - ' +
-        '<td>' +
-        '<input class="form-control" name="Horarios[' + indice + '].DiaSemana" readonly value = "' + dia + '"/>' +
-        '</td>' +
-
-        '<td>' +
-        '<a id="remove-novo-horario"  onclick="RemoveNovoHorario(' + '\''+idItem + '\''+ ')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +
+            '<a id="remove-novo-horario"  onclick="RemoveNovoHorario(' + '\''+idItem + '\''+ ')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +
         '</td>' +
         '</tr>';
 
@@ -78,8 +73,8 @@ function RemoveNovoHorario(idItem) {
     for (var indice = 0; indice < horarios.length; indice++)
         novosHorarios.push(adicionaHorarioNaTabela(indice,
             horarios[indice].childNodes[0].childNodes[0].value,
-            horarios[indice].childNodes[1].childNodes[0].value,
-            horarios[indice].childNodes[2].childNodes[0].value));
+            horarios[indice].childNodes[0].childNodes[1].value,
+            horarios[indice].childNodes[0].childNodes[2].value));
 
     document.getElementById('container-horarios').innerHTML = "";
     for (var indice = 0; indice < novosHorarios.length; indice++) 
