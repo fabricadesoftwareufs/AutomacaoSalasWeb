@@ -43,19 +43,22 @@ namespace SalasUfsWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Criando usuario que será passado para a autenticação.
-                var sucesso = new LoginViewModel { Login = user.Cpf, Senha = user.Senha };
-
+                if (!Methods.ValidarCpf(user.Cpf))
+                    return RedirectToAction("Create", "Usuario", new { msg = "invalidCpf" }); 
+                
+                user.Cpf = Methods.CleanString(user.Cpf);
 
                 // Informações do objeto
-                user.Cpf = StringManipulation.CleanString(user.Cpf);
+                user.Cpf = Methods.CleanString(user.Cpf);
                 user.Senha = Criptography.GeneratePasswordHash(user.Senha);
                 user.TipoUsuarioId = 1;
+
+                // Criando usuario que será passado para a autenticação.
+                var sucesso = new LoginViewModel { Login = user.Cpf, Senha = user.Senha };
 
                 if (_service.Insert(user))
                     return RedirectToAction("Authenticate", "Login", sucesso);
             }
-
             // Se nao inserir, vem pra cá e sai.
             return View(user);
         }

@@ -1,0 +1,52 @@
+﻿/***** custom css *****/
+.element-center {
+    margin: auto !important;
+}
+
+.transparent-background {
+    background: none;
+    border: none;
+}
+
+.div-msg {
+    margin: 10px auto;
+}
+
+.invalid-msg {
+    position: relative;
+    top: -10px;
+    margin-left: 5px;
+}
+
+.logo {
+    width: 150px;
+    height: auto;
+    margin: auto;
+    display: block;
+    animation: bounceIn 0.6s;
+    transform: rotate(0deg) scale(1) translateZ(0);
+    transition: all 0.4s cubic-bezier(.8,1.8,.75,.75);
+    cursor: pointer;
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 1;
+        transform: scale(.3);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    70% {
+        opacity: 1;
+        transform: scale(.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

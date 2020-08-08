@@ -4,30 +4,56 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<p class="login-box-msg">Login do Sistema</p>
 
-<h4>LoginViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-controller="login" asp-action="Authenticate">
-            <div class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Login" class="control-label"></label>
-                <input asp-for="Login" class="form-control" />
+<form asp-controller="login" asp-action="Authenticate">
+    <div class="input-group mb-3">
+        <input required id="login_auth" asp-for="Login" class="form-control" placeholder="CPF" oninput="validaCpf()" autocomplete="off" />
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-user"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Senha" class="control-label"></label>
-                <input asp-for="Senha" type="password" class="form-control" />
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Logar" class="btn btn-default" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+    <span id="span_cpf" asp-validation-for="Login" class="invalid-msg invalid-feedback"></span>
+    <div class="input-group mb-3">
+        <input required id="senha_auth" asp-for="Senha" type="password" class="form-control" placeholder="Senha" />
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <div class="icheck-primary">
+                <input type="checkbox" id="show_pass" onchange="showPass(this)">
+                <label for="show_pass">
+                    Mostrar Senha
+                </label>
+            </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-4">
+            <input type="submit" value="Entrar" class="btn btn-primary btn-block" />
+        </div>
+        <!-- /.col -->
+    </div>
+</form>
+<hr />
+<p class="mb-1">
+    <a href="forgot-password.html">Esqueceu a senha?</a>
+</p>
+<p class="mb-0">
+    <a asp-action="Create" asp-controller="usuario" class="text-center">Criar usuário</a>
+</p>
 
-<div>
-    <a asp-action="Create" asp-controller="usuario">Criar Usuario</a>
-</div>
 
+@section Scripts {
+    <!-- Scripts -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/plugins/inputmask/min/inputmask/inputmask.min.js"></script>
+    <script src="~/plugins/inputmask/min/inputmask/jquery.inputmask.min.js"></script>
+    <script src="~/js/customLogin.js"></script>
+
+}
