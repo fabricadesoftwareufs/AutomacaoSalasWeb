@@ -51,6 +51,8 @@ namespace SalasUfsWeb
             services.AddScoped<HardwareDeBlocoService>();
             services.AddScoped<TipoHardwareService>();
             services.AddScoped<HardwareDeSalaService>();
+            services.AddScoped<SalaParticularService>();
+            services.AddScoped<UsuarioOrganizacaoService>();
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -66,13 +68,11 @@ namespace SalasUfsWeb
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
 
             // Forçando a utilizar autenticação.
@@ -84,6 +84,9 @@ namespace SalasUfsWeb
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseCookiePolicy();
+
         }
     }
 }

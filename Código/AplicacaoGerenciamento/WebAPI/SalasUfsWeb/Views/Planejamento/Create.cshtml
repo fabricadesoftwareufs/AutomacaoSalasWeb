@@ -9,41 +9,42 @@
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form asp-action="Create" id="form" name="form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="SalaId" class="control-label"></label>
-                @Html.DropDownListFor(model => model.SalaId, ViewBag.salas as SelectList, new
-           { @class = "form-control", @id = "sala" })
-                <span asp-validation-for="SalaId" class="text-danger"></span>
+            <div class="ocupation col-md-6">
+                <div class="form-group">
+                    <label asp-for="SalaId" class="control-label"></label>
+                    @Html.DropDownListFor(model => model.SalaId, ViewBag.salas as SelectList, new
+               { @class = "form-control", @id = "sala" })
+                    <span asp-validation-for="SalaId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UsuarioId" class="control-label"></label>
+                    @Html.DropDownListFor(model => model.UsuarioId, ViewBag.usuarios as SelectList, new
+               { @class = "form-control", @id = "usuario" })
+                    <span asp-validation-for="UsuarioId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Objetivo" class="control-label"></label>
+                    <input asp-for="Objetivo" id="objetivo" class="form-control" />
+                    <span asp-validation-for="Objetivo" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="UsuarioId" class="control-label"></label>
-                @Html.DropDownListFor(model => model.UsuarioId, ViewBag.usuarios as SelectList, new
-           { @class = "form-control", @id = "usuario" })
-                <span asp-validation-for="UsuarioId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Objetivo" class="control-label"></label>
-                <input asp-for="Objetivo" id="objetivo" class="form-control" />
-                <span asp-validation-for="Objetivo" class="text-danger"></span>
-            </div>
-
-            <div class="ocupation">
-                <div class="form-group align-element">
+            <div class="ocupation col-md-8">
+                <div class="form-group align-element ">
                     <label asp-for="DataInicio" class="control-label"></label>
                     <input asp-for="DataInicio" id="dataInicio" class="form-control" />
                     <span asp-validation-for="DataInicio" class="text-danger"></span>
                 </div>
-                <div class="form-group align-element">
+                <div class="form-group align-element ">
                     <label asp-for="DataFim" class="control-label"></label>
                     <input asp-for="DataFim" id="dataFim" class="form-control" />
                     <span asp-validation-for="DataFim" class="text-danger"></span>
                 </div>
             </div>
 
-            <div class="ocupation">
+            <div class="ocupation col-md-10">
                 <div class="form-group align-element">
                     <label asp-for="HorarioInicio" class="control-label"></label>
                     <input asp-for="HorarioInicio" id="horarioInicio" class="form-control" />
@@ -58,131 +59,91 @@
 
                 <div class="form-group align-element">
                     <label asp-for="DiaSemana" class="control-label"></label>
-                    @Html.DropDownListFor(model => model.DiaSemana, ViewBag.dias as SelectList, new
-               { @class = "form-control"})
-                    <span asp-validation-for="DiaSemana" class="text-danger"></span>
+                    <select asp-for="DiaSemana" id="input-dia-semana" class="select2_single form-control" tabindex="-1">
+                        <option value="SEG" selected> Segunda </option>
+                        <option value="TER"> Terça   </option>
+                        <option value="QUA"> Quarta  </option>
+                        <option value="QUI"> Quinta  </option>
+                        <option value="SEX"> Sexta   </option>
+                        <option value="SAB"> Sábado  </option>
+                        <option value="DOM"> Domingo </option>
+                    </select>
                 </div>
-            </div>
-            <!--
-            <div class="form-group" style="display: inline-block;">
-                <input type="button" onclick="TakeInput()" value="Adicionar" class="btn btn-primary btn-file" />
-            </div>
-            </div>
 
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Horario
-                                </th>
-
-                                <th>
-                                    Dia da Semana
-                                </th>
-
-                                <th>
-
-                                </th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-            </div>
-            -->
-            @if (TempData["aviso"] != null)
-            {
-                <div class="field-error" id="error-div" style="color: red">
-                    @TempData["aviso"]
+                <div class="form-group align-element">
+                    <a id="add-novo-horario" onclick="AdicionarNovoHorario()" class="btn btn-primary text-white"><i class="nav-icon fa fa-plus"></i> </a>
                 </div>
                 <br />
-            }
+                <span class="text-danger" id="mensagem-erro-horarios" hidden></span>
+            </div>
 
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Horários Adicionados</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                            <thead>
+                                                <tr>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="container-horarios">
+                                                @if (Model != null)
+                                                {
+                                                    @for (var i = 0; i < Model.Horarios.Count; i++)
+                                                    {
+                                                        <tr id="novo-horario-@i" class="horarios-planejamento">
+                                                            <td>
+                                                                <input class="form-control" type="time" name="Horarios[@i].HorarioInicio" hidden readonly value="@Model.Horarios[i].HorarioInicio" />
+                                                                <input class="form-control" type="time" name="Horarios[@i].HorarioFim" hidden readonly value="@Model.Horarios[i].HorarioFim" />
+                                                                <input class="form-control" name="Horarios[@i].DiaSemana" hidden readonly value="@Model.Horarios[i].DiaSemana" />
 
+                                                                <p class="form-control"> @Model.Horarios[i].HorarioInicio / @Model.Horarios[i].HorarioFim - @Model.Horarios[i].DiaSemana</p>
+                                                            </td>
 
-            <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-success" /> |
+                                                            <td>
+                                                                <a id="remove-novo-horario" onclick="RemoveNovoHorario('novo-horario-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            <div class="form-group col-sm-4">
+                <input type="submit" id="btn-create-planejamento" value="Salvar" class="btn btn-success" /> |
                 <a class="btn btn-primary" asp-action="Index">Voltar</a>
             </div>
+
         </form>
     </div>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
 }
 
+@section Scripts {
 
-<!--
-<script type="text/javascript">
+    <script src="~/js/planejamento-script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
 
-    function TakeInput() {
-
-        var objeto = new Object();
-        objeto.SalaId = document.getElementById("sala").value;
-        objeto.UsuarioId = document.getElementById("usuario").value;
-        objeto.Objetivo = document.getElementById("objetivo").value;
-        objeto.DataInicio = document.getElementById("dataInicio").value;
-        objeto.DataFim = document.getElementById("dataFim").value;
-        objeto.HorarioInicio = document.getElementById("horarioInicio").value;
-        objeto.HorarioFim = document.getElementById("horarioFim").value;
-        objeto.DiaSemana = document.getElementById("diaSemana").value;
-
-        MyArray.push(objeto);
-
-        alert(MyArray[MyArray.length - 1].Objetivo);
-        alert(MyArray[MyArray.length - 1].SalaId);
-
-
-        $("tbody").append("<tr> <td> " + MyArray[MyArray.length - 1].HorarioInicio + " / " + MyArray[MyArray.length - 1].HorarioFim
-            + " </td> <td> " + MyArray[MyArray.length - 1].DiaSemana + " </td> <td> <input type='submit' value='Remove' class='btn btn-danger' /> </td> </tr > ");
-
-
-
-        $("#form1").append("<div hidden class='form-group'> <label asp-for='SalaId' class='control-label'></label>"
-            + " <input type='hidden' asp-for= 'Id' class= 'form-control' value = '" + MyArray[MyArray.length - 1].SalaId + "' />"
-            + "<span asp-validation-for='SalaId' class='text-danger'></span>"
-            + "</div>");
-
-        $("#form1").append("<div  hidden class='form-group'> <label asp-for='UsuarioId' class='control-label'></label>"
-            + " <input type='hidden' asp-for= 'Id' class= 'form-control' value = '" + MyArray[MyArray.length - 1].UsuarioId + "' />"
-            + "<span asp-validation-for='UsuarioId' class='text-danger'></span>"
-            + "</div>")
-
-        $("#form1").append("<div hidden class='form-group'> <label asp-for='Objetivo' class='control-label'></label>"
-            + " <input  asp-for='Objetivo' class= 'form-control' value = '" + MyArray[MyArray.length - 1].Objetivo + "' />"
-            + "<span asp-validation-for='Objetivo' class='text-danger'></span>"
-            + "</div>");
-
-        $("#form1").append("<div hidden class='form-group'> <label asp-for='DataInicio' class='control-label'></label>"
-            + " <input  asp-for= 'DataInicio' class= 'form-control' value = '" + MyArray[MyArray.length - 1].DataInicio + "' />"
-            + "<span asp-validation-for='DataInicio' class='text-danger'></span>"
-            + "</div>");
-
-        $("#form1").append("<div hidden class='form-group'> <label asp-for='HorarioFim' class='control-label'></label>"
-            + " <input  asp-for= 'HorarioFim' class= 'form-control' value = '" + MyArray[MyArray.length - 1].DataFim + "' />"
-            + "<span asp-validation-for='HorarioFim' class='text-danger'></span>"
-            + "</div>");
-
-        $("#form1").append("<div hidden class='form-group'> <label asp-for='HorarioInicio' class='control-label'></label>"
-            + " <input  asp-for= 'HorarioInicio' class= 'form-control' value = '" + MyArray[MyArray.length - 1].HorarioInicio + "' />"
-            + "<span asp-validation-for='HorarioInicio' class='text-danger'></span>"
-            + "</div>");
-
-        $("#form1").append("<div hidden class='form-group'> <label asp-for='HorarioFim' class='control-label'></label>"
-            + " <input hidden asp-for= 'HorarioFim' class= 'form-control' value = '" + MyArray[MyArray.length - 1].HorarioFim + "' />"
-            + "<span asp-validation-for='HorarioFim' class='text-danger'></span>"
-            + "</div>");
-
-        $("#form1").append("<div hidden class='form-group'> <label asp-for='DiaSemana' class='control-label'></label>"
-            + " <input  asp-for= 'DiaSemana' class= 'form-control' value = '" + MyArray[MyArray.length - 1].DiaSemana + "' />"
-            + "<span asp-validation-for='DiaSemana' class='text-danger'></span>"
-            + "</div>");
-    }
-
-
-    function submitItens() {
-        document.forms["form1"].submit();
-    }
-</script>
--->
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

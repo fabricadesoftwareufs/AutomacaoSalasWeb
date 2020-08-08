@@ -16,6 +16,9 @@ namespace Service
 
         public SalaModel GetById(int id) => _context.Sala.Where(s => s.Id == id).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).FirstOrDefault();
 
+        public List<SalaModel> GetByIdBloco(int id) => _context.Sala.Where(s => s.Bloco == id).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).ToList();
+
+
         public bool Insert(SalaModel entity)
         {
             _context.Add(SetEntity(entity, new Sala()));

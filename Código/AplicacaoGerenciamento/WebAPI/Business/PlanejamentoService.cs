@@ -1,7 +1,9 @@
 ﻿using Model;
 using Model.ViewModel;
 using Persistence;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace Service
@@ -47,34 +49,116 @@ namespace Service
                     SalaId = pl.Sala
                 }).FirstOrDefault();
 
+        public bool InsertListHorariosPlanjamento(PlanejamentoModel entity)
+        {
+            List<PlanejamentoModel> horariosEntity = new List<PlanejamentoModel>();
+
+            using (var transcaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+
+                    foreach (var horario in entity.Horarios)
+                    {
+                        if (TimeSpan.Compare(horario.HorarioFim, horario.HorarioInicio) != 1)
+                            throw new ServiceException("Os horários possuem inconsistências, corrija e tente novamente");
+                        else
+                        {
+                            horariosEntity.Add(new PlanejamentoModel
+                            {
+                                Id = entity.Id,
+                                Objetivo = entity.Objetivo,
+                                DataInicio = entity.DataInicio,
+                                DataFim = entity.DataFim,
+                                HorarioFim = horario.HorarioFim,
+                                HorarioInicio = horario.HorarioInicio,
+                                DiaSemana = horario.DiaSemana,
+                                UsuarioId = entity.UsuarioId,
+                                SalaId = entity.SalaId
+                            });
+                        }
+                    }
+
+                    foreach (var item in horariosEntity)
+                        Insert(item);
+
+                    transcaction.Commit();
+
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    transcaction.Rollback();
+                    throw e;
+                }
+            }
+        }
+
         public bool Insert(PlanejamentoModel entity)
         {
-            _context.Add(SetEntity(entity, new Planejamento()));
-            return _context.SaveChanges() == 1 ? true : false;
+            try
+            {
+                if (!(DateTime.Compare(entity.DataFim, entity.DataInicio) > 0) || TimeSpan.Compare(entity.HorarioFim, entity.HorarioInicio) != 1)
+                    throw new ServiceException("Sua Datas ou Horarios possuem inconsistências, corrija e tente novamente.");
+
+                _context.Add(SetEntity(entity, new Planejamento()));
+                return _context.SaveChanges() == 1 ? true : false;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public bool Remove(int id)
         {
-            var x = _context.Planejamento.Where(th => th.Id == id).FirstOrDefault();
-            if (x != null)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                _context.Remove(x);
-                return _context.SaveChanges() == 1 ? true : false;
-            }
+                try
+                {
+                    var x = _context.Planejamento.Where(th => th.Id == id).FirstOrDefault();
+                    if (x != null)
+                    {
+                        _context.Remove(x);
+                        var save = _context.SaveChanges() == 1 ? true : false;
+                        transaction.Commit();
+                        return save;
+                    }
+                    else
+                    {
+                        throw new ServiceException("Algo deu errado, tente novamente em alguns minutos.");
+                    }
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e;
 
-            return false;
+                }
+            }
         }
 
         public bool Update(PlanejamentoModel entity)
         {
-            var x = _context.Planejamento.Where(th => th.Id == entity.Id).FirstOrDefault();
-            if (x != null)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                _context.Update(SetEntity(entity, x));
-                return _context.SaveChanges() == 1 ? true : false;
-            }
+                try
+                {
+                    if (!(DateTime.Compare(entity.DataFim, entity.DataInicio) > 0 && TimeSpan.Compare(entity.HorarioFim, entity.HorarioInicio) != 1))
+                        throw new ServiceException("Suas Datas/Horarios possuem inconsistências, corrija e tente novamente");
 
-            return false;
+                    _context.Update(SetEntity(entity, new Planejamento()));
+                    var save = _context.SaveChanges() == 1 ? true : false;
+                    transaction.Commit();
+                    return save;
+
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e;
+                }
+            }
         }
 
         private static Planejamento SetEntity(PlanejamentoModel model, Planejamento entity)
@@ -93,7 +177,7 @@ namespace Service
             return entity;
         }
 
-  
+
         public List<PlanejamentoModel> GetSelectedList()
          => _context.Planejamento.Select(s => new PlanejamentoModel { Id = s.Id, Objetivo = string.Format("{0} - {1} à {2} - ", s.Id, s.DataInicio, s.DataFim, s.DiaSemana) }).ToList();
 

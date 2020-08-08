@@ -38,6 +38,28 @@ namespace Service
                     TipoUsuarioId = u.TipoUsuario
                 }).FirstOrDefault();
 
+
+        public List<UsuarioModel> GetByIdOrganizacao(int id)
+        {
+            var _usuarioOrganizacaoService = new UsuarioOrganizacaoService(_context);
+            
+            var usuarioOrganizacao = _usuarioOrganizacaoService.GetByIdOrganizacao(id); 
+            var todosUsuarios = GetAll();
+
+            var query = (from usuario in todosUsuarios
+                         join usuarioOrg in usuarioOrganizacao
+                         on usuario.Id equals usuarioOrg.UsuarioId
+                         select new UsuarioModel {
+                            Id = usuario.Id,
+                            Cpf = usuario.Cpf,
+                            Nome = usuario.Nome,
+                            DataNascimento = usuario.DataNascimento,
+                            TipoUsuarioId = usuario.TipoUsuarioId
+                         }).ToList();
+
+            return query;
+        }
+        
         public UsuarioModel GetByLoginAndPass(string login, string senha)
             => _context.Usuario
                 .Where(u => u.Cpf.Equals(login) && u.Senha.Equals(senha))

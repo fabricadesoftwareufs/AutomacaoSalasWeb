@@ -1,9 +1,8 @@
-﻿@model IEnumerable<Model.ViewModel.PlanejamentoViewModel>
+﻿@model IEnumerable<Model.SalaParticularViewModel>
 
 @{
     ViewData["Title"] = "Index";
 }
-
 
 <section class="content">
     <div class="container-fluid">
@@ -14,9 +13,9 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <h2 class="card-title">
-                                    Planejamentos Cadastrados
+                                    Salas Exclusivas
                                 </h2>
-                                <a class="btn btn-primary" style="float:right" asp-controller="Planejamento" asp-action="Create">Adicionar Planejamento</a>
+                                <a class="btn btn-primary" style="float:right" asp-controller="SalaParticular" asp-action="Create">Associar Nova Sala Exclusiva</a>
 
                             </div>
                         </div>
@@ -26,23 +25,13 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        Código
-                                    </th>
-
-                                    <th>
-                                        Sala
+                                        @Html.DisplayNameFor(model => model.Id)
                                     </th>
                                     <th>
-                                        Usuario
+                                        @Html.DisplayNameFor(model => model.Responsavel)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Periodo)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.Horario)
-                                    </th>
-                                    <th>
-                                        Dia da Semana
+                                        @Html.DisplayNameFor(model => model.SalaId)
                                     </th>
                                     <th></th>
                                 </tr>
@@ -55,39 +44,27 @@
                                             @Html.DisplayFor(modelItem => item.Id)
                                         </td>
                                         <td>
+                                            @Html.DisplayFor(modelItem => item.Responsavel.Cpf) | @Html.DisplayFor(modelItem => item.Responsavel.Nome)
+                                        </td>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.SalaId.Titulo)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.UsuarioId.Nome)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Periodo)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Horario)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.DiaSemana)
-                                        </td>
-
-                                        <td>
-                                            <a href="@Url.Action("Details", "Planejamento", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
-                                            <a href="@Url.Action("Edit", "Planejamento", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
+                                            <a href="@Url.Action("Details", "SalaParticular", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
+                                            <a href="@Url.Action("Edit", "SalaParticular", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
                                             <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
 
                                             <div class="modal fade bs-example-modal-sm" id="modal-remover-@item.Id" tabindex="-1" role="dialog" aria-hidden="true">
                                                 <div class="modal-dialog modal-sm">
                                                     <div class="modal-content text-center" style="padding: 10pt">
-                                                        <h5> Confirmar Remoção do Aviso ? </h5>
+                                                        <h5> Desassociar responsável da sala ? </h5>
 
                                                         <h5>Código</h5><p>@item.Id</p>
                                                         <h5>Sala</h5> <p>@item.SalaId.Titulo </p>
-                                                        <h5>Responsável</h5> <p>@item.UsuarioId.Nome</p>
-                                                        <h5>Período de Tempo</h5> <p>@item.Periodo</p>
-                                                        <h5>Horário</h5> <p>@item.Horario</p>
-                                                        <h5>Dia</h5> <p>@item.DiaSemana</p>
+                                                        <h5>Responsável</h5> <p>@item.Responsavel.Cpf | @item.Responsavel.Nome</p>
 
-                                                        @using (Html.BeginForm("Delete", "Planejamento", new { id = item.Id }, FormMethod.Post))
+
+                                                        @using (Html.BeginForm("Delete", "SalaParticular", new { id = item.Id }, FormMethod.Post))
                                                         {
                                                             <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
                                                             <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
@@ -107,12 +84,8 @@
         </div>
     </div>
 </section>
-
-
-
 @if (TempData["mensagemSucesso"] != null)
-{
-    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!','@TempData["mensagemSucesso"]')"></div>
+{<div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
 }
 else if (TempData["mensagemErro"] != null)
 {
@@ -127,8 +100,10 @@ else if (TempData["mensagemErro"] != null)
                 document.getElementById("mensagem-retorno").click();
         });
     </script>
+    
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
