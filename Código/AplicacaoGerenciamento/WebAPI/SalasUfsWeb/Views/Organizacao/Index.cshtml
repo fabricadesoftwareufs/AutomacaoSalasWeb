@@ -4,52 +4,109 @@
     ViewData["Title"] = "Index";
 }
 
-<div>
-    <h2>
-        Organizações Cadastradas
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2 class="card-title">
+                                    Organizações Cadastradas
+                                </h2>
+                                <a class="btn btn-primary" style="float:right" asp-controller="Organizacao" asp-action="Create">Adicionar Organização</a>
 
-        <a class="btn btn-primary" style="float:right" asp-controller="Organizacao" asp-action="Create">Adicionar Organização</a>
-    </h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="table-search" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Cnpj)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.RazaoSocial)
+                                    </th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Cnpj)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.RazaoSocial)
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Organizacao", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
+                                            <a href="@Url.Action("Edit", "Organizacao", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
 
-</div>
+                                            <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
 
-<div align="right">
-    <form asp-controller="Organizacao" asp-action="Index">
-        <p>
-            <input style="height: 28pt;width: 200pt;" type="text" placeholder="Pesquise por Razao Social" name="pesquisa">
-            <button style="margin-bottom: 0.3%;" class="btn btn-primary text-right">Pesquisar</button>
 
-        </p>
-    </form>
-</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Cnpj)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RazaoSocial)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Cnpj)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RazaoSocial)
-                </td>
-                <td>
-                    <a href="@Url.Action("Details", "Organizacao", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
-                    <a href="@Url.Action("Edit", "Organizacao", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
-                    <a href="@Url.Action("Delete", "Organizacao", new { id = item.Id })" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Remover </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+                                            <div class="modal fade" id="modal-remover-@item.Id">
+                                                <div class="modal-dialog modal-sm">
+                                                    <div class="modal-content card card-secondary">
+                                                        <div class="modal-header card-header">
+                                                            <h5 class="modal-title">Confirmar Remoção da Organização ?</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true" class="text-white">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body text-center">
+                                                            <h5>Código</h5><p>@item.Id</p>
+                                                            <h5>CNPJ</h5> <p>@item.Cnpj</p>
+                                                            <h5>Nome Fantasia</h5> <p>@item.RazaoSocial</p>
+                                                        </div>
+
+                                                        @using (Html.BeginForm("Delete", "Organizacao", new { id = item.Id }, FormMethod.Post))
+                                                        {
+                                                            <div class="modal-footer justify-content-between">
+                                                                <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
+                                                                <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!','@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

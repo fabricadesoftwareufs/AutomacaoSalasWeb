@@ -43,6 +43,21 @@ namespace Service
                     UsuarioId = hs.Usuario
                 }).FirstOrDefault();
 
+        public List<HorarioSalaModel> GetByIdSala(int id)
+           => _context.Horariosala
+               .Where(hs => hs.Sala == id)
+               .Select(hs => new HorarioSalaModel
+               {
+                   Id = hs.Id,
+                   Data = hs.Data,
+                   SalaId = hs.Sala,
+                   HorarioInicio = hs.HorarioInicio,
+                   HorarioFim = hs.HorarioFim,
+                   Situacao = hs.Situacao,
+                   Objetivo = hs.Objetivo,
+                   UsuarioId = hs.Usuario
+               }).ToList();
+
         public bool Insert(HorarioSalaModel entity)
         {
             _context.Add(SetEntity(entity, new Horariosala()));

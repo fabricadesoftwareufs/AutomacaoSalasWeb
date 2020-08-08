@@ -4,33 +4,45 @@
     ViewData["Title"] = "Detalhes da Organização";
 }
 
-<h2>@ViewData["Title"]</h2>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Detalhes da Organizacao</h2>
+                    </div>
 
-<div>
-    <h4>OrganizacaoModel</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Cnpj)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Cnpj)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.RazaoSocial)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.RazaoSocial)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+                    <div class="card-body">
+                        <div class="col-md-10">
+                            <dl class="dl-horizontal">
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Id)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.Id)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Cnpj)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.Cnpj)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.RazaoSocial)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.RazaoSocial)</p>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="@Url.Action("Edit", "Organizacao", new { id = @Model.Id })" class="btn btn-info"> Editar </a> |
+                        <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

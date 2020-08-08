@@ -24,14 +24,7 @@ namespace SalasUfsWeb.Controllers
         // GET: Bloco
         public IActionResult Index(string pesquisa)
         {
-            var blocos = ReturnAllViewModels();
-
-            if (!string.IsNullOrEmpty(pesquisa))
-            {
-                blocos = blocos.Where(o => o.Titulo.Contains(pesquisa)).ToList();
-            }
-
-            return View(blocos);
+            return View(ReturnAllViewModels());
         }
 
         // GET: Bloco/Details/5
@@ -56,13 +49,21 @@ namespace SalasUfsWeb.Controllers
             try
             {
                 if (ModelState.IsValid)
-                    if(_blocoService.Insert(blocoModel))
-                        return RedirectToAction(nameof(Index));
+                {
+                    if (_blocoService.Insert(blocoModel))
+                    {
+                        TempData["mensagemSuceso"] = "Bloco adicionado com sucesso!";
+                        return View();
+                    }
+                    else
+                        TempData["mensagemErro"] = "Houve um problema ao adicionar bloco, tente novamente em alguns minutos!";
+                }
             }
-            catch
+            catch(ServiceException  se)
             {
-                return View(blocoModel);
+                TempData["mensagemErro"] = se.Message;
             }
+
             return View(blocoModel);
         }
 
@@ -79,42 +80,45 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, BlocoModel blocoModel)
         {
+            ViewBag.OrgList = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
+
             try
             {
                 if (ModelState.IsValid)
+                {
                     if (_blocoService.Update(blocoModel))
-                        return RedirectToAction(nameof(Index));
+                        TempData["mensagemSuceso"] = "Bloco atualizado com sucesso!";
+                    else
+                        TempData["mensagemErro"] = "Houve um problema ao atualizar bloco, tente novamente em alguns minutos!";
+
+                }
             }
-            catch
+            catch (ServiceException se)
             {
-                return View(blocoModel);
+                TempData["mensagemErro"] = se.Message;
             }
             return View(blocoModel);
         }
 
-        // GET: Bloco/Delete/5
-        public ActionResult Delete(int id)
-        {
-            BlocoModel blocoModel = _blocoService.GetById(id);
-            return View(blocoModel);
-        }
 
         // POST: Bloco/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
-            BlocoModel blocoModel = _blocoService.GetById(id);
             try
             {
                 if (_blocoService.Remove(id))
-                    return RedirectToAction(nameof(Index));
+                    TempData["mensagemSucesso"] = "Bloco Removido com sucesso!";
+                else
+                    TempData["mensagemErro"] = "Houve um problema ao tentar remover o bloco!";
+
             }
-            catch
+            catch (ServiceException se)
             {
-                return View(blocoModel);
+                TempData["mensagemErro"] = se.Message;
             }
-            return View(blocoModel);
+            return RedirectToAction(nameof(Index));
         }
 
         private List<BlocoViewModel> ReturnAllViewModels()
