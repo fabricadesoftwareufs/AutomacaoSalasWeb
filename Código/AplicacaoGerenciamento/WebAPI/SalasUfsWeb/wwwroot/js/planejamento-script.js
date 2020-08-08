@@ -11,13 +11,14 @@
 
 function AdicionarNovoHorario() {
 
+    document.getElementById("mensagem-erro-horarios").hidden = true;
+
     let horarioInicio = $('#horarioInicio').val();
     let horarioFim = $('#horarioFim').val();
     let dia = $('#input-dia-semana').val();
     let indice = 0;
     
-
-    if (horarioInicio.length > 0 && horarioFim.length > 0 && dia.length > 0) {
+    if (!validacoesHorario(horarioInicio, horarioFim, dia)) {
 
         var novoHorario = new Array();
         novoHorario.push(adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia));
@@ -32,7 +33,6 @@ function AdicionarNovoHorario() {
 
                 novoHorario.push(adicionaHorarioNaTabela(indice + 1, horarioInicio, horarioFim, dia));
             }
-
         } 
 
         document.getElementById('container-horarios').innerHTML = "";
@@ -41,6 +41,38 @@ function AdicionarNovoHorario() {
 
         document.getElementById("btn-create-planejamento").disabled = false;
     }
+}
+
+function validacoesHorario(horarioInicio, horarioFim, diaSemana){
+
+    let horarioExistente = false;
+    if (horarioInicio.length > 0 && horarioFim.length > 0 && diaSemana.length > 0) {
+        if (horarioFim > horarioInicio) {
+            let horarios = document.getElementsByClassName('horarios-planejamento');
+            if (document.querySelector('.horarios-planejamento')) {
+                for (indice = 0; indice < horarios.length; indice++) {
+
+                    let dia = horarios[indice].childNodes[0].childNodes[2].value;
+                    let inicio = horarios[indice].childNodes[0].childNodes[0].value;
+                    let fim = horarios[indice].childNodes[0].childNodes[1].value;
+
+                    if (diaSemana == dia && inicio == horarioInicio && fim == horarioFim)
+                        horarioExistente = true;
+                }
+            }
+        } else {
+            horarioExistente = true;
+            document.getElementById("mensagem-erro-horarios").innerText = "O horário de início não pode ser maior que a hora do término!";
+            document.getElementById("mensagem-erro-horarios").hidden = false;
+        }
+    } else {
+        horarioExistente = true;
+        document.getElementById("mensagem-erro-horarios").innerText = "Preencha os campos antes de adicionar um horário!";
+        document.getElementById("mensagem-erro-horarios").hidden = false;
+    }
+
+    return horarioExistente;
+
 }
 
 function adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia){
