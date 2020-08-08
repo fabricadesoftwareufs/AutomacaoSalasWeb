@@ -29,7 +29,7 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Index(string pesquisa)
         {
-            var planejamentos = ReturnAllViewModels();
+            var planejamentos = ReturnAllPlanejamentosViewModels();
 
             if (!string.IsNullOrEmpty(pesquisa))
             {
@@ -59,20 +59,25 @@ namespace SalasUfsWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _planejamentoService.Insert(planejamento);
-                    TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
+                    if (_planejamentoService.InsertListHorariosPlanjamento(planejamento))
+                    {
+                        TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
+                        return View();
+                    }
+                    else 
+                    {
+                        TempData["mensagemSucesso"] = "Houve um problema ao inserir novo planejamento, tente novamente em alguns minutos.";
+                    }
                 }
-                else
-                    return View(planejamento);
+                   
 
             }
             catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
-                return View(planejamento);
             }
 
-            return View();
+            return View(planejamento);
         }
 
 
@@ -97,8 +102,14 @@ namespace SalasUfsWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _planejamentoService.Update(planejamento);
-                     TempData["mensagemSucesso"] = "Planejamento Atualizado com sucesso!";
+                    if (_planejamentoService.Update(planejamento))
+                    {
+                        TempData["mensagemSucesso"] = "Planejamento Atualizado com sucesso!";
+                    }
+                    else
+                    {
+                        TempData["mensagemErro"] = "Houve um problema ao inserir novo planejamento, tente novamente em alguns minutos.";
+                    }
                 }
             }
             catch (ServiceException se)
@@ -135,7 +146,7 @@ namespace SalasUfsWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private List<PlanejamentoViewModel> ReturnAllViewModels()
+        private List<PlanejamentoViewModel> ReturnAllPlanejamentosViewModels()
         {
             List<PlanejamentoModel> pl = _planejamentoService.GetAll();
             List<PlanejamentoViewModel> plvm = new List<PlanejamentoViewModel>();

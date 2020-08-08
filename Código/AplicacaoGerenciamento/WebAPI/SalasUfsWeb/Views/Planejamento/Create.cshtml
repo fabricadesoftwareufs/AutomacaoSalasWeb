@@ -62,7 +62,7 @@
                     <select asp-for="DiaSemana" id="input-dia-semana" class="select2_single form-control" tabindex="-1">
                         <option value="SEG" selected> Segunda </option>
                         <option value="TER"> Terça   </option>
-                        <option value="QUA"> Quarto  </option>
+                        <option value="QUA"> Quarta  </option>
                         <option value="QUI"> Quinta  </option>
                         <option value="SEX"> Sexta   </option>
                         <option value="SAB"> Sábado  </option>
@@ -73,41 +73,52 @@
                 <div class="form-group align-element">
                     <a id="add-novo-horario" onclick="AdicionarNovoHorario()" class="btn btn-primary text-white"><i class="nav-icon fa fa-plus"></i> </a>
                 </div>
+                <br />
+                <span class="text-danger" id="mensagem-erro-horarios" hidden></span>
             </div>
 
-            <div class="ocupation col-sm-8">
-                <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                        </tr>
-                    </thead>
-                    <tbody id="container-horarios">
-                        @if (Model != null)
-                        {
-                            @for (var i = 0; i < Model.Horarios.Count; i++)
-                            {
-                                <tr id="novo-horario-@i " class="horarios-planejamento">
-                                    <td>
-                                        <input class="form-control" type="time" name="Horarios[@i].HorarioInicio" readonly value="@Model.Horarios[i].HorarioInicio" />
-                                    </td>
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Horários Adicionados</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                            <thead>
+                                                <tr>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="container-horarios">
+                                                @if (Model != null)
+                                                {
+                                                    @for (var i = 0; i < Model.Horarios.Count; i++)
+                                                    {
+                                                        <tr id="novo-horario-@i" class="horarios-planejamento">
+                                                            <td>
+                                                                <input class="form-control" type="time" name="Horarios[@i].HorarioInicio" hidden readonly value="@Model.Horarios[i].HorarioInicio" />
+                                                                <input class="form-control" type="time" name="Horarios[@i].HorarioFim" hidden readonly value="@Model.Horarios[i].HorarioFim" />
+                                                                <input class="form-control" name="Horarios[@i].DiaSemana" hidden readonly value="@Model.Horarios[i].DiaSemana" />
 
-                                    <td>
-                                        <input class="form-control" type="time" name="Horarios[@i].HorarioFim" readonly value="@Model.Horarios[i].HorarioFim" />
-                                    </td>
+                                                                <p class="form-control"> @Model.Horarios[i].HorarioInicio / @Model.Horarios[i].HorarioFim - @Model.Horarios[i].DiaSemana</p>
+                                                            </td>
 
-                                    <td>
-                                        <input class="form-control" name="Horarios[@i].DiaSemana" readonly value="@Model.Horarios[i].DiaSemana" />
-                                    </td>
-
-                                    <td>
-                                        <a id="remove-novo-horario" onclick="RemoveNovoHorario('novo-horario-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
+                                                            <td>
+                                                                <a id="remove-novo-horario" onclick="RemoveNovoHorario('novo-horario-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
             <div class="form-group col-sm-4">
                 <input type="submit" id="btn-create-planejamento" value="Salvar" class="btn btn-success" /> |

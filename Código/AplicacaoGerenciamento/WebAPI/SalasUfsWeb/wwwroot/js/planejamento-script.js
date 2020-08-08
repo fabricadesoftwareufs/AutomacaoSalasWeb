@@ -11,39 +11,68 @@
 
 function AdicionarNovoHorario() {
 
+    document.getElementById("mensagem-erro-horarios").hidden = true;
+
     let horarioInicio = $('#horarioInicio').val();
     let horarioFim = $('#horarioFim').val();
     let dia = $('#input-dia-semana').val();
     let indice = 0;
-    var novoHorario = new Array();
+    
+    if (!validacoesHorario(horarioInicio, horarioFim, dia)) {
 
-    if (horarioInicio.length > 0 && horarioFim.length > 0 && dia.length > 0) {
+        var novoHorario = new Array();
+        novoHorario.push(adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia));
 
         let horarios = document.getElementsByClassName('horarios-planejamento');
         if (document.querySelector('.horarios-planejamento')) {
-            novoHorario.push(adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia));
-
             for (indice = 0; indice < horarios.length; indice++) {
 
-                let idItem = 'novo-horario-' + (indice + 1);
-
-                dia = horarios[indice].childNodes[2].childNodes[0].value;
+                dia = horarios[indice].childNodes[0].childNodes[2].value;
                 horarioInicio = horarios[indice].childNodes[0].childNodes[0].value;
-                horarioFim = horarios[indice].childNodes[1].childNodes[0].value;
+                horarioFim = horarios[indice].childNodes[0].childNodes[1].value;
 
                 novoHorario.push(adicionaHorarioNaTabela(indice + 1, horarioInicio, horarioFim, dia));
             }
-
-        } else
-            novoHorario.push(adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia));
+        } 
 
         document.getElementById('container-horarios').innerHTML = "";
         for (var i = 0; i < novoHorario.length; i++)
             $('#container-horarios').append(novoHorario[i]);
 
         document.getElementById("btn-create-planejamento").disabled = false;
-
     }
+}
+
+function validacoesHorario(horarioInicio, horarioFim, diaSemana){
+
+    let horarioExistente = false;
+    if (horarioInicio.length > 0 && horarioFim.length > 0 && diaSemana.length > 0) {
+        if (horarioFim > horarioInicio) {
+            let horarios = document.getElementsByClassName('horarios-planejamento');
+            if (document.querySelector('.horarios-planejamento')) {
+                for (indice = 0; indice < horarios.length; indice++) {
+
+                    let dia = horarios[indice].childNodes[0].childNodes[2].value;
+                    let inicio = horarios[indice].childNodes[0].childNodes[0].value;
+                    let fim = horarios[indice].childNodes[0].childNodes[1].value;
+
+                    if (diaSemana == dia && inicio == horarioInicio && fim == horarioFim)
+                        horarioExistente = true;
+                }
+            }
+        } else {
+            horarioExistente = true;
+            document.getElementById("mensagem-erro-horarios").innerText = "O horário de início não pode ser maior que a hora do término!";
+            document.getElementById("mensagem-erro-horarios").hidden = false;
+        }
+    } else {
+        horarioExistente = true;
+        document.getElementById("mensagem-erro-horarios").innerText = "Preencha os campos antes de adicionar um horário!";
+        document.getElementById("mensagem-erro-horarios").hidden = false;
+    }
+
+    return horarioExistente;
+
 }
 
 function adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia){
@@ -51,19 +80,14 @@ function adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia){
     let horario =
         '<tr id="' + idItem + '" class="horarios-planejamento">' +
         '<td>' +
-        '<input class="form-control" type="time" name="Horarios[' + indice + '].HorarioInicio" readonly  value = "' + horarioInicio + '"/>' +
+            '<input class="form-control" type="time" name="Horarios[' + indice + '].HorarioInicio" hidden readonly  value = "' + horarioInicio + '"/>' +
+            '<input class="form-control" type="time" name="Horarios[' + indice + '].HorarioFim" hidden readonly  value = "' + horarioFim + '"/>' +
+            '<input class="form-control" name="Horarios[' + indice + '].DiaSemana" hidden readonly value = "' + dia + '"/>' +
+            '<p class="form-control">' + horarioInicio + ' / ' + horarioFim  + ' - '+ dia +'</p>' + 
         '</td>' +
-        ' / '+
+        
         '<td>' +
-        '<input class="form-control" type="time" name="Horarios[' + indice + '].HorarioFim" readonly  value = "' + horarioFim + '"/>' +
-        '</td>' +
-        ' - ' +
-        '<td>' +
-        '<input class="form-control" name="Horarios[' + indice + '].DiaSemana" readonly value = "' + dia + '"/>' +
-        '</td>' +
-
-        '<td>' +
-        '<a id="remove-novo-horario"  onclick="RemoveNovoHorario(' + '\''+idItem + '\''+ ')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +
+            '<a id="remove-novo-horario"  onclick="RemoveNovoHorario(' + '\''+idItem + '\''+ ')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +
         '</td>' +
         '</tr>';
 
@@ -76,8 +100,17 @@ function RemoveNovoHorario(idItem) {
     document.getElementById(idItem).remove();
 
     let horarios = document.getElementsByClassName('horarios-planejamento');
-    for (var indice = 0; indice < horarios.length; indice++) 
-        var e = horarios[indice].id = 'novo-horario-' + indice;
+
+    var novosHorarios = new Array();
+    for (var indice = 0; indice < horarios.length; indice++)
+        novosHorarios.push(adicionaHorarioNaTabela(indice,
+            horarios[indice].childNodes[0].childNodes[0].value,
+            horarios[indice].childNodes[0].childNodes[1].value,
+            horarios[indice].childNodes[0].childNodes[2].value));
+
+    document.getElementById('container-horarios').innerHTML = "";
+    for (var indice = 0; indice < novosHorarios.length; indice++) 
+        $('#container-horarios').append(novosHorarios[indice]);
 
     if (!document.querySelector('.horarios-planejamento'))
         document.getElementById("btn-create-planejamento").disabled = true;     
