@@ -51,9 +51,9 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(PlanejamentoModel planejamento)
         {
+
             ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
             ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
-            return View(planejamento);
 
             try
             {
@@ -105,7 +105,6 @@ namespace SalasUfsWeb.Controllers
                     if (_planejamentoService.Update(planejamento))
                     {
                         TempData["mensagemSucesso"] = "Planejamento Atualizado com sucesso!";
-                        return RedirectToAction(nameof(Index));
                     }
                     else
                     {
