@@ -1,4 +1,4 @@
-﻿@model Model.SalaModel
+﻿@model Model.ViewModel.SalaViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -18,28 +18,72 @@
 
                             <dl class="dl-horizontal">
                                 <dt>
-                                    @Html.DisplayNameFor(model => model.Id)
+                                    @Html.DisplayNameFor(model => model.Sala.Id)
                                 </dt>
                                 <dd>
-                                    <p class="form-control">  @Html.DisplayFor(model => model.Id) </p>
+                                    <p class="form-control">  @Html.DisplayFor(model => model.Sala.Id) </p>
                                 </dd>
                                 <dt>
-                                    @Html.DisplayNameFor(model => model.Titulo)
+                                    @Html.DisplayNameFor(model => model.Sala)
                                 </dt>
                                 <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.Titulo) </p>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.Sala.Titulo) </p>
                                 </dd>
                                 <dt>
-                                    @Html.DisplayNameFor(model => model.BlocoId)
+                                    @Html.DisplayNameFor(model => model.BlocoSala)
                                 </dt>
                                 <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.BlocoId) </p>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.BlocoSala.Titulo) </p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.HardwaresSala)
+                                </dt>
+                                <dd>
+
+                                    <section class="content">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            <div class="row">
+                                                                <div class="col-md-8">
+                                                                    <h2 class="card-title">
+                                                                    </h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <table id="table-search" class="table table-bordered table-striped">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Hardwares Associados</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+
+                                                                    @foreach (var item in Model.HardwaresSala)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>
+                                                                                @item.MAC / @item.TipoHardwareId.Descricao
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
                                 </dd>
                             </dl>
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="@Url.Action("Edit", "Sala", new { id = @Model.Id })" class="btn btn-info">Editar </a> |
+                        <a href="@Url.Action("Edit", "Sala", new { id = @Model.Sala.Id })" class="btn btn-info">Editar </a> |
                         <a class="btn btn-primary" asp-action="Index">Voltar</a>
                     </div>
                 </div>

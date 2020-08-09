@@ -1,12 +1,14 @@
 ﻿using Model;
+using Model.ViewModel;
 using Persistence;
+using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Service
 {
-    public class SalaService : IService<SalaModel>
+    public class SalaService : ISalaService
     {
         private readonly STR_DBContext _context;
         public SalaService(STR_DBContext context)
@@ -20,12 +22,46 @@ namespace Service
         public List<SalaModel> GetByIdBloco(int id) => _context.Sala.Where(s => s.Bloco == id).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).ToList();
 
 
-        public bool Insert(SalaModel entity)
+
+        public bool InsertSalaWithHardwares(SalaViewModel sala) 
+        {
+            var _hardwareDeSalaService = new HardwareDeSalaService(_context);
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var salaModel = Insert(new SalaModel { Id = sala.Sala.Id, Titulo = sala.Sala.Titulo, BlocoId = sala.Sala.BlocoId});
+                    
+                    if (salaModel == null) throw new ServiceException("Houve um problema ao cadastrar sala, tente novamente em alguns minutos!");
+
+                    foreach (var item in sala.HardwaresSala)
+                        _hardwareDeSalaService.Insert(new HardwareDeSalaModel { Id = item.Id,MAC = item.MAC, SalaId = salaModel.Id, TipoHardwareId = item.TipoHardwareId.Id});
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e;
+                }
+            }
+        }
+
+        public SalaModel Insert(SalaModel salaModel)
         {
             try
             {
-                _context.Add(SetEntity(entity, new Sala()));
-                return _context.SaveChanges() == 1 ? true : false;
+                var entity = new Sala();
+                _context.Add(SetEntity(salaModel,entity));
+                var save = _context.SaveChanges();
+
+                salaModel.Id = entity.Id;
+
+                if (save == 1)
+                    return salaModel;
+                else
+                    return null;
             }
             catch (Exception e)
             {
