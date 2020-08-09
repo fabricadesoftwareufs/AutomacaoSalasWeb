@@ -1,5 +1,6 @@
 ﻿using Model;
 using Persistence;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,17 +22,42 @@ namespace Service
 
         public bool Insert(SalaModel entity)
         {
-            _context.Add(SetEntity(entity, new Sala()));
-            return _context.SaveChanges() == 1 ? true : false;
+            try
+            {
+                _context.Add(SetEntity(entity, new Sala()));
+                return _context.SaveChanges() == 1 ? true : false;
+            }
+            catch (Exception e)
+            {
+                throw new ServiceException("Houve um problema ao inserir sala, tente novamente ");
+            }
         }
 
         public bool Remove(int id)
         {
-            var x = _context.Sala.Where(s => s.Id == id).FirstOrDefault();
-            if (x != null)
+            var _hardwareSalaService = new HardwareDeSalaService(_context);
+            var _minhaSalaService = new SalaParticularService(_context);
+            var _horarioSalaService = new HorarioSalaService(_context);
+            var _planejamentoService = new PlanejamentoService(_context);
+
+            try
             {
-                _context.Remove(x);
-                return _context.SaveChanges() == 1 ? true : false;
+                if (_hardwareSalaService.GetByIdSala(id).Count == 0 && _minhaSalaService.GetByIdSala(id).Count == 0 &&
+                    _horarioSalaService.GetByIdSala(id).Count == 0 && _planejamentoService.GetByIdSala(id).Count == 0)
+                {
+
+                    var x = _context.Sala.Where(s => s.Id == id).FirstOrDefault();
+                    if (x != null)
+                    {
+                        _context.Remove(x);
+                        return _context.SaveChanges() == 1 ? true : false;
+                    }
+                }
+                else throw new ServiceException("Essa sala nao pode ser removida pois existem outros registros associados a ela!");
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
 
             return false;
@@ -39,11 +65,18 @@ namespace Service
 
         public bool Update(SalaModel entity)
         {
-            var x = _context.Sala.Where(s => s.Id == entity.Id).FirstOrDefault();
-            if (x != null)
+            try
             {
-                _context.Update(SetEntity(entity, x));
-                return _context.SaveChanges() == 1 ? true : false;
+                var x = _context.Sala.Where(s => s.Id == entity.Id).FirstOrDefault();
+                if (x != null)
+                {
+                    _context.Update(SetEntity(entity, x));
+                    return _context.SaveChanges() == 1 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ServiceException("Houve um problema ao atualizar registro, tente novamente em alguns minutos");
             }
 
             return false;

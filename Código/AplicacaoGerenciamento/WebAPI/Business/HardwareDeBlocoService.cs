@@ -16,6 +16,9 @@ namespace Service
 
         public HardwareDeBlocoModel GetById(int id) => _context.Hardwaredebloco.Where(h => h.Id == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).FirstOrDefault();
 
+        public List<HardwareDeBlocoModel> GetByIdBloco(int id) => _context.Hardwaredebloco.Where(h => h.Bloco == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).ToList();
+
+
         public bool Insert(HardwareDeBlocoModel entity)
         {
             _context.Add(SetEntity(entity, new Hardwaredebloco()));

@@ -41,15 +41,24 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(SalaModel salaModel)
         {
+            ViewBag.BlocoList = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
+
             try
             {
                 if (ModelState.IsValid)
-                    if(_salaService.Insert(salaModel))
-                        return RedirectToAction(nameof(Index));          
+                {
+                    if (_salaService.Insert(salaModel))
+                    {
+                        TempData["mensagemSucesso"] = "Sala inserida com sucesso!";
+                        return View();
+                    }
+                    else
+                        TempData["mensagemErro"] = "Houve um problema ao inserir sala!";
+                }
             }
-            catch
+            catch (ServiceException se)
             {
-                return View(salaModel);
+                TempData["mensagemErro"] = se.Message;
             }
             return View(salaModel);
         }
@@ -70,13 +79,18 @@ namespace SalasUfsWeb.Controllers
             try
             {
                 if (ModelState.IsValid)
+                {
                     if (_salaService.Update(salaModel))
-                        return RedirectToAction(nameof(Index));
+                        TempData["mensagemSucesso"] = "Sala atualizada com sucesso!";
+                    else
+                        TempData["mensagemErro"] = "Houve um problema ao atualizar sala, tente novamente em alguns minutos!";
+                }
             }
-            catch
+            catch(ServiceException se)
             {
-                return View(salaModel);
+                TempData["mensagemErro"] = se.Message;
             }
+
             return View(salaModel);
         }
 
@@ -96,14 +110,18 @@ namespace SalasUfsWeb.Controllers
             try
             {
                 if (ModelState.IsValid)
+                {
                     if (_salaService.Remove(id))
-                        return RedirectToAction(nameof(Index));
+                        TempData["mensagemSucesso"] = "Sala removida com sucesso!";
+                    else
+                        TempData["mensagemErro"] = "Houve um problema ao remover a sala, tente novamente em alguns minutos!";
+                }
             }
-            catch
+            catch(ServiceException se)
             {
-                return View(salaModel);
+                TempData["mensagemErro"] = se.Message;
             }
-            return View(salaModel);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

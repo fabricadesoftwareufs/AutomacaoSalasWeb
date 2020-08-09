@@ -49,6 +49,22 @@ namespace Service
                     SalaId = pl.Sala
                 }).FirstOrDefault();
 
+        public List<PlanejamentoModel> GetByIdSala(int id)
+            => _context.Planejamento
+                .Where(pl => pl.Sala == id)
+                .Select(pl => new PlanejamentoModel
+                {
+                    Id = pl.Id,
+                    DataInicio = pl.DataInicio,
+                    DataFim = pl.DataFim,
+                    HorarioInicio = pl.HorarioInicio,
+                    HorarioFim = pl.HorarioFim,
+                    DiaSemana = pl.DiaSemana,
+                    Objetivo = pl.Objetivo,
+                    UsuarioId = pl.Usuario,
+                    SalaId = pl.Sala
+                }).ToList();
+
         public bool InsertListHorariosPlanjamento(PlanejamentoModel entity)
         {
             List<PlanejamentoModel> horariosEntity = new List<PlanejamentoModel>();

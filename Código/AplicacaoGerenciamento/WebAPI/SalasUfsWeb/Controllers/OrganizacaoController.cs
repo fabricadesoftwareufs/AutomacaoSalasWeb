@@ -18,16 +18,9 @@ namespace SalasUfsWeb.Controllers
             _organizacaoService = organizacaoService;
         }
         // GET: Organizacao
-        public IActionResult Index(string pesquisa)
+        public IActionResult Index()
         {
-            var organizacoes = ReturnAllViewModels();
-
-            if (!string.IsNullOrEmpty(pesquisa))
-            {
-                organizacoes = organizacoes.Where(o => o.RazaoSocial.Contains(pesquisa)).ToList();
-            }
-
-            return View(organizacoes);
+            return View(ReturnAllViewModels());
         }
 
         // GET: Organizacao/Details/5
@@ -50,14 +43,24 @@ namespace SalasUfsWeb.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
-                    if(_organizacaoService.Insert(organizacaoModel))
-                        return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    if (_organizacaoService.Insert(organizacaoModel))
+                    {
+                        TempData["mensagemSucesso"] = "Organização inserida com sucesso!";
+                        return View();
+                    }
+                    else
+                        TempData["mensagemErro"] = "Houve um problema ao inserir essa organização, tente novamente em alguns minutos!";
+
+                }
             }
-            catch
+            catch(ServiceException se)
             {
-                return View(organizacaoModel);
+                TempData["mensagemErro"] = se.Message;
+
             }
+
             return View(organizacaoModel);
         }
 
@@ -76,20 +79,19 @@ namespace SalasUfsWeb.Controllers
             try
             {
                 if (ModelState.IsValid)
+                {
                     if (_organizacaoService.Update(organizacaoModel))
-                        return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View(organizacaoModel);
-            }
-            return View(organizacaoModel);
-        }
+                        TempData["mensagemSucesso"] = "Organização atualizada com sucesso!";
+                    else
+                        TempData["mensagemErro"] = "Houve um problema ao atualizar essa organização, tente novamente em alguns minutos!";
 
-        // GET: Organizacao/Delete/5
-        public ActionResult Delete(int id)
-        {
-            OrganizacaoModel organizacaoModel = _organizacaoService.GetById(id);
+                }
+            }
+            catch(ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
+            }
+
             return View(organizacaoModel);
         }
 
@@ -102,14 +104,17 @@ namespace SalasUfsWeb.Controllers
 
             try
             {
-               if(_organizacaoService.Remove(id))
-                    return RedirectToAction(nameof(Index));
+                if (_organizacaoService.Remove(id))
+                    TempData["mensagemSucesso"] = "Organizacao removida com sucesso!";
+                else
+                    TempData["mensagemErro"] = "Houve um problema ao remover organizacao, tente novamente em alguns minutos!";
+                    
             }
-            catch
+            catch (ServiceException se)
             {
-                return View(organizacaoModel);
+                TempData["mensagemErro"] = se.Message;
             }
-            return View(organizacaoModel);
+            return RedirectToAction(nameof(Index));
         }
 
         private List<OrganizacaoModel> ReturnAllViewModels()

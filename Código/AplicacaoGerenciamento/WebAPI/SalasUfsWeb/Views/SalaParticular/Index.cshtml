@@ -33,7 +33,7 @@
                                     <th>
                                         @Html.DisplayNameFor(model => model.SalaId)
                                     </th>
-                                    <th></th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -54,25 +54,32 @@
                                             <a href="@Url.Action("Edit", "SalaParticular", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
                                             <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
 
-                                            <div class="modal fade bs-example-modal-sm" id="modal-remover-@item.Id" tabindex="-1" role="dialog" aria-hidden="true">
+
+                                            <div class="modal fade" id="modal-remover-@item.Id">
                                                 <div class="modal-dialog modal-sm">
-                                                    <div class="modal-content text-center" style="padding: 10pt">
-                                                        <h5> Desassociar responsável da sala ? </h5>
-
-                                                        <h5>Código</h5><p>@item.Id</p>
-                                                        <h5>Sala</h5> <p>@item.SalaId.Titulo </p>
-                                                        <h5>Responsável</h5> <p>@item.Responsavel.Cpf | @item.Responsavel.Nome</p>
-
+                                                    <div class="modal-content card card-secondary">
+                                                        <div class="modal-header card-header">
+                                                            <h5 class="modal-title">Desassociar responsável da sala ?</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true" class="text-white">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body text-center">
+                                                            <h5>Código</h5><p>@item.Id</p>
+                                                            <h5>Sala</h5> <p>@item.SalaId.Titulo </p>
+                                                            <h5>Responsável</h5> <p>@item.Responsavel.Cpf | @item.Responsavel.Nome</p>
+                                                        </div>
 
                                                         @using (Html.BeginForm("Delete", "SalaParticular", new { id = item.Id }, FormMethod.Post))
                                                         {
-                                                            <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
-                                                            <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
+                                                            <div class="modal-footer justify-content-between">
+                                                                <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
+                                                                <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
+                                                            </div>
                                                         }
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </td>
                                     </tr>
                                 }

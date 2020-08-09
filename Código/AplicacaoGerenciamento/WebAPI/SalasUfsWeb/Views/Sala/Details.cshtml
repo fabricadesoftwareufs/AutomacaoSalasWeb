@@ -4,33 +4,46 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Detalhes da Sala</h2>
+                    </div>
+                    <div class="card-body">
 
-<div>
-    <h4>SalaModel</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Titulo)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Titulo)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.BlocoId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.BlocoId)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+                        <div class="col-md-10">
+
+                            <dl class="dl-horizontal">
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Id)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">  @Html.DisplayFor(model => model.Id) </p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Titulo)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.Titulo) </p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.BlocoId)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.BlocoId) </p>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="@Url.Action("Edit", "Sala", new { id = @Model.Id })" class="btn btn-info">Editar </a> |
+                        <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

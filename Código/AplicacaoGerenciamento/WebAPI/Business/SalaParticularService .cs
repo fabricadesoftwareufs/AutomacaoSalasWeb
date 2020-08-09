@@ -35,6 +35,16 @@ namespace Service
                     SalaId = sp.Sala
                 }).FirstOrDefault();
 
+        public List<SalaParticularModel> GetByIdSala(int id)
+            => _context.Salaparticular
+                .Where(sp => sp.Sala == id)
+                .Select(sp => new SalaParticularModel
+                {
+                    Id = sp.Id,
+                    UsuarioId = sp.Usuario,
+                    SalaId = sp.Sala
+                }).ToList();
+
         public SalaParticularModel GetByIdUsuarioAndIdSala(int idUsuario, int idSala)
            => _context.Salaparticular
                .Where(sp => sp.Usuario == idUsuario && sp.Sala == idSala)
