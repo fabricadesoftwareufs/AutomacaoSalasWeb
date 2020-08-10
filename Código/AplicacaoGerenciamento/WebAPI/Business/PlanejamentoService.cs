@@ -1,6 +1,7 @@
 ﻿using Model;
 using Model.ViewModel;
 using Persistence;
+using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,7 +9,7 @@ using System.Linq;
 
 namespace Service
 {
-    public class PlanejamentoService : IService<PlanejamentoModel>
+    public class PlanejamentoService : IPlanejamentoService
     {
         private readonly STR_DBContext _context;
         public PlanejamentoService(STR_DBContext context)
@@ -31,7 +32,6 @@ namespace Service
                     SalaId = pl.Sala
 
                 }).ToList();
-        public int Id { get; set; }
 
         public PlanejamentoModel GetById(int id)
             => _context.Planejamento
@@ -193,9 +193,27 @@ namespace Service
             return entity;
         }
 
+        public List<PlanejamentoModel> GetByIdOrganizacao(int id)
+        {
+            var _blocoService = new BlocoService(_context);
+            var _salaService = new SalaService(_context);
 
-        public List<PlanejamentoModel> GetSelectedList()
-         => _context.Planejamento.Select(s => new PlanejamentoModel { Id = s.Id, Objetivo = string.Format("{0} - {1} à {2} - ", s.Id, s.DataInicio, s.DataFim, s.DiaSemana) }).ToList();
+            var query = (from pl in GetAll()
+                         join sl in _salaService.GetAll() on pl.SalaId equals sl.Id
+                         join bl in _blocoService.GetAllByIdUsuarioOrganizacao(id) on sl.Id equals bl.Id
+                         select new PlanejamentoModel
+                         {
+                             Id = pl.Id,
+                             DataFim = pl.DataFim,
+                             DataInicio = pl.DataInicio,
+                             DiaSemana = pl.DiaSemana,
+                             HorarioFim = pl.HorarioFim,
+                             HorarioInicio = pl.HorarioInicio,
+                             SalaId = pl.SalaId,
+                             UsuarioId = pl.UsuarioId
+                         }).ToList();
 
+            return query;
+        }
     }
 }

@@ -10,25 +10,29 @@ using Model;
 using Model.ViewModel;
 using Persistence;
 using Service;
+using Service.Interface;
 
 namespace SalasUfsWeb.Controllers
 {
     public class BlocoController : Controller
     {
-        private readonly BlocoService _blocoService;
-        private readonly OrganizacaoService _organizacaoService;
-        private readonly UsuarioOrganizacaoService _usuarioOrganizacaoService;
-        public BlocoController(BlocoService blocoService,
-                               OrganizacaoService organizacaoService,
-                               UsuarioOrganizacaoService usuarioOrganizacaoService)
+        private readonly IBlocoService _blocoService;
+        private readonly IOrganizacaoService _organizacaoService;
+        private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
+        private readonly IUsuarioService _usuarioService;
+        public BlocoController(IBlocoService blocoService,
+                               IOrganizacaoService organizacaoService,
+                               IUsuarioOrganizacaoService usuarioOrganizacaoService,
+                               IUsuarioService UsuarioService)
         {
             _blocoService = blocoService;
             _organizacaoService = organizacaoService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
+            _usuarioService = UsuarioService;
         }
 
         // GET: Bloco
-        public IActionResult Index(string pesquisa)
+        public IActionResult Index()
         {
             return View(ReturnAllViewModels());
         }
@@ -58,7 +62,7 @@ namespace SalasUfsWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (_blocoService.InsertBlocoWithHardware(blocoModel))
+                    if (_blocoService.InsertBlocoWithHardware(blocoModel,_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id))
                     {
                         TempData["mensagemSucesso"] = "Bloco adicionado com sucesso!"; return View();
                     }
@@ -130,8 +134,7 @@ namespace SalasUfsWeb.Controllers
 
         private List<OrganizacaoModel> GetOrganizacaos()
         {
-            var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
-            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUser);
+            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
 
             var organizacoesLotadas = new List<OrganizacaoModel>();
             usuarioOrg.ForEach(uo => organizacoesLotadas.Add(_organizacaoService.GetById(uo.OrganizacaoId)));
@@ -141,12 +144,9 @@ namespace SalasUfsWeb.Controllers
 
         private List<BlocoViewModel> ReturnAllViewModels()
         {
-            List<BlocoModel> bs = _blocoService.GetAll();
+            var bs = _blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
             List<BlocoViewModel> bvm = new List<BlocoViewModel>();
-            foreach (var item in bs)
-            {
-                bvm.Add(Cast(item));
-            }
+            bs.ForEach(b => bvm.Add(Cast(b)));
 
             return bvm;
         }

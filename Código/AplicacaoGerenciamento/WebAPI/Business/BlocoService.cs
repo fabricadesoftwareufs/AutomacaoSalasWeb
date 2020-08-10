@@ -23,7 +23,7 @@ namespace Service
 
         public BlocoModel GetByTitulo(string titulo, int  idOrganizacao) => _context.Bloco.Where(b => b.Titulo.ToUpper().Equals(titulo.ToUpper()) && b.Organizacao == idOrganizacao).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).FirstOrDefault();
 
-        public bool InsertBlocoWithHardware(BlocoModel blocoModel)
+        public bool InsertBlocoWithHardware(BlocoModel blocoModel, int idUsuario)
         {
             var blocoInserido = new BlocoModel();
             try
@@ -44,11 +44,11 @@ namespace Service
                     try
                     {
                         foreach (var item in blocoModel.Hardwares)
-                            if (_hardwareDeBlocoService.GetByMAC(item.MAC) != null)
+                            if (_hardwareDeBlocoService.GetByMAC(item.MAC, idUsuario) != null)
                                 throw new ServiceException("Já existe um dispositivos com o endereço MAC informado, corrija e tente novamente!");
 
                         foreach (var item in blocoModel.Hardwares)
-                            _hardwareDeBlocoService.Insert(new HardwareDeBlocoModel { MAC = item.MAC, BlocoId = blocoInserido.Id, TipoHardwareId = TipoHardwareModel.HARDWARE_DE_BLOCO });
+                            _hardwareDeBlocoService.Insert(new HardwareDeBlocoModel { MAC = item.MAC, BlocoId = blocoInserido.Id, TipoHardwareId = TipoHardwareModel.HARDWARE_DE_BLOCO }, idUsuario);
 
                         transaction.Commit();
                         return true;
@@ -135,9 +135,21 @@ namespace Service
             return entity;
         }
 
-        public List<BlocoModel> GetSelectedList()
-           => _context.Bloco.Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} - {1}", s.Id, s.Titulo) }).ToList();
+      
+        public List<BlocoModel> GetAllByIdUsuarioOrganizacao(int idUsuario)
+        {
+            var _usuarioOrganizacao = new UsuarioOrganizacaoService(_context);
 
-     
+            var query = (from bl in GetAll()
+                         join uo in _usuarioOrganizacao.GetByIdUsuario(idUsuario) on bl.OrganizacaoId equals uo.OrganizacaoId
+                         select new BlocoModel
+                         {
+                             Id = bl.Id,
+                             Titulo = bl.Titulo,
+                             OrganizacaoId = bl.OrganizacaoId
+                         }).ToList();
+
+            return query;
+        }
     }
 }

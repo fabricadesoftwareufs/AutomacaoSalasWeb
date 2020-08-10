@@ -1,11 +1,12 @@
 ﻿using Model;
 using Persistence;
+using Service.Interface;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Service
 {
-    public class TipoHardwareService : IService<TipoHardwareModel>
+    public class TipoHardwareService : ITipoHardwareService
     {
         private readonly STR_DBContext _context;
         public TipoHardwareService(STR_DBContext context)
@@ -54,8 +55,5 @@ namespace Service
 
             return entity;
         }
-
-        public List<TipoHardwareModel> GetSelectedList()
-           => _context.Tipohardware.Select(s => new TipoHardwareModel { Id = s.Id, Descricao = string.Format("{0} - {1}", s.Id, s.Descricao)}).ToList();
     }
 }

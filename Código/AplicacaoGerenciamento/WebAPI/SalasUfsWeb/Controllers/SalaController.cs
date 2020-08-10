@@ -6,6 +6,7 @@ using Model.AuxModel;
 using Model.ViewModel;
 using Persistence;
 using Service;
+using Service.Interface;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -14,24 +15,27 @@ namespace SalasUfsWeb.Controllers
 {
     public class SalaController : Controller
     {
-        private readonly SalaService _salaService;
-        private readonly BlocoService _blocoService;
-        private readonly HardwareDeSalaService _hardwareDeSalaService;
-        private readonly TipoHardwareService _tipoHardwareService;
-        private readonly UsuarioOrganizacaoService _usuarioOrganizacaoService;
+        private readonly ISalaService _salaService;
+        private readonly IBlocoService _blocoService;
+        private readonly IHardwareDeSalaService _hardwareDeSalaService;
+        private readonly ITipoHardwareService _tipoHardwareService;
+        private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
+        private readonly IUsuarioService _usuarioService;
 
 
-        public SalaController(SalaService salaService,
-                              BlocoService blocoService,
-                              HardwareDeSalaService hardwareDeSalaService,
-                              TipoHardwareService tipoHardwareService,
-                              UsuarioOrganizacaoService usuarioOrganizacaoService)
+        public SalaController(ISalaService salaService,
+                              IBlocoService blocoService,
+                              IHardwareDeSalaService hardwareDeSalaService,
+                              ITipoHardwareService tipoHardwareService,
+                              IUsuarioOrganizacaoService usuarioOrganizacaoService,
+                              IUsuarioService usuarioService)
         {
             _salaService = salaService;
             _blocoService = blocoService;
             _hardwareDeSalaService = hardwareDeSalaService;
             _tipoHardwareService = tipoHardwareService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
+            _usuarioService = usuarioService;
         }
         // GET: Sala
         public ActionResult Index()
@@ -59,6 +63,7 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(SalaModel salaModel)
         {
+            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
             ViewBag.BlocoList = new SelectList(GetBlocos(), "Id", "Titulo");
             ViewBag.TipoHardware = _tipoHardwareService.GetAll();
 
@@ -67,7 +72,7 @@ namespace SalasUfsWeb.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    if (_salaService.InsertSalaWithHardwares(salaModel))
+                    if (_salaService.InsertSalaWithHardwares(salaModel, usuario.Id))
                     {
                         TempData["mensagemSucesso"] = "Sala inserida com sucesso!"; return View();
                     }
@@ -146,18 +151,13 @@ namespace SalasUfsWeb.Controllers
         private List<SalaViewModel> GetAllSalasViewModel()
         {
             var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
-            var todasSalas = _salaService.GetAll();
-            var blocos = GetBlocos();
+            var salasViewModel = new List<SalaViewModel>();
 
-            var query = (from ol in todasSalas
-                         join bl in blocos on ol.BlocoId equals bl.Id
-                         select new SalaViewModel
-                         {
-                             Sala = ol,
-                             BlocoSala = bl,
-                         }).ToList();
+            var salas = _salaService.GetAllByIdUsuarioOrganizacao(idUser);
+            salas.ForEach(s => salasViewModel.Add(new SalaViewModel { BlocoSala = _blocoService.GetById(s.BlocoId), Sala = _salaService.GetById(s.Id) }));
 
-            return query;
+
+            return salasViewModel;
         }
 
         private SalaViewModel GetSalaViewModel(int id)
@@ -179,12 +179,8 @@ namespace SalasUfsWeb.Controllers
         public List<BlocoModel> GetBlocos()
         {
             var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
-            var organizacoesLotadas = _usuarioOrganizacaoService.GetByIdUsuario(idUser);
 
-            List<BlocoModel> blocos = new List<BlocoModel>();
-            organizacoesLotadas.ForEach(org => blocos.AddRange(_blocoService.GetByIdOrganizacao(org.OrganizacaoId)));
-
-            return blocos;
+            return _blocoService.GetAllByIdUsuarioOrganizacao(idUser);
         }
     }
 }

@@ -6,6 +6,7 @@ using Model;
 using Model.ViewModel;
 using Persistence;
 using Service;
+using Service.Interface;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -14,18 +15,18 @@ namespace SalasUfsWeb.Controllers
 {
     public class SalaParticularController : Controller
     {
-        private readonly SalaParticularService _salaParticularService;
-        private readonly SalaService _salaService;
-        private readonly UsuarioService _usuarioService;
-        private readonly BlocoService _blocoService;
-        private readonly UsuarioOrganizacaoService _usuarioOrganizacaoService;
+        private readonly ISalaParticularService _salaParticularService;
+        private readonly ISalaService _salaService;
+        private readonly IUsuarioService _usuarioService;
+        private readonly IBlocoService _blocoService;
+        private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
 
 
-        public SalaParticularController(SalaService salaService, 
-                                        SalaParticularService salaParticularService,
-                                        UsuarioService usuarioService,
-                                        BlocoService blocoService,
-                                        UsuarioOrganizacaoService usuarioOrganizacaoService)
+        public SalaParticularController(ISalaService salaService, 
+                                        ISalaParticularService salaParticularService,
+                                        IUsuarioService usuarioService,
+                                        IBlocoService blocoService,
+                                        IUsuarioOrganizacaoService usuarioOrganizacaoService)
         {
             _salaService = salaService;
             _salaParticularService = salaParticularService;
@@ -42,7 +43,7 @@ namespace SalasUfsWeb.Controllers
 
         public ActionResult Create()
         {
-            var blocos = GetBlocos().Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }).ToList();
+            var blocos = _blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id).Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }).ToList();
             
             ViewBag.usuarios = new SelectList(GetUsuarios().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
             ViewBag.salas = new SelectList(GetSalas(blocos[0].Id).Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
@@ -58,7 +59,7 @@ namespace SalasUfsWeb.Controllers
         {
             ViewBag.usuarios = new SelectList(GetUsuarios().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
             ViewBag.salas = new SelectList(GetSalas(salaParticularModel.BlocoId).Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-            ViewBag.blocos = new SelectList(GetBlocos().Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
+            ViewBag.blocos = new SelectList(_blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id).Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
 
             try
             {
@@ -93,7 +94,7 @@ namespace SalasUfsWeb.Controllers
 
             ViewBag.usuarios = new SelectList(GetUsuarios().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
             ViewBag.salas = new SelectList(GetSalas(salaModel.BlocoId).Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo)}), "Id", "Titulo");
-            ViewBag.blocos = new SelectList(GetBlocos().Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
+            ViewBag.blocos = new SelectList(_blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id).Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
 
             return View(new SalaParticularViewModel
             {
@@ -112,7 +113,7 @@ namespace SalasUfsWeb.Controllers
         {
             ViewBag.usuarios = new SelectList(GetUsuarios().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
             ViewBag.salas = new SelectList(GetSalas(salaParticularModel.BlocoId).Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-            ViewBag.blocos = new SelectList(GetBlocos().Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
+            ViewBag.blocos = new SelectList(_blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id).Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
 
             try
             {
@@ -198,17 +199,6 @@ namespace SalasUfsWeb.Controllers
             organizacoesLotadas.ForEach(org => usuarios.AddRange(_usuarioService.GetByIdOrganizacao(org.OrganizacaoId)));
 
             return usuarios;
-        }
-
-        public List<BlocoModel> GetBlocos() 
-        {
-            var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
-            var organizacoesLotadas = _usuarioOrganizacaoService.GetByIdUsuario(idUser);
-
-            List<BlocoModel> blocos = new List<BlocoModel>();
-            organizacoesLotadas.ForEach(org => blocos.AddRange(_blocoService.GetByIdOrganizacao(org.OrganizacaoId)));
-            
-            return blocos;
         }
 
         public List<SalaModel> GetSalas(int idBloco)

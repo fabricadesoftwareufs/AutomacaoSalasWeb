@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.ViewModel;
 using Service;
+using Service.Interface;
 using Utils;
 
 namespace SalasUfsWeb.Controllers
@@ -16,8 +17,8 @@ namespace SalasUfsWeb.Controllers
     [AllowAnonymous]
     public class LoginController : Controller
     {
-        private readonly UsuarioService _service;
-        public LoginController(UsuarioService service)
+        private readonly IUsuarioService _service;
+        public LoginController(IUsuarioService service)
         {
             _service = service;
         }

@@ -1,11 +1,14 @@
 ﻿using Model;
 using Persistence;
+using Service.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks.Dataflow;
 
 namespace Service
 {
-    public class HardwareDeBlocoService : IService<HardwareDeBlocoModel>
+    public class HardwareDeBlocoService : IHardwareDeBlocoService
     {
         private readonly STR_DBContext _context;
         public HardwareDeBlocoService(STR_DBContext context)
@@ -18,34 +21,81 @@ namespace Service
 
         public List<HardwareDeBlocoModel> GetByIdBloco(int id) => _context.Hardwaredebloco.Where(h => h.Bloco == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).ToList();
 
-        public HardwareDeBlocoModel GetByMAC(string mac) => _context.Hardwaredebloco.Where(h => h.Mac.Equals(mac)).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).FirstOrDefault();
-
-
-        public bool Insert(HardwareDeBlocoModel entity)
+        public HardwareDeBlocoModel GetByMAC(string mac, int idUsuario)
         {
-            _context.Add(SetEntity(entity, new Hardwaredebloco()));
-            return _context.SaveChanges() == 1 ? true : false;
+            var _usuarioOrganizacao = new UsuarioOrganizacaoService(_context);
+            var _blocoService = new BlocoService(_context);
+            
+            var hardware = _context.Hardwaredebloco.Where(h => h.Mac.Equals(mac)).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).FirstOrDefault();
+
+
+            if (hardware != null)
+            {
+                var bloco = _blocoService.GetById(hardware.BlocoId);
+                var orgs = _usuarioOrganizacao.GetByIdUsuario(idUsuario);
+
+                foreach (var item in orgs)
+                    if (bloco.OrganizacaoId == item.OrganizacaoId)
+                        return hardware;
+            }
+            return null;
+        }
+
+
+        public bool Insert(HardwareDeBlocoModel entity, int idUsuario)
+        {
+            try
+            {
+                var hardware = GetByMAC(entity.MAC, idUsuario);
+                if(hardware != null)
+                    throw new ServiceException("Já existe outro hardware com esse endereço MAC!");
+
+                _context.Add(SetEntity(entity, new Hardwaredebloco()));
+                return _context.SaveChanges() == 1 ? true : false;
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
 
         public bool Remove(int id)
         {
-            var x = _context.Hardwaredebloco.Where(tu => tu.Id == id).FirstOrDefault();
-            if (x != null)
+            try
             {
-                _context.Remove(x);
-                return _context.SaveChanges() == 1 ? true : false;
+                var x = _context.Hardwaredebloco.Where(tu => tu.Id == id).FirstOrDefault();
+                if (x != null)
+                {
+                    _context.Remove(x);
+                    return _context.SaveChanges() == 1 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
 
             return false;
         }
 
-        public bool Update(HardwareDeBlocoModel entity)
+        public bool Update(HardwareDeBlocoModel entity, int idUsuario)
         {
-            var x = _context.Hardwaredebloco.Where(tu => tu.Id == entity.Id).FirstOrDefault();
-            if (x != null)
+            try
             {
-                _context.Update(SetEntity(entity, x));
-                return _context.SaveChanges() == 1 ? true : false;
+                var hr = GetByMAC(entity.MAC, idUsuario);
+                if (hr != null && hr.Id != entity.Id)
+                    throw new ServiceException("Já existe outro hardware com esse endereço MAC!");
+
+                var x = _context.Hardwaredebloco.Where(tu => tu.Id == entity.Id).FirstOrDefault();
+                if (x != null)
+                {
+                    _context.Update(SetEntity(entity, x));
+                    return _context.SaveChanges() == 1 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
 
             return false;
@@ -60,8 +110,5 @@ namespace Service
 
             return entity;
         }
-
-        public List<HardwareDeBlocoModel> GetSelectedList()
-            => _context.Hardwaredebloco.Select(s => new HardwareDeBlocoModel { Id = s.Id, MAC = string.Format("{0} - {1}", s.Id, s.Mac) }).ToList();
     }
 }

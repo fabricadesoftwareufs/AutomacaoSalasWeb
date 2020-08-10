@@ -12,10 +12,11 @@ namespace Service.Interface
         SalaModel GetById(int id);
         SalaModel GetByTitulo(string titulo);
         List<SalaModel> GetByIdBloco(int id);
-        bool InsertSalaWithHardwares(SalaModel sala);
+
+        List<SalaModel> GetAllByIdUsuarioOrganizacao(int idUsuario);
+        bool InsertSalaWithHardwares(SalaModel sala, int idUsuario);
         SalaModel Insert(SalaModel salaModel);
         bool Remove(int id);
         bool Update(SalaModel entity);
-        List<SalaModel> GetSelectedList();
     }
 }

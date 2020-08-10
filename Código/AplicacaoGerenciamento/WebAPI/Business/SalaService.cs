@@ -23,7 +23,7 @@ namespace Service
         public SalaModel GetByTitulo(string titulo) => _context.Sala.Where(s => s.Titulo.ToUpper().Equals(titulo.ToUpper())).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).FirstOrDefault();
 
 
-        public bool InsertSalaWithHardwares(SalaModel sala) 
+        public bool InsertSalaWithHardwares(SalaModel sala, int idUsuario) 
         {
             var salaInserida = new SalaModel();
             try
@@ -44,11 +44,11 @@ namespace Service
                     try
                     {
                         foreach (var item in sala.HardwaresSala)
-                            if (_hardwareDeSalaService.GetByMAC(item.MAC) != null)
+                            if (_hardwareDeSalaService.GetByMAC(item.MAC, idUsuario) != null)
                                 throw new ServiceException("Já existe um dispositivos com o endereço MAC informado, corrija e tente novamente!");
 
                         foreach (var item in sala.HardwaresSala)
-                            _hardwareDeSalaService.Insert(new HardwareDeSalaModel { MAC = item.MAC, SalaId = salaInserida.Id, TipoHardwareId = item.TipoHardwareId.Id });
+                            _hardwareDeSalaService.Insert(new HardwareDeSalaModel { MAC = item.MAC, SalaId = salaInserida.Id, TipoHardwareId = item.TipoHardwareId.Id }, idUsuario);
 
                         transaction.Commit();
                         return true;
@@ -68,8 +68,9 @@ namespace Service
         {
             try
             {
-                if (GetByTitulo(salaModel.Titulo) != null)
-                    throw new ServiceException("Já existe um sala cadastrada com este nome!");
+                var sala = GetByTitulo(salaModel.Titulo);
+                if (sala != null && sala.BlocoId == salaModel.BlocoId)
+                    throw new ServiceException("Uma sala com o mesmo Titulo já está associada a este bloco!");
 
                 var entity = new Sala();
                 _context.Add(SetEntity(salaModel,entity));
@@ -138,5 +139,24 @@ namespace Service
 
         public List<SalaModel> GetSelectedList()
             => _context.Sala.Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} - {1}", s.Id, s.Titulo) }).ToList();
+
+        public List<SalaModel> GetAllByIdUsuarioOrganizacao(int idUsuario)
+        {
+            var _blocoService = new BlocoService(_context);
+
+            var todasSalas = GetAll();
+            var blocos = _blocoService.GetAllByIdUsuarioOrganizacao(idUsuario);
+
+            var query = (from sl in todasSalas
+                         join bl in blocos on sl.BlocoId equals bl.Id
+                         select new SalaModel
+                         {
+                             Id = sl.Id,
+                             BlocoId = sl.BlocoId,
+                             Titulo = sl.Titulo
+                         }).ToList();
+
+            return query;
+        }
     }
 }
