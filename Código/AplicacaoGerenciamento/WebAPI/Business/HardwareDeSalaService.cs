@@ -1,9 +1,11 @@
-﻿using Model;
+﻿using Google.Protobuf.WellKnownTypes;
+using Model;
 using Persistence;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Utils;
 
 namespace Service
 {
@@ -123,7 +125,7 @@ namespace Service
         private static Hardwaredesala SetEntity(HardwareDeSalaModel model, Hardwaredesala entity)
         {
             entity.Id = model.Id;
-            entity.Mac = model.MAC;
+            entity.Mac = Methods.CleanString(model.MAC);
             entity.TipoHardware = model.TipoHardwareId;
             entity.Sala = model.SalaId;
 

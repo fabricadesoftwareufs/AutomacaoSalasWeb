@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks.Dataflow;
+using Utils;
 
 namespace Service
 {
@@ -20,6 +21,23 @@ namespace Service
         public HardwareDeBlocoModel GetById(int id) => _context.Hardwaredebloco.Where(h => h.Id == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).FirstOrDefault();
 
         public List<HardwareDeBlocoModel> GetByIdBloco(int id) => _context.Hardwaredebloco.Where(h => h.Bloco == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).ToList();
+        public List<HardwareDeBlocoModel> GetAllHardwaresSalaByUsuarioOrganizacao(int idUsuario)
+        {
+            var _blocoService = new BlocoService(_context);
+            var hardwares = GetAll();
+
+            var query = (from sl in _blocoService.GetAllByIdUsuarioOrganizacao(idUsuario)
+                         join hr in hardwares on sl.Id equals hr.BlocoId
+                         select new HardwareDeBlocoModel
+                         {
+                             Id = hr.Id,
+                             MAC = hr.MAC,
+                             BlocoId = hr.BlocoId,
+                             TipoHardwareId = hr.TipoHardwareId
+                         }).ToList();
+
+            return query;
+        }
 
         public HardwareDeBlocoModel GetByMAC(string mac, int idUsuario)
         {
@@ -104,7 +122,7 @@ namespace Service
         private static Hardwaredebloco SetEntity(HardwareDeBlocoModel model, Hardwaredebloco entity)
         {
             entity.Id = model.Id;
-            entity.Mac = model.MAC;
+            entity.Mac = Methods.CleanString(model.MAC);
             entity.TipoHardware = model.TipoHardwareId;
             entity.Bloco = model.BlocoId;
 

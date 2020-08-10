@@ -65,9 +65,9 @@ namespace SalasUfsWeb.Controllers
                     else TempData["mensagemErro"] = "Houve um problem ao inserir hardware, tente novamente em alguns minutos!!";
                 }
             }
-            catch (Exception e)
+            catch (ServiceException se)
             {
-                throw e;
+                TempData["mensagemErro"] = se.Message;
             }
 
             return View(hardware);
@@ -133,12 +133,11 @@ namespace SalasUfsWeb.Controllers
 
         private List<HardwareDeBlocoViewModel> ReturnAllViewModels()
         {
-            List<HardwareDeBlocoModel> hardwares = _hardwareService.GetAll();
-            List<HardwareDeBlocoViewModel> hardwaresViewModel = new List<HardwareDeBlocoViewModel>();
-            foreach (var item in hardwares)
-            {
-                hardwaresViewModel.Add(Cast(item));
-            }
+            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
+            var hardwares = _hardwareService.GetAllHardwaresSalaByUsuarioOrganizacao(usuario.Id);
+            
+            var hardwaresViewModel = new List<HardwareDeBlocoViewModel>();
+            hardwares.ForEach(e => Cast(e));
 
             return hardwaresViewModel;
         }

@@ -9,7 +9,6 @@ namespace Model
         public int Id { get; set; }
         [Required]
         [Display(Name = "MAC")]
-        [MaxLength(10), MinLength(10)]
         public string MAC { get; set; }
         [Required]
         [Display(Name = "Bloco")]

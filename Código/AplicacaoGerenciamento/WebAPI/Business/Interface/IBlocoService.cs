@@ -17,6 +17,5 @@ namespace Service.Interface
         BlocoModel Insert(BlocoModel entity);
         bool Remove(int id);
         bool Update(BlocoModel entity);
-        List<BlocoModel> GetSelectedList();
     }
 }
