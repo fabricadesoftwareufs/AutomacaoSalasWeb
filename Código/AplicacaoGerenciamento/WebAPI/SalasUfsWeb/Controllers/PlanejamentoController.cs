@@ -31,11 +31,6 @@ namespace SalasUfsWeb.Controllers
         {
             var planejamentos = ReturnAllPlanejamentosViewModels();
 
-            if (!string.IsNullOrEmpty(pesquisa))
-            {
-                planejamentos = planejamentos.Where(s => s.SalaId.Titulo.Contains(pesquisa)).ToList();
-            }
-
             return View(planejamentos);
         }
 

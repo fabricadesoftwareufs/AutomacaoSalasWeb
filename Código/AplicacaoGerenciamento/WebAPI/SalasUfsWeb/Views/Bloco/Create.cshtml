@@ -16,18 +16,77 @@
                         <div class="card-body">
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group" id="ListElements">
-                                <label asp-for="OrganizacaoId" class="control-label"></label>
-                                @*ViewBag.OrgList is holding all the routs values*@
-                                @Html.DropDownListFor(model => model.OrganizacaoId, ViewBag.OrgList as SelectList, new
-                                { @class = "form-control" })
-                                <span asp-validation-for="OrganizacaoId" class="text-danger"></span>
+                            <div class="col-md-6">
+                                <div class="form-group" id="ListElements">
+                                    <label asp-for="OrganizacaoId" class="control-label"></label>
+                                    @Html.DropDownListFor(model => model.OrganizacaoId, ViewBag.OrgList as SelectList, new
+                                    { @class = "form-control" })
+                                    <span asp-validation-for="OrganizacaoId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Titulo" class="control-label"></label>
+                                    <input asp-for="Titulo" class="form-control" />
+                                    <span asp-validation-for="Titulo" class="text-danger"></span>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label asp-for="Titulo" class="control-label"></label>
-                                <input asp-for="Titulo" class="form-control" />
-                                <span asp-validation-for="Titulo" class="text-danger"></span>
+
+                            <div class="col-md-8">
+                                <h3>Hardwares</h3>
+                                <div class="form align-element">
+                                    <label asp-for="Hardwares" class="control-label">Mac</label>
+                                    <input id="input-mac" class="form-control" />
+                                    <span asp-validation-for="Hardwares" class="text-danger"></span>
+                                </div>
+                                <div class="form-group align-element">
+                                    <a id="add-novo-hardware-bloco" onclick="AdicionarHardware()" class="btn btn-primary text-white"><i class="nav-icon fa fa-plus"></i> </a>
+                                </div>
+                                <br />
+                                <span class="text-danger" id="mensagem-erro-hardwares" hidden></span>
                             </div>
+
+
+                            <section class="content">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">Hardwares Adicionados</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="container-hardwares">
+                                                            @if (Model != null)
+                                                            {
+                                                                @for (var i = 0; i < Model.Hardwares.Count; i++)
+                                                                {
+                                                                    <tr id="novo-hardware-@i" class="hardware-bloco">
+                                                                        <td>
+                                                                            <input class="form-control" name="Hardwares[@i].MAC" hidden value="@Model.Hardwares[i].MAC" />
+                                                                            <input class="form-control" name="Hardwares[@i].Id" hidden value="0" />
+                                                                            <input class="form-control" name="Hardwares[@i].BlocoId" hidden value="0" />
+                                                                            <input class="form-control" name="Hardwares[@i].TipoHardwareId" value="0" hidden />
+                                                                            <p class="form-control"> @Model.Hardwares[i].MAC \ "Controlador de Bloco" </p>
+                                                                        </td>
+                                                                        <td>
+                                                                            <a id="remove-novo-hardware" onclick="removeNovoHardware('novo-hardware-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
                         </div>
 
                         <div class="card-footer">
@@ -58,10 +117,15 @@ else if (TempData["mensagemErro"] != null)
         $(document).ready(function () {
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
+
+            $('#input-mac').inputmask("**:**:**:**:**:**");
         });
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
+    <script src="~/js/bloco-script.js"></script>
+    <script src="~/plugins/inputmask/min/inputmask/inputmask.min.js"></script>
+    <script src="~/plugins/inputmask/min/inputmask/jquery.inputmask.min.js"></script>
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

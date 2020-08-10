@@ -1,4 +1,4 @@
-﻿@model Model.ViewModel.SalaViewModel
+﻿@model Model.SalaModel
 
 @{
     ViewData["Title"] = "Create";
@@ -18,22 +18,22 @@
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="Sala.Titulo" class="control-label"></label>
-                                    <input asp-for="Sala.Titulo" class="form-control" />
-                                    <span asp-validation-for="Sala.Titulo" class="text-danger"></span>
-                                </div>
                                 <div class="form-group" id="ListElements">
-                                    <label asp-for="BlocoSala" class="control-label"></label>
-                                    @Html.DropDownListFor(model => model.BlocoSala.Id, ViewBag.BlocoList as SelectList, new
+                                    <label asp-for="BlocoId" class="control-label"></label>
+                                    @Html.DropDownListFor(model => model.BlocoId, ViewBag.BlocoList as SelectList, new
                                     { @class = "form-control" })
-                                    <span asp-validation-for="BlocoSala.Id" class="text-danger"></span>
+                                    <span asp-validation-for="BlocoId" class="text-danger"></span>
+                                    <input class="form-control" name="BlocoSala.Titulo" value="nulo" hidden />
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Titulo" class="control-label"></label>
+                                    <input asp-for="Titulo" class="form-control" />
+                                    <span asp-validation-for="Titulo" class="text-danger"></span>
                                 </div>
                             </div>
                             <br />
                             <div class="col-md-10">
                                 <h4>Hardwares</h4>
-
                                 <div class="form-group align-element">
                                     <label class="control-label">MAC</label>
                                     <input id="input-endereco-mac" class="form-control" />
@@ -41,8 +41,12 @@
                                 </div>
                                 <div class="form-group align-element">
                                     <label class="control-label">Tipo de Hardware</label>
-                                    @Html.DropDownListFor(model => model.Sala.BlocoId, ViewBag.TipoHardware as SelectList, new
-                                    { @class = "form-control", @id = "select-tipo-hardware" })
+                                    <select class="form-control" id="select-tipo-hardware">
+                                        @foreach (var item in ViewBag.TipoHardware)
+                                        { 
+                                            <option value="@item.Id"> @item.Id - @item.Descricao</option>
+                                        }
+                                    </select>
                                     <span class="text-danger"></span>
                                 </div>
                                 <div class="form-group align-element">
@@ -75,9 +79,6 @@
                                                                             <input class="form-control" name="HardwaresSala[@i].TipoHardwareId.Id" hidden value="@Model.HardwaresSala[i].TipoHardwareId.Id" />
                                                                             <input class="form-control" name="HardwaresSala[@i].MAC" hidden value="@Model.HardwaresSala[i].MAC" />
                                                                             <input class="form-control" name="HardwaresSala[@i].TipoHardwareId.Descricao" value="@Model.HardwaresSala[i].TipoHardwareId.Descricao" hidden />
-                                                                            <input class="form-control" name="HardwaresSala[@i].SalaId.Id" value="0" hidden />
-                                                                            <input class="form-control" name="HardwaresSala[@i].SalaId.Titulo" value="nulo" hidden />
-                                                                            <input class="form-control" name="BlocoSala.Titulo" value="nulo" hidden />
                                                                             <p class="form-control"> @Model.HardwaresSala[i].MAC | @Model.HardwaresSala[i].TipoHardwareId.Descricao </p>
                                                                         </td>
                                                                         <td>

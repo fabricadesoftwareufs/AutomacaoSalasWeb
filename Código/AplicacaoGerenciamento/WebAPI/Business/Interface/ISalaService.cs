@@ -10,8 +10,9 @@ namespace Service.Interface
     {
         List<SalaModel> GetAll();
         SalaModel GetById(int id);
+        SalaModel GetByTitulo(string titulo);
         List<SalaModel> GetByIdBloco(int id);
-        bool InsertSalaWithHardwares(SalaViewModel sala);
+        bool InsertSalaWithHardwares(SalaModel sala);
         SalaModel Insert(SalaModel salaModel);
         bool Remove(int id);
         bool Update(SalaModel entity);

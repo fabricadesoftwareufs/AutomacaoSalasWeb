@@ -7,6 +7,10 @@ namespace Model.ViewModel
 {
     public class SalaViewModel
     {
+        public SalaViewModel() 
+        {
+            HardwaresSala = new List<HardwareDeSalaViewModel>();
+        }
         [Display(Name = "Sala")]
         public SalaModel Sala { get; set; }
         [Display(Name = "Bloco")]

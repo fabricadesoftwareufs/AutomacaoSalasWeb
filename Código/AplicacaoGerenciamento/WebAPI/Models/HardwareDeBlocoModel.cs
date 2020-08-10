@@ -4,7 +4,6 @@ namespace Model
 {
     public class HardwareDeBlocoModel
     {
-        [Required]
         [Display(Name = "Código")]
         public int Id { get; set; }
         [Required]

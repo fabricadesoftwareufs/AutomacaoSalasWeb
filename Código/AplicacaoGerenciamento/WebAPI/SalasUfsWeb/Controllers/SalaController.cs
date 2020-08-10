@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
+using Model.AuxModel;
 using Model.ViewModel;
 using Persistence;
 using Service;
@@ -35,7 +36,7 @@ namespace SalasUfsWeb.Controllers
         // GET: Sala
         public ActionResult Index()
         {
-            return View(_salaService.GetAll());
+            return View(GetAllSalasViewModel());
         }
 
         // GET: Sala/Details/5
@@ -48,7 +49,7 @@ namespace SalasUfsWeb.Controllers
         public ActionResult Create()
         {
             ViewBag.BlocoList = new SelectList(GetBlocos(), "Id", "Titulo");
-            ViewBag.TipoHardware = new SelectList(_tipoHardwareService.GetSelectedList(), "Id", "Descricao");
+            ViewBag.TipoHardware = _tipoHardwareService.GetAll();
 
             return View();
         }
@@ -56,22 +57,22 @@ namespace SalasUfsWeb.Controllers
         // POST: Sala/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(SalaViewModel salaModel)
+        public ActionResult Create(SalaModel salaModel)
         {
             ViewBag.BlocoList = new SelectList(GetBlocos(), "Id", "Titulo");
-            ViewBag.TipoHardware = new SelectList(_tipoHardwareService.GetSelectedList(), "Id","Descricao");
+            ViewBag.TipoHardware = _tipoHardwareService.GetAll();
 
             try
             {
                 if (ModelState.IsValid)
                 {
+
                     if (_salaService.InsertSalaWithHardwares(salaModel))
                     {
-                        TempData["mensagemSucesso"] = "Sala inserida com sucesso!";
-                        return View();
+                        TempData["mensagemSucesso"] = "Sala inserida com sucesso!"; return View();
                     }
-                    else
-                        TempData["mensagemErro"] = "Houve um problema ao inserir sala!";
+                    else TempData["mensagemErro"] = "Houve um problema ao inserir sala!";
+
                 }
             }
             catch (ServiceException se)
@@ -142,13 +143,30 @@ namespace SalasUfsWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        private List<SalaViewModel> GetAllSalasViewModel()
+        {
+            var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
+            var todasSalas = _salaService.GetAll();
+            var blocos = GetBlocos();
+
+            var query = (from ol in todasSalas
+                         join bl in blocos on ol.BlocoId equals bl.Id
+                         select new SalaViewModel
+                         {
+                             Sala = ol,
+                             BlocoSala = bl,
+                         }).ToList();
+
+            return query;
+        }
+
         private SalaViewModel GetSalaViewModel(int id)
         {
             var sala = _salaService.GetById(id);
             var hardwaresViewModel = new List<HardwareDeSalaViewModel>();
 
             foreach (var item in _hardwareDeSalaService.GetByIdSala(id))
-                hardwaresViewModel.Add(new HardwareDeSalaViewModel { Id = item.Id, MAC = item.MAC, TipoHardwareId = _tipoHardwareService.GetById(item.TipoHardwareId)});
+                hardwaresViewModel.Add(new HardwareDeSalaViewModel { Id = item.Id, MAC = item.MAC, TipoHardwareId = _tipoHardwareService.GetById(item.TipoHardwareId) });
 
             return new SalaViewModel
             {

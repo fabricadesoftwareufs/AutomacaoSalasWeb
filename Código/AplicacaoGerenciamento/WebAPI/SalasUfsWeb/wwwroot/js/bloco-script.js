@@ -4,26 +4,21 @@
 });
 
 function AdicionarHardware() {
-
-    let enderecoMac = $('#input-endereco-mac').val();
-    let tipoHardwareId = $('#select-tipo-hardware').val();
-    let tipoHardwareTexto = $('#select-tipo-hardware option:selected').text().split("-")[1];
+    document.getElementById("mensagem-erro-hardwares").hidden = true;
+    let enderecoMac = $('#input-mac').val();
     let indice = 0;
 
     if (!validacoesHardwareExistente(enderecoMac)) {
 
         var novoHardware = new Array();
-        novoHardware.push(adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardwareTexto));
+        novoHardware.push(adicionaHardwareNaTabela(indice, enderecoMac));
 
-        let hardwares = document.getElementsByClassName('hardware-sala');
-        if (document.querySelector('.hardware-sala')) {
+        let hardwares = document.getElementsByClassName('hardware-bloco');
+        if (document.querySelector('.hardware-bloco')) {
             for (indice = 0; indice < hardwares.length; indice++) {
 
-                enderecoMac = hardwares[indice].childNodes[0].childNodes[1].value;
-                tipoHardwareId = hardwares[indice].childNodes[0].childNodes[0].value;
-                tipoHardwareTexto = hardwares[indice].childNodes[0].childNodes[2].value;
-
-                novoHardware.push(adicionaHardwareNaTabela(indice + 1, enderecoMac, tipoHardwareId, tipoHardwareTexto));
+                enderecoMac = hardwares[indice].childNodes[0].childNodes[0].value;
+                novoHardware.push(adicionaHardwareNaTabela(indice + 1, enderecoMac));
             }
         }
 
@@ -39,11 +34,11 @@ function validacoesHardwareExistente(enderecoMac) {
     let hardwareExistente = false;
 
     if (enderecoMac.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').length == 12) {
-        let hardwares = document.getElementsByClassName('hardware-sala');
-        if (document.querySelector('.hardware-sala')) {
+        let hardwares = document.getElementsByClassName('hardware-bloco');
+        if (document.querySelector('.hardware-bloco')) {
             for (indice = 0; indice < hardwares.length; indice++) {
 
-                let MAC = hardwares[indice].childNodes[0].childNodes[1].value;
+                let MAC = hardwares[indice].childNodes[0].childNodes[0].value;
 
                 if (MAC == enderecoMac) {
                     hardwareExistente = true;
@@ -62,17 +57,17 @@ function validacoesHardwareExistente(enderecoMac) {
 
 }
 
-function adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardwareTexto) {
+function adicionaHardwareNaTabela(indice, enderecoMac) {
     let idItem = 'novo-hardware-' + indice;
 
     let hardware =
-        '<tr id="' + idItem + '" class="hardware-sala">' +
+        '<tr id="' + idItem + '" class="hardware-bloco">' +
         '<td>' +
-        '<input class="form-control" name="HardwaresSala[' + indice + '].TipoHardwareId.Id" hidden value="' + tipoHardwareId + '" />' +
-        '<input class="form-control" name="HardwaresSala[' + indice + '].MAC" hidden value="' + enderecoMac + '" />' +
-        '<input class="form-control" name="HardwaresSala[' + indice + '].TipoHardwareId.Descricao" value="' + tipoHardwareTexto + '" hidden/>' +
-        '<p class="form-control">' + enderecoMac + ' | ' + tipoHardwareTexto + '</p>' +
-        '</td>' +
+        '<input class="form-control" name="Hardwares[' + indice +'].MAC" hidden value="' + enderecoMac + '" />' +
+        '<input class="form-control" name="Hardwares[' + indice +'].Id" hidden value="0" />'+
+        '<input class="form-control" name="Hardwares[' + indice +'].BlocoId" hidden value="0" />'+
+        '<input class="form-control" name="Hardwares[' + indice + '].TipoHardwareId" value="0" hidden />' +
+        '<p class="form-control">' + enderecoMac + ' / Controlador de Bloco </p>' + 
         '<td>' +
         '<a id="remove-novo-hardware" onclick="removeNovoHardware(\'' + idItem + '\')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +
         '</td>' +
@@ -86,14 +81,12 @@ function removeNovoHardware(idItem) {
 
     document.getElementById(idItem).remove();
 
-    let hardwares = document.getElementsByClassName('hardware-sala');
+    let hardwares = document.getElementsByClassName('hardware-bloco');
 
     var novosHardwares = new Array();
     for (var indice = 0; indice < hardwares.length; indice++)
         novosHardwares.push(adicionaHardwareNaTabela(indice,
-            hardwares[indice].childNodes[0].childNodes[1].value,
-            hardwares[indice].childNodes[0].childNodes[0].value,
-            hardwares[indice].childNodes[0].childNodes[2].value));
+            hardwares[indice].childNodes[0].childNodes[0].value));
 
     document.getElementById('container-hardwares').innerHTML = "";
     for (var indice = 0; indice < novosHardwares.length; indice++)

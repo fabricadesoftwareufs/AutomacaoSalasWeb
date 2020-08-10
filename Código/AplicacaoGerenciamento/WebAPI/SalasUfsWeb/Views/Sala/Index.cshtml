@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Model.SalaModel>
+﻿@model IEnumerable<Model.ViewModel.SalaViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -26,10 +26,13 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Titulo)
+                                        @Html.DisplayNameFor(model => model.Sala.Id)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.BlocoId)
+                                        @Html.DisplayNameFor(model => model.Sala.Titulo)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Sala.BlocoId)
                                     </th>
                                     <th>Ações</th>
                                 </tr>
@@ -39,19 +42,22 @@
                                 {
                                     <tr>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Titulo)
+                                            @Html.DisplayFor(modelItem => item.Sala.Id)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.BlocoId)
+                                            @Html.DisplayFor(modelItem => item.Sala.Titulo)
                                         </td>
                                         <td>
-                                            <a href="@Url.Action("Details", "Sala", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
-                                            <a href="@Url.Action("Edit", "Sala", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
+                                            @Html.DisplayFor(modelItem => item.BlocoSala.Titulo)
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Sala", new { id = item.Sala.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
+                                            <a href="@Url.Action("Edit", "Sala", new { id = item.Sala.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
 
-                                            <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
+                                            <a data-toggle="modal" data-target="#modal-remover-@item.Sala.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
 
 
-                                            <div class="modal fade" id="modal-remover-@item.Id">
+                                            <div class="modal fade" id="modal-remover-@item.Sala.Id">
                                                 <div class="modal-dialog modal-sm">
                                                     <div class="modal-content card card-secondary">
                                                         <div class="modal-header card-header">
@@ -61,12 +67,12 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body text-center">
-                                                            <h5>Código</h5><p>@item.Id</p>
-                                                            <h5>Titulo</h5> <p>@item.Titulo</p>
-                                                            <h5>Bloco</h5> <p>@item.BlocoId</p>
+                                                            <h5>Código</h5><p>@item.Sala.Id</p>
+                                                            <h5>Titulo</h5> <p>@item.Sala.Titulo</p>
+                                                            <h5>Bloco</h5> <p>@item.Sala.BlocoId</p>
                                                         </div>
 
-                                                        @using (Html.BeginForm("Delete", "Sala", new { id = item.Id }, FormMethod.Post))
+                                                        @using (Html.BeginForm("Delete", "Sala", new { id = item.Sala.Id }, FormMethod.Post))
                                                         {
                                                             <div class="modal-footer justify-content-between">
                                                                 <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>

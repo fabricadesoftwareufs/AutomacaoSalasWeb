@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Model.ViewModel;
+using Persistence;
 using Service;
 
 namespace SalasUfsWeb.Controllers
@@ -15,10 +17,14 @@ namespace SalasUfsWeb.Controllers
     {
         private readonly BlocoService _blocoService;
         private readonly OrganizacaoService _organizacaoService;
-        public BlocoController(BlocoService blocoService, OrganizacaoService organizacaoService)
+        private readonly UsuarioOrganizacaoService _usuarioOrganizacaoService;
+        public BlocoController(BlocoService blocoService,
+                               OrganizacaoService organizacaoService,
+                               UsuarioOrganizacaoService usuarioOrganizacaoService)
         {
             _blocoService = blocoService;
             _organizacaoService = organizacaoService;
+            _usuarioOrganizacaoService = usuarioOrganizacaoService;
         }
 
         // GET: Bloco
@@ -37,7 +43,7 @@ namespace SalasUfsWeb.Controllers
         // GET: Bloco/Create
         public ActionResult Create()
         {
-            ViewBag.OrgList = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
             return View();
         }
 
@@ -46,20 +52,20 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(BlocoModel blocoModel)
         {
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
+
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (_blocoService.Insert(blocoModel))
+                    if (_blocoService.InsertBlocoWithHardware(blocoModel))
                     {
-                        TempData["mensagemSuceso"] = "Bloco adicionado com sucesso!";
-                        return View();
+                        TempData["mensagemSucesso"] = "Bloco adicionado com sucesso!"; return View();
                     }
-                    else
-                        TempData["mensagemErro"] = "Houve um problema ao adicionar bloco, tente novamente em alguns minutos!";
+                    else TempData["mensagemErro"] = "Houve um problema ao adicionar bloco, tente novamente em alguns minutos!";
                 }
             }
-            catch(ServiceException  se)
+            catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
             }
@@ -119,6 +125,18 @@ namespace SalasUfsWeb.Controllers
                 TempData["mensagemErro"] = se.Message;
             }
             return RedirectToAction(nameof(Index));
+        }
+
+
+        private List<OrganizacaoModel> GetOrganizacaos()
+        {
+            var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
+            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUser);
+
+            var organizacoesLotadas = new List<OrganizacaoModel>();
+            usuarioOrg.ForEach(uo => organizacoesLotadas.Add(_organizacaoService.GetById(uo.OrganizacaoId)));
+
+            return organizacoesLotadas;
         }
 
         private List<BlocoViewModel> ReturnAllViewModels()
