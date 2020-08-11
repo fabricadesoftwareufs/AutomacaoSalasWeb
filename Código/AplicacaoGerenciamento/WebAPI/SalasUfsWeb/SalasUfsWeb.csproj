@@ -28,7 +28,7 @@
     <None Include="wwwroot\js\demo.js" />
     <None Include="wwwroot\js\Layout.js" />
     <None Include="wwwroot\js\PushMenu.js" />
-    <None Include="wwwroot\js\site.js" />
+    <None Include="wwwroot\js\custom.js" />
   </ItemGroup>
 
   <ItemGroup>

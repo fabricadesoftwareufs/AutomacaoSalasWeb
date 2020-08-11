@@ -36,14 +36,14 @@
                                 <h4>Hardwares</h4>
                                 <div class="form-group align-element">
                                     <label class="control-label">MAC</label>
-                                    <input id="input-endereco-mac" class="form-control" />
+                                    <input id="input-mac" class="form-control" />
                                     <span class="text-danger"></span>
                                 </div>
                                 <div class="form-group align-element">
                                     <label class="control-label">Tipo de Hardware</label>
                                     <select class="form-control" id="select-tipo-hardware">
                                         @foreach (var item in ViewBag.TipoHardware)
-                                        { 
+                                        {
                                             <option value="@item.Id"> @item.Id - @item.Descricao</option>
                                         }
                                     </select>
@@ -125,14 +125,12 @@ else if (TempData["mensagemErro"] != null)
         $(document).ready(function () {
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
-
-            $('#input-endereco-mac').inputmask("**:**:**:**:**:**");
         });
     </script>
 
     <script src="~/js/sala-script.js"></script>
-    <script src="~/plugins/inputmask/min/inputmask/inputmask.min.js"></script>
-    <script src="~/plugins/inputmask/min/inputmask/jquery.inputmask.min.js"></script>
+    <script src="~/js/custom.js"></script>
+    <script src="~/plugins/inputmask/inputmask/jquery.mask.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

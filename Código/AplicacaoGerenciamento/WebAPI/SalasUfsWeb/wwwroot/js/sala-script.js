@@ -5,7 +5,7 @@
 
 function AdicionarHardware() {
 
-    let enderecoMac = $('#input-endereco-mac').val();
+    let enderecoMac = $('#input-mac').val();
     let tipoHardwareId = $('#select-tipo-hardware').val();
     let tipoHardwareTexto = $('#select-tipo-hardware option:selected').text().split("-")[1];
     let indice = 0;
