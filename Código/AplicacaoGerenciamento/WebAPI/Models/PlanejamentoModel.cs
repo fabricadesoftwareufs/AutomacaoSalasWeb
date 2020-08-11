@@ -8,10 +8,7 @@ namespace Model
 {
     public class PlanejamentoModel
     {
-        public PlanejamentoModel()
-        {
-            Horarios = new List<HorarioPlanejamentoAuxModel>();
-        }
+        public PlanejamentoModel() { Horarios = new List<HorarioPlanejamentoAuxModel>(); }
 
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Código")]
@@ -43,7 +40,6 @@ namespace Model
         [Display(Name = "Dia da Semana")]
         public string DiaSemana { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
-
         [Display(Name = "Objetivo")]
         [StringLength(500, ErrorMessage = "Máximo são 500 caracteres")]
 

@@ -8,14 +8,15 @@ namespace Model
     {
         public SalaModel() { HardwaresSala = new List<HardwareAuxModel>();}
 
-        [Required]
+        [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Código")]
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Titulo")]
         public string Titulo { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Bloco")]
+        [StringLength(100, ErrorMessage = "Máximo são 100 caracteres")]
         public int BlocoId { get; set; }
         public List<HardwareAuxModel> HardwaresSala { get; set; }
         public TipoHardwareModel TipoHardware { get; set; }

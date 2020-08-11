@@ -165,5 +165,33 @@ namespace Service
 
             return entity;
         }
+
+        public List<SalaParticularModel> GetByIdUsuario(int id)
+         => _context.Salaparticular
+                .Where(sp => sp.Usuario == id)
+                .Select(sp => new SalaParticularModel
+                {
+                    Id = sp.Id,
+                    UsuarioId = sp.Usuario,
+                    SalaId = sp.Sala
+                }).ToList();
+
+        public List<SalaParticularModel> GetByIdOrganizacao(int idOrganizacao)
+        {
+            var _blocoService = new BlocoService(_context);
+            var _salaService = new SalaService(_context);
+
+            var query = (from sp in GetAll()
+                         join sl in _salaService.GetAll() on sp.SalaId equals sl.Id
+                         join bl in _blocoService.GetByIdOrganizacao(idOrganizacao) on sl.BlocoId equals bl.Id
+                         select new SalaParticularModel
+                         {
+                             Id = sp.Id,
+                             UsuarioId = sp.UsuarioId,
+                             SalaId = sp.SalaId
+                         }).ToList();
+
+            return query;
+        }
     }
 }

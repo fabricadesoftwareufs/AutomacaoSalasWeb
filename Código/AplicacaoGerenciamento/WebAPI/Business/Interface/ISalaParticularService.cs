@@ -10,8 +10,11 @@ namespace Service.Interface
         List<SalaParticularModel> GetAll();
         SalaParticularModel GetById(int id);
         List<SalaParticularModel> GetByIdSala(int id);
+        List<SalaParticularModel> GetByIdUsuario(int id);
 
         SalaParticularModel GetByIdUsuarioAndIdSala(int idUsuario, int idSala);
+
+        List<SalaParticularModel> GetByIdOrganizacao(int idOrganizacao);
 
         bool InsertListSalasParticulares(SalaParticularViewModel entity);
         bool Insert(SalaParticularModel entity);

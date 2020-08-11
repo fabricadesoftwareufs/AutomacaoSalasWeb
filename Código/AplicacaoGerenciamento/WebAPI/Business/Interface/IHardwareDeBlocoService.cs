@@ -14,7 +14,7 @@ namespace Service.Interface
 
         HardwareDeBlocoModel GetByMAC(string mac, int idUsuario);
         bool Insert(HardwareDeBlocoModel entity, int idUsuario);
-        List<HardwareDeBlocoModel> GetAllHardwaresSalaByUsuarioOrganizacao(int idUsuario);
+        List<HardwareDeBlocoModel> GetAllHardwaresBlacoByUsuarioOrganizacao(int idUsuario);
         bool Remove(int id);
         bool Update(HardwareDeBlocoModel entity, int idUsuario);
     }
