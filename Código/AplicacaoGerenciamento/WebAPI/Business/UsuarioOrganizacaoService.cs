@@ -1,11 +1,12 @@
 ﻿using Model;
 using Persistence;
+using Service.Interface;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Service
 {
-    public class UsuarioOrganizacaoService : IService<UsuarioOrganizacaoModel>
+    public class UsuarioOrganizacaoService : IUsuarioOrganizacaoService
     {
         private readonly STR_DBContext _context;
         public UsuarioOrganizacaoService(STR_DBContext context)
@@ -56,11 +57,6 @@ namespace Service
             entity.Organizacao = model.OrganizacaoId;
 
             return entity;
-        }
-
-        public List<UsuarioOrganizacaoModel> GetSelectedList()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

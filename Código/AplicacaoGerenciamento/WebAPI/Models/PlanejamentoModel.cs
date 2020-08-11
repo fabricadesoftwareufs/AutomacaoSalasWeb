@@ -10,7 +10,7 @@ namespace Model
     {
         public PlanejamentoModel()
         {
-            Horarios = new List<HorarioPlanejamento>();
+            Horarios = new List<HorarioPlanejamentoAuxModel>();
         }
 
         [Required]
@@ -48,7 +48,7 @@ namespace Model
         [Required]
         [Display(Name = "Usuario")]
         public int UsuarioId { get; set; }
-        public List<HorarioPlanejamento> Horarios { get; set; }
+        public List<HorarioPlanejamentoAuxModel> Horarios { get; set; }
 
     }
 }

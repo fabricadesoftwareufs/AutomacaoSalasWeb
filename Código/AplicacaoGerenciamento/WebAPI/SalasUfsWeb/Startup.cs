@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Service.Interface;
 
 namespace SalasUfsWeb
 {
@@ -43,16 +44,18 @@ namespace SalasUfsWeb
 
             services.AddDbContext<STR_DBContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
 
-            services.AddScoped<OrganizacaoService>();
-            services.AddScoped<BlocoService>();
-            services.AddScoped<SalaService>();
-            services.AddScoped<PlanejamentoService>();
-            services.AddScoped<UsuarioService>();
-            services.AddScoped<HardwareDeBlocoService>();
-            services.AddScoped<TipoHardwareService>();
-            services.AddScoped<HardwareDeSalaService>();
-            services.AddScoped<SalaParticularService>();
-            services.AddScoped<UsuarioOrganizacaoService>();
+            services.AddScoped<IOrganizacaoService,OrganizacaoService>();
+            services.AddScoped<IBlocoService,BlocoService>();
+            services.AddScoped<ISalaService,SalaService>();
+            services.AddScoped<IPlanejamentoService,PlanejamentoService>();
+            services.AddScoped<IUsuarioService,UsuarioService>();
+            services.AddScoped<IHardwareDeBlocoService,HardwareDeBlocoService>();
+            services.AddScoped<ITipoHardwareService, TipoHardwareService>();
+            services.AddScoped<IHardwareDeSalaService,HardwareDeSalaService>();
+            services.AddScoped<ISalaParticularService,SalaParticularService>();
+            services.AddScoped<IUsuarioOrganizacaoService,UsuarioOrganizacaoService>();
+            services.AddScoped<IHorarioSalaService, HorarioSalaService>();
+            services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

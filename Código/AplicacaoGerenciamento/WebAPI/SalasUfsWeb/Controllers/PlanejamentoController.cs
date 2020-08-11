@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,40 +10,38 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Model.ViewModel;
 using Service;
+using Service.Interface;
 
 namespace SalasUfsWeb.Controllers
 {
     public class PlanejamentoController : Controller
     {
-        private readonly PlanejamentoService _planejamentoService;
-        private readonly SalaService _salaService;
-        private readonly UsuarioService _usuarioService;
+        private readonly IPlanejamentoService _planejamentoService;
+        private readonly ISalaService _salaService;
+        private readonly IUsuarioService _usuarioService;
+        private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
 
 
-        public PlanejamentoController(PlanejamentoService service, SalaService salaService, UsuarioService usuarioService)
+        public PlanejamentoController(IPlanejamentoService service, 
+                                      ISalaService salaService, 
+                                      IUsuarioService usuarioService,
+                                      IUsuarioOrganizacaoService usuarioOrganizacaoService)
         {
             _planejamentoService = service;
             _salaService = salaService;
             _usuarioService = usuarioService;
+            _usuarioOrganizacaoService = usuarioOrganizacaoService;
         }
 
-
-        public IActionResult Index(string pesquisa)
+        public IActionResult Index()
         {
-            var planejamentos = ReturnAllPlanejamentosViewModels();
-
-            if (!string.IsNullOrEmpty(pesquisa))
-            {
-                planejamentos = planejamentos.Where(s => s.SalaId.Titulo.Contains(pesquisa)).ToList();
-            }
-
-            return View(planejamentos);
+            return View(GetAllPlanejamentosViewModels());
         }
 
         public IActionResult Create()
         {
-            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
-            ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
+            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao(), "Id", "Nome");
 
             return View();
         }
@@ -52,8 +51,8 @@ namespace SalasUfsWeb.Controllers
         public IActionResult Create(PlanejamentoModel planejamento)
         {
 
-            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
-            ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
+            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao(), "Id", "Nome");
 
             try
             {
@@ -83,8 +82,8 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Edit(int id)
         {
-            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
-            ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
+            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao(), "Id", "Nome");
             PlanejamentoModel planejamento = _planejamentoService.GetById(id);
             
             return View(planejamento);
@@ -95,8 +94,8 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, PlanejamentoModel planejamento)
         {
-            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
-            ViewBag.usuarios = new SelectList(_usuarioService.GetSelectedList(), "Id", "Nome");
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
+            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao(), "Id", "Nome");
 
             try
             {
@@ -123,7 +122,7 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Details(int id)
         {
-            return View(ReturnByIdViewModel(id));
+            return View(GetByIdViewModel(id));
         }
 
         [HttpPost]
@@ -146,19 +145,29 @@ namespace SalasUfsWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private List<PlanejamentoViewModel> ReturnAllPlanejamentosViewModels()
+        private List<PlanejamentoViewModel> GetAllPlanejamentosViewModels()
         {
-            List<PlanejamentoModel> pl = _planejamentoService.GetAll();
-            List<PlanejamentoViewModel> plvm = new List<PlanejamentoViewModel>();
-            foreach (var item in pl)
-            {
-                plvm.Add(Cast(item));
-            }
+            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
+            var orgs = _usuarioOrganizacaoService.GetByIdUsuario(usuario.Id);
 
-            return plvm;
+            var planejamentos = new List<PlanejamentoViewModel>();
+            orgs.ForEach(e => _planejamentoService.GetByIdOrganizacao(e.OrganizacaoId).ForEach(p => planejamentos.Add(Cast(p))));
+
+            return planejamentos;
         }
 
-        private PlanejamentoViewModel ReturnByIdViewModel(int id)
+        private List<UsuarioModel> GetAllUsersByOrganizacao() 
+        {
+            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
+            var orgs = _usuarioOrganizacaoService.GetByIdUsuario(usuario.Id);
+
+            var usuariosOrganizacoes = new List<UsuarioModel>();
+            orgs.ForEach(o => usuariosOrganizacoes.AddRange(_usuarioService.GetByIdOrganizacao(o.OrganizacaoId)));
+
+            return usuariosOrganizacoes;
+        }
+
+        private PlanejamentoViewModel GetByIdViewModel(int id)
         {
             PlanejamentoModel pl = _planejamentoService.GetById(id);
            

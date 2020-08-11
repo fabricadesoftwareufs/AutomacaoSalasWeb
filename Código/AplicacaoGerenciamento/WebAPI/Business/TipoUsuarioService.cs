@@ -1,11 +1,12 @@
 ﻿using Model;
 using Persistence;
+using Service.Interface;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Service
 {
-    public class TipoUsuarioService : IService<TipoUsuarioModel>
+    public class TipoUsuarioService : ITipoUsuarioService
     {
         private readonly STR_DBContext _context;
         public TipoUsuarioService(STR_DBContext context)
@@ -53,9 +54,5 @@ namespace Service
 
             return entity;
         }
-
-        public List<TipoUsuarioModel> GetSelectedList()
-         => _context.Tipousuario.Select(s => new TipoUsuarioModel { Id = s.Id, Descricao = string.Format("{0} - {1}", s.Id, s.Descricao) }).ToList();
-
     }
 }

@@ -10,29 +10,95 @@
             <div class="col-md-12">
                 <div class="card card-secondary">
                     <div class="card-header">
-                        <h2 class="card-title">Cadastrar Nova Organização</h2>
+                        <h2 class="card-title">Cadastrar Nova Sala</h2>
                     </div>
 
                     <form asp-action="Create">
                         <div class="card-body">
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group">
-                                <label asp-for="Titulo" class="control-label"></label>
-                                <input asp-for="Titulo" class="form-control" />
-                                <span asp-validation-for="Titulo" class="text-danger"></span>
+                            <div class="col-md-4">
+                                <div class="form-group" id="ListElements">
+                                    <label asp-for="BlocoId" class="control-label"></label>
+                                    @Html.DropDownListFor(model => model.BlocoId, ViewBag.BlocoList as SelectList, new
+                                    { @class = "form-control" })
+                                    <span asp-validation-for="BlocoId" class="text-danger"></span>
+                                    <input class="form-control" name="BlocoSala.Titulo" value="nulo" hidden />
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Titulo" class="control-label"></label>
+                                    <input asp-for="Titulo" class="form-control" />
+                                    <span asp-validation-for="Titulo" class="text-danger"></span>
+                                </div>
                             </div>
-                            <div class="form-group" id="ListElements">
-                                <label asp-for="BlocoId" class="control-label"></label>
-                                @Html.DropDownListFor(model => model.BlocoId, ViewBag.BlocoList as SelectList, new
-                                { @class = "form-control" })
-                                <span asp-validation-for="BlocoId" class="text-danger"></span>
+                            <br />
+                            <div class="col-md-10">
+                                <h4>Hardwares</h4>
+                                <div class="form-group align-element">
+                                    <label class="control-label">MAC</label>
+                                    <input id="input-endereco-mac" class="form-control" />
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="form-group align-element">
+                                    <label class="control-label">Tipo de Hardware</label>
+                                    <select class="form-control" id="select-tipo-hardware">
+                                        @foreach (var item in ViewBag.TipoHardware)
+                                        { 
+                                            <option value="@item.Id"> @item.Id - @item.Descricao</option>
+                                        }
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="form-group align-element">
+                                    <a id="add-novo-horario" onclick="AdicionarHardware()" class="btn btn-primary text-white"><i class="nav-icon fa fa-plus"></i> </a>
+                                </div>
+                                <br />
+                                <span class="text-danger" id="mensagem-erro-hardwares" hidden></span>
                             </div>
-
+                            <section class="content">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">Hardwares Adicionados</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="container-hardwares">
+                                                            @if (Model != null)
+                                                            {
+                                                                @for (var i = 0; i < Model.HardwaresSala.Count; i++)
+                                                                {
+                                                                    <tr id="novo-hardware-@i" class="hardware-sala">
+                                                                        <td>
+                                                                            <input class="form-control" name="HardwaresSala[@i].TipoHardwareId.Id" hidden value="@Model.HardwaresSala[i].TipoHardwareId.Id" />
+                                                                            <input class="form-control" name="HardwaresSala[@i].MAC" hidden value="@Model.HardwaresSala[i].MAC" />
+                                                                            <input class="form-control" name="HardwaresSala[@i].TipoHardwareId.Descricao" value="@Model.HardwaresSala[i].TipoHardwareId.Descricao" hidden />
+                                                                            <p class="form-control"> @Model.HardwaresSala[i].MAC | @Model.HardwaresSala[i].TipoHardwareId.Descricao </p>
+                                                                        </td>
+                                                                        <td>
+                                                                            <a id="remove-novo-hardware" onclick="removeNovoHardware('novo-hardware-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                         <div class="card-footer">
                             <div class="col-md-4">
-                                <input type="submit" value="Salvar" class="btn btn-success" /> |
+                                <input type="submit" id="btn-create-nova-sala" value="Salvar" class="btn btn-success" /> |
                                 <a class="btn btn-primary" asp-action="Index">Voltar</a>
                             </div>
                         </div>
@@ -59,9 +125,14 @@ else if (TempData["mensagemErro"] != null)
         $(document).ready(function () {
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
+
+            $('#input-endereco-mac').inputmask("**:**:**:**:**:**");
         });
     </script>
 
+    <script src="~/js/sala-script.js"></script>
+    <script src="~/plugins/inputmask/min/inputmask/inputmask.min.js"></script>
+    <script src="~/plugins/inputmask/min/inputmask/jquery.inputmask.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

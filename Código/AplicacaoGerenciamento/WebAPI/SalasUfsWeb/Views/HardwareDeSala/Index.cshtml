@@ -4,64 +4,120 @@
     ViewData["Title"] = "Index";
 }
 
-<div>
-    <h2>
-        Hardwares Cadastrados
 
-        <a class="btn btn-primary" style="float:right" asp-controller="HardwareDeSala" asp-action="Create">Adicionar Hardware</a>
-    </h2>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2 class="card-title">
+                                    Hardwares De Sala
+                                </h2>
+                                <a class="btn btn-primary" style="float:right" asp-controller="HardwareDeSala" asp-action="Create">Adicionar Hardware</a>
 
-</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="table-search" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Id)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.MAC)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.SalaId.Titulo)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.TipoHardwareId.Descricao)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Id)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.MAC)
+                                        </td>
+                                        <th>
+                                            @Html.DisplayFor(modelItem => item.SalaId.Titulo)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayFor(modelItem => item.TipoHardwareId.Descricao)
+                                        </th>
+                                        <td>
+                                            <a href="@Url.Action("Details", "HardwareDeSala", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
+                                            <a href="@Url.Action("Edit", "HardwareDeSala", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
+                                            <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
 
-<div align="right">
-    <form asp-controller="HardwareDeSala" asp-action="Index">
-        <p>
-            <input style="height: 28pt;width: 200pt;" type="text" placeholder="Pesquise por MAC" name="pesquisa">
-            <button style="margin-bottom: 0.3%;" class="btn btn-primary text-right">Pesquisar</button>
 
-        </p>
-    </form>
-</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MAC)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SalaId.Titulo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TipoHardwareId.Descricao)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MAC)
-                </td>
-                <th>
-                    @Html.DisplayFor(modelItem => item.SalaId.Titulo)
-                </th>
-                <th>
-                    @Html.DisplayFor(modelItem => item.TipoHardwareId.Descricao)
-                </th>
-                <td>
-                    <a href="@Url.Action("Details", "HardwareDeSala", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
-                    <a href="@Url.Action("Edit", "HardwareDeSala", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
-                    <a href="@Url.Action("Delete", "HardwareDeSala", new { id = item.Id })" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Remover </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                                            <div class="modal fade" id="modal-remover-@item.Id">
+                                                <div class="modal-dialog modal-sm">
+                                                    <div class="modal-content card card-secondary">
+                                                        <div class="modal-header card-header">
+                                                            <h5 class="modal-title">Confirmar Remoção do Hardware ?</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true" class="text-white">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body text-center">
+                                                            <h5>Código</h5><p>@item.Id</p>
+                                                            <h5>Mac</h5><p>@item.MAC</p>
+                                                            <h5>Bloco</h5> <p>@item.SalaId.Id</p>
+                                                            <h5>Descrição</h5> <p>@item.TipoHardwareId.Descricao</p>
+                                                        </div>
+
+                                                        @using (Html.BeginForm("Delete", "HardwareDeSala", new { id = item.Id }, FormMethod.Post))
+                                                        {
+                                                            <div class="modal-footer justify-content-between">
+                                                                <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
+                                                                <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

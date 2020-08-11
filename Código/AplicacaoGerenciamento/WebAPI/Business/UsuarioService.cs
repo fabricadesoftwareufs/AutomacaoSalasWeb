@@ -1,12 +1,14 @@
 ﻿using Model;
 using Persistence;
+using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Service
 {
-    public class UsuarioService : IService<UsuarioModel>
+    public class UsuarioService : IUsuarioService
     {
         private readonly STR_DBContext _context;
         public UsuarioService(STR_DBContext context)
@@ -103,8 +105,18 @@ namespace Service
             return false;
         }
 
-        public List<UsuarioModel> GetSelectedList()
-            => _context.Usuario.Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} - {1}", s.Cpf, s.Nome) }).ToList();
+        public UsuarioModel RetornLoggedUser(ClaimsIdentity claimsIdentity)
+        {
+            var usuario = new UsuarioModel
+            {
+                Id = int.Parse(claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault()),
+                Cpf = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.UserData).Select(s => s.Value).FirstOrDefault(),
+                Nome = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.NameIdentifier).Select(s => s.Value).FirstOrDefault(),
+
+            };
+
+            return usuario;
+        }
 
         private static Usuario SetEntity(UsuarioModel model, Usuario entity)
         {

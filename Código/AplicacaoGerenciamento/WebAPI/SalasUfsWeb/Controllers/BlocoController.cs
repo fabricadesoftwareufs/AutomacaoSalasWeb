@@ -1,28 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Model.ViewModel;
+using Persistence;
 using Service;
+using Service.Interface;
 
 namespace SalasUfsWeb.Controllers
 {
     public class BlocoController : Controller
     {
-        private readonly BlocoService _blocoService;
-        private readonly OrganizacaoService _organizacaoService;
-        public BlocoController(BlocoService blocoService, OrganizacaoService organizacaoService)
+        private readonly IBlocoService _blocoService;
+        private readonly IOrganizacaoService _organizacaoService;
+        private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
+        private readonly IUsuarioService _usuarioService;
+        public BlocoController(IBlocoService blocoService,
+                               IOrganizacaoService organizacaoService,
+                               IUsuarioOrganizacaoService usuarioOrganizacaoService,
+                               IUsuarioService UsuarioService)
         {
             _blocoService = blocoService;
             _organizacaoService = organizacaoService;
+            _usuarioOrganizacaoService = usuarioOrganizacaoService;
+            _usuarioService = UsuarioService;
         }
 
         // GET: Bloco
-        public IActionResult Index(string pesquisa)
+        public IActionResult Index()
         {
             return View(ReturnAllViewModels());
         }
@@ -37,7 +47,7 @@ namespace SalasUfsWeb.Controllers
         // GET: Bloco/Create
         public ActionResult Create()
         {
-            ViewBag.OrgList = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
             return View();
         }
 
@@ -46,20 +56,20 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(BlocoModel blocoModel)
         {
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
+
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (_blocoService.Insert(blocoModel))
+                    if (_blocoService.InsertBlocoWithHardware(blocoModel,_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id))
                     {
-                        TempData["mensagemSuceso"] = "Bloco adicionado com sucesso!";
-                        return View();
+                        TempData["mensagemSucesso"] = "Bloco adicionado com sucesso!"; return View();
                     }
-                    else
-                        TempData["mensagemErro"] = "Houve um problema ao adicionar bloco, tente novamente em alguns minutos!";
+                    else TempData["mensagemErro"] = "Houve um problema ao adicionar bloco, tente novamente em alguns minutos!";
                 }
             }
-            catch(ServiceException  se)
+            catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
             }
@@ -121,14 +131,22 @@ namespace SalasUfsWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        private List<OrganizacaoModel> GetOrganizacaos()
+        {
+            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+
+            var organizacoesLotadas = new List<OrganizacaoModel>();
+            usuarioOrg.ForEach(uo => organizacoesLotadas.Add(_organizacaoService.GetById(uo.OrganizacaoId)));
+
+            return organizacoesLotadas;
+        }
+
         private List<BlocoViewModel> ReturnAllViewModels()
         {
-            List<BlocoModel> bs = _blocoService.GetAll();
+            var bs = _blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
             List<BlocoViewModel> bvm = new List<BlocoViewModel>();
-            foreach (var item in bs)
-            {
-                bvm.Add(Cast(item));
-            }
+            bs.ForEach(b => bvm.Add(Cast(b)));
 
             return bvm;
         }

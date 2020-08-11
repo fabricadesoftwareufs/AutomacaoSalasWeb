@@ -1,44 +1,45 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Service;
+using Service.Interface;
 
 namespace SalasUfsWeb.Controllers
 {
     public class HardwareDeSalaController : Controller
     {
-        private readonly HardwareDeSalaService _hardwareService;
-        private readonly TipoHardwareService _tipoHardwareService;
-        private readonly SalaService _salaService;
+        private readonly IHardwareDeSalaService _hardwareService;
+        private readonly ITipoHardwareService _tipoHardwareService;
+        private readonly ISalaService _salaService;
+        private readonly IUsuarioService _usuarioService;
 
 
-        public HardwareDeSalaController(HardwareDeSalaService hardwareService, TipoHardwareService tipoHardwareService, SalaService salaService)
+        public HardwareDeSalaController(IHardwareDeSalaService hardwareService, 
+                                        ITipoHardwareService tipoHardwareService, 
+                                        ISalaService salaService,
+                                        IUsuarioService usuarioService)
         {
             _hardwareService = hardwareService;
             _tipoHardwareService = tipoHardwareService;
             _salaService = salaService;
+            _usuarioService = usuarioService;
         }
 
 
-        public IActionResult Index(string pesquisa)
+        public IActionResult Index()
         {
-            var hardwares = ReturnAllViewModels();
-
-            if (!string.IsNullOrEmpty(pesquisa))
-            {
-                hardwares = hardwares.Where(s => s.MAC.Contains(pesquisa)).ToList();
-            }
-
+            var hardwares = GetAllViewModels();
             return View(hardwares);
         }
 
         public IActionResult Create()
         {
-            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
-            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetSelectedList(), "Id", "Descricao");
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
+            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
 
             return View();
         }
@@ -47,33 +48,36 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(HardwareDeSalaModel hardware)
         {
+            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(usuario.Id), "Id", "Titulo");
+            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
 
-            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
-            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetSelectedList(), "Id", "Descricao");
-
-            if (ModelState.IsValid)
+            try
             {
-                if (!CompareMAC(hardware))
+                if (ModelState.IsValid)
                 {
-                    if (_hardwareService.Insert(hardware))
-                        return RedirectToAction(nameof(Index));
+                    if (_hardwareService.Insert(hardware,usuario.Id))
+                    {
+                        TempData["mensagemSucesso"] = "Hardware adicionado com sucesso!";
+                        return View();
+                    }
+                    else
+                        TempData["mensagemErro"] = "Houve um problema ao tentar inserir o hardware, tente novamente em alguns minutos!";
                 }
-                else
-                {
-                    TempData["aviso"] = "Um hardware com o endereço Mac especificado já existe!";
-                    return View(hardware);
-                }
+            }
+            catch (ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
             }
 
             return View(hardware);
-
         }
 
 
         public IActionResult Edit(int id)
         {
-            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
-            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetSelectedList(), "Id", "Descricao");
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
+            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
 
             HardwareDeSalaModel hardware = _hardwareService.GetById(id);
             return View(hardware);
@@ -84,74 +88,64 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, HardwareDeSalaModel hardware)
         {
-            ViewBag.salas = new SelectList(_salaService.GetSelectedList(), "Id", "Titulo");
-            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetSelectedList(), "Id", "Descricao");
-        
+            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(usuario.Id), "Id", "Titulo");
+            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
 
-            if (ModelState.IsValid)
+            try
             {
-                if (!CompareMAC(hardware))
+                if (ModelState.IsValid)
                 {
-                    if (_hardwareService.Update(hardware))
-                        return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    TempData["aviso"] = "Um hardware com o endereço Mac especificado já existe!";
-                    return View(hardware);
+                    if (_hardwareService.Update(hardware,usuario.Id))
+                        TempData["mensagemSucesso"] = "Hardware atualizado com sucesso";
+                    else
+                        TempData["mensagemErro"] = "Houve um problema ao atualizar hardware, tente novamente em alguns minutos!";
                 }
             }
+            catch (ServiceException se) { TempData["mensagemErro"] = se.Message; }
 
-            return View(hardware);
+            return RedirectToAction(nameof(Index));
         }
 
 
         public IActionResult Details(int id)
         {
-            return View(ReturnByIdViewModel(id));
+            return View(GetByIdViewModel(id));
         }
 
-        public IActionResult Delete(int id)
-        {
-           
-            return View(ReturnByIdViewModel(id));
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id, IFormCollection collection)
         {
-            if (_hardwareService.Remove(id))
-                return RedirectToAction(nameof(Index));
-
-            return View(ReturnByIdViewModel(id));
-        }
-
-        public bool CompareMAC(HardwareDeSalaModel hardware)
-        {
-           
-            List<HardwareDeSalaModel> itens = _hardwareService.GetAll().Where(s => s.MAC.Equals(hardware.MAC) && s.Id != hardware.Id).ToList();
-
-            return itens.Count() == 0 ? false : true;
-        }
-
-
-        private List<HardwareDeSalaViewModel> ReturnAllViewModels()
-        {
-            List<HardwareDeSalaModel> hardwares = _hardwareService.GetAll();
-            List<HardwareDeSalaViewModel> hardwaresViewModel = new List<HardwareDeSalaViewModel>();
-            foreach (var item in hardwares)
+            try
             {
-                hardwaresViewModel.Add(Cast(item));
+                if (_hardwareService.Remove(id))
+                    TempData["mensagemSucesso"] = "Hardware removido com sucesso!";
+                else
+                    TempData["mensagemErro"] = "Houve um problema ao tentar remover o hardware, tente novamente em alguns minutos!";
             }
+            catch (ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        private List<HardwareDeSalaViewModel> GetAllViewModels()
+        {
+            var hardwares = _hardwareService.GetAllHardwaresSalaByUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            var  hardwaresViewModel = new List<HardwareDeSalaViewModel>();
+
+            hardwares.ForEach(h => hardwaresViewModel.Add(Cast(h)));
 
             return hardwaresViewModel;
         }
 
-        private HardwareDeSalaViewModel ReturnByIdViewModel(int id)
+        private HardwareDeSalaViewModel GetByIdViewModel(int id)
         {
             HardwareDeSalaModel h = _hardwareService.GetById(id);
-           
+
             return Cast(h);
         }
 
@@ -163,8 +157,6 @@ namespace SalasUfsWeb.Controllers
             h.MAC = item.MAC;
             h.SalaId = _salaService.GetById(item.SalaId);
             h.TipoHardwareId = _tipoHardwareService.GetById(item.TipoHardwareId);
-
-
 
             return h;
         }

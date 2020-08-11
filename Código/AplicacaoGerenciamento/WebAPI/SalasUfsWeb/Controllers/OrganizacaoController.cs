@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service;
+using Service.Interface;
 
 namespace SalasUfsWeb.Controllers
 {
     public class OrganizacaoController : Controller
     {
-        private readonly OrganizacaoService _organizacaoService;
+        private readonly IOrganizacaoService _organizacaoService;
 
-        public OrganizacaoController(OrganizacaoService organizacaoService)
+        public OrganizacaoController(IOrganizacaoService organizacaoService)
         {
             _organizacaoService = organizacaoService;
         }

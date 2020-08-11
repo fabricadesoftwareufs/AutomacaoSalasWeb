@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.ViewModel;
 using Service;
+using Service.Interface;
 using Utils;
 
 namespace SalasUfsWeb.Controllers
 {
     public class UsuarioController : Controller
     {
-        private readonly UsuarioService _service;
-        public UsuarioController(UsuarioService service)
+        private readonly IUsuarioService _service;
+        public UsuarioController(IUsuarioService service)
         {
             _service = service;
         }

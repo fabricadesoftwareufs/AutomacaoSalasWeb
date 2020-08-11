@@ -1,12 +1,13 @@
 ﻿using Model;
 using Persistence;
+using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Service
 {
-    public class OrganizacaoService : IService<OrganizacaoModel>
+    public class OrganizacaoService : IOrganizacaoService
     {
         private readonly STR_DBContext _context;
         public OrganizacaoService(STR_DBContext context)
@@ -93,9 +94,5 @@ namespace Service
 
             return entity;
         }
-
-        public List<OrganizacaoModel> GetSelectedList()
-           => _context.Organizacao.Select(s => new OrganizacaoModel { Id = s.Id, RazaoSocial = string.Format("{0} - {1}", s.Id, s.RazaoSocial) }).ToList();
-
     }
 }

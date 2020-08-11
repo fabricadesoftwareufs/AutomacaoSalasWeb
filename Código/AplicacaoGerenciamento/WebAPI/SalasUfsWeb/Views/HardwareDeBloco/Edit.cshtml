@@ -4,49 +4,74 @@
     ViewData["Title"] = "Edit";
 }
 
-<h2>Edit</h2>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Atualizar Hardware</h2>
+                    </div>
+                    <form asp-action="Edit">
+                        <div class="card-body">
 
-<h4>HardwareDeBlocoViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="MAC" class="control-label"></label>
-                <input asp-for="MAC" class="form-control" />
-                <span asp-validation-for="MAC" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BlocoId" class="control-label"></label>
-                @Html.DropDownListFor(model => model.BlocoId, ViewBag.blocos as SelectList, new
-                { @class = "form-control"})
-                <span asp-validation-for="BlocoId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TipoHardwareId" class="control-label"></label>
-                @Html.DropDownListFor(model => model.TipoHardwareId, ViewBag.tipoHardware as SelectList, new
-                { @class = "form-control"})
-                <span asp-validation-for="TipoHardwareId" class="text-danger"></span>
-            </div>
-            @if (TempData["aviso"] != null)
-            {
-                <div class="field-error" id="error-div" style="color: red">
-                    @TempData["aviso"]
+                            <div class="form-group">
+                                <label asp-for="MAC" class="control-label"></label>
+                                <input asp-for="MAC" id="input-mac" class="form-control" />
+                                <span asp-validation-for="MAC" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="BlocoId" class="control-label"></label>
+                                @Html.DropDownListFor(model => model.BlocoId, ViewBag.blocos as SelectList, new
+                                { @class = "form-control" })
+                                <span asp-validation-for="BlocoId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TipoHardwareId" class="control-label"></label>
+                                @Html.DropDownListFor(model => model.TipoHardwareId, ViewBag.tipoHardware as SelectList, new
+                                { @class = "form-control" })
+                                <span asp-validation-for="TipoHardwareId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class=" col-md-4">
+                                <input type="submit" value="Salvar" class="btn btn-success" /> |
+                                <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <br />
-            }
-
-            <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-success" /> |
-                <a class="btn btn-primary" asp-action="Index">Voltar</a>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>
 
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlertRedirectIndex('success','Parabéns!', '@TempData["mensagemSucesso"]','/HardwareDeBloco/Index')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
 
 @section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+
+            $('#input-mac').inputmask("**:**:**:**:**:**");
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+    <script src="~/plugins/inputmask/min/inputmask/inputmask.min.js"></script>
+    <script src="~/plugins/inputmask/min/inputmask/jquery.inputmask.min.js"></script>
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

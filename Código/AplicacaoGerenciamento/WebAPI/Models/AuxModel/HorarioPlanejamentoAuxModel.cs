@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Model.ViewModel
 {
-    public class HorarioPlanejamento
+    public class HorarioPlanejamentoAuxModel
     {
         public TimeSpan HorarioInicio { get; set; }
         public TimeSpan HorarioFim { get; set; }

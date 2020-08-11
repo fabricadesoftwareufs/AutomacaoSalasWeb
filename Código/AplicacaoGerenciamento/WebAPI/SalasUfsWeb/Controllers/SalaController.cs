@@ -2,37 +2,59 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
+using Model.AuxModel;
+using Model.ViewModel;
+using Persistence;
 using Service;
+using Service.Interface;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
     public class SalaController : Controller
     {
-        private readonly SalaService _salaService;
-        private readonly BlocoService _blocoService;
+        private readonly ISalaService _salaService;
+        private readonly IBlocoService _blocoService;
+        private readonly IHardwareDeSalaService _hardwareDeSalaService;
+        private readonly ITipoHardwareService _tipoHardwareService;
+        private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
+        private readonly IUsuarioService _usuarioService;
 
-        public SalaController(SalaService salaService, BlocoService blocoService)
+
+        public SalaController(ISalaService salaService,
+                              IBlocoService blocoService,
+                              IHardwareDeSalaService hardwareDeSalaService,
+                              ITipoHardwareService tipoHardwareService,
+                              IUsuarioOrganizacaoService usuarioOrganizacaoService,
+                              IUsuarioService usuarioService)
         {
             _salaService = salaService;
             _blocoService = blocoService;
+            _hardwareDeSalaService = hardwareDeSalaService;
+            _tipoHardwareService = tipoHardwareService;
+            _usuarioOrganizacaoService = usuarioOrganizacaoService;
+            _usuarioService = usuarioService;
         }
         // GET: Sala
         public ActionResult Index()
         {
-            return View(_salaService.GetAll());
+            return View(GetAllSalasViewModel());
         }
 
         // GET: Sala/Details/5
         public ActionResult Details(int id)
         {
-            SalaModel salaModel = _salaService.GetById(id);
-            return View(salaModel);
+            return View(GetSalaViewModel(id));
         }
 
         // GET: Sala/Create
         public ActionResult Create()
         {
-            ViewBag.BlocoList = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
+            ViewBag.BlocoList = new SelectList(GetBlocos(), "Id", "Titulo");
+            ViewBag.TipoHardware = _tipoHardwareService.GetAll();
+
             return View();
         }
 
@@ -41,19 +63,21 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(SalaModel salaModel)
         {
-            ViewBag.BlocoList = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
+            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
+            ViewBag.BlocoList = new SelectList(GetBlocos(), "Id", "Titulo");
+            ViewBag.TipoHardware = _tipoHardwareService.GetAll();
 
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (_salaService.Insert(salaModel))
+
+                    if (_salaService.InsertSalaWithHardwares(salaModel, usuario.Id))
                     {
-                        TempData["mensagemSucesso"] = "Sala inserida com sucesso!";
-                        return View();
+                        TempData["mensagemSucesso"] = "Sala inserida com sucesso!"; return View();
                     }
-                    else
-                        TempData["mensagemErro"] = "Houve um problema ao inserir sala!";
+                    else TempData["mensagemErro"] = "Houve um problema ao inserir sala!";
+
                 }
             }
             catch (ServiceException se)
@@ -66,7 +90,7 @@ namespace SalasUfsWeb.Controllers
         // GET: Sala/Edit/5
         public ActionResult Edit(int id)
         {
-            ViewBag.BlocoList = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
+            ViewBag.BlocoList = new SelectList(GetBlocos(), "Id", "Titulo");
             SalaModel salaModel = _salaService.GetById(id);
             return View(salaModel);
         }
@@ -86,7 +110,7 @@ namespace SalasUfsWeb.Controllers
                         TempData["mensagemErro"] = "Houve um problema ao atualizar sala, tente novamente em alguns minutos!";
                 }
             }
-            catch(ServiceException se)
+            catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
             }
@@ -97,8 +121,8 @@ namespace SalasUfsWeb.Controllers
         // GET: Sala/Delete/5
         public ActionResult Delete(int id)
         {
-           SalaModel salaModel = _salaService.GetById(id);
-           return View(salaModel);
+            SalaModel salaModel = _salaService.GetById(id);
+            return View(salaModel);
         }
 
         // POST: Sala/Delete/5
@@ -117,11 +141,46 @@ namespace SalasUfsWeb.Controllers
                         TempData["mensagemErro"] = "Houve um problema ao remover a sala, tente novamente em alguns minutos!";
                 }
             }
-            catch(ServiceException se)
+            catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        private List<SalaViewModel> GetAllSalasViewModel()
+        {
+            var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
+            var salasViewModel = new List<SalaViewModel>();
+
+            var salas = _salaService.GetAllByIdUsuarioOrganizacao(idUser);
+            salas.ForEach(s => salasViewModel.Add(new SalaViewModel { BlocoSala = _blocoService.GetById(s.BlocoId), Sala = _salaService.GetById(s.Id) }));
+
+
+            return salasViewModel;
+        }
+
+        private SalaViewModel GetSalaViewModel(int id)
+        {
+            var sala = _salaService.GetById(id);
+            var hardwaresViewModel = new List<HardwareDeSalaViewModel>();
+
+            foreach (var item in _hardwareDeSalaService.GetByIdSala(id))
+                hardwaresViewModel.Add(new HardwareDeSalaViewModel { Id = item.Id, MAC = item.MAC, TipoHardwareId = _tipoHardwareService.GetById(item.TipoHardwareId) });
+
+            return new SalaViewModel
+            {
+                Sala = sala,
+                HardwaresSala = hardwaresViewModel,
+                BlocoSala = _blocoService.GetById(sala.BlocoId)
+            };
+        }
+
+        public List<BlocoModel> GetBlocos()
+        {
+            var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
+
+            return _blocoService.GetAllByIdUsuarioOrganizacao(idUser);
         }
     }
 }

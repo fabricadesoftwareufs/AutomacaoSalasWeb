@@ -1,11 +1,12 @@
 ﻿using Model;
 using Persistence;
+using Service.Interface;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Service
 {
-    public class HorarioSalaService : IService<HorarioSalaModel>
+    public class HorarioSalaService : IHorarioSalaService
     {
         private readonly STR_DBContext _context;
         public HorarioSalaService(STR_DBContext context)
@@ -102,9 +103,5 @@ namespace Service
 
             return entity;
         }
-
-        public List<HorarioSalaModel> GetSelectedList()
-            => _context.Horariosala.Select(s => new HorarioSalaModel { Id = s.Id, Objetivo = string.Format("{0} - {1} - {2} / {3}", s.Id,s.Data, s.HorarioInicio, s.HorarioFim) }).ToList();
-
     }
 }
