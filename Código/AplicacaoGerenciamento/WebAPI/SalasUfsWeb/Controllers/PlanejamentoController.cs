@@ -22,8 +22,8 @@ namespace SalasUfsWeb.Controllers
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
 
 
-        public PlanejamentoController(IPlanejamentoService service, 
-                                      ISalaService salaService, 
+        public PlanejamentoController(IPlanejamentoService service,
+                                      ISalaService salaService,
                                       IUsuarioService usuarioService,
                                       IUsuarioOrganizacaoService usuarioOrganizacaoService)
         {
@@ -63,12 +63,12 @@ namespace SalasUfsWeb.Controllers
                         TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
                         return View();
                     }
-                    else 
+                    else
                     {
                         TempData["mensagemSucesso"] = "Houve um problema ao inserir novo planejamento, tente novamente em alguns minutos.";
                     }
                 }
-                   
+
 
             }
             catch (ServiceException se)
@@ -85,7 +85,7 @@ namespace SalasUfsWeb.Controllers
             ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
             ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao(), "Id", "Nome");
             PlanejamentoModel planejamento = _planejamentoService.GetById(id);
-            
+
             return View(planejamento);
         }
 
@@ -151,12 +151,17 @@ namespace SalasUfsWeb.Controllers
             var orgs = _usuarioOrganizacaoService.GetByIdUsuario(usuario.Id);
 
             var planejamentos = new List<PlanejamentoViewModel>();
-            orgs.ForEach(e => _planejamentoService.GetByIdOrganizacao(e.OrganizacaoId).ForEach(p => planejamentos.Add(Cast(p))));
+
+            orgs.ForEach(e =>
+                _planejamentoService.GetByIdOrganizacao(e.OrganizacaoId).ForEach(p =>
+                        planejamentos.Add(Cast(p))
+                )
+            );
 
             return planejamentos;
         }
 
-        private List<UsuarioModel> GetAllUsersByOrganizacao() 
+        private List<UsuarioModel> GetAllUsersByOrganizacao()
         {
             var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
             var orgs = _usuarioOrganizacaoService.GetByIdUsuario(usuario.Id);
@@ -170,7 +175,7 @@ namespace SalasUfsWeb.Controllers
         private PlanejamentoViewModel GetByIdViewModel(int id)
         {
             PlanejamentoModel pl = _planejamentoService.GetById(id);
-           
+
             return Cast(pl);
         }
 

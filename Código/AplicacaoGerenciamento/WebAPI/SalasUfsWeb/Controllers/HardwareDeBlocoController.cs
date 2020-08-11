@@ -134,10 +134,10 @@ namespace SalasUfsWeb.Controllers
         private List<HardwareDeBlocoViewModel> ReturnAllViewModels()
         {
             var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
-            var hardwares = _hardwareService.GetAllHardwaresSalaByUsuarioOrganizacao(usuario.Id);
+            var hardwares = _hardwareService.GetAllHardwaresBlacoByUsuarioOrganizacao(usuario.Id);
             
             var hardwaresViewModel = new List<HardwareDeBlocoViewModel>();
-            hardwares.ForEach(e => Cast(e));
+            hardwares.ForEach(e => hardwaresViewModel.Add(Cast(e)));
 
             return hardwaresViewModel;
         }

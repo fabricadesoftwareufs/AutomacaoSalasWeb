@@ -21,13 +21,13 @@ namespace Service
         public HardwareDeBlocoModel GetById(int id) => _context.Hardwaredebloco.Where(h => h.Id == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).FirstOrDefault();
 
         public List<HardwareDeBlocoModel> GetByIdBloco(int id) => _context.Hardwaredebloco.Where(h => h.Bloco == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).ToList();
-        public List<HardwareDeBlocoModel> GetAllHardwaresSalaByUsuarioOrganizacao(int idUsuario)
+        public List<HardwareDeBlocoModel> GetAllHardwaresBlacoByUsuarioOrganizacao(int idUsuario)
         {
             var _blocoService = new BlocoService(_context);
             var hardwares = GetAll();
 
-            var query = (from sl in _blocoService.GetAllByIdUsuarioOrganizacao(idUsuario)
-                         join hr in hardwares on sl.Id equals hr.BlocoId
+            var query = (from hr in hardwares 
+                         join sl in _blocoService.GetAllByIdUsuarioOrganizacao(idUsuario) on hr.BlocoId equals sl.Id
                          select new HardwareDeBlocoModel
                          {
                              Id = hr.Id,

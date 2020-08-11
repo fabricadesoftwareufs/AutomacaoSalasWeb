@@ -172,19 +172,19 @@ namespace SalasUfsWeb.Controllers
 
         private List<SalaParticularViewModel> GetAllSalasParticularesViewModel() 
         {
-            var salasParticulares = _salaParticularService.GetAll();
-            List<SalaParticularViewModel> salasParticularesViewModel = new List<SalaParticularViewModel>();
-            
-            foreach (var item in salasParticulares) 
-            {
-                salasParticularesViewModel.Add(new SalaParticularViewModel
-                {
-                    Id = item.Id,
-                    SalaId = _salaService.GetById(item.SalaId),
-                    Responsavel = _usuarioService.GetById(item.UsuarioId)
-                }); 
-            
-            }
+            var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
+            var organizacoesLotadas = _usuarioOrganizacaoService.GetByIdUsuario(idUser).ToList();
+
+            var salasParticularesViewModel = new List<SalaParticularViewModel>();
+            organizacoesLotadas.ForEach(p =>
+                _salaParticularService.GetByIdOrganizacao(p.OrganizacaoId).ForEach(s =>
+                    salasParticularesViewModel.Add(new SalaParticularViewModel
+                    {
+                        Id = s.Id,
+                        SalaId = _salaService.GetById(s.SalaId),
+                        Responsavel = _usuarioService.GetById(s.UsuarioId)
+                    })
+            ));
 
             return salasParticularesViewModel;
         }

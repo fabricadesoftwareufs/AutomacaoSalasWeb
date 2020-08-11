@@ -193,14 +193,31 @@ namespace Service
             return entity;
         }
 
-        public List<PlanejamentoModel> GetByIdOrganizacao(int id)
+        public List<PlanejamentoModel> GetByIdUsuario(int idUsuario)
+         => _context.Planejamento
+                .Where(pl => pl.Usuario == idUsuario)
+                .Select(pl => new PlanejamentoModel
+                {
+                    Id = pl.Id,
+                    DataInicio = pl.DataInicio,
+                    DataFim = pl.DataFim,
+                    HorarioInicio = pl.HorarioInicio,
+                    HorarioFim = pl.HorarioFim,
+                    DiaSemana = pl.DiaSemana,
+                    Objetivo = pl.Objetivo,
+                    UsuarioId = pl.Usuario,
+                    SalaId = pl.Sala
+                }).ToList();
+
+
+        public List<PlanejamentoModel> GetByIdOrganizacao(int idOrganizacao)
         {
             var _blocoService = new BlocoService(_context);
             var _salaService = new SalaService(_context);
 
             var query = (from pl in GetAll()
                          join sl in _salaService.GetAll() on pl.SalaId equals sl.Id
-                         join bl in _blocoService.GetAllByIdUsuarioOrganizacao(id) on sl.Id equals bl.Id
+                         join bl in _blocoService.GetByIdOrganizacao(idOrganizacao) on sl.BlocoId equals bl.Id
                          select new PlanejamentoModel
                          {
                              Id = pl.Id,
