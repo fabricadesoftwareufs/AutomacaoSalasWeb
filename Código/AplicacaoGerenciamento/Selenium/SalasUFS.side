@@ -2,7 +2,7 @@
   "id": "06e169ef-4249-4494-a60a-bd466bceceb8",
   "version": "2.0",
   "name": "SalasUFS",
-  "url": "https://localhost:5001/SalaParticular/Create",
+  "url": "https://localhost:5001",
   "tests": [{
     "id": "50abda3d-3938-4e75-b51a-db709e559aa4",
     "name": "InserirPlanejamentoVálido",
@@ -2482,6 +2482,1444 @@
       ],
       "value": ""
     }]
+  }, {
+    "id": "1af01f4f-0e4d-4a6b-a7ff-446001d7b004",
+    "name": "InserirSalaInválida",
+    "commands": [{
+      "id": "847b0042-715a-4b83-a64a-3fa5b1231958",
+      "comment": "",
+      "command": "open",
+      "target": "/Sala/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "7aad03e3-e543-41fc-b73a-53c62e20cd45",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x784",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e8d84989-8259-48cc-b610-ce5e61036cc7",
+      "comment": "",
+      "command": "click",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "dc0180a0-b12a-45a7-988b-5e5c751357dc",
+      "comment": "",
+      "command": "click",
+      "target": "id=BlocoId",
+      "targets": [
+        ["id=BlocoId", "id"],
+        ["name=BlocoId", "name"],
+        ["css=#BlocoId", "css:finder"],
+        ["xpath=//select[@id='BlocoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'Bloco A\nBloco B\nBloco C\nBloco D\nBloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a5ea0c71-b03d-4970-bd5f-292026840237",
+      "comment": "",
+      "command": "select",
+      "target": "id=BlocoId",
+      "targets": [],
+      "value": "label=Bloco C"
+    }, {
+      "id": "3251fe25-564d-40ea-a6e0-f3204953a299",
+      "comment": "",
+      "command": "click",
+      "target": "id=BlocoId",
+      "targets": [
+        ["id=BlocoId", "id"],
+        ["name=BlocoId", "name"],
+        ["css=#BlocoId", "css:finder"],
+        ["xpath=//select[@id='BlocoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'Bloco A\nBloco B\nBloco C\nBloco D\nBloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ddb257dd-c661-44b6-9fc4-4cc2360c4c8f",
+      "comment": "",
+      "command": "click",
+      "target": "id=btn-create-nova-sala",
+      "targets": [
+        ["id=btn-create-nova-sala", "id"],
+        ["css=#btn-create-nova-sala", "css:finder"],
+        ["xpath=//input[@id='btn-create-nova-sala']", "xpath:attributes"],
+        ["xpath=//form/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c3caae8e-996d-4ab7-8782-f4cf79e8d1e1",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=btn-create-nova-sala",
+      "targets": [
+        ["id=btn-create-nova-sala", "id"],
+        ["css=#btn-create-nova-sala", "css:finder"],
+        ["xpath=//input[@id='btn-create-nova-sala']", "xpath:attributes"],
+        ["xpath=//form/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3c786930-2dcd-405a-b72a-6f65371831c8",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=btn-create-nova-sala",
+      "targets": [
+        ["id=btn-create-nova-sala", "id"],
+        ["css=#btn-create-nova-sala", "css:finder"],
+        ["xpath=//input[@id='btn-create-nova-sala']", "xpath:attributes"],
+        ["xpath=//form/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "91d8a873-784e-4970-a3a4-778faaff18e3",
+      "comment": "",
+      "command": "mouseDownAt",
+      "target": "css=.card-body:nth-child(1)",
+      "targets": [
+        ["css=.card-body:nth-child(1)", "css:finder"],
+        ["xpath=//form/div", "xpath:position"]
+      ],
+      "value": "17.420135498046875,182.71527099609375"
+    }, {
+      "id": "d5515587-2c16-4045-b06c-2fde76f1c50c",
+      "comment": "",
+      "command": "mouseMoveAt",
+      "target": "css=.card-body:nth-child(1)",
+      "targets": [
+        ["css=.card-body:nth-child(1)", "css:finder"],
+        ["xpath=//form/div", "xpath:position"]
+      ],
+      "value": "17.420135498046875,182.71527099609375"
+    }, {
+      "id": "e5f1a75f-6e49-4a7d-8bdc-6d484e821a31",
+      "comment": "",
+      "command": "mouseUpAt",
+      "target": "css=.card-body:nth-child(1)",
+      "targets": [
+        ["css=.card-body:nth-child(1)", "css:finder"],
+        ["xpath=//form/div", "xpath:position"]
+      ],
+      "value": "17.420135498046875,182.71527099609375"
+    }, {
+      "id": "2ee443a9-c74d-4d55-8352-7c3b0d3789e7",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=Titulo-error",
+      "targets": [
+        ["id=Titulo-error", "id"],
+        ["css=#Titulo-error", "css:finder"],
+        ["xpath=//span[@id='Titulo-error']", "xpath:attributes"],
+        ["xpath=//span/span", "xpath:position"]
+      ],
+      "value": "Campo obrigatório"
+    }]
+  }, {
+    "id": "c2ea57a2-6c75-4792-99c8-4e10449f23a8",
+    "name": "InserirSalaVálida",
+    "commands": [{
+      "id": "63c9c56c-8356-4ace-81a6-c240584236e3",
+      "comment": "",
+      "command": "open",
+      "target": "/Sala/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "84d115f4-fd93-48da-8ed7-bb0448656136",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x784",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "4f9bfec5-3582-43a6-82b1-e6eb7e52fc71",
+      "comment": "",
+      "command": "click",
+      "target": "id=BlocoId",
+      "targets": [
+        ["id=BlocoId", "id"],
+        ["name=BlocoId", "name"],
+        ["css=#BlocoId", "css:finder"],
+        ["xpath=//select[@id='BlocoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'Bloco A\nBloco B\nBloco C\nBloco D\nBloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "cded65b7-938d-4e95-943b-a6ad7f36d1e1",
+      "comment": "",
+      "command": "select",
+      "target": "id=BlocoId",
+      "targets": [],
+      "value": "label=Bloco D"
+    }, {
+      "id": "eabeaeb2-f279-4398-9fdf-27f86996f9c0",
+      "comment": "",
+      "command": "click",
+      "target": "id=BlocoId",
+      "targets": [
+        ["id=BlocoId", "id"],
+        ["name=BlocoId", "name"],
+        ["css=#BlocoId", "css:finder"],
+        ["xpath=//select[@id='BlocoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'Bloco A\nBloco B\nBloco C\nBloco D\nBloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "02049de8-dbf9-470a-803b-d6880796fe5a",
+      "comment": "",
+      "command": "click",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "253b6fa4-4d36-4f02-80d9-1e5c9401a447",
+      "comment": "",
+      "command": "type",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "SALA 290"
+    }, {
+      "id": "54669c6a-9cb0-4838-8d91-fe1464c3107b",
+      "comment": "",
+      "command": "click",
+      "target": "id=btn-create-nova-sala",
+      "targets": [
+        ["id=btn-create-nova-sala", "id"],
+        ["css=#btn-create-nova-sala", "css:finder"],
+        ["xpath=//input[@id='btn-create-nova-sala']", "xpath:attributes"],
+        ["xpath=//form/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0aba47c2-1c65-40b7-9f47-9a2693c54405",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": "Parabéns!"
+    }, {
+      "id": "1d4cfb63-e75d-463e-9ba6-2d74de3fc2bd",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Sala inserida com sucesso!"
+    }, {
+      "id": "84569333-8d7b-4ba8-b478-a75df9fc17b5",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-confirm",
+      "targets": [
+        ["css=.swal2-confirm", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "ef167b50-43af-4ab0-9c78-d753701289d7",
+    "name": "InserirSalaVálidaComUmHardwareVálido",
+    "commands": [{
+      "id": "3718fb4b-e2e6-4f6e-9f48-61247bb4ea5d",
+      "comment": "",
+      "command": "open",
+      "target": "/Sala/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5b0563f8-f899-4f40-a260-452125606d33",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x784",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "36f8c6bf-bcbb-4353-9259-e8699ac83a67",
+      "comment": "",
+      "command": "click",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "673a6228-4723-405a-9107-8fc6656dcf8a",
+      "comment": "",
+      "command": "click",
+      "target": "id=BlocoId",
+      "targets": [
+        ["id=BlocoId", "id"],
+        ["name=BlocoId", "name"],
+        ["css=#BlocoId", "css:finder"],
+        ["xpath=//select[@id='BlocoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'Bloco A\nBloco B\nBloco C\nBloco D\nBloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "90b3001e-4a73-48b7-b05f-cd740e75fb88",
+      "comment": "",
+      "command": "select",
+      "target": "id=BlocoId",
+      "targets": [],
+      "value": "label=Bloco B"
+    }, {
+      "id": "5663a699-867e-42ad-8067-c5403a46deec",
+      "comment": "",
+      "command": "click",
+      "target": "id=BlocoId",
+      "targets": [
+        ["id=BlocoId", "id"],
+        ["name=BlocoId", "name"],
+        ["css=#BlocoId", "css:finder"],
+        ["xpath=//select[@id='BlocoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'Bloco A\nBloco B\nBloco C\nBloco D\nBloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "d5a515a7-f695-482e-931e-b265b1320d4b",
+      "comment": "",
+      "command": "click",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a0b4e9a0-d9f0-4a7b-ad85-012fedacfe7e",
+      "comment": "",
+      "command": "type",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "SALA 296"
+    }, {
+      "id": "4b46bbff-465e-4e51-bcf4-303976c7dfbe",
+      "comment": "",
+      "command": "click",
+      "target": "id=input-mac",
+      "targets": [
+        ["id=input-mac", "id"],
+        ["css=#input-mac", "css:finder"],
+        ["xpath=//input[@id='input-mac']", "xpath:attributes"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f96248a1-947a-49a7-8931-b2f2f14c95f1",
+      "comment": "",
+      "command": "type",
+      "target": "id=input-mac",
+      "targets": [
+        ["id=input-mac", "id"],
+        ["css=#input-mac", "css:finder"],
+        ["xpath=//input[@id='input-mac']", "xpath:attributes"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": "D5:G4:56:D4:6G:54"
+    }, {
+      "id": "bc881c75-f794-4144-bc72-e87bf84e42ae",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-tipo-hardware",
+      "targets": [
+        ["id=select-tipo-hardware", "id"],
+        ["css=#select-tipo-hardware", "css:finder"],
+        ["xpath=//select[@id='select-tipo-hardware']", "xpath:attributes"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6325450f-7d72-4e61-a426-0e4e3ab47f71",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-tipo-hardware",
+      "targets": [],
+      "value": "label=2 - CONTROLADOR DE SALA"
+    }, {
+      "id": "3041f8dc-3af5-4bec-81fb-86f51a300543",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-tipo-hardware",
+      "targets": [
+        ["id=select-tipo-hardware", "id"],
+        ["css=#select-tipo-hardware", "css:finder"],
+        ["xpath=//select[@id='select-tipo-hardware']", "xpath:attributes"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2ed5ca35-7e88-4a6c-a022-0e430b7bf269",
+      "comment": "",
+      "command": "click",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
+        ["xpath=//div[3]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7c648de7-21db-45c5-98aa-d829bea5a62b",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
+        ["xpath=//div[3]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9e5ca9d0-aaaf-4320-bee4-47e0e83eaba0",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
+        ["xpath=//div[3]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "79197734-287c-4470-8312-25f47897515a",
+      "comment": "",
+      "command": "click",
+      "target": "id=btn-create-nova-sala",
+      "targets": [
+        ["id=btn-create-nova-sala", "id"],
+        ["css=#btn-create-nova-sala", "css:finder"],
+        ["xpath=//input[@id='btn-create-nova-sala']", "xpath:attributes"],
+        ["xpath=//form/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2503af52-4f50-4bb2-81d4-4ed5412c8245",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": "Parabéns!"
+    }, {
+      "id": "7dd09fa7-4275-4599-935b-42618d4610e4",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Sala inserida com sucesso!"
+    }, {
+      "id": "40a841fd-2b06-400f-a2e2-5e8ae4436f3c",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-confirm",
+      "targets": [
+        ["css=.swal2-confirm", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "6a12b88e-a1ab-4af5-b6af-e22202055ab1",
+    "name": "AdicionarHardwareComMacInválidoNaSala",
+    "commands": [{
+      "id": "96aa7200-352d-4414-868b-b9ce94448d03",
+      "comment": "",
+      "command": "open",
+      "target": "/Sala/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ac2e781e-fe46-4742-b9b3-b1164b1a4e47",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x784",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "de69acb7-e4d7-4d2c-893c-b9e98d32e53d",
+      "comment": "",
+      "command": "click",
+      "target": "id=BlocoId",
+      "targets": [
+        ["id=BlocoId", "id"],
+        ["name=BlocoId", "name"],
+        ["css=#BlocoId", "css:finder"],
+        ["xpath=//select[@id='BlocoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'Bloco A\nBloco B\nBloco C\nBloco D\nBloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "0cb93157-87d3-4fa6-b09e-154dbf000605",
+      "comment": "",
+      "command": "select",
+      "target": "id=BlocoId",
+      "targets": [],
+      "value": "label=Bloco E"
+    }, {
+      "id": "6e05f247-df52-435a-be35-8cb5c1175d6b",
+      "comment": "",
+      "command": "click",
+      "target": "id=BlocoId",
+      "targets": [
+        ["id=BlocoId", "id"],
+        ["name=BlocoId", "name"],
+        ["css=#BlocoId", "css:finder"],
+        ["xpath=//select[@id='BlocoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'Bloco A\nBloco B\nBloco C\nBloco D\nBloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "62de1b23-6cdd-4fca-97f0-172a1ffed1cc",
+      "comment": "",
+      "command": "click",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9f677d23-2b95-49fe-be9c-3f015627f8df",
+      "comment": "",
+      "command": "type",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "SALA 119"
+    }, {
+      "id": "34ff9c20-49d7-46e3-9fe9-79d35e606d3b",
+      "comment": "",
+      "command": "click",
+      "target": "id=input-mac",
+      "targets": [
+        ["id=input-mac", "id"],
+        ["css=#input-mac", "css:finder"],
+        ["xpath=//input[@id='input-mac']", "xpath:attributes"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9e13529f-a24c-475b-8b18-c15dce5af772",
+      "comment": "",
+      "command": "type",
+      "target": "id=input-mac",
+      "targets": [
+        ["id=input-mac", "id"],
+        ["css=#input-mac", "css:finder"],
+        ["xpath=//input[@id='input-mac']", "xpath:attributes"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": "Y:J4:5Y:YJ:4Y:5T"
+    }, {
+      "id": "567b010c-2053-4d30-835f-0a967e6d840f",
+      "comment": "",
+      "command": "click",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
+        ["xpath=//div[3]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6ad75290-0726-4d97-84a4-a407f8570352",
+      "comment": "",
+      "command": "click",
+      "target": "css=.col-md-10",
+      "targets": [
+        ["css=.col-md-10", "css:finder"],
+        ["xpath=//form/div/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1eb52c46-78b9-490e-8dc1-4768a8b80a7a",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8cd6f844-ee8c-467a-8735-9810508801bf",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=mensagem-erro-hardwares",
+      "targets": [
+        ["id=mensagem-erro-hardwares", "id"],
+        ["css=#mensagem-erro-hardwares", "css:finder"],
+        ["xpath=//span[@id='mensagem-erro-hardwares']", "xpath:attributes"],
+        ["xpath=//form/div/div[2]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Preencha o campo MAC antes de adicionar um hardware!')]", "xpath:innerText"]
+      ],
+      "value": "Preencha o campo MAC antes de adicionar um hardware!"
+    }]
+  }, {
+    "id": "ec5b023a-5cca-41a2-b084-4400c041bfd6",
+    "name": "InserirSalaInválidaComTituloDuplicado",
+    "commands": [{
+      "id": "b5d3d349-61c0-440d-9443-77e48d695013",
+      "comment": "",
+      "command": "open",
+      "target": "/Sala/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b5bc4efc-29af-4ad2-8bef-d9551374232f",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x784",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2a07a013-2894-4c1f-a9bb-9b3a4846ad18",
+      "comment": "",
+      "command": "click",
+      "target": "id=BlocoId",
+      "targets": [
+        ["id=BlocoId", "id"],
+        ["name=BlocoId", "name"],
+        ["css=#BlocoId", "css:finder"],
+        ["xpath=//select[@id='BlocoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'Bloco A\nBloco B\nBloco C\nBloco D\nBloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "1c62084f-df95-4dce-8416-795250951b87",
+      "comment": "",
+      "command": "select",
+      "target": "id=BlocoId",
+      "targets": [],
+      "value": "label=Bloco D"
+    }, {
+      "id": "cbb10cf4-07e1-4521-960e-ccc93f9ba9c9",
+      "comment": "",
+      "command": "click",
+      "target": "id=BlocoId",
+      "targets": [
+        ["id=BlocoId", "id"],
+        ["name=BlocoId", "name"],
+        ["css=#BlocoId", "css:finder"],
+        ["xpath=//select[@id='BlocoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'Bloco A\nBloco B\nBloco C\nBloco D\nBloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5bc27827-a265-48ce-b1c3-2cdc01969c34",
+      "comment": "",
+      "command": "click",
+      "target": "css=.card-body:nth-child(1)",
+      "targets": [
+        ["css=.card-body:nth-child(1)", "css:finder"],
+        ["xpath=//form/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "22432e83-e026-495f-876f-50e722fda2f6",
+      "comment": "",
+      "command": "click",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "82441921-31af-4cd8-8668-72c21faff78a",
+      "comment": "",
+      "command": "type",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "SALA 290"
+    }, {
+      "id": "e748f706-0a99-4e6f-88ed-b46326d8285a",
+      "comment": "",
+      "command": "click",
+      "target": "id=btn-create-nova-sala",
+      "targets": [
+        ["id=btn-create-nova-sala", "id"],
+        ["css=#btn-create-nova-sala", "css:finder"],
+        ["xpath=//input[@id='btn-create-nova-sala']", "xpath:attributes"],
+        ["xpath=//form/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "701da215-0a8d-45d8-9f15-68ef8aecb702",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": "Falha!"
+    }, {
+      "id": "067a5451-26ba-4d1a-9419-e633c4efc210",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Uma sala com o mesmo Titulo já está associada a este bloco!"
+    }, {
+      "id": "325bc462-15a1-4a71-95d3-d4642b37b770",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-confirm",
+      "targets": [
+        ["css=.swal2-confirm", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "48169ed8-f2ca-4b5e-abf2-5cee1848805b",
+    "name": "InserirBlocoVálido",
+    "commands": [{
+      "id": "12f06beb-3917-4b82-8fd8-3b6c58f85aa6",
+      "comment": "",
+      "command": "open",
+      "target": "/Bloco/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2d56262c-dae7-4d12-8f90-0974565f2206",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x784",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a68f6670-3bb8-43b2-a504-a9f686085d8e",
+      "comment": "",
+      "command": "click",
+      "target": "id=OrganizacaoId",
+      "targets": [
+        ["id=OrganizacaoId", "id"],
+        ["name=OrganizacaoId", "name"],
+        ["css=#OrganizacaoId", "css:finder"],
+        ["xpath=//select[@id='OrganizacaoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e6d8c03c-d3dd-40e5-b1c3-0f41fadec3da",
+      "comment": "",
+      "command": "click",
+      "target": "id=OrganizacaoId",
+      "targets": [
+        ["id=OrganizacaoId", "id"],
+        ["name=OrganizacaoId", "name"],
+        ["css=#OrganizacaoId", "css:finder"],
+        ["xpath=//select[@id='OrganizacaoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE')]", "xpath:innerText"]
+      ],
+      "value": "FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE"
+    }, {
+      "id": "125e9de1-3a47-4da5-87dd-eea62c51a167",
+      "comment": "",
+      "command": "click",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3c4cf973-a212-448a-ae4a-e7b0e115aa92",
+      "comment": "",
+      "command": "type",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "DIDADICA F"
+    }, {
+      "id": "83565f07-2476-4bc5-b1f9-02f1e6816733",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-success",
+      "targets": [
+        ["css=.btn-success", "css:finder"],
+        ["xpath=//input[@value='Salvar']", "xpath:attributes"],
+        ["xpath=//form/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "43b9b8ba-acc4-4cc7-969b-de5c0ed6bd6a",
+      "comment": "",
+      "command": "click",
+      "target": "id=swal2-title",
+      "targets": [
+        ["id=swal2-title", "id"],
+        ["css=#swal2-title", "css:finder"],
+        ["xpath=//h2[@id='swal2-title']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Parabéns!')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "9a0c701b-42ea-441c-9870-884e71fe6b27",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": "Parabéns!"
+    }, {
+      "id": "4f8d8887-1229-421c-9e5e-625a852a4bf2",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Bloco adicionado com sucesso!"
+    }, {
+      "id": "67af23b2-8e8f-4ba2-8662-ac5cfe30c3d3",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-confirm",
+      "targets": [
+        ["css=.swal2-confirm", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "dd55b3b5-a30f-4262-93b8-6eeb3037e2ad",
+    "name": "InserirBlocoInválido",
+    "commands": [{
+      "id": "4d9c7015-6560-4792-8a69-18d2f09735d9",
+      "comment": "",
+      "command": "open",
+      "target": "/Bloco/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f6d58cdc-f1c3-4181-bf3a-23abd1688824",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x784",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "376b16b0-8328-41ad-8dd6-486922d218ed",
+      "comment": "",
+      "command": "click",
+      "target": "id=OrganizacaoId",
+      "targets": [
+        ["id=OrganizacaoId", "id"],
+        ["name=OrganizacaoId", "name"],
+        ["css=#OrganizacaoId", "css:finder"],
+        ["xpath=//select[@id='OrganizacaoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ca96d47e-264e-4dad-a8a9-b99fa17824f1",
+      "comment": "",
+      "command": "click",
+      "target": "id=OrganizacaoId",
+      "targets": [
+        ["id=OrganizacaoId", "id"],
+        ["name=OrganizacaoId", "name"],
+        ["css=#OrganizacaoId", "css:finder"],
+        ["xpath=//select[@id='OrganizacaoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE')]", "xpath:innerText"]
+      ],
+      "value": "FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE"
+    }, {
+      "id": "0121e6e7-3c45-4c4a-81b6-c7f17a1a5a0e",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-success",
+      "targets": [
+        ["css=.btn-success", "css:finder"],
+        ["xpath=//input[@value='Salvar']", "xpath:attributes"],
+        ["xpath=//form/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f2a1235b-7baa-4c28-bdc7-4bb0c2b726a5",
+      "comment": "",
+      "command": "click",
+      "target": "css=.form-group:nth-child(2)",
+      "targets": [
+        ["css=.form-group:nth-child(2)", "css:finder"],
+        ["xpath=//form/div/div/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6481a7bb-52d2-4a9f-8106-9e0fd811acfb",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=Titulo-error",
+      "targets": [
+        ["id=Titulo-error", "id"],
+        ["css=#Titulo-error", "css:finder"],
+        ["xpath=//span[@id='Titulo-error']", "xpath:attributes"],
+        ["xpath=//span/span", "xpath:position"]
+      ],
+      "value": "Campo obrigatório"
+    }]
+  }, {
+    "id": "154113ff-8382-4c40-a49c-74a938f76c27",
+    "name": "InserirBlocoVálidoComUmHardwareVálido",
+    "commands": [{
+      "id": "61e3597b-e0a8-4293-ad94-461531bd1197",
+      "comment": "",
+      "command": "open",
+      "target": "/Bloco/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a59e2540-b5fe-499e-b9ea-5d03d2b46ba9",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x784",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8198b157-7f8d-49ec-9e50-7cf651b92fdd",
+      "comment": "",
+      "command": "click",
+      "target": "id=OrganizacaoId",
+      "targets": [
+        ["id=OrganizacaoId", "id"],
+        ["name=OrganizacaoId", "name"],
+        ["css=#OrganizacaoId", "css:finder"],
+        ["xpath=//select[@id='OrganizacaoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "355aeb6e-4675-449a-8d7a-fb154abb8686",
+      "comment": "",
+      "command": "click",
+      "target": "id=OrganizacaoId",
+      "targets": [
+        ["id=OrganizacaoId", "id"],
+        ["name=OrganizacaoId", "name"],
+        ["css=#OrganizacaoId", "css:finder"],
+        ["xpath=//select[@id='OrganizacaoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE')]", "xpath:innerText"]
+      ],
+      "value": "FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE"
+    }, {
+      "id": "8a61b8b6-fee9-47a1-8f5e-e254910201d2",
+      "comment": "",
+      "command": "click",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1b1498fb-b073-4a3c-b914-8e36816ae85f",
+      "comment": "",
+      "command": "type",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "DIDATICA Z"
+    }, {
+      "id": "c2391aef-482f-4a0b-a8f3-019b69618c66",
+      "comment": "",
+      "command": "click",
+      "target": "id=input-mac",
+      "targets": [
+        ["id=input-mac", "id"],
+        ["css=#input-mac", "css:finder"],
+        ["xpath=//input[@id='input-mac']", "xpath:attributes"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "24a367d9-f0fc-4299-94be-d4a294d87ee7",
+      "comment": "",
+      "command": "type",
+      "target": "id=input-mac",
+      "targets": [
+        ["id=input-mac", "id"],
+        ["css=#input-mac", "css:finder"],
+        ["xpath=//input[@id='input-mac']", "xpath:attributes"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": "FT:45:1J:Y1:J5:JT"
+    }, {
+      "id": "93f3ae6c-5db4-4214-8771-977802072da4",
+      "comment": "",
+      "command": "click",
+      "target": "id=add-novo-hardware-bloco",
+      "targets": [
+        ["id=add-novo-hardware-bloco", "id"],
+        ["css=#add-novo-hardware-bloco", "css:finder"],
+        ["xpath=//a[@id='add-novo-hardware-bloco']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bf4d0b98-e1e6-4009-adc3-5d1096ff958f",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=add-novo-hardware-bloco",
+      "targets": [
+        ["id=add-novo-hardware-bloco", "id"],
+        ["css=#add-novo-hardware-bloco", "css:finder"],
+        ["xpath=//a[@id='add-novo-hardware-bloco']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "e5f6629b-d655-487c-b258-ac9bbd0a6914",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=add-novo-hardware-bloco",
+      "targets": [
+        ["id=add-novo-hardware-bloco", "id"],
+        ["css=#add-novo-hardware-bloco", "css:finder"],
+        ["xpath=//a[@id='add-novo-hardware-bloco']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "efd8feaf-72a7-4c4e-b36e-0e9fcaff5597",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-success",
+      "targets": [
+        ["css=.btn-success", "css:finder"],
+        ["xpath=//input[@value='Salvar']", "xpath:attributes"],
+        ["xpath=//form/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0dcb9bd7-12c3-4793-8581-652b902b43ef",
+      "comment": "",
+      "command": "click",
+      "target": "id=swal2-title",
+      "targets": [
+        ["id=swal2-title", "id"],
+        ["css=#swal2-title", "css:finder"],
+        ["xpath=//h2[@id='swal2-title']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Parabéns!')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "55f35307-4577-4a5e-be2b-a88f61f60835",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": "Parabéns!"
+    }, {
+      "id": "6af85ab6-fec8-43ea-9e3d-393d765f5945",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Bloco adicionado com sucesso!"
+    }, {
+      "id": "42e6a5a7-069d-48b4-b362-28acaf508840",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-confirm",
+      "targets": [
+        ["css=.swal2-confirm", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "679ee58f-4c92-4f01-adb1-3e4de702dcf4",
+    "name": "InserirBlocoDuplicado",
+    "commands": [{
+      "id": "6a3c11bd-1f92-4f98-bf50-3d40755756f2",
+      "comment": "",
+      "command": "open",
+      "target": "/Bloco/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "02b29217-1088-40a8-b68f-dee38345c976",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x784",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "214cb452-5711-4cc8-b06b-9eee43cd5941",
+      "comment": "",
+      "command": "click",
+      "target": "id=OrganizacaoId",
+      "targets": [
+        ["id=OrganizacaoId", "id"],
+        ["name=OrganizacaoId", "name"],
+        ["css=#OrganizacaoId", "css:finder"],
+        ["xpath=//select[@id='OrganizacaoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "fef6984e-97d4-4eae-81ed-51dac4b0e716",
+      "comment": "",
+      "command": "click",
+      "target": "id=OrganizacaoId",
+      "targets": [
+        ["id=OrganizacaoId", "id"],
+        ["name=OrganizacaoId", "name"],
+        ["css=#OrganizacaoId", "css:finder"],
+        ["xpath=//select[@id='OrganizacaoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE')]", "xpath:innerText"]
+      ],
+      "value": "FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE"
+    }, {
+      "id": "1a69be80-ae4f-44cd-bdcb-de78bf77f7f7",
+      "comment": "",
+      "command": "click",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "93a0e119-3939-4f44-aac6-66afda86713f",
+      "comment": "",
+      "command": "type",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "didatica F"
+    }, {
+      "id": "5c7a9875-67c7-49dd-b03f-9bdcfe2cd539",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-success",
+      "targets": [
+        ["css=.btn-success", "css:finder"],
+        ["xpath=//input[@value='Salvar']", "xpath:attributes"],
+        ["xpath=//form/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3b62f06c-a382-4f0b-9d3b-1ff4315f467c",
+      "comment": "",
+      "command": "click",
+      "target": "id=swal2-title",
+      "targets": [
+        ["id=swal2-title", "id"],
+        ["css=#swal2-title", "css:finder"],
+        ["xpath=//h2[@id='swal2-title']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Falha!')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a5a9e6ab-9dad-4594-aa99-a8f99e247665",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": "Falha!"
+    }, {
+      "id": "c9e5d223-1b31-4ee0-8cab-e0c71168969d",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Essa organização já possui um bloco com esse nome"
+    }, {
+      "id": "1a3821a5-8e32-4333-ac2b-b4f71ba90635",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-confirm",
+      "targets": [
+        ["css=.swal2-confirm", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "f4a9aa8e-d55c-4695-be74-e36dd08f3cd1",
+    "name": "AdicionarHardwareComMacInválidoNoBloco",
+    "commands": [{
+      "id": "399d70b2-34b2-469f-8b2e-b41be869b951",
+      "comment": "",
+      "command": "open",
+      "target": "/Bloco/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "027ed9f0-fb86-4444-8e89-3ad0d7ef4c21",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x784",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2186cd52-7316-4875-83cc-b48b0029cf6c",
+      "comment": "",
+      "command": "click",
+      "target": "id=OrganizacaoId",
+      "targets": [
+        ["id=OrganizacaoId", "id"],
+        ["name=OrganizacaoId", "name"],
+        ["css=#OrganizacaoId", "css:finder"],
+        ["xpath=//select[@id='OrganizacaoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "1f205cc3-1c52-40d2-9d0a-c00bd7e998f9",
+      "comment": "",
+      "command": "click",
+      "target": "id=OrganizacaoId",
+      "targets": [
+        ["id=OrganizacaoId", "id"],
+        ["name=OrganizacaoId", "name"],
+        ["css=#OrganizacaoId", "css:finder"],
+        ["xpath=//select[@id='OrganizacaoId']", "xpath:attributes"],
+        ["xpath=//div[@id='ListElements']/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE')]", "xpath:innerText"]
+      ],
+      "value": "FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE"
+    }, {
+      "id": "d7050e02-7d05-4e0f-9c86-929c6e353c66",
+      "comment": "",
+      "command": "click",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "df91e7d2-e456-45c4-9b63-c38419bbd57c",
+      "comment": "",
+      "command": "type",
+      "target": "id=Titulo",
+      "targets": [
+        ["id=Titulo", "id"],
+        ["name=Titulo", "name"],
+        ["css=#Titulo", "css:finder"],
+        ["xpath=//input[@id='Titulo']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "BLOCO K"
+    }, {
+      "id": "374a59f1-2d1c-42e2-afd8-21694ff39ae6",
+      "comment": "",
+      "command": "click",
+      "target": "id=input-mac",
+      "targets": [
+        ["id=input-mac", "id"],
+        ["css=#input-mac", "css:finder"],
+        ["xpath=//input[@id='input-mac']", "xpath:attributes"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "aa334550-bdc8-45c3-a906-299bc7388e13",
+      "comment": "",
+      "command": "type",
+      "target": "id=input-mac",
+      "targets": [
+        ["id=input-mac", "id"],
+        ["css=#input-mac", "css:finder"],
+        ["xpath=//input[@id='input-mac']", "xpath:attributes"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": "5T:5H:TY:J4"
+    }, {
+      "id": "35e8068c-b71c-47fa-9803-cd50f7ab03ea",
+      "comment": "",
+      "command": "click",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-hardware-bloco']/i", "xpath:idRelative"],
+        ["xpath=//div[2]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bf418039-862a-4332-93c6-c0edb77042ec",
+      "comment": "",
+      "command": "click",
+      "target": "id=mensagem-erro-hardwares",
+      "targets": [
+        ["id=mensagem-erro-hardwares", "id"],
+        ["css=#mensagem-erro-hardwares", "css:finder"],
+        ["xpath=//span[@id='mensagem-erro-hardwares']", "xpath:attributes"],
+        ["xpath=//form/div/div[2]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Preencha o campo MAC antes de adicionar um hardware!')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c16d9a9e-4f2a-4d93-9670-4b11e7954963",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=mensagem-erro-hardwares",
+      "targets": [
+        ["id=mensagem-erro-hardwares", "id"],
+        ["css=#mensagem-erro-hardwares", "css:finder"],
+        ["xpath=//span[@id='mensagem-erro-hardwares']", "xpath:attributes"],
+        ["xpath=//form/div/div[2]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Preencha o campo MAC antes de adicionar um hardware!')]", "xpath:innerText"]
+      ],
+      "value": "Preencha o campo MAC antes de adicionar um hardware!"
+    }]
   }],
   "suites": [{
     "id": "17eb4d13-1738-4d73-a51d-8c51c2411b63",
@@ -2497,6 +3935,20 @@
     "parallel": false,
     "timeout": 300,
     "tests": ["6f3a6dd6-99a8-47da-b2f1-99899ae69da7", "1eda6f29-fdc2-4c62-84f7-7f52e0e4c22d", "46e2f4c0-60e2-43d3-b5f7-341fb58a201e"]
+  }, {
+    "id": "ff42897e-c2be-4aa7-baa8-dc5bc4f44803",
+    "name": "TestesSala",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["c2ea57a2-6c75-4792-99c8-4e10449f23a8", "1af01f4f-0e4d-4a6b-a7ff-446001d7b004", "ef167b50-43af-4ab0-9c78-d753701289d7", "6a12b88e-a1ab-4af5-b6af-e22202055ab1", "ec5b023a-5cca-41a2-b084-4400c041bfd6"]
+  }, {
+    "id": "9dce99f9-befc-4595-9071-f5102d0d8f05",
+    "name": "TestesBloco",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["154113ff-8382-4c40-a49c-74a938f76c27", "48169ed8-f2ca-4b5e-abf2-5cee1848805b", "dd55b3b5-a30f-4262-93b8-6eeb3037e2ad", "679ee58f-4c92-4f01-adb1-3e4de702dcf4", "f4a9aa8e-d55c-4695-be74-e36dd08f3cd1"]
   }],
   "urls": ["https://localhost:5001/", "https://localhost:5001/Planejamento/Create", "https://localhost:5001/SalaParticular/Create"],
   "plugins": []
