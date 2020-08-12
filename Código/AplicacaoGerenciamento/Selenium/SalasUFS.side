@@ -2,23 +2,19 @@
   "id": "06e169ef-4249-4494-a60a-bd466bceceb8",
   "version": "2.0",
   "name": "SalasUFS",
-  "url": "https://localhost:5001/Planejamento/Create",
+  "url": "https://localhost:5001/SalaParticular/Create",
   "tests": [{
     "id": "50abda3d-3938-4e75-b51a-db709e559aa4",
     "name": "InserirPlanejamentoVálido",
-    "commands": []
-  }, {
-    "id": "87e7d025-5e3a-432f-8f59-9a81df85037b",
-    "name": "InserirPlanejamentoComDataInválida",
     "commands": [{
-      "id": "e6067ebf-6c27-401f-bc05-73562fc61743",
+      "id": "ba37d863-25e6-4b0e-808d-8f1b9ebd68fb",
       "comment": "",
       "command": "open",
       "target": "https://localhost:5001/Planejamento/Create",
       "targets": [],
       "value": ""
     }, {
-      "id": "02fcad41-5428-4ab4-ac5b-e0b1bafc406a",
+      "id": "4327f689-af9a-4e1d-93f0-0ff6bdd3a1d1",
       "comment": "",
       "command": "click",
       "target": "id=sala",
@@ -29,18 +25,18 @@
         ["xpath=//select[@id='sala']", "xpath:attributes"],
         ["xpath=//form[@id='form']/div/div/div/select", "xpath:idRelative"],
         ["xpath=//select", "xpath:position"],
-        ["xpath=//select[contains(.,'Sala 01\nSala 02\nSala 03\nSala 04\nSala 05')]", "xpath:innerText"]
+        ["xpath=//select[contains(.,'1 | Sala 01\n2 | Sala 02\n3 | Sala 03\n4 | Sala 04\n5 | Sala 05')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "72338890-7fa3-4c99-8e53-bc644d60473c",
+      "id": "d8e26f78-f88c-4d59-906c-07604dc45c7d",
       "comment": "",
       "command": "select",
       "target": "id=sala",
       "targets": [],
-      "value": "label=Sala 02"
+      "value": "label=3 | Sala 03"
     }, {
-      "id": "2d3bf870-485f-4f5e-afea-de461e3700a9",
+      "id": "cf017940-77a5-4abe-9513-ecda35e3d379",
       "comment": "",
       "command": "click",
       "target": "id=sala",
@@ -51,11 +47,11 @@
         ["xpath=//select[@id='sala']", "xpath:attributes"],
         ["xpath=//form[@id='form']/div/div/div/select", "xpath:idRelative"],
         ["xpath=//select", "xpath:position"],
-        ["xpath=//select[contains(.,'Sala 01\nSala 02\nSala 03\nSala 04\nSala 05')]", "xpath:innerText"]
+        ["xpath=//select[contains(.,'1 | Sala 01\n2 | Sala 02\n3 | Sala 03\n4 | Sala 04\n5 | Sala 05')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "ed0fe4bc-f7ee-47ea-a554-a454ccd86d6a",
+      "id": "3ecf7863-cb65-4bf7-8eab-c90190d66ff5",
       "comment": "",
       "command": "click",
       "target": "id=usuario",
@@ -66,18 +62,18 @@
         ["xpath=//select[@id='usuario']", "xpath:attributes"],
         ["xpath=//form[@id='form']/div/div/div[2]/select", "xpath:idRelative"],
         ["xpath=//div[2]/select", "xpath:position"],
-        ["xpath=//select[contains(.,'Lívia Benedita Rebeca Araújo\nRafael Kevin Teixeira\nIgor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "a0f862ad-32af-422d-be92-a210fc5cfd7e",
+      "id": "307cac23-7490-4faa-8b42-d63d7aa01ed9",
       "comment": "",
       "command": "select",
       "target": "id=usuario",
       "targets": [],
-      "value": "label=Rafael Kevin Teixeira"
+      "value": "label=07852892590 | Igor Bruno dos Santos Nascimento"
     }, {
-      "id": "a62312ab-6e20-45e5-a2df-6f228e32fafb",
+      "id": "8da1ce6c-84a1-4e31-b735-107ab0c5b793",
       "comment": "",
       "command": "click",
       "target": "id=usuario",
@@ -88,11 +84,11 @@
         ["xpath=//select[@id='usuario']", "xpath:attributes"],
         ["xpath=//form[@id='form']/div/div/div[2]/select", "xpath:idRelative"],
         ["xpath=//div[2]/select", "xpath:position"],
-        ["xpath=//select[contains(.,'Lívia Benedita Rebeca Araújo\nRafael Kevin Teixeira\nIgor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "fccc0035-0d2d-4561-bc76-b52a71d0a5ea",
+      "id": "3ebf275c-dd21-49fa-9d79-95ccc966506f",
       "comment": "",
       "command": "click",
       "target": "id=objetivo",
@@ -106,7 +102,7 @@
       ],
       "value": ""
     }, {
-      "id": "0e9c7afe-8986-4217-a80f-0142f4b60d92",
+      "id": "c1724bb9-7598-4855-a831-79b9eff22455",
       "comment": "",
       "command": "type",
       "target": "id=objetivo",
@@ -118,9 +114,9 @@
         ["xpath=//form[@id='form']/div/div/div[3]/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "Planejamento da disciplina de LFT"
+      "value": "Planejamento da disciplina de Engenharia de Software para o período 2019.2"
     }, {
-      "id": "146cbee1-3a8c-403c-a49d-9d767536e37f",
+      "id": "f6c0833f-2108-4d98-8b83-0ea2c00fc8ac",
       "comment": "",
       "command": "click",
       "target": "id=dataInicio",
@@ -134,7 +130,7 @@
       ],
       "value": ""
     }, {
-      "id": "5d812d1d-be13-421d-9a61-89f38ae888d3",
+      "id": "5a722cdd-3443-497a-90dd-22b08909e774",
       "comment": "",
       "command": "type",
       "target": "id=dataInicio",
@@ -148,7 +144,7 @@
       ],
       "value": "0002-08-24"
     }, {
-      "id": "f4979b86-8ca1-4319-8a1f-ea55e32cb190",
+      "id": "7894c8db-c4c3-4027-9b9a-79541b6dae85",
       "comment": "",
       "command": "type",
       "target": "id=dataInicio",
@@ -162,7 +158,7 @@
       ],
       "value": "0020-08-24"
     }, {
-      "id": "8afde193-4e9a-4433-96bd-6b01ca11d90e",
+      "id": "df51fae2-e67f-4433-b443-0afc4f3a80a0",
       "comment": "",
       "command": "type",
       "target": "id=dataInicio",
@@ -176,7 +172,7 @@
       ],
       "value": "0202-08-24"
     }, {
-      "id": "145f6e0b-1480-4592-b2d6-a340f5c5b816",
+      "id": "40da53ef-9565-4f5b-9d92-526651b3f917",
       "comment": "",
       "command": "type",
       "target": "id=dataInicio",
@@ -190,7 +186,7 @@
       ],
       "value": "2020-08-24"
     }, {
-      "id": "0cf41921-92cc-4978-bc00-870cf5e1e71c",
+      "id": "00b5ae2d-f213-44f7-aa1c-bee5754866de",
       "comment": "",
       "command": "click",
       "target": "id=dataFim",
@@ -204,7 +200,7 @@
       ],
       "value": ""
     }, {
-      "id": "f3f028a5-44cd-440a-87c7-487231acff70",
+      "id": "e96484d4-55bb-4443-aa1f-f188c38a8286",
       "comment": "",
       "command": "type",
       "target": "id=dataFim",
@@ -216,9 +212,9 @@
         ["xpath=//form[@id='form']/div/div[2]/div[2]/input", "xpath:idRelative"],
         ["xpath=//div[2]/input", "xpath:position"]
       ],
-      "value": "0002-08-20"
+      "value": "0002-12-24"
     }, {
-      "id": "a1c27947-9de7-49f8-ba97-dae078636f4e",
+      "id": "66c9d52a-37d3-46ac-a6a3-8377c7f7fbbb",
       "comment": "",
       "command": "type",
       "target": "id=dataFim",
@@ -230,9 +226,9 @@
         ["xpath=//form[@id='form']/div/div[2]/div[2]/input", "xpath:idRelative"],
         ["xpath=//div[2]/input", "xpath:position"]
       ],
-      "value": "0020-08-20"
+      "value": "0020-12-24"
     }, {
-      "id": "8a8773f7-e366-4baa-8d5a-e9a66a3eaed6",
+      "id": "bc98113d-6dfb-46b4-a3d9-5294cc18ddd6",
       "comment": "",
       "command": "type",
       "target": "id=dataFim",
@@ -244,9 +240,9 @@
         ["xpath=//form[@id='form']/div/div[2]/div[2]/input", "xpath:idRelative"],
         ["xpath=//div[2]/input", "xpath:position"]
       ],
-      "value": "0200-08-20"
+      "value": "0202-12-24"
     }, {
-      "id": "7337c4e7-eb7c-45ed-aa16-29c4a9d0750a",
+      "id": "71707f2f-27f7-4a6c-bb2b-2dddef1b7553",
       "comment": "",
       "command": "type",
       "target": "id=dataFim",
@@ -258,9 +254,9 @@
         ["xpath=//form[@id='form']/div/div[2]/div[2]/input", "xpath:idRelative"],
         ["xpath=//div[2]/input", "xpath:position"]
       ],
-      "value": "2020-08-20"
+      "value": "2020-12-24"
     }, {
-      "id": "c38231ac-04f8-4a4a-aa44-52b45f368bd1",
+      "id": "60016353-43c0-4390-a792-2c98b280f0e2",
       "comment": "",
       "command": "click",
       "target": "id=horarioInicio",
@@ -274,7 +270,7 @@
       ],
       "value": ""
     }, {
-      "id": "08f0f953-11aa-412b-9f58-a1d95cb260b7",
+      "id": "efcd0968-95b3-41d7-a1b6-778e2e6dd5c2",
       "comment": "",
       "command": "type",
       "target": "id=horarioInicio",
@@ -288,7 +284,7 @@
       ],
       "value": "07:00"
     }, {
-      "id": "c27564bb-61cb-4f7e-ba4d-546a9d5fc309",
+      "id": "0e278dd8-218f-4530-91bb-d69c17612c4a",
       "comment": "",
       "command": "click",
       "target": "id=horarioFim",
@@ -302,7 +298,7 @@
       ],
       "value": ""
     }, {
-      "id": "29258aa0-1567-4e27-a49f-8b50d4bce733",
+      "id": "bfc90b68-41fe-45b0-bea7-98d792d20e1f",
       "comment": "",
       "command": "type",
       "target": "id=horarioFim",
@@ -316,7 +312,7 @@
       ],
       "value": "09:00"
     }, {
-      "id": "557944db-8b19-48a2-a4f5-5930167928fc",
+      "id": "829cbf28-b7b3-4eb5-bc78-c5c64273b4d9",
       "comment": "",
       "command": "click",
       "target": "id=input-dia-semana",
@@ -330,60 +326,14 @@
       ],
       "value": ""
     }, {
-      "id": "4ad67a4c-417c-4270-b71c-9306c24d744b",
-      "comment": "",
-      "command": "select",
-      "target": "id=input-dia-semana",
-      "targets": [],
-      "value": "label=Sexta"
-    }, {
-      "id": "2529aa8c-dd79-4771-9cc4-610769ccd61d",
-      "comment": "",
-      "command": "click",
-      "target": "id=input-dia-semana",
-      "targets": [
-        ["id=input-dia-semana", "id"],
-        ["name=DiaSemana", "name"],
-        ["css=#input-dia-semana", "css:finder"],
-        ["xpath=//select[@id='input-dia-semana']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div[3]/select", "xpath:idRelative"],
-        ["xpath=//div[3]/select", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "aa3a005d-43d7-48ea-9349-5b7c629fe799",
-      "comment": "",
-      "command": "click",
-      "target": "css=.fa-plus",
-      "targets": [
-        ["css=.fa-plus", "css:finder"],
-        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
-        ["xpath=//div[4]/a/i", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "33c914e0-f0ed-4699-9923-4f500069092b",
-      "comment": "",
-      "command": "click",
-      "target": "id=input-dia-semana",
-      "targets": [
-        ["id=input-dia-semana", "id"],
-        ["name=DiaSemana", "name"],
-        ["css=#input-dia-semana", "css:finder"],
-        ["xpath=//select[@id='input-dia-semana']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div[3]/select", "xpath:idRelative"],
-        ["xpath=//div[3]/select", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "79dedaa2-6162-4514-9539-78cc23be53e4",
+      "id": "36d877cd-a768-4fcc-a14a-989752873480",
       "comment": "",
       "command": "select",
       "target": "id=input-dia-semana",
       "targets": [],
       "value": "label=Quarta"
     }, {
-      "id": "ff50ef89-ef36-4b67-94ce-985c8dff9041",
+      "id": "6dbe98be-7fe3-426b-a7a5-6ae2b2d7820b",
       "comment": "",
       "command": "click",
       "target": "id=input-dia-semana",
@@ -397,7 +347,7 @@
       ],
       "value": ""
     }, {
-      "id": "dc8f5af4-0eac-448e-bf27-78edfa3ed8b8",
+      "id": "607fea6a-daef-4bf0-a082-f8204ea87c81",
       "comment": "",
       "command": "click",
       "target": "css=.fa-plus",
@@ -408,7 +358,141 @@
       ],
       "value": ""
     }, {
-      "id": "79e52f64-a638-4f27-90ac-8143dc932cf8",
+      "id": "24a91a64-bcbb-4c9a-af96-324e60f5ef04",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
+        ["xpath=//div[4]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c66d6cf6-3abe-4c90-898c-fb9cbab2238f",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
+        ["xpath=//div[4]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ec977a31-b808-4be1-8a6c-389d8b0034ae",
+      "comment": "",
+      "command": "click",
+      "target": "id=horarioInicio",
+      "targets": [
+        ["id=horarioInicio", "id"],
+        ["name=HorarioInicio", "name"],
+        ["css=#horarioInicio", "css:finder"],
+        ["xpath=//input[@id='horarioInicio']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7cb981fa-c9b9-4eb7-9eb1-759ef4521327",
+      "comment": "",
+      "command": "type",
+      "target": "id=horarioInicio",
+      "targets": [
+        ["id=horarioInicio", "id"],
+        ["name=HorarioInicio", "name"],
+        ["css=#horarioInicio", "css:finder"],
+        ["xpath=//input[@id='horarioInicio']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "01:00"
+    }, {
+      "id": "2365af6a-48a8-4ee6-9a4e-c45acc979478",
+      "comment": "",
+      "command": "type",
+      "target": "id=horarioInicio",
+      "targets": [
+        ["id=horarioInicio", "id"],
+        ["name=HorarioInicio", "name"],
+        ["css=#horarioInicio", "css:finder"],
+        ["xpath=//input[@id='horarioInicio']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "11:00"
+    }, {
+      "id": "3837edb9-b9f0-4272-b24f-8367ce09d7d3",
+      "comment": "",
+      "command": "click",
+      "target": "id=horarioFim",
+      "targets": [
+        ["id=horarioFim", "id"],
+        ["name=HorarioFim", "name"],
+        ["css=#horarioFim", "css:finder"],
+        ["xpath=//input[@id='horarioFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d8bdc860-3d74-4e71-8e17-4cfc557e8a26",
+      "comment": "",
+      "command": "type",
+      "target": "id=horarioFim",
+      "targets": [
+        ["id=horarioFim", "id"],
+        ["name=HorarioFim", "name"],
+        ["css=#horarioFim", "css:finder"],
+        ["xpath=//input[@id='horarioFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/input", "xpath:position"]
+      ],
+      "value": "01:00"
+    }, {
+      "id": "fe9e46ab-0105-4146-9b2b-2a9020877d4d",
+      "comment": "",
+      "command": "type",
+      "target": "id=horarioFim",
+      "targets": [
+        ["id=horarioFim", "id"],
+        ["name=HorarioFim", "name"],
+        ["css=#horarioFim", "css:finder"],
+        ["xpath=//input[@id='horarioFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/input", "xpath:position"]
+      ],
+      "value": "12:00"
+    }, {
+      "id": "959cd357-1bd7-49ff-b867-cd1b7d4618ca",
+      "comment": "",
+      "command": "type",
+      "target": "id=horarioFim",
+      "targets": [
+        ["id=horarioFim", "id"],
+        ["name=HorarioFim", "name"],
+        ["css=#horarioFim", "css:finder"],
+        ["xpath=//input[@id='horarioFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/input", "xpath:position"]
+      ],
+      "value": "12:04"
+    }, {
+      "id": "860b4d0b-9479-445e-a888-d5310e6af41c",
+      "comment": "",
+      "command": "type",
+      "target": "id=horarioFim",
+      "targets": [
+        ["id=horarioFim", "id"],
+        ["name=HorarioFim", "name"],
+        ["css=#horarioFim", "css:finder"],
+        ["xpath=//input[@id='horarioFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/input", "xpath:position"]
+      ],
+      "value": "12:40"
+    }, {
+      "id": "b2354146-6eb6-45f5-ac5d-bf07553214ff",
       "comment": "",
       "command": "click",
       "target": "id=input-dia-semana",
@@ -422,14 +506,14 @@
       ],
       "value": ""
     }, {
-      "id": "7cfec1df-01a0-4afe-9dae-77cfaa33f05c",
+      "id": "ef91f2f4-0389-486b-b1e4-f930b438ff74",
       "comment": "",
       "command": "select",
       "target": "id=input-dia-semana",
       "targets": [],
-      "value": "label=Segunda"
+      "value": "label=Sexta"
     }, {
-      "id": "5b66bb7d-4eab-4ded-8b20-fdd481620a6f",
+      "id": "cd207734-a824-43c2-b2f3-7ded1727f93f",
       "comment": "",
       "command": "click",
       "target": "id=input-dia-semana",
@@ -443,7 +527,7 @@
       ],
       "value": ""
     }, {
-      "id": "60039908-ab11-4e40-9341-fbec118e5941",
+      "id": "a9b36edf-a3b1-4fee-bd4c-699fd5f27781",
       "comment": "",
       "command": "click",
       "target": "css=.fa-plus",
@@ -454,7 +538,29 @@
       ],
       "value": ""
     }, {
-      "id": "f345711b-e5d2-43c8-9eb8-6737e9743a33",
+      "id": "fe008d26-25c8-424c-9566-df1e13bd3671",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
+        ["xpath=//div[4]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bc27f3e6-a499-43cd-afa3-89a2ba41bf5a",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
+        ["xpath=//div[4]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b5743979-7d30-4e9c-a0c1-ae7fdc987e50",
       "comment": "",
       "command": "click",
       "target": "id=btn-create-planejamento",
@@ -467,7 +573,445 @@
       ],
       "value": ""
     }, {
-      "id": "60a607cb-71b4-407c-aeae-9a43414eb293",
+      "id": "7a11101e-7652-49ff-9d49-366a5785a7b5",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-header",
+      "targets": [
+        ["css=.swal2-header", "css:finder"],
+        ["xpath=//div[2]/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2e92bece-9f71-435d-a422-bb9747b5e965",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": "Parabéns!"
+    }, {
+      "id": "e5300325-8530-4160-8bca-eac01b137e4e",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Planejamento cadastrado com sucesso!"
+    }, {
+      "id": "ed3f4144-8c78-4d99-bc45-66ffeba894e4",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-confirm",
+      "targets": [
+        ["css=.swal2-confirm", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "87a33dc9-1dcc-4638-a5bb-1583054e724d",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "87e7d025-5e3a-432f-8f59-9a81df85037b",
+    "name": "InserirPlanejamentoComDataInválida",
+    "commands": [{
+      "id": "9c1c784d-1dfd-4e90-bc94-efddd4f1236e",
+      "comment": "",
+      "command": "open",
+      "target": "https://localhost:5001/Planejamento/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8d8cd22f-45e8-4fb9-a141-89aec2d4db36",
+      "comment": "",
+      "command": "click",
+      "target": "id=sala",
+      "targets": [
+        ["id=sala", "id"],
+        ["name=SalaId", "name"],
+        ["css=#sala", "css:finder"],
+        ["xpath=//select[@id='sala']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div/div/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'1 | Sala 01\n2 | Sala 02\n3 | Sala 03\n4 | Sala 04\n5 | Sala 05')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5c486c2e-41fe-46b5-8889-64c3de7f255b",
+      "comment": "",
+      "command": "select",
+      "target": "id=sala",
+      "targets": [],
+      "value": "label=4 | Sala 04"
+    }, {
+      "id": "16776b55-19fe-4d28-b1d9-64a4ec9e0b3a",
+      "comment": "",
+      "command": "click",
+      "target": "id=sala",
+      "targets": [
+        ["id=sala", "id"],
+        ["name=SalaId", "name"],
+        ["css=#sala", "css:finder"],
+        ["xpath=//select[@id='sala']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div/div/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'1 | Sala 01\n2 | Sala 02\n3 | Sala 03\n4 | Sala 04\n5 | Sala 05')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e89b9f94-ebac-4ec7-bf40-4454ae8dcc97",
+      "comment": "",
+      "command": "click",
+      "target": "id=usuario",
+      "targets": [
+        ["id=usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#usuario", "css:finder"],
+        ["xpath=//select[@id='usuario']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div/div[2]/select", "xpath:idRelative"],
+        ["xpath=//div[2]/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "bb8f3009-0cb7-486c-a449-577daa191ab7",
+      "comment": "",
+      "command": "select",
+      "target": "id=usuario",
+      "targets": [],
+      "value": "label=57377766387 | Rafael Kevin Teixeira"
+    }, {
+      "id": "8dce97bc-0331-4c7f-87f3-2a4e1d916e98",
+      "comment": "",
+      "command": "click",
+      "target": "id=usuario",
+      "targets": [
+        ["id=usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#usuario", "css:finder"],
+        ["xpath=//select[@id='usuario']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div/div[2]/select", "xpath:idRelative"],
+        ["xpath=//div[2]/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "dfd07e87-a1b7-48ca-a745-21eaa52eec29",
+      "comment": "",
+      "command": "click",
+      "target": "id=objetivo",
+      "targets": [
+        ["id=objetivo", "id"],
+        ["name=Objetivo", "name"],
+        ["css=#objetivo", "css:finder"],
+        ["xpath=//input[@id='objetivo']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "e02db39f-6ef7-4758-a0ab-ff19b45dab8d",
+      "comment": "",
+      "command": "type",
+      "target": "id=objetivo",
+      "targets": [
+        ["id=objetivo", "id"],
+        ["name=Objetivo", "name"],
+        ["css=#objetivo", "css:finder"],
+        ["xpath=//input[@id='objetivo']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "Planejamento da disciplina de LFT para o período 2019.2"
+    }, {
+      "id": "9fa12cfc-7cca-4a5a-8c13-60ec2be1c8ef",
+      "comment": "",
+      "command": "click",
+      "target": "id=dataInicio",
+      "targets": [
+        ["id=dataInicio", "id"],
+        ["name=DataInicio", "name"],
+        ["css=#dataInicio", "css:finder"],
+        ["xpath=//input[@id='dataInicio']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "073f8800-6ee3-4180-9a1d-ecd141ef6491",
+      "comment": "",
+      "command": "type",
+      "target": "id=dataInicio",
+      "targets": [
+        ["id=dataInicio", "id"],
+        ["name=DataInicio", "name"],
+        ["css=#dataInicio", "css:finder"],
+        ["xpath=//input[@id='dataInicio']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": "0002-08-24"
+    }, {
+      "id": "553f2758-4642-4c58-916a-2e483720c28c",
+      "comment": "",
+      "command": "type",
+      "target": "id=dataInicio",
+      "targets": [
+        ["id=dataInicio", "id"],
+        ["name=DataInicio", "name"],
+        ["css=#dataInicio", "css:finder"],
+        ["xpath=//input[@id='dataInicio']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": "0020-08-24"
+    }, {
+      "id": "aeac01be-2f0f-4b9a-aa6f-d319ee6afb05",
+      "comment": "",
+      "command": "type",
+      "target": "id=dataInicio",
+      "targets": [
+        ["id=dataInicio", "id"],
+        ["name=DataInicio", "name"],
+        ["css=#dataInicio", "css:finder"],
+        ["xpath=//input[@id='dataInicio']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": "0202-08-24"
+    }, {
+      "id": "6d7b77bd-c78a-49fe-8453-18c009fcd0e2",
+      "comment": "",
+      "command": "type",
+      "target": "id=dataInicio",
+      "targets": [
+        ["id=dataInicio", "id"],
+        ["name=DataInicio", "name"],
+        ["css=#dataInicio", "css:finder"],
+        ["xpath=//input[@id='dataInicio']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": "2020-08-24"
+    }, {
+      "id": "b3ca02b2-fa52-4ddc-9a99-7773f1086f30",
+      "comment": "",
+      "command": "click",
+      "target": "id=dataFim",
+      "targets": [
+        ["id=dataFim", "id"],
+        ["name=DataFim", "name"],
+        ["css=#dataFim", "css:finder"],
+        ["xpath=//input[@id='dataFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[2]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f0ba10ba-6ba4-4da0-984e-b98093187709",
+      "comment": "",
+      "command": "type",
+      "target": "id=dataFim",
+      "targets": [
+        ["id=dataFim", "id"],
+        ["name=DataFim", "name"],
+        ["css=#dataFim", "css:finder"],
+        ["xpath=//input[@id='dataFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[2]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "0002-08-20"
+    }, {
+      "id": "5413f812-163a-4c7a-97e5-3f357e24742a",
+      "comment": "",
+      "command": "type",
+      "target": "id=dataFim",
+      "targets": [
+        ["id=dataFim", "id"],
+        ["name=DataFim", "name"],
+        ["css=#dataFim", "css:finder"],
+        ["xpath=//input[@id='dataFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[2]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "0020-08-20"
+    }, {
+      "id": "ba69f024-b2dd-4f11-a9aa-1689035aa8a6",
+      "comment": "",
+      "command": "type",
+      "target": "id=dataFim",
+      "targets": [
+        ["id=dataFim", "id"],
+        ["name=DataFim", "name"],
+        ["css=#dataFim", "css:finder"],
+        ["xpath=//input[@id='dataFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[2]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "0202-08-20"
+    }, {
+      "id": "24cdd0c4-c20a-47e6-93a3-b3345df00f8a",
+      "comment": "",
+      "command": "type",
+      "target": "id=dataFim",
+      "targets": [
+        ["id=dataFim", "id"],
+        ["name=DataFim", "name"],
+        ["css=#dataFim", "css:finder"],
+        ["xpath=//input[@id='dataFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[2]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "2020-08-20"
+    }, {
+      "id": "0ceb8ab8-b202-494b-a26c-ffa61a0168c6",
+      "comment": "",
+      "command": "click",
+      "target": "id=horarioInicio",
+      "targets": [
+        ["id=horarioInicio", "id"],
+        ["name=HorarioInicio", "name"],
+        ["css=#horarioInicio", "css:finder"],
+        ["xpath=//input[@id='horarioInicio']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "999d789d-a9f5-452f-a389-77ab2f8c6898",
+      "comment": "",
+      "command": "type",
+      "target": "id=horarioInicio",
+      "targets": [
+        ["id=horarioInicio", "id"],
+        ["name=HorarioInicio", "name"],
+        ["css=#horarioInicio", "css:finder"],
+        ["xpath=//input[@id='horarioInicio']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "07:00"
+    }, {
+      "id": "98dd3f89-4616-4e6d-b065-2c942c9c4985",
+      "comment": "",
+      "command": "click",
+      "target": "id=horarioFim",
+      "targets": [
+        ["id=horarioFim", "id"],
+        ["name=HorarioFim", "name"],
+        ["css=#horarioFim", "css:finder"],
+        ["xpath=//input[@id='horarioFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a8b318c6-6b50-4967-ab28-9fe334b18a2f",
+      "comment": "",
+      "command": "type",
+      "target": "id=horarioFim",
+      "targets": [
+        ["id=horarioFim", "id"],
+        ["name=HorarioFim", "name"],
+        ["css=#horarioFim", "css:finder"],
+        ["xpath=//input[@id='horarioFim']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/input", "xpath:position"]
+      ],
+      "value": "09:00"
+    }, {
+      "id": "657f4374-8d7b-4090-9042-7ffc44827778",
+      "comment": "",
+      "command": "click",
+      "target": "id=input-dia-semana",
+      "targets": [
+        ["id=input-dia-semana", "id"],
+        ["name=DiaSemana", "name"],
+        ["css=#input-dia-semana", "css:finder"],
+        ["xpath=//select[@id='input-dia-semana']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div[3]/select", "xpath:idRelative"],
+        ["xpath=//div[3]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "43be413b-7b2e-4933-81dd-8f0870ae730b",
+      "comment": "",
+      "command": "select",
+      "target": "id=input-dia-semana",
+      "targets": [],
+      "value": "label=Quarta"
+    }, {
+      "id": "0fa4b1da-4f0a-41d5-981d-ebc46aac42ca",
+      "comment": "",
+      "command": "click",
+      "target": "id=input-dia-semana",
+      "targets": [
+        ["id=input-dia-semana", "id"],
+        ["name=DiaSemana", "name"],
+        ["css=#input-dia-semana", "css:finder"],
+        ["xpath=//select[@id='input-dia-semana']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div[3]/select", "xpath:idRelative"],
+        ["xpath=//div[3]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9c21ffdc-529b-45c0-940c-3edcf6ffde51",
+      "comment": "",
+      "command": "click",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
+        ["xpath=//div[4]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c90e7e0a-84ec-4f6d-88b1-6cc8c09f2b55",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
+        ["xpath=//div[4]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "07458a4c-8199-4686-a7d8-3e8fb429d167",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
+        ["xpath=//div[4]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d35a1233-51b9-457d-a298-40d9cc8e782d",
+      "comment": "",
+      "command": "click",
+      "target": "id=btn-create-planejamento",
+      "targets": [
+        ["id=btn-create-planejamento", "id"],
+        ["css=#btn-create-planejamento", "css:finder"],
+        ["xpath=//input[@id='btn-create-planejamento']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//form/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a9538fe0-8c2c-4b34-b895-45ee5be7fdc9",
       "comment": "",
       "command": "click",
       "target": "id=swal2-content",
@@ -479,7 +1023,14 @@
       ],
       "value": ""
     }, {
-      "id": "7a6cf574-883e-4057-9308-00d1796a7c4e",
+      "id": "2f1ce949-9148-47cc-ae65-602921299d40",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": "Falha!"
+    }, {
+      "id": "55b6ca86-5ec9-4b7a-8b1c-13e9a0c8e8a9",
       "comment": "",
       "command": "assertText",
       "target": "id=swal2-content",
@@ -491,7 +1042,7 @@
       ],
       "value": "Sua Datas ou Horarios possuem inconsistências, corrija e tente novamente."
     }, {
-      "id": "89a7f06f-947f-470d-b4f7-8b9aae9eee1d",
+      "id": "9cfee374-a589-4659-8764-a785e7c7b2e0",
       "comment": "",
       "command": "click",
       "target": "css=.swal2-header",
@@ -501,14 +1052,7 @@
       ],
       "value": ""
     }, {
-      "id": "8b3de513-e87e-4706-bec6-4fd6faf00614",
-      "comment": "",
-      "command": "assertTitle",
-      "target": "Create - SalasUfsWeb",
-      "targets": [],
-      "value": "Falha!"
-    }, {
-      "id": "c6ca838a-1714-413c-a75d-d1f0f5fe12df",
+      "id": "2b909087-0afc-4522-b451-21d014b974f0",
       "comment": "",
       "command": "click",
       "target": "css=.swal2-confirm",
@@ -524,14 +1068,14 @@
     "id": "310d9f8e-2a60-4c12-b1a8-37d6f4d6bc60",
     "name": "InserirPlanejamentoComHorárioInválido",
     "commands": [{
-      "id": "8068121c-01c8-4db0-adad-37d0dc31862f",
+      "id": "ebd56d41-a7ab-49f9-88f2-30488dda6691",
       "comment": "",
       "command": "open",
       "target": "https://localhost:5001/Planejamento/Create",
       "targets": [],
       "value": ""
     }, {
-      "id": "35fffa07-4f6a-4fc1-b6f5-396abdfce7e3",
+      "id": "de04a944-8a49-41dc-8920-5a1159001f8f",
       "comment": "",
       "command": "click",
       "target": "id=sala",
@@ -542,18 +1086,18 @@
         ["xpath=//select[@id='sala']", "xpath:attributes"],
         ["xpath=//form[@id='form']/div/div/div/select", "xpath:idRelative"],
         ["xpath=//select", "xpath:position"],
-        ["xpath=//select[contains(.,'Sala 01\nSala 02\nSala 03\nSala 04\nSala 05')]", "xpath:innerText"]
+        ["xpath=//select[contains(.,'1 | Sala 01\n2 | Sala 02\n3 | Sala 03\n4 | Sala 04\n5 | Sala 05')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "7e91c205-f3a4-4874-ad0c-127cd6f834fc",
+      "id": "7c2460fd-c6f2-4efb-b8c1-ebbec918d89b",
       "comment": "",
       "command": "select",
       "target": "id=sala",
       "targets": [],
-      "value": "label=Sala 02"
+      "value": "label=2 | Sala 02"
     }, {
-      "id": "fea6c8d4-fd43-43c4-96ae-03b5c1642d20",
+      "id": "4dcadaa0-ecd5-4328-8b9c-26f00dd33664",
       "comment": "",
       "command": "click",
       "target": "id=sala",
@@ -564,11 +1108,11 @@
         ["xpath=//select[@id='sala']", "xpath:attributes"],
         ["xpath=//form[@id='form']/div/div/div/select", "xpath:idRelative"],
         ["xpath=//select", "xpath:position"],
-        ["xpath=//select[contains(.,'Sala 01\nSala 02\nSala 03\nSala 04\nSala 05')]", "xpath:innerText"]
+        ["xpath=//select[contains(.,'1 | Sala 01\n2 | Sala 02\n3 | Sala 03\n4 | Sala 04\n5 | Sala 05')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "0e8981d2-7f36-426f-8a74-1a0e0362afc6",
+      "id": "fe61c4cb-9bd4-46ca-8ae2-29dfebca802e",
       "comment": "",
       "command": "click",
       "target": "id=usuario",
@@ -579,18 +1123,18 @@
         ["xpath=//select[@id='usuario']", "xpath:attributes"],
         ["xpath=//form[@id='form']/div/div/div[2]/select", "xpath:idRelative"],
         ["xpath=//div[2]/select", "xpath:position"],
-        ["xpath=//select[contains(.,'Lívia Benedita Rebeca Araújo\nRafael Kevin Teixeira\nIgor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "66f43172-27d1-4fbf-942d-f6e22bdedc38",
+      "id": "bd86cecf-0e65-44d7-8a9e-c1598342331c",
       "comment": "",
       "command": "select",
       "target": "id=usuario",
       "targets": [],
-      "value": "label=Igor Bruno dos Santos Nascimento"
+      "value": "label=07852892590 | Igor Bruno dos Santos Nascimento"
     }, {
-      "id": "b4d590ca-74e1-4777-95f1-14e27b0fe4c7",
+      "id": "694c773b-1435-436d-9a4a-d715d154e562",
       "comment": "",
       "command": "click",
       "target": "id=usuario",
@@ -601,11 +1145,11 @@
         ["xpath=//select[@id='usuario']", "xpath:attributes"],
         ["xpath=//form[@id='form']/div/div/div[2]/select", "xpath:idRelative"],
         ["xpath=//div[2]/select", "xpath:position"],
-        ["xpath=//select[contains(.,'Lívia Benedita Rebeca Araújo\nRafael Kevin Teixeira\nIgor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "4e4bd430-afb6-4f3e-ac2c-afdea33166ad",
+      "id": "926bda87-9fe0-40b3-9508-acc8364413a4",
       "comment": "",
       "command": "click",
       "target": "id=objetivo",
@@ -619,7 +1163,7 @@
       ],
       "value": ""
     }, {
-      "id": "d2432a35-cd89-455e-b4dc-97043cf5ceed",
+      "id": "2e195931-fb23-440e-900d-4d9fddf7be32",
       "comment": "",
       "command": "type",
       "target": "id=objetivo",
@@ -631,9 +1175,9 @@
         ["xpath=//form[@id='form']/div/div/div[3]/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "Planejamento da disciplina de Qualidade de Software"
+      "value": "Planejamento da disciplina de Qualidade de Software para o período 2019.1"
     }, {
-      "id": "bf918504-81b9-44d8-8b48-7786c7ca4038",
+      "id": "9aaa6a29-d7c4-4be7-93cd-e98bb8e26994",
       "comment": "",
       "command": "click",
       "target": "id=dataInicio",
@@ -647,7 +1191,7 @@
       ],
       "value": ""
     }, {
-      "id": "0049e634-e4d0-4be1-bbee-fcfa3c7d9a38",
+      "id": "051740da-6124-485a-bbcd-c0d9dbfa95a4",
       "comment": "",
       "command": "type",
       "target": "id=dataInicio",
@@ -661,7 +1205,7 @@
       ],
       "value": "0002-08-24"
     }, {
-      "id": "fc2a9c9d-fd25-440a-b9f2-9bc8f42656bf",
+      "id": "a27b2349-506e-4905-baef-fec615660b19",
       "comment": "",
       "command": "type",
       "target": "id=dataInicio",
@@ -675,7 +1219,7 @@
       ],
       "value": "0020-08-24"
     }, {
-      "id": "406b12d5-a167-4314-b3a5-40a3d0b6be69",
+      "id": "c1a3b4ac-7a71-4f76-a2b8-042fec84d6fa",
       "comment": "",
       "command": "type",
       "target": "id=dataInicio",
@@ -689,7 +1233,7 @@
       ],
       "value": "0202-08-24"
     }, {
-      "id": "cd081099-6553-4087-8ffe-1bdf4d970bb2",
+      "id": "a41d68fe-2f4f-4495-a534-69d49c6bb2b3",
       "comment": "",
       "command": "type",
       "target": "id=dataInicio",
@@ -703,18 +1247,7 @@
       ],
       "value": "2020-08-24"
     }, {
-      "id": "8090c6bb-d8db-4131-aaa2-0f0534ce6e60",
-      "comment": "",
-      "command": "click",
-      "target": "css=.ocupation:nth-child(2) > .form-group:nth-child(2)",
-      "targets": [
-        ["css=.ocupation:nth-child(2) > .form-group:nth-child(2)", "css:finder"],
-        ["xpath=//form[@id='form']/div/div[2]/div[2]", "xpath:idRelative"],
-        ["xpath=//div[2]/div[2]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "7236f066-a15d-43f7-8cfd-038f6314915b",
+      "id": "b8ae7cf5-7950-4f34-b4b1-c81e787a547a",
       "comment": "",
       "command": "click",
       "target": "id=dataFim",
@@ -728,7 +1261,7 @@
       ],
       "value": ""
     }, {
-      "id": "c5c60e4a-7737-4bdf-90f5-16ac64c69a03",
+      "id": "60484b32-3869-424f-87a6-d0fde8e14039",
       "comment": "",
       "command": "type",
       "target": "id=dataFim",
@@ -742,7 +1275,7 @@
       ],
       "value": "0002-12-24"
     }, {
-      "id": "af676add-3f12-41ca-9867-f3bcfab21045",
+      "id": "d3aa7dbd-915e-4e6c-a93c-0c06ca38f3e3",
       "comment": "",
       "command": "type",
       "target": "id=dataFim",
@@ -756,7 +1289,7 @@
       ],
       "value": "0020-12-24"
     }, {
-      "id": "abcf723f-df59-48c7-8c21-0063825b5be3",
+      "id": "579ced3b-f19c-4f20-a7b6-5d6da2f3247a",
       "comment": "",
       "command": "type",
       "target": "id=dataFim",
@@ -770,7 +1303,7 @@
       ],
       "value": "0202-12-24"
     }, {
-      "id": "68df4e77-0939-41e2-8cc9-ae670a0ba33a",
+      "id": "093156fb-cad4-4ff1-8713-d88212ee1bd8",
       "comment": "",
       "command": "type",
       "target": "id=dataFim",
@@ -784,7 +1317,7 @@
       ],
       "value": "2020-12-24"
     }, {
-      "id": "6883f98e-34fe-4496-99b1-0a8b9d02d1df",
+      "id": "c9ef8bdd-6b59-480c-8551-0d99dad46654",
       "comment": "",
       "command": "click",
       "target": "id=horarioInicio",
@@ -798,151 +1331,7 @@
       ],
       "value": ""
     }, {
-      "id": "1a298eb9-1813-4a5f-a894-a8dc0b87bb5b",
-      "comment": "",
-      "command": "type",
-      "target": "id=horarioInicio",
-      "targets": [
-        ["id=horarioInicio", "id"],
-        ["name=HorarioInicio", "name"],
-        ["css=#horarioInicio", "css:finder"],
-        ["xpath=//input[@id='horarioInicio']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div/input", "xpath:idRelative"],
-        ["xpath=//div[3]/div/input", "xpath:position"]
-      ],
-      "value": "09:00"
-    }, {
-      "id": "8755eac1-62cd-4665-a49a-6e2fc7c17689",
-      "comment": "",
-      "command": "click",
-      "target": "id=horarioFim",
-      "targets": [
-        ["id=horarioFim", "id"],
-        ["name=HorarioFim", "name"],
-        ["css=#horarioFim", "css:finder"],
-        ["xpath=//input[@id='horarioFim']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
-        ["xpath=//div[3]/div[2]/input", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "c5cb9e87-5625-4e20-9637-672363d4c9dc",
-      "comment": "",
-      "command": "type",
-      "target": "id=horarioFim",
-      "targets": [
-        ["id=horarioFim", "id"],
-        ["name=HorarioFim", "name"],
-        ["css=#horarioFim", "css:finder"],
-        ["xpath=//input[@id='horarioFim']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
-        ["xpath=//div[3]/div[2]/input", "xpath:position"]
-      ],
-      "value": "12:04"
-    }, {
-      "id": "6242408c-3591-41a5-a7cb-06bfc51c2159",
-      "comment": "",
-      "command": "type",
-      "target": "id=horarioFim",
-      "targets": [
-        ["id=horarioFim", "id"],
-        ["name=HorarioFim", "name"],
-        ["css=#horarioFim", "css:finder"],
-        ["xpath=//input[@id='horarioFim']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
-        ["xpath=//div[3]/div[2]/input", "xpath:position"]
-      ],
-      "value": "12:40"
-    }, {
-      "id": "b93e5375-a4df-4bc6-ac50-2e311a3254a1",
-      "comment": "",
-      "command": "click",
-      "target": "id=input-dia-semana",
-      "targets": [
-        ["id=input-dia-semana", "id"],
-        ["name=DiaSemana", "name"],
-        ["css=#input-dia-semana", "css:finder"],
-        ["xpath=//select[@id='input-dia-semana']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div[3]/select", "xpath:idRelative"],
-        ["xpath=//div[3]/select", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "81f29833-6253-407c-a5b0-54f5e0b570b9",
-      "comment": "",
-      "command": "select",
-      "target": "id=input-dia-semana",
-      "targets": [],
-      "value": "label=Quinta"
-    }, {
-      "id": "5efcadf4-c3d7-4504-9b28-266aaa18c154",
-      "comment": "",
-      "command": "click",
-      "target": "id=input-dia-semana",
-      "targets": [
-        ["id=input-dia-semana", "id"],
-        ["name=DiaSemana", "name"],
-        ["css=#input-dia-semana", "css:finder"],
-        ["xpath=//select[@id='input-dia-semana']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div[3]/select", "xpath:idRelative"],
-        ["xpath=//div[3]/select", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "c708ab2c-d40c-4d4b-929d-183469b3f38d",
-      "comment": "",
-      "command": "click",
-      "target": "id=add-novo-horario",
-      "targets": [
-        ["id=add-novo-horario", "id"],
-        ["css=#add-novo-horario", "css:finder"],
-        ["xpath=//a[@id='add-novo-horario']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div[4]/a", "xpath:idRelative"],
-        ["xpath=//div[4]/a", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "d14409d6-b8ee-4934-b132-c0b8969933f9",
-      "comment": "",
-      "command": "mouseOver",
-      "target": "id=add-novo-horario",
-      "targets": [
-        ["id=add-novo-horario", "id"],
-        ["css=#add-novo-horario", "css:finder"],
-        ["xpath=//a[@id='add-novo-horario']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div[4]/a", "xpath:idRelative"],
-        ["xpath=//div[4]/a", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "550494a8-1f3d-4256-b03b-7d98aabd8948",
-      "comment": "",
-      "command": "mouseOut",
-      "target": "id=add-novo-horario",
-      "targets": [
-        ["id=add-novo-horario", "id"],
-        ["css=#add-novo-horario", "css:finder"],
-        ["xpath=//a[@id='add-novo-horario']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div[4]/a", "xpath:idRelative"],
-        ["xpath=//div[4]/a", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "6fc3f326-0e0d-497f-ab6a-bbb8fc1451ab",
-      "comment": "",
-      "command": "click",
-      "target": "id=horarioInicio",
-      "targets": [
-        ["id=horarioInicio", "id"],
-        ["name=HorarioInicio", "name"],
-        ["css=#horarioInicio", "css:finder"],
-        ["xpath=//input[@id='horarioInicio']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div/input", "xpath:idRelative"],
-        ["xpath=//div[3]/div/input", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "276dbc48-6231-4d4f-b3ed-0e901a7b6dc2",
+      "id": "26d99a13-1f88-4cb9-bcee-55d9ceb2f4a5",
       "comment": "",
       "command": "type",
       "target": "id=horarioInicio",
@@ -956,7 +1345,7 @@
       ],
       "value": "01:00"
     }, {
-      "id": "c99cf637-70dc-4325-8549-6a61f4c5fa93",
+      "id": "2784393b-8212-44a6-b4b1-4d3140c2b3b3",
       "comment": "",
       "command": "type",
       "target": "id=horarioInicio",
@@ -970,7 +1359,7 @@
       ],
       "value": "12:00"
     }, {
-      "id": "672ccdc2-976e-492e-88eb-9a191fa94664",
+      "id": "3e085efa-0ddc-40e6-a454-d0b61fdaaedb",
       "comment": "",
       "command": "type",
       "target": "id=horarioInicio",
@@ -984,7 +1373,7 @@
       ],
       "value": "12:04"
     }, {
-      "id": "33802b70-9861-4960-b386-9e18097389bd",
+      "id": "9126ebfd-4966-4752-a270-b4e698ef6d1a",
       "comment": "",
       "command": "type",
       "target": "id=horarioInicio",
@@ -998,7 +1387,7 @@
       ],
       "value": "12:40"
     }, {
-      "id": "101f32d1-f84f-4f55-8324-6bb958475b68",
+      "id": "fe4e1381-6a2f-4610-beb5-934cf2b4799b",
       "comment": "",
       "command": "click",
       "target": "id=horarioFim",
@@ -1012,7 +1401,7 @@
       ],
       "value": ""
     }, {
-      "id": "2f93ed03-4613-40a5-ad30-7eacaa86d47b",
+      "id": "26833632-82a1-4455-b187-08292417ed2b",
       "comment": "",
       "command": "type",
       "target": "id=horarioFim",
@@ -1024,9 +1413,9 @@
         ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
         ["xpath=//div[3]/div[2]/input", "xpath:position"]
       ],
-      "value": "01:40"
+      "value": "01:00"
     }, {
-      "id": "1452ddad-2ecd-45eb-b023-fa431036f7a4",
+      "id": "093e0b51-e280-4557-a3b7-3dfcd36e79d7",
       "comment": "",
       "command": "type",
       "target": "id=horarioFim",
@@ -1038,23 +1427,9 @@
         ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
         ["xpath=//div[3]/div[2]/input", "xpath:position"]
       ],
-      "value": "10:40"
+      "value": "11:00"
     }, {
-      "id": "ab44ab1a-d038-4ff7-a2b7-a048a010d231",
-      "comment": "",
-      "command": "type",
-      "target": "id=horarioFim",
-      "targets": [
-        ["id=horarioFim", "id"],
-        ["name=HorarioFim", "name"],
-        ["css=#horarioFim", "css:finder"],
-        ["xpath=//input[@id='horarioFim']", "xpath:attributes"],
-        ["xpath=//form[@id='form']/div/div[3]/div[2]/input", "xpath:idRelative"],
-        ["xpath=//div[3]/div[2]/input", "xpath:position"]
-      ],
-      "value": "10:00"
-    }, {
-      "id": "72521431-0e42-4e52-95ea-bdd5e79442c2",
+      "id": "037610bb-fd22-4f32-8af3-75fe31e2981f",
       "comment": "",
       "command": "click",
       "target": "id=input-dia-semana",
@@ -1068,14 +1443,14 @@
       ],
       "value": ""
     }, {
-      "id": "f70d691f-de38-47f8-baf1-175111107088",
+      "id": "5857cd49-3d68-4085-b1e3-e92f0b79457d",
       "comment": "",
       "command": "select",
       "target": "id=input-dia-semana",
       "targets": [],
-      "value": "label=Sexta"
+      "value": "label=Quarta"
     }, {
-      "id": "9df53b28-8b00-4b7b-9058-1df640a80d7f",
+      "id": "84e28eb0-a578-41a6-872a-910250a78f69",
       "comment": "",
       "command": "click",
       "target": "id=input-dia-semana",
@@ -1089,31 +1464,78 @@
       ],
       "value": ""
     }, {
-      "id": "722f083c-ef74-4b5f-9128-f2a412fa0908",
+      "id": "3edbb03f-8843-427c-9ffd-0c3fe980c93a",
       "comment": "",
       "command": "click",
-      "target": "css=.fa-plus",
+      "target": "id=add-novo-horario",
       "targets": [
-        ["css=.fa-plus", "css:finder"],
-        ["xpath=//a[@id='add-novo-horario']/i", "xpath:idRelative"],
-        ["xpath=//div[4]/a/i", "xpath:position"]
+        ["id=add-novo-horario", "id"],
+        ["css=#add-novo-horario", "css:finder"],
+        ["xpath=//a[@id='add-novo-horario']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/div[4]/a", "xpath:idRelative"],
+        ["xpath=//div[4]/a", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "d3d26991-9347-4f6a-9b9c-27668fb2d07d",
+      "id": "1f40a045-ef01-4ed0-aab0-f8265ed7766d",
       "comment": "",
       "command": "click",
-      "target": "css=.ocupation:nth-child(3)",
+      "target": "id=mensagem-erro-horarios",
       "targets": [
-        ["css=.ocupation:nth-child(3)", "css:finder"],
-        ["xpath=//form[@id='form']/div/div[3]", "xpath:idRelative"],
-        ["xpath=//form/div/div[3]", "xpath:position"]
+        ["id=mensagem-erro-horarios", "id"],
+        ["css=#mensagem-erro-horarios", "css:finder"],
+        ["xpath=//span[@id='mensagem-erro-horarios']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/span", "xpath:idRelative"],
+        ["xpath=//form/div/div[3]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'O horário de início não pode ser maior que a hora do término!')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "4eef5857-b384-44e0-97dd-7292ac29caea",
+      "id": "e2b1c5b3-cd99-453a-b254-cf96b026ec0c",
       "comment": "",
-      "command": "assertText",
+      "command": "click",
+      "target": "id=mensagem-erro-horarios",
+      "targets": [
+        ["id=mensagem-erro-horarios", "id"],
+        ["css=#mensagem-erro-horarios", "css:finder"],
+        ["xpath=//span[@id='mensagem-erro-horarios']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/span", "xpath:idRelative"],
+        ["xpath=//form/div/div[3]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'O horário de início não pode ser maior que a hora do término!')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f206d1d8-9966-4ab9-9f78-6f42e0d61f2b",
+      "comment": "",
+      "command": "doubleClick",
+      "target": "id=mensagem-erro-horarios",
+      "targets": [
+        ["id=mensagem-erro-horarios", "id"],
+        ["css=#mensagem-erro-horarios", "css:finder"],
+        ["xpath=//span[@id='mensagem-erro-horarios']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/span", "xpath:idRelative"],
+        ["xpath=//form/div/div[3]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'O horário de início não pode ser maior que a hora do término!')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "46b0d7d6-126f-47e9-b7e1-8af9bdc22cb7",
+      "comment": "",
+      "command": "click",
+      "target": "id=mensagem-erro-horarios",
+      "targets": [
+        ["id=mensagem-erro-horarios", "id"],
+        ["css=#mensagem-erro-horarios", "css:finder"],
+        ["xpath=//span[@id='mensagem-erro-horarios']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/div/div[3]/span", "xpath:idRelative"],
+        ["xpath=//form/div/div[3]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'O horário de início não pode ser maior que a hora do término!')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "aa0fe010-e261-4b61-a355-8488dc15d107",
+      "comment": "",
+      "command": "verifyText",
       "target": "id=mensagem-erro-horarios",
       "targets": [
         ["id=mensagem-erro-horarios", "id"],
@@ -1125,6 +1547,941 @@
       ],
       "value": "O horário de início não pode ser maior que a hora do término!"
     }]
+  }, {
+    "id": "6f3a6dd6-99a8-47da-b2f1-99899ae69da7",
+    "name": "InserirSalaExclusivaVálidaComUmResponsável",
+    "commands": [{
+      "id": "44e666ec-a623-474e-9e63-7cc2c931cdbe",
+      "comment": "",
+      "command": "open",
+      "target": "https://localhost:5001/SalaParticular/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c68817c5-60f0-4258-9cc5-375d69f93e1e",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x754",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8a12c658-1c51-4103-a890-70bb78b0e7a6",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-bloco",
+      "targets": [
+        ["id=select-bloco", "id"],
+        ["name=BlocoSalas", "name"],
+        ["css=#select-bloco", "css:finder"],
+        ["xpath=//select[@id='select-bloco']", "xpath:attributes"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'1 | Bloco A\n2 | Bloco B\n3 | Bloco C\n4 | Bloco D\n5 | Bloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "3477b10a-2a79-4ad3-bd40-08d10f16fd80",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-bloco",
+      "targets": [],
+      "value": "label=4 | Bloco D"
+    }, {
+      "id": "1fd1fcf1-77b5-4840-ae75-ad34989b9d41",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-bloco",
+      "targets": [
+        ["id=select-bloco", "id"],
+        ["name=BlocoSalas", "name"],
+        ["css=#select-bloco", "css:finder"],
+        ["xpath=//select[@id='select-bloco']", "xpath:attributes"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'1 | Bloco A\n2 | Bloco B\n3 | Bloco C\n4 | Bloco D\n5 | Bloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "77039148-7e79-4d13-9384-80e65b0af5f3",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-sala",
+      "targets": [
+        ["id=select-sala", "id"],
+        ["name=SalaId", "name"],
+        ["css=#select-sala", "css:finder"],
+        ["xpath=//select[@id='select-sala']", "xpath:attributes"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d8ebb5c8-d245-4d48-937c-fbf385ddb6a4",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-sala",
+      "targets": [],
+      "value": "label=14 | Sala 106"
+    }, {
+      "id": "ac433409-0023-4bf1-99de-c9e5a19a7c9e",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-sala",
+      "targets": [
+        ["id=select-sala", "id"],
+        ["name=SalaId", "name"],
+        ["css=#select-sala", "css:finder"],
+        ["xpath=//select[@id='select-sala']", "xpath:attributes"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "cf23baa3-437d-41da-8271-4e3e445192fb",
+      "comment": "",
+      "command": "click",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']/i", "xpath:idRelative"],
+        ["xpath=//div[2]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "94e839d4-a7dc-4f66-82fa-b12ad44f3e49",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']/i", "xpath:idRelative"],
+        ["xpath=//div[2]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "715ff59e-a862-4c2a-9408-e17bfb70fdf9",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']/i", "xpath:idRelative"],
+        ["xpath=//div[2]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ab9b9741-ab16-4792-a8a0-28b670a52563",
+      "comment": "",
+      "command": "click",
+      "target": "id=btn-create-sala-exclusiva",
+      "targets": [
+        ["id=btn-create-sala-exclusiva", "id"],
+        ["css=#btn-create-sala-exclusiva", "css:finder"],
+        ["xpath=//input[@id='btn-create-sala-exclusiva']", "xpath:attributes"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5a569b84-bb7d-4403-8e4f-e90d15ac3e03",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-header",
+      "targets": [
+        ["css=.swal2-header", "css:finder"],
+        ["xpath=//div[2]/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "93004044-0b58-4386-bc17-7161a67fe68b",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "79a3d4ee-1b11-474b-840a-a381f0cc4b71",
+      "comment": "",
+      "command": "click",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Parabéns!"
+    }, {
+      "id": "3ada16d7-b85e-464a-809f-3b1fd464e805",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Sala Exclusiva associada com sucesso!."
+    }, {
+      "id": "7f0c3c9f-2897-48e0-990d-2fd5d83c8efd",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-confirm",
+      "targets": [
+        ["css=.swal2-confirm", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "1eda6f29-fdc2-4c62-84f7-7f52e0e4c22d",
+    "name": "InserirSalaExclusivaVálidaComTrêsResponsáveis",
+    "commands": [{
+      "id": "7f9a25ac-3390-4257-b27f-2fc66fcae98c",
+      "comment": "",
+      "command": "open",
+      "target": "https://localhost:5001/SalaParticular/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a85ee6fd-320c-4fb5-b9ff-1d578076bb13",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x754",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6d835a5d-89cb-4e8c-8aad-2d7c40d940fa",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-bloco",
+      "targets": [
+        ["id=select-bloco", "id"],
+        ["name=BlocoSalas", "name"],
+        ["css=#select-bloco", "css:finder"],
+        ["xpath=//select[@id='select-bloco']", "xpath:attributes"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'1 | Bloco A\n2 | Bloco B\n3 | Bloco C\n4 | Bloco D\n5 | Bloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "b6891685-1325-45af-bd0c-11f08e3fb8c1",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-bloco",
+      "targets": [],
+      "value": "label=4 | Bloco D"
+    }, {
+      "id": "987a0891-ae21-4449-8b8e-d7529dc4b5db",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-bloco",
+      "targets": [
+        ["id=select-bloco", "id"],
+        ["name=BlocoSalas", "name"],
+        ["css=#select-bloco", "css:finder"],
+        ["xpath=//select[@id='select-bloco']", "xpath:attributes"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'1 | Bloco A\n2 | Bloco B\n3 | Bloco C\n4 | Bloco D\n5 | Bloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5531973b-17d9-49fa-908f-9aaf8f8c1ac9",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-sala",
+      "targets": [
+        ["id=select-sala", "id"],
+        ["name=SalaId", "name"],
+        ["css=#select-sala", "css:finder"],
+        ["xpath=//select[@id='select-sala']", "xpath:attributes"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "af1f5c86-7450-49ae-9219-22ced92fc6ce",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-sala",
+      "targets": [],
+      "value": "label=14 | Sala 106"
+    }, {
+      "id": "d3c24392-6b59-456c-8a3e-f0ed66861c9e",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-sala",
+      "targets": [
+        ["id=select-sala", "id"],
+        ["name=SalaId", "name"],
+        ["css=#select-sala", "css:finder"],
+        ["xpath=//select[@id='select-sala']", "xpath:attributes"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "33faf38e-447e-4bc6-b9c8-5f587ba15aad",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-usuario",
+      "targets": [
+        ["id=select-usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#select-usuario", "css:finder"],
+        ["xpath=//select[@id='select-usuario']", "xpath:attributes"],
+        ["xpath=//div[2]/div/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "11110640-9c65-42d7-89a2-1a1c5799202f",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-usuario",
+      "targets": [],
+      "value": "label=07852892590 | Igor Bruno dos Santos Nascimento"
+    }, {
+      "id": "047a60d8-097a-4eb3-b07e-ad9bb3fe335b",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-usuario",
+      "targets": [
+        ["id=select-usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#select-usuario", "css:finder"],
+        ["xpath=//select[@id='select-usuario']", "xpath:attributes"],
+        ["xpath=//div[2]/div/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "db934c3a-51c1-45a5-84e9-1a60dffa093d",
+      "comment": "",
+      "command": "click",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']/i", "xpath:idRelative"],
+        ["xpath=//div[2]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3f5a7d96-baa9-44ed-ac51-c28e7c83ab27",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']/i", "xpath:idRelative"],
+        ["xpath=//div[2]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9cac907b-56e8-4373-a459-aafe5fde4df6",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "css=.fa-plus",
+      "targets": [
+        ["css=.fa-plus", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']/i", "xpath:idRelative"],
+        ["xpath=//div[2]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "043da690-4631-4bc0-b937-31409937dac0",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-usuario",
+      "targets": [
+        ["id=select-usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#select-usuario", "css:finder"],
+        ["xpath=//select[@id='select-usuario']", "xpath:attributes"],
+        ["xpath=//div[2]/div/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ce663fe4-c174-4a39-b029-9e62bf644185",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-usuario",
+      "targets": [],
+      "value": "label=57377766387 | Rafael Kevin Teixeira"
+    }, {
+      "id": "547a4ac4-bb0b-4528-82c9-510154a1bc19",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-usuario",
+      "targets": [
+        ["id=select-usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#select-usuario", "css:finder"],
+        ["xpath=//select[@id='select-usuario']", "xpath:attributes"],
+        ["xpath=//div[2]/div/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "b29f8afe-29c4-4290-9453-9ba92ff2bf4a",
+      "comment": "",
+      "command": "click",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "517b0401-c296-469e-a61a-e03d3b56da22",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "996b33f8-1970-4c57-a5c2-6854b62ec320",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5576626c-35d8-4ec4-b349-b3b092605177",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-usuario",
+      "targets": [
+        ["id=select-usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#select-usuario", "css:finder"],
+        ["xpath=//select[@id='select-usuario']", "xpath:attributes"],
+        ["xpath=//div[2]/div/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "9930e1eb-04e8-442d-88e3-cf4c6e5aae18",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-usuario",
+      "targets": [],
+      "value": "label=42112664204 | Lívia Benedita Rebeca Araújo"
+    }, {
+      "id": "91653347-c100-4ea4-8160-35d8558abd7d",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-usuario",
+      "targets": [
+        ["id=select-usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#select-usuario", "css:finder"],
+        ["xpath=//select[@id='select-usuario']", "xpath:attributes"],
+        ["xpath=//div[2]/div/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e36dfac8-7a02-4d64-8602-1ec3f31edcf8",
+      "comment": "",
+      "command": "click",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bf91bf33-ce57-4fa8-8b9b-9505b2e3378a",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d282714d-9613-43ee-bcf8-1ebc5ac4975f",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5253d8ab-79ea-4998-ac15-ecfdde639b55",
+      "comment": "",
+      "command": "click",
+      "target": "id=btn-create-sala-exclusiva",
+      "targets": [
+        ["id=btn-create-sala-exclusiva", "id"],
+        ["css=#btn-create-sala-exclusiva", "css:finder"],
+        ["xpath=//input[@id='btn-create-sala-exclusiva']", "xpath:attributes"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "479b4788-e38c-4e72-96d3-c9fdc6a66266",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-header",
+      "targets": [
+        ["css=.swal2-header", "css:finder"],
+        ["xpath=//div[2]/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "993c11b2-140a-4f6c-9865-bb3b1fea59d3",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": "Parabéns!"
+    }, {
+      "id": "3a506fd0-3bc3-4565-92f7-c821d56b1e89",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Sala Exclusiva associada com sucesso!."
+    }, {
+      "id": "241f3b03-28bf-4698-92a2-b522275cbd5e",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-confirm",
+      "targets": [
+        ["css=.swal2-confirm", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "46e2f4c0-60e2-43d3-b5f7-341fb58a201e",
+    "name": "InserirSalaExclusivaDuplicada",
+    "commands": [{
+      "id": "350f5fd1-2250-40da-93a5-015b85903b53",
+      "comment": "",
+      "command": "open",
+      "target": "https://localhost:5001/SalaParticular/Create",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "52465a82-293a-44f7-92f4-a049266a867f",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x754",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "67ae4df7-d955-4c41-abf2-a42c538f79c5",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-bloco",
+      "targets": [
+        ["id=select-bloco", "id"],
+        ["name=BlocoSalas", "name"],
+        ["css=#select-bloco", "css:finder"],
+        ["xpath=//select[@id='select-bloco']", "xpath:attributes"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'1 | Bloco A\n2 | Bloco B\n3 | Bloco C\n4 | Bloco D\n5 | Bloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "df15dbf2-b1cb-4f3d-8969-78c05522d467",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-bloco",
+      "targets": [],
+      "value": "label=4 | Bloco D"
+    }, {
+      "id": "e44d6823-a84b-4880-9b82-c313bc811edc",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-bloco",
+      "targets": [
+        ["id=select-bloco", "id"],
+        ["name=BlocoSalas", "name"],
+        ["css=#select-bloco", "css:finder"],
+        ["xpath=//select[@id='select-bloco']", "xpath:attributes"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'1 | Bloco A\n2 | Bloco B\n3 | Bloco C\n4 | Bloco D\n5 | Bloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "6dafc011-373b-4994-ac03-cacbb264dd92",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-sala",
+      "targets": [
+        ["id=select-sala", "id"],
+        ["name=SalaId", "name"],
+        ["css=#select-sala", "css:finder"],
+        ["xpath=//select[@id='select-sala']", "xpath:attributes"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7f32ec01-3dd1-4afe-a325-a1033656192e",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-sala",
+      "targets": [],
+      "value": "label=14 | Sala 106"
+    }, {
+      "id": "218a1408-4453-48d2-84c8-25834736cef3",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-sala",
+      "targets": [
+        ["id=select-sala", "id"],
+        ["name=SalaId", "name"],
+        ["css=#select-sala", "css:finder"],
+        ["xpath=//select[@id='select-sala']", "xpath:attributes"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "41de1fe5-cfba-4792-92b3-dbf3385a7dbe",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-usuario",
+      "targets": [
+        ["id=select-usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#select-usuario", "css:finder"],
+        ["xpath=//select[@id='select-usuario']", "xpath:attributes"],
+        ["xpath=//div[2]/div/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "0292a12c-9c6b-4008-a79c-074e172f6c18",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-usuario",
+      "targets": [],
+      "value": "label=57377766387 | Rafael Kevin Teixeira"
+    }, {
+      "id": "a53984fa-336e-4cc0-a357-d99fb3db010e",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-usuario",
+      "targets": [
+        ["id=select-usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#select-usuario", "css:finder"],
+        ["xpath=//select[@id='select-usuario']", "xpath:attributes"],
+        ["xpath=//div[2]/div/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "173a5028-a242-4911-a3e4-6c183cd055d2",
+      "comment": "",
+      "command": "click",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "01b9a349-e3ae-4417-9057-e140c48d823a",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "84ba70b2-d767-4d96-ae3d-2685bb0aac3c",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "537b603b-c3c4-4211-a239-f8cbbbed5b17",
+      "comment": "",
+      "command": "click",
+      "target": "id=btn-create-sala-exclusiva",
+      "targets": [
+        ["id=btn-create-sala-exclusiva", "id"],
+        ["css=#btn-create-sala-exclusiva", "css:finder"],
+        ["xpath=//input[@id='btn-create-sala-exclusiva']", "xpath:attributes"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "275e8d02-700b-4406-aa08-429baa7a0563",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-header",
+      "targets": [
+        ["css=.swal2-header", "css:finder"],
+        ["xpath=//div[2]/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9fb12aea-efbc-4842-8ca9-083d8a2c3a0a",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": "Parabéns!"
+    }, {
+      "id": "0e136352-e63b-46e7-894c-76a33f76a349",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Sala Exclusiva associada com sucesso!."
+    }, {
+      "id": "f48b1807-2438-4a91-880c-8121b4d20dda",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-confirm",
+      "targets": [
+        ["css=.swal2-confirm", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "aac94890-1f10-465a-8dfd-70b28bb77a45",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-bloco",
+      "targets": [
+        ["id=select-bloco", "id"],
+        ["name=BlocoSalas", "name"],
+        ["css=#select-bloco", "css:finder"],
+        ["xpath=//select[@id='select-bloco']", "xpath:attributes"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'1 | Bloco A\n2 | Bloco B\n3 | Bloco C\n4 | Bloco D\n5 | Bloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f216f182-b640-4b24-9fab-c2898ede0332",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-bloco",
+      "targets": [],
+      "value": "label=4 | Bloco D"
+    }, {
+      "id": "a3e3dc53-77fb-4ad4-9681-fc038d7fdc5a",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-bloco",
+      "targets": [
+        ["id=select-bloco", "id"],
+        ["name=BlocoSalas", "name"],
+        ["css=#select-bloco", "css:finder"],
+        ["xpath=//select[@id='select-bloco']", "xpath:attributes"],
+        ["xpath=//select", "xpath:position"],
+        ["xpath=//select[contains(.,'1 | Bloco A\n2 | Bloco B\n3 | Bloco C\n4 | Bloco D\n5 | Bloco E')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "18468af1-c2b7-44e6-81a7-7f55492e643d",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-sala",
+      "targets": [
+        ["id=select-sala", "id"],
+        ["name=SalaId", "name"],
+        ["css=#select-sala", "css:finder"],
+        ["xpath=//select[@id='select-sala']", "xpath:attributes"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8b6f81f0-9a9c-461b-8d3d-dba179100dfe",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-sala",
+      "targets": [],
+      "value": "label=14 | Sala 106"
+    }, {
+      "id": "71c09d79-8aa2-4136-958c-1bfe5bce6cb2",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-sala",
+      "targets": [
+        ["id=select-sala", "id"],
+        ["name=SalaId", "name"],
+        ["css=#select-sala", "css:finder"],
+        ["xpath=//select[@id='select-sala']", "xpath:attributes"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8b9d2d7c-ba6e-4bef-9045-2c40f9617b3d",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-usuario",
+      "targets": [
+        ["id=select-usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#select-usuario", "css:finder"],
+        ["xpath=//select[@id='select-usuario']", "xpath:attributes"],
+        ["xpath=//div[2]/div/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "71b94277-1c58-42ec-934f-f0224b291406",
+      "comment": "",
+      "command": "select",
+      "target": "id=select-usuario",
+      "targets": [],
+      "value": "label=57377766387 | Rafael Kevin Teixeira"
+    }, {
+      "id": "783ad93a-b312-4b63-9e79-5e3fc8d89e02",
+      "comment": "",
+      "command": "click",
+      "target": "id=select-usuario",
+      "targets": [
+        ["id=select-usuario", "id"],
+        ["name=UsuarioId", "name"],
+        ["css=#select-usuario", "css:finder"],
+        ["xpath=//select[@id='select-usuario']", "xpath:attributes"],
+        ["xpath=//div[2]/div/select", "xpath:position"],
+        ["xpath=//select[contains(.,'42112664204 | Lívia Benedita Rebeca Araújo\n57377766387 | Rafael Kevin Teixeira\n07852892590 | Igor Bruno dos Santos Nascimento')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "8f88fcfe-49d4-4c41-9a39-76b791575d71",
+      "comment": "",
+      "command": "click",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f52f6085-ba05-4bc5-81bf-7e517dac081f",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6d20ae0f-aafc-49fa-9e63-aff70a1cc5b6",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=add-novo-responsavel",
+      "targets": [
+        ["id=add-novo-responsavel", "id"],
+        ["css=#add-novo-responsavel", "css:finder"],
+        ["xpath=//a[@id='add-novo-responsavel']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "83ea72a5-0665-4d38-9a31-2545ad301f96",
+      "comment": "",
+      "command": "click",
+      "target": "id=btn-create-sala-exclusiva",
+      "targets": [
+        ["id=btn-create-sala-exclusiva", "id"],
+        ["css=#btn-create-sala-exclusiva", "css:finder"],
+        ["xpath=//input[@id='btn-create-sala-exclusiva']", "xpath:attributes"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "87fd2f68-34b8-4b8a-961d-f408357a71c1",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-header",
+      "targets": [
+        ["css=.swal2-header", "css:finder"],
+        ["xpath=//div[2]/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fbb59410-5627-439c-8b4f-598b32d2a353",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Create - SalasUfsWeb",
+      "targets": [],
+      "value": "Parabéns!"
+    }, {
+      "id": "2a95159f-399b-4eb9-ba1a-bcd6953d9777",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=swal2-content",
+      "targets": [
+        ["id=swal2-content", "id"],
+        ["css=#swal2-content", "css:finder"],
+        ["xpath=//div[@id='swal2-content']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div", "xpath:position"]
+      ],
+      "value": "Sala Exclusiva associada com sucesso!."
+    }, {
+      "id": "8722a5ee-71b4-46e0-b354-6b963cd5a226",
+      "comment": "",
+      "command": "click",
+      "target": "css=.swal2-confirm",
+      "targets": [
+        ["css=.swal2-confirm", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "17eb4d13-1738-4d73-a51d-8c51c2411b63",
@@ -1133,7 +2490,14 @@
     "parallel": false,
     "timeout": 300,
     "tests": ["87e7d025-5e3a-432f-8f59-9a81df85037b", "310d9f8e-2a60-4c12-b1a8-37d6f4d6bc60", "50abda3d-3938-4e75-b51a-db709e559aa4"]
+  }, {
+    "id": "c5c43834-a931-4045-9701-fa3d45ee5d3f",
+    "name": "TestesSalaExclusiva",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["6f3a6dd6-99a8-47da-b2f1-99899ae69da7", "1eda6f29-fdc2-4c62-84f7-7f52e0e4c22d", "46e2f4c0-60e2-43d3-b5f7-341fb58a201e"]
   }],
-  "urls": ["https://localhost:5001/", "https://localhost:5001/Planejamento/Create"],
+  "urls": ["https://localhost:5001/", "https://localhost:5001/Planejamento/Create", "https://localhost:5001/SalaParticular/Create"],
   "plugins": []
 }

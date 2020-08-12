@@ -1,4 +1,4 @@
-﻿@model Model.SalaParticularViewModel
+﻿@model Model.SalaParticularModel
 
 @{
     ViewData["Title"] = "Create";
@@ -20,23 +20,23 @@
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="ocupation col-md-5">
                                 <div class="form-group">
-                                    <label asp-for="BlocoId" class="form-control-label" for="select-bloco">Filtrar Salas por Bloco</label>
-                                    @Html.DropDownListFor(model => model.BlocoId, ViewBag.blocos as SelectList, new
+                                    <label class="form-control-label" for="select-bloco">Filtrar Salas por Bloco</label>
+                                    @Html.DropDownListFor(model => model.BlocoSalas, ViewBag.blocos as SelectList, new
                                     { @class = "form-control", @id = "select-bloco", @onchange = "loadSalas()" })
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="SalaId.Id" class="form-control-label" for="select-sala">Selecionar Sala</label>
-                                    @Html.DropDownListFor(model => model.SalaId.Id, ViewBag.salas as SelectList, new
+                                    <label asp-for="SalaId" class="form-control-label" for="select-sala">Selecionar Sala</label>
+                                    @Html.DropDownListFor(model => model.SalaId, ViewBag.salas as SelectList, new
                                     { @class = "form-control", @id = "select-sala" })
-                                    <span asp-validation-for="SalaId.Id" class="text-danger"></span>
+                                    <span asp-validation-for="SalaId" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-8">
                                 <div class="form-group align-element">
-                                    <label asp-for="Responsavel.Id" class="control-label">Adicione os Responsáveis</label>
-                                    @Html.DropDownListFor(model => model.Responsavel.Id, ViewBag.usuarios as SelectList, new
+                                    <label asp-for="UsuarioId" class="control-label">Adicione os Responsáveis</label>
+                                    @Html.DropDownListFor(model => model.UsuarioId, ViewBag.usuarios as SelectList, new
                                     { @class = "form-control", @id = "select-usuario" })
-                                    <span asp-validation-for="Responsavel.Id" class="text-danger"></span>
+                                    <span asp-validation-for="UsuarioId" class="text-danger"></span>
                                 </div>
 
                                 <div class="form-group align-element">
@@ -67,6 +67,9 @@
                                                                         <td>
                                                                             <input class="form-control" name="Responsaveis[@i].Id" hidden value="@Model.Responsaveis[i].Id" />
                                                                             <p class="form-control" type="time"> @Model.Responsaveis[i].Cpf | @Model.Responsaveis[i].Nome </p>
+                                                                            <input class="form-control" name="Responsaveis[@i].Nome" hidden value="nulonulonulo" />
+                                                                            <input class="form-control" name="Responsaveis[@i].Senha" hidden value="nulonulonulo" />
+                                                                            <input class="form-control" name="Responsaveis[@i].Cpf" hidden value="nulonulonulo" />
                                                                         </td>
                                                                         <td>
                                                                             <a id="remove-novo-horario" onclick="removeNovoResponsavel('novo-responsavel-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
@@ -106,9 +109,10 @@ else if (TempData["mensagemErro"] != null)
 }
 
 @section Scripts {
+
+    <script src="~/js/sala-exclusiva-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
 
-    <script src="~/js/sala-exclusiva-script.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
