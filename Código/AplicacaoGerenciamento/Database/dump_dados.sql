@@ -96,10 +96,10 @@ INSERT INTO `hardwaredesala` (`Id`, `MAC`, `Sala`, `TipoHardware`) VALUES
 -- Copiando dados para a tabela str_db.organizacao: ~4 rows (aproximadamente)
 /*!40000 ALTER TABLE `organizacao` DISABLE KEYS */;
 INSERT INTO `organizacao` (`Id`, `Cnpj`, `RazaoSocial`) VALUES
-	(1, '08735240000146', 'Empresa1'),
-	(2, '57838165000154', 'Empresa2'),
-	(3, '30056954000187', 'Empresa3'),
-	(4, '50618535000107', 'Empresa4');
+	(1, '08735240000146', 'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE'),
+	(2, '57838165000154', 'UNIVERSIDADE TIRADENTES - UNIT'),
+	(3, '30056954000187', 'MINISTÉRIO PÚBLICO DE SERGIPE'),
+	(4, '50618535000107', 'PREFEITURA MUNICIPAL DE ARACAJU');
 /*!40000 ALTER TABLE `organizacao` ENABLE KEYS */;
 
 -- Copiando dados para a tabela str_db.planejamento: ~0 rows (aproximadamente)
@@ -131,9 +131,10 @@ INSERT INTO `sala` (`Id`, `Titulo`, `Bloco`) VALUES
 -- Copiando dados para a tabela str_db.tipohardware: ~3 rows (aproximadamente)
 /*!40000 ALTER TABLE `tipohardware` DISABLE KEYS */;
 INSERT INTO `tipohardware` (`Id`, `Descricao`) VALUES
-	(1, 'Roteador'),
-	(2, 'Ar Condicionado'),
-	(3, 'Iluminacao');
+	(1, 'CONTROLADOR DE BLOCO'),
+	(2, 'CONTROLADOR DE SALA'),
+	(3, 'MASTER');
+	(3, 'SLAVE');
 /*!40000 ALTER TABLE `tipohardware` ENABLE KEYS */;
 
 -- Copiando dados para a tabela str_db.tipousuario: ~2 rows (aproximadamente)

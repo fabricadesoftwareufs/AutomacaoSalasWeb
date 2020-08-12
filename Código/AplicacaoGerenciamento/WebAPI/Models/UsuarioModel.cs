@@ -10,22 +10,22 @@ namespace Model
         public int Id { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Cpf")]
-        [StringLength(11, ErrorMessage = "Máximo são 11 caracteres")] 
+        [StringLength(14, ErrorMessage = "Máximo são 11 caracteres")] 
         public string Cpf { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Nome")]
         [StringLength(45, ErrorMessage = "Máximo são 45 caracteres")]
         public string Nome { get; set; }
         [Display(Name = "Data de Nascimento")]
-        [StringLength(500, ErrorMessage = "Máximo são 500 caracteres")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DataNascimento { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Senha")]
-        [StringLength(100, ErrorMessage = "Máximo são 100 caracteres")] 
+        [MinLength(8), MaxLength(16)]
+        [StringLength(16, ErrorMessage = "A senha deve ter entre 8 e 16 caracteres")] 
         public string Senha { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Tipo")]
-        [StringLength(500, ErrorMessage = "Máximo são 500 caracteres")]
 
         public int TipoUsuarioId { get; set; }
     }

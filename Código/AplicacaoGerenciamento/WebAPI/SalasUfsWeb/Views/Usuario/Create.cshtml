@@ -8,7 +8,7 @@
     <div class="card-body register-card-body">
         <p class="login-box-msg">Criar Novo Usuário</p>
 
-        <form asp-action="Create" asp-controller="usuario">
+        <form asp-action="Create" asp-controller="Usuario">
             <div class="input-group mb-3">
                 <input asp-for="Nome" class="form-control" placeholder="Nome" />
                 <div class="input-group-append">
@@ -16,6 +16,8 @@
                         <span class="fas fa-user"></span>
                     </div>
                 </div>
+                <span asp-validation-for="Nome" class="text-danger"></span>
+
             </div>
             <div class="input-group mb-3">
                 <input id="login_auth" asp-for="Cpf" class="form-control" placeholder="CPF" oninput="validaCpf()">
@@ -24,6 +26,8 @@
                         <span class="fas fa-id-card"></span>
                     </div>
                 </div>
+                <span asp-validation-for="Cpf" class="text-danger"></span>
+
             </div>
             <span id="span_cpf" asp-validation-for="Cpf" class="invalid-msg invalid-feedback"></span>
             <div class="input-group mb-3">
@@ -33,6 +37,8 @@
                         <span class="fas fa-birthday-cake"></span>
                     </div>
                 </div>
+                <span asp-validation-for="DataNascimento" class="text-danger"></span>
+
             </div>
             <div class="input-group mb-3">
                 <input id="senha_auth" asp-for="Senha" class="form-control" placeholder="Senha" />
@@ -41,6 +47,7 @@
                         <span class="fas fa-lock"></span>
                     </div>
                 </div>
+                <span asp-validation-for="Senha" class="text-danger"></span>
             </div>
             <div class="row">
                 <div class="col-8">

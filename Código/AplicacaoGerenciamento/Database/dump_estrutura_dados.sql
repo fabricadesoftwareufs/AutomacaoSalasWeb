@@ -163,10 +163,10 @@ CREATE TABLE IF NOT EXISTS `organizacao` (
 -- Copiando dados para a tabela str_db.organizacao: ~4 rows (aproximadamente)
 /*!40000 ALTER TABLE `organizacao` DISABLE KEYS */;
 INSERT INTO `organizacao` (`Id`, `Cnpj`, `RazaoSocial`) VALUES
-	(1, '08735240000146', 'Empresa1'),
-	(2, '57838165000154', 'Empresa2'),
-	(3, '30056954000187', 'Empresa3'),
-	(4, '50618535000107', 'Empresa4');
+	(1, '08735240000146', 'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE'),
+	(2, '57838165000154', 'UNIVERSIDADE TIRADENTES - UNIT'),
+	(3, '30056954000187', 'MINISTÉRIO PÚBLICO DE SERGIPE'),
+	(4, '50618535000107', 'PREFEITURA MUNICIPAL DE ARACAJU');
 /*!40000 ALTER TABLE `organizacao` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.planejamento
@@ -205,18 +205,18 @@ CREATE TABLE IF NOT EXISTS `sala` (
 /*!40000 ALTER TABLE `sala` DISABLE KEYS */;
 INSERT INTO `sala` (`Id`, `Titulo`, `Bloco`) VALUES
 	(1, 'Sala 01', 1),
-	(2, 'Sala 01', 2),
-	(3, 'Sala 01', 3),
-	(4, 'Sala 01', 4),
-	(5, 'Sala 01', 5),
-	(6, 'Sala 01', 6),
-	(7, 'Sala 01', 7),
-	(8, 'Sala 01', 8),
-	(9, 'Sala 01', 9),
-	(10, 'Sala 01', 10),
-	(11, 'Sala 01', 11),
-	(12, 'Sala 01', 12),
-	(13, 'Sala 01', 13);
+	(2, 'Sala 02', 2),
+	(3, 'Sala 03', 3),
+	(4, 'Sala 04', 4),
+	(5, 'Sala 05', 5),
+	(6, 'Sala 06', 6),
+	(7, 'Sala 07', 7),
+	(8, 'Sala 08', 8),
+	(9, 'Sala 09', 9),
+	(10, 'Sala 10', 10),
+	(11, 'Sala 11', 11),
+	(12, 'Sala 12', 12),
+	(13, 'Sala 13', 13);
 /*!40000 ALTER TABLE `sala` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.salaparticular
@@ -245,9 +245,10 @@ CREATE TABLE IF NOT EXISTS `tipohardware` (
 -- Copiando dados para a tabela str_db.tipohardware: ~3 rows (aproximadamente)
 /*!40000 ALTER TABLE `tipohardware` DISABLE KEYS */;
 INSERT INTO `tipohardware` (`Id`, `Descricao`) VALUES
-	(1, 'Roteador'),
-	(2, 'Ar Condicionado'),
-	(3, 'Iluminacao');
+	(1, 'CONTROLADOR DE BLOCO'),
+	(2, 'CONTROLADOR DE SALA'),
+	(3, 'MASTER'),
+	(4, 'SLAVE');
 /*!40000 ALTER TABLE `tipohardware` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.tipousuario
@@ -281,8 +282,8 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 -- Copiando dados para a tabela str_db.usuario: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
 INSERT INTO `usuario` (`Id`, `Cpf`, `Nome`, `DataNascimento`, `Senha`, `TipoUsuario`) VALUES
-	(1, '42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', 'teste', 2),
-	(2, '57377766387', 'Rafael Kevin Teixeira', '1996-07-22', 'teste', 2);
+	(1, '42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2),
+	(2, '57377766387', 'Rafael Kevin Teixeira', '1996-07-22', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2);
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.usuarioorganizacao

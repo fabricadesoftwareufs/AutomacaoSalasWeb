@@ -10,12 +10,18 @@ namespace Model
         public int Id { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Data")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime Data { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Horário de ínicio")]
+        [DataType(DataType.Time)]
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm}", ApplyFormatInEditMode = true)]
         public TimeSpan HorarioInicio { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Horário de Termino")]
+        [DataType(DataType.Time)]
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm}", ApplyFormatInEditMode = true)]
         public TimeSpan HorarioFim { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Situação")]

@@ -10,6 +10,8 @@ namespace Model
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "MAC")]
         [MinLength(17), MaxLength(17)]
+        [StringLength(17, ErrorMessage = "O endereço MAC deve ter 12 caracteres")]
+
         public string MAC { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Bloco")]
