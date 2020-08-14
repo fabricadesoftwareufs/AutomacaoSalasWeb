@@ -12,7 +12,7 @@ namespace Service.Interface
         HorarioSalaModel GetById(int id);
 
         List<HorarioSalaModel> GetByIdSala(int id);
-
+        HorarioSalaModel VerificaSalaOcupada(int idSala, DateTime data, TimeSpan horarioInicio, TimeSpan horarioFim);
         bool Insert(HorarioSalaModel entity);
         bool Remove(int id);
 

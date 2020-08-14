@@ -55,10 +55,10 @@ namespace SalasUfsWeb.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(SalaParticularViewModel salaParticularModel)
+        public ActionResult Create(SalaParticularModel salaParticularModel)
         {
             ViewBag.usuarios = new SelectList(GetUsuarios().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
-            ViewBag.salas = new SelectList(GetSalas(salaParticularModel.BlocoId).Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
+            ViewBag.salas = new SelectList(GetSalas(salaParticularModel.BlocoSalas).Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
             ViewBag.blocos = new SelectList(_blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id).Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
 
             try

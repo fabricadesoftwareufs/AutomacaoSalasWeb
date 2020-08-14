@@ -44,6 +44,23 @@ INSERT INTO `bloco` (`Id`, `Organizacao`, `Titulo`) VALUES
 	(13, 4, 'Bloco Unico');
 /*!40000 ALTER TABLE `bloco` ENABLE KEYS */;
 
+
+-- Copiando estrutura para tabela str_db.tipohardware
+CREATE TABLE IF NOT EXISTS `tipohardware` (
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Descricao` varchar(45) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=UTF8;
+
+-- Copiando dados para a tabela str_db.tipohardware: ~3 rows (aproximadamente)
+/*!40000 ALTER TABLE `tipohardware` DISABLE KEYS */;
+INSERT INTO `tipohardware` (`Id`, `Descricao`) VALUES
+	(1, 'CONTROLADOR DE BLOCO'),
+	(2, 'CONTROLADOR DE SALA'),
+	(3, 'MASTER'),
+	(4, 'SLAVE');
+/*!40000 ALTER TABLE `tipohardware` ENABLE KEYS */;
+
 -- Copiando estrutura para tabela str_db.hardwaredebloco
 CREATE TABLE IF NOT EXISTS `hardwaredebloco` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -131,6 +148,64 @@ INSERT INTO `hardwaredesala` (`Id`, `MAC`, `Sala`, `TipoHardware`) VALUES
 	(39, '00:E0:4C:28:5F:41', 13, 3);
 /*!40000 ALTER TABLE `hardwaredesala` ENABLE KEYS */;
 
+-- Copiando estrutura para tabela str_db.tipousuario
+CREATE TABLE IF NOT EXISTS `tipousuario` (
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Descricao` varchar(45) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- Copiando dados para a tabela str_db.tipousuario: ~2 rows (aproximadamente)
+/*!40000 ALTER TABLE `tipousuario` DISABLE KEYS */;
+INSERT INTO `tipousuario` (`Id`, `Descricao`) VALUES
+	(1, 'ADM'),
+	(2, 'PROFESSOR'),
+	(3, 'ALUNO'),
+	(4, 'TÉCNICO');
+/*!40000 ALTER TABLE `tipousuario` ENABLE KEYS */;
+
+-- Copiando estrutura para tabela str_db.usuario
+CREATE TABLE IF NOT EXISTS `usuario` (
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Cpf` varchar(11) NOT NULL,
+  `Nome` varchar(45) NOT NULL,
+  `DataNascimento` date DEFAULT NULL,
+  `Senha` varchar(100) NOT NULL,
+  `TipoUsuario` int unsigned NOT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `Cpf_UNIQUE` (`Cpf`),
+  KEY `fk_Usuario_TipoUsuario1_idx` (`TipoUsuario`),
+  CONSTRAINT `fk_Usuario_TipoUsuario1` FOREIGN KEY (`TipoUsuario`) REFERENCES `tipousuario` (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- Copiando dados para a tabela str_db.usuario: ~2 rows (aproximadamente)
+INSERT INTO `usuario` (`Id`, `Cpf`, `Nome`, `DataNascimento`, `Senha`, `TipoUsuario`) VALUES
+	(1, '42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2),
+	(2, '57377766387', 'Rafael Kevin Teixeira', '1996-07-22', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2),
+	(3, '07852892590', 'Igor bruno dos santos nascimento', '1996-07-22', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2);
+/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
+
+-- Copiando estrutura para tabela str_db.usuarioorganizacao
+CREATE TABLE IF NOT EXISTS `usuarioorganizacao` (
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Organizacao` int unsigned NOT NULL,
+  `Usuario` int unsigned NOT NULL,
+  PRIMARY KEY (`Id`,`Organizacao`,`Usuario`),
+  KEY `fk_Organizacao_has_Usuario_Usuario1_idx` (`Usuario`),
+  KEY `fk_Organizacao_has_Usuario_Organizacao1_idx` (`Organizacao`),
+  CONSTRAINT `fk_Organizacao_has_Usuario_Organizacao1` FOREIGN KEY (`Organizacao`) REFERENCES `organizacao` (`Id`),
+  CONSTRAINT `fk_Organizacao_has_Usuario_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Copiando dados para a tabela str_db.usuarioorganizacao: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `usuarioorganizacao` DISABLE KEYS */;
+INSERT INTO `usuarioorganizacao` (`Id`, `Organizacao`, `Usuario`) VALUES
+	(1, 1, 1),
+	(3, 1, 3),
+	(2, 1, 2);
+/*!40000 ALTER TABLE `usuarioorganizacao` ENABLE KEYS */;
+
+
 -- Copiando estrutura para tabela str_db.horariosala
 CREATE TABLE IF NOT EXISTS `horariosala` (
   `Id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -150,6 +225,10 @@ CREATE TABLE IF NOT EXISTS `horariosala` (
 
 -- Copiando dados para a tabela str_db.horariosala: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `horariosala` DISABLE KEYS */;
+INSERT INTO `horariosala` (`Id`, `Data`, `HorarioInicio`,`HorarioFim`,`Situacao`,`Objetivo`,`Usuario`,`Sala`) VALUES
+							(1, '2020-08-24', '07:00','09:00','--','Palestra sobre Engenharia de Software',1,4),
+							(2, '2020-09-20', '07:00','09:00','--','Palestra sobre Engenharia de Software',2,4);
+			
 /*!40000 ALTER TABLE `horariosala` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.organizacao
@@ -189,6 +268,10 @@ CREATE TABLE IF NOT EXISTS `planejamento` (
 
 -- Copiando dados para a tabela str_db.planejamento: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `planejamento` DISABLE KEYS */;
+INSERT INTO `planejamento` (`Id`, `DataInicio`, `DataFim`,`HorarioInicio`,`HorarioFim`,`DiaSemana`,`Objetivo`,`Usuario`,`Sala`) VALUES
+	(1, '2020-08-24', '2020-12-24','07:00','09:00','SEG','Planejamento de LFT',1,5),
+	(2, '2020-08-24', '2020-12-24','07:00','09:00','QUA','Planejamento de LFT',1,5),
+	(3, '2020-08-24', '2020-12-24','07:00','09:00','SEX','Planejamento de LFT',1,5);
 /*!40000 ALTER TABLE `planejamento` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.sala
@@ -216,7 +299,8 @@ INSERT INTO `sala` (`Id`, `Titulo`, `Bloco`) VALUES
 	(10, 'Sala 10', 10),
 	(11, 'Sala 11', 11),
 	(12, 'Sala 12', 12),
-	(13, 'Sala 13', 13);
+	(13, 'Sala 13', 13),
+	(14, 'Sala 106', 4);
 /*!40000 ALTER TABLE `sala` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.salaparticular
@@ -233,74 +317,15 @@ CREATE TABLE IF NOT EXISTS `salaparticular` (
 
 -- Copiando dados para a tabela str_db.salaparticular: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `salaparticular` DISABLE KEYS */;
+INSERT INTO `salaparticular` (`Id`, `Usuario`,`Sala`) VALUES 
+				(1,1,1),
+				(2,2,2),
+				(3,2,4),
+				(4,2,1),
+				(5,1,3);
 /*!40000 ALTER TABLE `salaparticular` ENABLE KEYS */;
 
--- Copiando estrutura para tabela str_db.tipohardware
-CREATE TABLE IF NOT EXISTS `tipohardware` (
-  `Id` int unsigned NOT NULL AUTO_INCREMENT,
-  `Descricao` varchar(45) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- Copiando dados para a tabela str_db.tipohardware: ~3 rows (aproximadamente)
-/*!40000 ALTER TABLE `tipohardware` DISABLE KEYS */;
-INSERT INTO `tipohardware` (`Id`, `Descricao`) VALUES
-	(1, 'CONTROLADOR DE BLOCO'),
-	(2, 'CONTROLADOR DE SALA'),
-	(3, 'MASTER'),
-	(4, 'SLAVE');
-/*!40000 ALTER TABLE `tipohardware` ENABLE KEYS */;
-
--- Copiando estrutura para tabela str_db.tipousuario
-CREATE TABLE IF NOT EXISTS `tipousuario` (
-  `Id` int unsigned NOT NULL AUTO_INCREMENT,
-  `Descricao` varchar(45) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
--- Copiando dados para a tabela str_db.tipousuario: ~2 rows (aproximadamente)
-/*!40000 ALTER TABLE `tipousuario` DISABLE KEYS */;
-INSERT INTO `tipousuario` (`Id`, `Descricao`) VALUES
-	(1, 'ADM'),
-	(2, 'Professor');
-/*!40000 ALTER TABLE `tipousuario` ENABLE KEYS */;
-
--- Copiando estrutura para tabela str_db.usuario
-CREATE TABLE IF NOT EXISTS `usuario` (
-  `Id` int unsigned NOT NULL AUTO_INCREMENT,
-  `Cpf` varchar(11) NOT NULL,
-  `Nome` varchar(45) NOT NULL,
-  `DataNascimento` date DEFAULT NULL,
-  `Senha` varchar(100) NOT NULL,
-  `TipoUsuario` int unsigned NOT NULL,
-  PRIMARY KEY (`Id`),
-  UNIQUE KEY `Cpf_UNIQUE` (`Cpf`),
-  KEY `fk_Usuario_TipoUsuario1_idx` (`TipoUsuario`),
-  CONSTRAINT `fk_Usuario_TipoUsuario1` FOREIGN KEY (`TipoUsuario`) REFERENCES `tipousuario` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-
--- Copiando dados para a tabela str_db.usuario: ~2 rows (aproximadamente)
-/*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` (`Id`, `Cpf`, `Nome`, `DataNascimento`, `Senha`, `TipoUsuario`) VALUES
-	(1, '42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2),
-	(2, '57377766387', 'Rafael Kevin Teixeira', '1996-07-22', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2);
-/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
-
--- Copiando estrutura para tabela str_db.usuarioorganizacao
-CREATE TABLE IF NOT EXISTS `usuarioorganizacao` (
-  `Id` int unsigned NOT NULL AUTO_INCREMENT,
-  `Organizacao` int unsigned NOT NULL,
-  `Usuario` int unsigned NOT NULL,
-  PRIMARY KEY (`Id`,`Organizacao`,`Usuario`),
-  KEY `fk_Organizacao_has_Usuario_Usuario1_idx` (`Usuario`),
-  KEY `fk_Organizacao_has_Usuario_Organizacao1_idx` (`Organizacao`),
-  CONSTRAINT `fk_Organizacao_has_Usuario_Organizacao1` FOREIGN KEY (`Organizacao`) REFERENCES `organizacao` (`Id`),
-  CONSTRAINT `fk_Organizacao_has_Usuario_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Copiando dados para a tabela str_db.usuarioorganizacao: ~0 rows (aproximadamente)
-/*!40000 ALTER TABLE `usuarioorganizacao` DISABLE KEYS */;
-/*!40000 ALTER TABLE `usuarioorganizacao` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;

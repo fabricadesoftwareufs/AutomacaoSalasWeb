@@ -10,6 +10,19 @@
 /*!50503 SET NAMES utf8mb4 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+-- Copiando estrutura do banco de dados para str_db
+CREATE DATABASE IF NOT EXISTS `str_db` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `str_db`;
+
+-- Copiando dados para a tabela str_db.organizacao: ~4 rows (aproximadamente)
+/*!40000 ALTER TABLE `organizacao` DISABLE KEYS */;
+INSERT INTO `organizacao` (`Id`, `Cnpj`, `RazaoSocial`) VALUES
+	(1, '08735240000146', 'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE'),
+	(2, '57838165000154', 'UNIVERSIDADE TIRADENTES - UNIT'),
+	(3, '30056954000187', 'MINISTÉRIO PÚBLICO DE SERGIPE'),
+	(4, '50618535000107', 'PREFEITURA MUNICIPAL DE ARACAJU');
+/*!40000 ALTER TABLE `organizacao` ENABLE KEYS */;
+
 
 -- Copiando dados para a tabela str_db.bloco: ~13 rows (aproximadamente)
 /*!40000 ALTER TABLE `bloco` DISABLE KEYS */;
@@ -28,6 +41,35 @@ INSERT INTO `bloco` (`Id`, `Organizacao`, `Titulo`) VALUES
 	(12, 3, 'Bloco Z'),
 	(13, 4, 'Bloco Unico');
 /*!40000 ALTER TABLE `bloco` ENABLE KEYS */;
+
+
+-- Copiando dados para a tabela str_db.sala: ~13 rows (aproximadamente)
+/*!40000 ALTER TABLE `sala` DISABLE KEYS */;
+INSERT INTO `sala` (`Id`, `Titulo`, `Bloco`) VALUES
+	(1, 'Sala 01', 1),
+	(2, 'Sala 02', 2),
+	(3, 'Sala 03', 3),
+	(4, 'Sala 04', 4),
+	(5, 'Sala 05', 5),
+	(6, 'Sala 06', 6),
+	(7, 'Sala 07', 7),
+	(8, 'Sala 08', 8),
+	(9, 'Sala 09', 9),
+	(10, 'Sala 10', 10),
+	(11, 'Sala 11', 11),
+	(12, 'Sala 12', 12),
+	(13, 'Sala 13', 13),
+	(14, 'Sala 106', 4),
+/*!40000 ALTER TABLE `sala` ENABLE KEYS */;
+
+-- Copiando dados para a tabela str_db.tipohardware: ~3 rows (aproximadamente)
+/*!40000 ALTER TABLE `tipohardware` DISABLE KEYS */;
+INSERT INTO `tipohardware` (`Id`, `Descricao`) VALUES
+	(1, 'CONTROLADOR DE BLOCO'),
+	(2, 'CONTROLADOR DE SALA'),
+	(3, 'MASTER'),
+	(4, 'SLAVE');
+/*!40000 ALTER TABLE `tipohardware` ENABLE KEYS */;
 
 -- Copiando dados para a tabela str_db.hardwaredebloco: ~11 rows (aproximadamente)
 /*!40000 ALTER TABLE `hardwaredebloco` DISABLE KEYS */;
@@ -89,72 +131,55 @@ INSERT INTO `hardwaredesala` (`Id`, `MAC`, `Sala`, `TipoHardware`) VALUES
 	(39, '00:E0:4C:28:5F:41', 13, 3);
 /*!40000 ALTER TABLE `hardwaredesala` ENABLE KEYS */;
 
--- Copiando dados para a tabela str_db.horariosala: ~0 rows (aproximadamente)
-/*!40000 ALTER TABLE `horariosala` DISABLE KEYS */;
-/*!40000 ALTER TABLE `horariosala` ENABLE KEYS */;
-
--- Copiando dados para a tabela str_db.organizacao: ~4 rows (aproximadamente)
-/*!40000 ALTER TABLE `organizacao` DISABLE KEYS */;
-INSERT INTO `organizacao` (`Id`, `Cnpj`, `RazaoSocial`) VALUES
-	(1, '08735240000146', 'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE'),
-	(2, '57838165000154', 'UNIVERSIDADE TIRADENTES - UNIT'),
-	(3, '30056954000187', 'MINISTÉRIO PÚBLICO DE SERGIPE'),
-	(4, '50618535000107', 'PREFEITURA MUNICIPAL DE ARACAJU');
-/*!40000 ALTER TABLE `organizacao` ENABLE KEYS */;
-
--- Copiando dados para a tabela str_db.planejamento: ~0 rows (aproximadamente)
-/*!40000 ALTER TABLE `planejamento` DISABLE KEYS */;
-/*!40000 ALTER TABLE `planejamento` ENABLE KEYS */;
-
--- Copiando dados para a tabela str_db.sala: ~13 rows (aproximadamente)
-/*!40000 ALTER TABLE `sala` DISABLE KEYS */;
-INSERT INTO `sala` (`Id`, `Titulo`, `Bloco`) VALUES
-	(1, 'Sala 01', 1),
-	(2, 'Sala 01', 2),
-	(3, 'Sala 01', 3),
-	(4, 'Sala 01', 4),
-	(5, 'Sala 01', 5),
-	(6, 'Sala 01', 6),
-	(7, 'Sala 01', 7),
-	(8, 'Sala 01', 8),
-	(9, 'Sala 01', 9),
-	(10, 'Sala 01', 10),
-	(11, 'Sala 01', 11),
-	(12, 'Sala 01', 12),
-	(13, 'Sala 01', 13);
-/*!40000 ALTER TABLE `sala` ENABLE KEYS */;
-
--- Copiando dados para a tabela str_db.salaparticular: ~0 rows (aproximadamente)
-/*!40000 ALTER TABLE `salaparticular` DISABLE KEYS */;
-/*!40000 ALTER TABLE `salaparticular` ENABLE KEYS */;
-
--- Copiando dados para a tabela str_db.tipohardware: ~3 rows (aproximadamente)
-/*!40000 ALTER TABLE `tipohardware` DISABLE KEYS */;
-INSERT INTO `tipohardware` (`Id`, `Descricao`) VALUES
-	(1, 'CONTROLADOR DE BLOCO'),
-	(2, 'CONTROLADOR DE SALA'),
-	(3, 'MASTER');
-	(3, 'SLAVE');
-/*!40000 ALTER TABLE `tipohardware` ENABLE KEYS */;
-
 -- Copiando dados para a tabela str_db.tipousuario: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `tipousuario` DISABLE KEYS */;
 INSERT INTO `tipousuario` (`Id`, `Descricao`) VALUES
 	(1, 'ADM'),
-	(2, 'Professor');
+	(2, 'PROFESSOR');
+	(3, 'ALUNO');
+	(4, 'TÉCNICO');
 /*!40000 ALTER TABLE `tipousuario` ENABLE KEYS */;
 
 -- Copiando dados para a tabela str_db.usuario: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
 INSERT INTO `usuario` (`Id`, `Cpf`, `Nome`, `DataNascimento`, `Senha`, `TipoUsuario`) VALUES
-	(1, '42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', 'teste', 2),
-	(2, '57377766387', 'Rafael Kevin Teixeira', '1996-07-22', 'teste', 2);
+	(1, '42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2),
+	(2, '57377766387', 'Rafael Kevin Teixeira', '1996-07-22', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2),
+	(2, '07852892590', 'Igor bruno dos santos nascimento', '1996-07-22', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2);
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
+
+
 
 -- Copiando dados para a tabela str_db.usuarioorganizacao: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `usuarioorganizacao` DISABLE KEYS */;
+INSERT INTO `usuarioorganizacao` (`Id`, `Organizacao`, `Usuario`) VALUES
+	(1, 1, 1),
+	(3, 1, 3),
+	(2, 1, 2);
 /*!40000 ALTER TABLE `usuarioorganizacao` ENABLE KEYS */;
 
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+INSERT INTO `horariosala` (`Id`, `Data`, `HorarioInicio`,`HorarioFim`,`Situacao`,`Objetivo`,`Usuario`,`Sala`) VALUES
+							(1, '2020-08-24', '07:00','09:00','--','Palestra sobre Engenharia de Software',1,4),
+							(2, '2020-09-20', '07:00','09:00','--','Palestra sobre Engenharia de Software',2,4);
+			
+
+-- Copiando dados para a tabela str_db.planejamento: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `planejamento` DISABLE KEYS */;
+INSERT INTO `planejamento` (`Id`, `DataInicio`, `DataFim`,`HorarioInicio`,`HorarioFim`,`DiaSemana`,`Objetivo`,`Usuario`,`Sala`) VALUES
+	(1, '2020-08-24', '2020-12-24','07:00','09:00','SEG','Planejamento de LFT',1,5),
+	(2, '2020-08-24', '2020-12-24','07:00','09:00','QUA','Planejamento de LFT',1,5),
+	(3, '2020-08-24', '2020-12-24','07:00','09:00','SEX','Planejamento de LFT',1,5);
+/*!40000 ALTER TABLE `planejamento` ENABLE KEYS */;
+
+
+
+-- Copiando dados para a tabela str_db.salaparticular: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `salaparticular` DISABLE KEYS */;
+INSERT INTO `salaparticular` (`Id`, `Usuario`,`Sala`) VALUES 
+				(1,1,1),
+				(2,2,2),
+				(3,2,4),
+				(4,2,1),
+				(5,1,3);
+/*!40000 ALTER TABLE `salaparticular` ENABLE KEYS */;
+

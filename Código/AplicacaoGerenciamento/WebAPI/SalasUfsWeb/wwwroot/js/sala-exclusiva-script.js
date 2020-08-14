@@ -10,8 +10,6 @@
 });
 
 
-
-
 function adicionarNovoResponsavel() {
     let idUser = $('#select-usuario').val();
     let texto = $("#select-usuario option:selected").text(); 
@@ -49,7 +47,10 @@ function adicionarResponsavelNaTabela(indice, idUser, texto) {
         '<tr id="' + idItem + '" class="responsavel-sala">' +
         '<td>' +
             '<input class="form-control" name="Responsaveis[' + indice + '].Id" hidden  value = "' + idUser + '"/>' +
-            '<p class="form-control" type="time" >' + texto +'</p>'+
+            '<p class="form-control" >' + texto + '</p>' +
+            '<input class="form-control" name="Responsaveis['+indice+'].Nome" hidden value="nulonulonulo" />'+
+            '<input class="form-control" name="Responsaveis['+indice+'].Senha" hidden value="nulonulonulo" />'+
+            '<input class="form-control" name="Responsaveis['+indice+'].Cpf" hidden value="nulonulonulo" />'+
         '</td>' +
         '<td>' +
             '<a id="remove-novo-horario"  onclick="removeNovoResponsavel(' + '\'' + idItem + '\'' + ')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +

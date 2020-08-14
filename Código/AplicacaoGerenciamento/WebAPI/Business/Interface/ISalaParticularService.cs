@@ -16,7 +16,7 @@ namespace Service.Interface
 
         List<SalaParticularModel> GetByIdOrganizacao(int idOrganizacao);
 
-        bool InsertListSalasParticulares(SalaParticularViewModel entity);
+        bool InsertListSalasParticulares(SalaParticularModel entity);
         bool Insert(SalaParticularModel entity);
         bool VerificaSalaExclusivaExistente(int? idSalaExclusiva, int idUsuario, int idSala);
         bool Remove(int id);
