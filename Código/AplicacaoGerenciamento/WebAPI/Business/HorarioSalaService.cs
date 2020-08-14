@@ -1,6 +1,8 @@
 ﻿using Model;
+using Org.BouncyCastle.Asn1.Cms;
 using Persistence;
 using Service.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -59,10 +61,39 @@ namespace Service
                    UsuarioId = hs.Usuario
                }).ToList();
 
+
+        public HorarioSalaModel VerificaSalaOcupada(int idSala, DateTime data, TimeSpan horarioInicio, TimeSpan horarioFim)
+            => _context.Horariosala
+               .Where(hs => hs.Sala == idSala && hs.Data == data && ((hs.HorarioInicio <= horarioInicio && horarioInicio <= hs.HorarioFim) || (hs.HorarioInicio <= horarioFim && horarioFim <= hs.HorarioFim)))
+               .Select(hs => new HorarioSalaModel
+               {
+                   Id = hs.Id,
+                   Data = hs.Data,
+                   SalaId = hs.Sala,
+                   HorarioInicio = hs.HorarioInicio,
+                   HorarioFim = hs.HorarioFim,
+                   Situacao = hs.Situacao,
+                   Objetivo = hs.Objetivo,
+                   UsuarioId = hs.Usuario
+               }).FirstOrDefault();
+
         public bool Insert(HorarioSalaModel entity)
         {
-            _context.Add(SetEntity(entity, new Horariosala()));
-            return _context.SaveChanges() == 1 ? true : false;
+            try
+            {
+                if (VerificaSalaOcupada(entity.SalaId, entity.Data, entity.HorarioInicio, entity.HorarioFim) != null)
+                    throw new ServiceException("Essa sala já possui reserva nessa data e horários, por favor, tente outra data ou horário!  ");
+
+                if (TimeSpan.Compare(entity.HorarioFim, entity.HorarioInicio) != 1)
+                    throw new ServiceException("Os horários possuem inconsistências, corrija-os e tente novamente!");
+
+                _context.Add(SetEntity(entity, new Horariosala()));
+                return _context.SaveChanges() == 1 ? true : false;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public bool Remove(int id)

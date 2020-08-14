@@ -1,6 +1,7 @@
 ﻿using Model;
 using Model.ViewModel;
 using Persistence;
+using Remotion.Linq.Utilities;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -65,14 +66,15 @@ namespace Service
                     SalaId = pl.Sala
                 }).ToList();
 
+
         public bool InsertListHorariosPlanjamento(PlanejamentoModel entity)
         {
-            List<PlanejamentoModel> horariosEntity = new List<PlanejamentoModel>();
-
             using (var transcaction = _context.Database.BeginTransaction())
             {
                 try
                 {
+                    if (entity.Horarios.Count == 0)
+                        throw new ServiceException("Adicione pelo menos um horário!");
 
                     foreach (var horario in entity.Horarios)
                     {
@@ -80,7 +82,7 @@ namespace Service
                             throw new ServiceException("Os horários possuem inconsistências, corrija e tente novamente");
                         else
                         {
-                            horariosEntity.Add(new PlanejamentoModel
+                            Insert(new PlanejamentoModel
                             {
                                 Id = entity.Id,
                                 Objetivo = entity.Objetivo,
@@ -95,9 +97,7 @@ namespace Service
                         }
                     }
 
-                    foreach (var item in horariosEntity)
-                        Insert(item);
-
+                    InsertReservasPlanejamento(entity);
                     transcaction.Commit();
 
                     return true;
@@ -107,6 +107,51 @@ namespace Service
                     transcaction.Rollback();
                     throw e;
                 }
+            }
+        }
+
+        private bool InsertReservasPlanejamento(PlanejamentoModel entity)
+        {
+            try
+            {
+                var _horarioSalaService = new HorarioSalaService(_context);
+                var dataCorrente = entity.DataInicio;
+                var listaReservas = new List<HorarioSalaModel>();
+                var addDays = 1;
+
+                foreach (var item in entity.Horarios)
+                {
+                    while (dataCorrente >= entity.DataInicio && dataCorrente <= entity.DataFim)
+                    {
+                        if (((int)dataCorrente.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(item.DiaSemana))
+                        {
+                            _horarioSalaService.Insert(
+                                new HorarioSalaModel
+                                {
+                                    HorarioFim = item.HorarioFim,
+                                    HorarioInicio = item.HorarioInicio,
+                                    SalaId = entity.SalaId,
+                                    UsuarioId = entity.UsuarioId,
+                                    Objetivo = entity.Objetivo,
+                                    Situacao = "PENDENTE",
+                                    Data = dataCorrente
+                                });
+
+                            addDays = 7;
+                        }
+
+                        dataCorrente = dataCorrente.AddDays(addDays);
+                    }
+
+                    dataCorrente = entity.DataInicio;
+                    addDays = 1;
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
 
@@ -232,5 +277,6 @@ namespace Service
 
             return query;
         }
+
     }
 }

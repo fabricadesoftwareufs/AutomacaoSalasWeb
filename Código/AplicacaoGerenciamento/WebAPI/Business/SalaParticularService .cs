@@ -55,7 +55,7 @@ namespace Service
                    SalaId = sp.Sala
                }).FirstOrDefault();
 
-        public bool InsertListSalasParticulares(SalaParticularViewModel entity)
+        public bool InsertListSalasParticulares(SalaParticularModel entity)
         {
             if (entity.Responsaveis.Count == 0)
                 throw new ServiceException("Você não adicionou nenhum responsável da sala!.");
@@ -69,7 +69,7 @@ namespace Service
                         Insert(new SalaParticularModel
                         {
                             Id = entity.Id,
-                            SalaId = entity.SalaId.Id,
+                            SalaId = entity.SalaId,
                             UsuarioId = item.Id
                         });
                     }

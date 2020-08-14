@@ -40,8 +40,11 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Create()
         {
-            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
-            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao(), "Id", "Nome");
+            var id = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(id)
+                .Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
+            
+            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
 
             return View();
         }
@@ -50,9 +53,10 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(PlanejamentoModel planejamento)
         {
-
-            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
-            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao(), "Id", "Nome");
+            var id = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(id)
+                .Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
+            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
 
             try
             {
@@ -63,10 +67,7 @@ namespace SalasUfsWeb.Controllers
                         TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
                         return View();
                     }
-                    else
-                    {
-                        TempData["mensagemSucesso"] = "Houve um problema ao inserir novo planejamento, tente novamente em alguns minutos.";
-                    }
+                    else TempData["mensagemErro"] = "Houve um problema ao inserir novo planejamento, tente novamente em alguns minutos.";
                 }
 
 
@@ -82,11 +83,13 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Edit(int id)
         {
-            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
-            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao(), "Id", "Nome");
-            PlanejamentoModel planejamento = _planejamentoService.GetById(id);
+            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(idUsuario)
+                        .Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
+            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
 
-            return View(planejamento);
+
+            return View(_planejamentoService.GetById(id));
         }
 
 
@@ -94,8 +97,10 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, PlanejamentoModel planejamento)
         {
-            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
-            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao(), "Id", "Nome");
+            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(idUsuario)
+                          .Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
+            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
 
             try
             {
