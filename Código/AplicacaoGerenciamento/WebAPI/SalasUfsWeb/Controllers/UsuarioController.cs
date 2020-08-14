@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Model.ViewModel;
 using Service;
@@ -14,10 +15,14 @@ namespace SalasUfsWeb.Controllers
 {
     public class UsuarioController : Controller
     {
-        private readonly IUsuarioService _service;
-        public UsuarioController(IUsuarioService service)
+        private readonly IUsuarioService _usuarioService;
+        private readonly ITipoUsuarioService _tipoUsuarioService;
+        private readonly IOrganizacaoService _organizacaoService;
+        public UsuarioController(IUsuarioService usuarioService, ITipoUsuarioService tipoUsuarioService, IOrganizacaoService organizacaoService)
         {
-            _service = service;
+            _usuarioService = usuarioService;
+            _tipoUsuarioService = tipoUsuarioService;
+            _organizacaoService = organizacaoService;
         }
         // GET: Usuario
         public ActionResult Index()
@@ -34,34 +39,56 @@ namespace SalasUfsWeb.Controllers
         // GET: Usuario/Create
         public ActionResult Create()
         {
+            ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
+            ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
             return View();
         }
 
         // POST: Usuario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(UsuarioModel user)
+        public ActionResult Create(UsuarioViewModel usuarioViewModel)
         {
+            ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
+            ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
+
+            usuarioViewModel.OrganizacaoModel = _organizacaoService.GetById(usuarioViewModel.OrganizacaoModel.Id);
+
             if (ModelState.IsValid)
             {
-                if (!Methods.ValidarCpf(user.Cpf))
-                    return RedirectToAction("Create", "Usuario", new { msg = "invalidCpf" }); 
-                
-                user.Cpf = Methods.CleanString(user.Cpf);
-
-                // Informações do objeto
-                user.Cpf = Methods.CleanString(user.Cpf);
-                user.Senha = Criptography.GeneratePasswordHash(user.Senha);
-                user.TipoUsuarioId = 1;
+                if (!Methods.ValidarCpf(usuarioViewModel.UsuarioModel.Cpf))
+                    return RedirectToAction("Create", "Usuario", new { msg = "invalidCpf" });
 
                 // Criando usuario que será passado para a autenticação.
-                var sucesso = new LoginViewModel { Login = user.Cpf, Senha = user.Senha };
+                var sucesso = new LoginViewModel { Login = usuarioViewModel.UsuarioModel.Cpf, Senha = usuarioViewModel.UsuarioModel.Senha };
 
-                if (_service.Insert(user))
-                    return RedirectToAction("Authenticate", "Login", sucesso);
+                // Informações do objeto
+                usuarioViewModel.UsuarioModel.Cpf = Methods.CleanString(usuarioViewModel.UsuarioModel.Cpf);
+                usuarioViewModel.UsuarioModel.Senha = Criptography.GeneratePasswordHash(usuarioViewModel.UsuarioModel.Senha);
+
+                try
+                {
+                    _usuarioService.Insert(usuarioViewModel);
+                    TempData["mensagemSucesso"] = "Usuário criado com sucesso!";
+                }
+                catch (ServiceException se)
+                {
+                    TempData["mensagemErro"] = se.Message;
+                    return View(usuarioViewModel);
+                }
+
+                return RedirectToAction("Authenticate", "Login", sucesso);
             }
             // Se nao inserir, vem pra cá e sai.
-            return View(user);
+           var erros = ModelState.Values.SelectMany(m => m.Errors)
+                                 .Select(e => e.ErrorMessage)
+                                 .ToList();
+            string causas = "";
+            foreach (var erro in erros)
+                causas += erro + " .";
+
+            TempData["mensagemErro"] = causas;
+            return View(usuarioViewModel);
         }
 
         // GET: Usuario/Edit/5

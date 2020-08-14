@@ -1,8 +1,7 @@
 ﻿using Model;
-using System;
+using Model.ViewModel;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
 
 namespace Service.Interface
 {
@@ -10,9 +9,10 @@ namespace Service.Interface
     {
         List<UsuarioModel> GetAll();
         UsuarioModel GetById(int id);
+        UsuarioModel GetByCpf(string cpf);
         List<UsuarioModel> GetByIdOrganizacao(int id);
         UsuarioModel GetByLoginAndPass(string login, string senha);
-        bool Insert(UsuarioModel entity);
+        UsuarioViewModel Insert(UsuarioViewModel entity);
         bool Remove(int id);
         bool Update(UsuarioModel entity);
         UsuarioModel RetornLoggedUser(ClaimsIdentity claimsIdentity);

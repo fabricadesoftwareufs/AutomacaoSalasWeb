@@ -1,4 +1,6 @@
-﻿using Model;
+﻿using Microsoft.EntityFrameworkCore;
+using Model;
+using Model.ViewModel;
 using Persistence;
 using Service.Interface;
 using System;
@@ -75,10 +77,45 @@ namespace Service
                     TipoUsuarioId = u.TipoUsuario
                 }).FirstOrDefault();
 
-        public bool Insert(UsuarioModel entity)
+        public UsuarioViewModel Insert(UsuarioViewModel entity)
         {
-            _context.Add(SetEntity(entity, new Usuario()));
-            return _context.SaveChanges() == 1 ? true : false;
+            var usuario = GetByCpf(entity.UsuarioModel.Cpf);
+            if (usuario != null)
+                throw new ServiceException("Já existe um cpf cadastrado no sistema.");
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    entity.UsuarioModel.TipoUsuarioId = entity.TipoUsuarioModel.Id;
+
+                    var usuarioAdd = SetEntity(entity.UsuarioModel);
+                    _context.Add(usuarioAdd);
+                    _context.SaveChanges();
+                    _context.Entry(usuarioAdd).State = EntityState.Detached;
+                    entity.UsuarioModel.Id = usuarioAdd.Id;
+
+                    IUsuarioOrganizacaoService usuarioOrgService = new UsuarioOrganizacaoService(_context);
+
+                    usuarioOrgService.Insert
+                    (
+                        new UsuarioOrganizacaoModel
+                        {
+                            Id = entity.OrganizacaoModel.Id,
+                            OrganizacaoId = entity.OrganizacaoModel.Id,
+                            UsuarioId = entity.UsuarioModel.Id
+                        }
+                     );
+                    _context.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e;
+                }
+            }
+            return entity;
         }
 
         public bool Remove(int id)
@@ -98,7 +135,7 @@ namespace Service
             var x = _context.Usuario.Where(th => th.Id == entity.Id).FirstOrDefault();
             if (x != null)
             {
-                _context.Update(SetEntity(entity, x));
+                _context.Update(SetEntity(entity));
                 return _context.SaveChanges() == 1 ? true : false;
             }
 
@@ -118,17 +155,28 @@ namespace Service
             return usuario;
         }
 
-        private static Usuario SetEntity(UsuarioModel model, Usuario entity)
+        private static Usuario SetEntity(UsuarioModel model)
+        => new Usuario()
         {
-            entity.Id = model.Id;
-            entity.Cpf = model.Cpf;
-            entity.Nome = model.Nome;
-            entity.DataNascimento = model.DataNascimento;
-            entity.Senha = model.Senha;
-            entity.TipoUsuario = model.TipoUsuarioId;
+            Id = model.Id,
+            Cpf = model.Cpf,
+            Nome = model.Nome,
+            DataNascimento = model.DataNascimento,
+            Senha = model.Senha,
+            TipoUsuario = model.TipoUsuarioId
+        };
 
-            return entity;
-        }
-
+        public UsuarioModel GetByCpf(string cpf)
+         => _context.Usuario
+                .Where(u => u.Cpf.Equals(cpf))
+                .Select(u => new UsuarioModel
+                {
+                    Id = u.Id,
+                    Cpf = u.Cpf,
+                    Nome = u.Nome,
+                    DataNascimento = Convert.ToDateTime(u.DataNascimento),
+                    Senha = u.Senha,
+                    TipoUsuarioId = u.TipoUsuario
+                }).FirstOrDefault();
     }
 }
