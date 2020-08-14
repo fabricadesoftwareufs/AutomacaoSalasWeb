@@ -20,9 +20,8 @@
                         <span class="fas fa-user"></span>
                     </div>
                 </div>
-                <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
-
             </div>
+            <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
             <div class="input-group mb-3">
                 <input id="login_auth" asp-for="UsuarioModel.Cpf" class="form-control" placeholder="CPF" oninput="validaCpf()">
                 <div class="input-group-append">
@@ -39,9 +38,8 @@
                         <span class="fas fa-birthday-cake"></span>
                     </div>
                 </div>
-                <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
-
             </div>
+            <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
             <div class="input-group mb-3">
                 <input id="senha_auth" asp-for="UsuarioModel.Senha" class="form-control" placeholder="Senha" />
                 <div class="input-group-append">
@@ -55,14 +53,15 @@
                 <label asp-for="TipoUsuarioModel.Id" class="control-label select-label">Tipo de usuário</label>
                 @Html.DropDownListFor(model => model.TipoUsuarioModel.Id, ViewBag.TiposUsuario as SelectList, new
                 { @class = "form-control", @id = "select-tipoUsuario" })
-                <span asp-validation-for="TipoUsuarioModel.Id" class="text-danger"></span>
             </div>
+            <span asp-validation-for="TipoUsuarioModel.Id" class="text-danger"></span>
             <div class="input-group mb-3">
                 <label asp-for="TipoUsuarioModel.Id" class="control-label select-label">Organização</label>
                 @Html.DropDownListFor(model => model.OrganizacaoModel.Id, ViewBag.Organizacoes as SelectList, new
                 { @class = "form-control select2", @id = "select-organizacoes" })
-                <span asp-validation-for="OrganizacaoModel.Id" class="text-danger"></span>
             </div>
+            <span asp-validation-for="OrganizacaoModel.Id" class="text-danger"></span>
+
             <input hidden asp-for="OrganizacaoModel.Cnpj" class="form-control" value="@cnpj" />
             <input hidden asp-for="OrganizacaoModel.RazaoSocial" class="form-control" value="@razaoSocial" />
             <div class="row">

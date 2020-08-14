@@ -12,8 +12,8 @@ namespace SalasUfsWeb.Controllers
 {
     public class ReservaSalaController : Controller
     {
-        private readonly ISalaService _salaService;
-        private readonly IUsuarioService _usuarioService;
+       // private readonly ISalaService _salaService;
+       // private readonly IUsuarioService _usuarioService;
         // GET: ReservaSalaController
         public ActionResult Index()
         {
@@ -29,7 +29,7 @@ namespace SalasUfsWeb.Controllers
         // GET: ReservaSalaController/Create
         public ActionResult Create()
         {
-            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
+        //    ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id), "Id", "Titulo");
             
             return View();
         }

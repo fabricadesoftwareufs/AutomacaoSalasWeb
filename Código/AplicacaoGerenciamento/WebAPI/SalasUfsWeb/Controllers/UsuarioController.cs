@@ -80,14 +80,10 @@ namespace SalasUfsWeb.Controllers
                 return RedirectToAction("Authenticate", "Login", sucesso);
             }
             // Se nao inserir, vem pra cá e sai.
-           var erros = ModelState.Values.SelectMany(m => m.Errors)
+           /*var erros = ModelState.Values.SelectMany(m => m.Errors)
                                  .Select(e => e.ErrorMessage)
                                  .ToList();
-            string causas = "";
-            foreach (var erro in erros)
-                causas += erro + " .";
-
-            TempData["mensagemErro"] = causas;
+          */
             return View(usuarioViewModel);
         }
 
