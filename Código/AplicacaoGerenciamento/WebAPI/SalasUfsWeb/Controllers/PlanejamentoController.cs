@@ -67,10 +67,7 @@ namespace SalasUfsWeb.Controllers
                         TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
                         return View();
                     }
-                    else
-                    {
-                        TempData["mensagemSucesso"] = "Houve um problema ao inserir novo planejamento, tente novamente em alguns minutos.";
-                    }
+                    else TempData["mensagemErro"] = "Houve um problema ao inserir novo planejamento, tente novamente em alguns minutos.";
                 }
 
 
