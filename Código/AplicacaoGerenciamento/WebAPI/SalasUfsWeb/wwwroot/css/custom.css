@@ -50,3 +50,14 @@
         transform: scale(1);
     }
 }
+
+.login-box {
+    margin-top: 5% !important;
+}
+.register-box {
+    margin-top: 8% !important;
+}
+
+.select-label {
+    margin: auto 5px auto 0;
+}
