@@ -1,6 +1,7 @@
 ﻿using Service;
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service.Interface;
 
 namespace WebAPI.Controllers
 {
@@ -8,8 +9,8 @@ namespace WebAPI.Controllers
     [ApiController]
     public class BlocoController : ControllerBase
     {
-        private readonly BlocoService _service;
-        public BlocoController(BlocoService service)
+        private readonly IBlocoService _service;
+        public BlocoController(IBlocoService service)
         {
             _service = service;
         }
@@ -37,7 +38,7 @@ namespace WebAPI.Controllers
 
         // POST: api/Bloco
         [HttpPost]
-        public ActionResult Post([FromBody] BlocoModel blocoModel) => _service.Insert(blocoModel) ? Ok(true) : Ok(false);
+        public ActionResult Post([FromBody] BlocoModel blocoModel) => _service.Insert(blocoModel) != null ? Ok(true) : Ok(false);
 
         // PUT: api/Bloco/5
         [HttpPut("{id}")]

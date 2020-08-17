@@ -1,6 +1,7 @@
 ﻿using Service;
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service.Interface;
 
 namespace WebAPI.Controllers
 {
@@ -8,8 +9,8 @@ namespace WebAPI.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly UsuarioService _service;
-        public UsuarioController(UsuarioService service)
+        private readonly IUsuarioService _service;
+        public UsuarioController(IUsuarioService service)
         {
             _service = service;
         }
