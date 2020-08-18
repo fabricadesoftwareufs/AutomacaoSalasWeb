@@ -16,6 +16,26 @@
 CREATE DATABASE IF NOT EXISTS `str_db` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `str_db`;
 
+
+
+-- Copiando estrutura para tabela str_db.organizacao
+CREATE TABLE IF NOT EXISTS `organizacao` (
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Cnpj` varchar(15) NOT NULL,
+  `RazaoSocial` varchar(45) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=UTF8;
+
+-- Copiando dados para a tabela str_db.organizacao: ~4 rows (aproximadamente)
+/*!40000 ALTER TABLE `organizacao` DISABLE KEYS */;
+INSERT INTO `organizacao` (`Id`, `Cnpj`, `RazaoSocial`) VALUES
+	(1, '08735240000146', 'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE'),
+	(2, '57838165000154', 'UNIVERSIDADE TIRADENTES - UNIT'),
+	(3, '30056954000187', 'MINISTÉRIO PÚBLICO DE SERGIPE'),
+	(4, '50618535000107', 'PREFEITURA MUNICIPAL DE ARACAJU');
+/*!40000 ALTER TABLE `organizacao` ENABLE KEYS */;
+
+
 -- Copiando estrutura para tabela str_db.bloco
 CREATE TABLE IF NOT EXISTS `bloco` (
   `Id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -44,7 +64,60 @@ INSERT INTO `bloco` (`Id`, `Organizacao`, `Titulo`) VALUES
 	(13, 4, 'Bloco Unico');
 /*!40000 ALTER TABLE `bloco` ENABLE KEYS */;
 
+-- Copiando estrutura para tabela str_db.sala
+CREATE TABLE IF NOT EXISTS `sala` (
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Titulo` varchar(100) NOT NULL,
+  `Bloco` int unsigned NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `fk_Sala_Bloco1_idx` (`Bloco`),
+  CONSTRAINT `fk_Sala_Bloco1` FOREIGN KEY (`Bloco`) REFERENCES `bloco` (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
+-- Copiando dados para a tabela str_db.sala: ~13 rows (aproximadamente)
+/*!40000 ALTER TABLE `sala` DISABLE KEYS */;
+INSERT INTO `sala` (`Id`, `Titulo`, `Bloco`) VALUES
+	(1, 'Sala 01', 1),
+	(2, 'Sala 02', 2),
+	(3, 'Sala 03', 3),
+	(4, 'Sala 04', 4),
+	(5, 'Sala 05', 5),
+	(6, 'Sala 06', 6),
+	(7, 'Sala 07', 7),
+	(8, 'Sala 08', 8),
+	(9, 'Sala 09', 9),
+	(10, 'Sala 10', 10),
+	(11, 'Sala 11', 11),
+	(12, 'Sala 12', 12),
+	(13, 'Sala 13', 13),
+	(14, 'Sala 106', 4);
+/*!40000 ALTER TABLE `sala` ENABLE KEYS */;
+
+CREATE TABLE IF NOT EXISTS `monitoramento` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `Luzes` TINYINT(4) NOT NULL,
+  `ArCondicionado` TINYINT(4) NOT NULL,
+  `Sala` INT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_Sala_Id` FOREIGN KEY (`Sala`) REFERENCES `usuario` (`Id`)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+
+INSERT INTO `monitoramento` (`Id`, `Luzes`, `ArCondicionado`,`Sala`) VALUES
+	(1, 0,0, 1),
+	(2, 0,0, 2),
+	(3, 0,0, 3),
+	(4, 0,0, 4),
+	(5, 0,0, 5),
+	(6, 0,0, 6),
+	(7, 0,0, 7),
+	(8, 0,0, 8),
+	(9, 0,0, 9),
+	(10, 0,0, 10),
+	(11, 0,0, 11),
+	(12, 0,0, 12),
+	(13, 0,0, 13),
+	(14, 0,0, 14);
+	
 -- Copiando estrutura para tabela str_db.tipohardware
 CREATE TABLE IF NOT EXISTS `tipohardware` (
   `Id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -231,23 +304,6 @@ INSERT INTO `horariosala` (`Id`, `Data`, `HorarioInicio`,`HorarioFim`,`Situacao`
 			
 /*!40000 ALTER TABLE `horariosala` ENABLE KEYS */;
 
--- Copiando estrutura para tabela str_db.organizacao
-CREATE TABLE IF NOT EXISTS `organizacao` (
-  `Id` int unsigned NOT NULL AUTO_INCREMENT,
-  `Cnpj` varchar(15) NOT NULL,
-  `RazaoSocial` varchar(45) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-
--- Copiando dados para a tabela str_db.organizacao: ~4 rows (aproximadamente)
-/*!40000 ALTER TABLE `organizacao` DISABLE KEYS */;
-INSERT INTO `organizacao` (`Id`, `Cnpj`, `RazaoSocial`) VALUES
-	(1, '08735240000146', 'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE'),
-	(2, '57838165000154', 'UNIVERSIDADE TIRADENTES - UNIT'),
-	(3, '30056954000187', 'MINISTÉRIO PÚBLICO DE SERGIPE'),
-	(4, '50618535000107', 'PREFEITURA MUNICIPAL DE ARACAJU');
-/*!40000 ALTER TABLE `organizacao` ENABLE KEYS */;
-
 -- Copiando estrutura para tabela str_db.planejamento
 CREATE TABLE IF NOT EXISTS `planejamento` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -274,34 +330,7 @@ INSERT INTO `planejamento` (`Id`, `DataInicio`, `DataFim`,`HorarioInicio`,`Horar
 	(3, '2020-08-24', '2020-12-24','07:00','09:00','SEX','Planejamento de LFT',1,5);
 /*!40000 ALTER TABLE `planejamento` ENABLE KEYS */;
 
--- Copiando estrutura para tabela str_db.sala
-CREATE TABLE IF NOT EXISTS `sala` (
-  `Id` int unsigned NOT NULL AUTO_INCREMENT,
-  `Titulo` varchar(100) NOT NULL,
-  `Bloco` int unsigned NOT NULL,
-  PRIMARY KEY (`Id`),
-  KEY `fk_Sala_Bloco1_idx` (`Bloco`),
-  CONSTRAINT `fk_Sala_Bloco1` FOREIGN KEY (`Bloco`) REFERENCES `bloco` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
--- Copiando dados para a tabela str_db.sala: ~13 rows (aproximadamente)
-/*!40000 ALTER TABLE `sala` DISABLE KEYS */;
-INSERT INTO `sala` (`Id`, `Titulo`, `Bloco`) VALUES
-	(1, 'Sala 01', 1),
-	(2, 'Sala 02', 2),
-	(3, 'Sala 03', 3),
-	(4, 'Sala 04', 4),
-	(5, 'Sala 05', 5),
-	(6, 'Sala 06', 6),
-	(7, 'Sala 07', 7),
-	(8, 'Sala 08', 8),
-	(9, 'Sala 09', 9),
-	(10, 'Sala 10', 10),
-	(11, 'Sala 11', 11),
-	(12, 'Sala 12', 12),
-	(13, 'Sala 13', 13),
-	(14, 'Sala 106', 4);
-/*!40000 ALTER TABLE `sala` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.salaparticular
 CREATE TABLE IF NOT EXISTS `salaparticular` (
@@ -324,8 +353,6 @@ INSERT INTO `salaparticular` (`Id`, `Usuario`,`Sala`) VALUES
 				(4,2,1),
 				(5,1,3);
 /*!40000 ALTER TABLE `salaparticular` ENABLE KEYS */;
-
-
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;

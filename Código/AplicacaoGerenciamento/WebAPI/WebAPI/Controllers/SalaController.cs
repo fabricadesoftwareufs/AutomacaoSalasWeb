@@ -1,6 +1,7 @@
 ﻿using Service;
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service.Interface;
 
 namespace WebAPI.Controllers
 {
@@ -8,8 +9,8 @@ namespace WebAPI.Controllers
     [ApiController]
     public class SalaController : ControllerBase
     {
-        private readonly SalaService _service;
-        public SalaController(SalaService service)
+        private readonly ISalaService _service;
+        public SalaController(ISalaService service)
         {
             _service = service;
         }
@@ -38,7 +39,7 @@ namespace WebAPI.Controllers
 
         // POST: api/Sala
         [HttpPost]
-        public ActionResult Post([FromBody] SalaModel salaModel) => _service.Insert(salaModel) ? Ok(true) : Ok(false);
+        public ActionResult Post([FromBody] SalaModel salaModel) => _service.Insert(salaModel) != null? Ok(true) : Ok(false);
 
         // PUT: api/Sala/5
         [HttpPut("{id}")]

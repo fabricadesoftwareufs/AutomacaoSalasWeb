@@ -1,6 +1,7 @@
 ﻿using Service;
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service.Interface;
 
 namespace WebAPI.Controllers
 {
@@ -8,8 +9,8 @@ namespace WebAPI.Controllers
     [ApiController]
     public class PlanejamentoController : ControllerBase
     {
-        private readonly PlanejamentoService _service;
-        public PlanejamentoController(PlanejamentoService service)
+        private readonly IPlanejamentoService _service;
+        public PlanejamentoController(IPlanejamentoService service)
         {
             _service = service;
         }

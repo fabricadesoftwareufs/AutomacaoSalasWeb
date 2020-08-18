@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.ViewModel;
 using Org.BouncyCastle.Asn1.Cms;
 using Persistence;
 using Service.Interface;
@@ -61,6 +62,66 @@ namespace Service
                    UsuarioId = hs.Usuario
                }).ToList();
 
+        public List<HorarioSalaModel> GetByIdUsuario(int idUsuario)
+        => _context.Horariosala
+            .Where(hs => hs.Usuario == idUsuario)
+            .Select(hs => new HorarioSalaModel
+            {
+                Id = hs.Id,
+                Data = hs.Data,
+                SalaId = hs.Sala,
+                HorarioInicio = hs.HorarioInicio,
+                HorarioFim = hs.HorarioFim,
+                Situacao = hs.Situacao,
+                Objetivo = hs.Objetivo,
+                UsuarioId = hs.Usuario
+            }).ToList();
+
+        public List<HorarioSalaModel> GetByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana)
+        => _context.Horariosala
+            .Where(hs => hs.Usuario == idUsuario && ((int)hs.Data.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper()))
+            .Select(hs => new HorarioSalaModel
+            {
+                Id = hs.Id,
+                Data = hs.Data,
+                SalaId = hs.Sala,
+                HorarioInicio = hs.HorarioInicio,
+                HorarioFim = hs.HorarioFim,
+                Situacao = hs.Situacao,
+                Objetivo = hs.Objetivo,
+                UsuarioId = hs.Usuario
+            }).ToList();
+
+        public List<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana)
+         => _context.Horariosala
+             .Where(hs => hs.Usuario == idUsuario && ((int)hs.Data.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper()) &&
+                    hs.Data >= DateTime.Now.Date && hs.Data <= DateTime.Now.AddDays(6) && !hs.Situacao.Equals("CANCELADA"))
+             .Select(hs => new HorarioSalaModel
+             {
+                 Id = hs.Id,
+                 Data = hs.Data,
+                 SalaId = hs.Sala,
+                 HorarioInicio = hs.HorarioInicio,
+                 HorarioFim = hs.HorarioFim,
+                 Situacao = hs.Situacao,
+                 Objetivo = hs.Objetivo,
+                 UsuarioId = hs.Usuario
+             }).ToList();
+
+        public bool ConcelarReserva(int idReserva)
+        {
+            try
+            {
+                var reserva = GetById(idReserva);
+                reserva.Situacao = "CANCELADA";
+
+                return Update(reserva);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
 
         public HorarioSalaModel VerificaSalaOcupada(int idSala, DateTime data, TimeSpan horarioInicio, TimeSpan horarioFim)
             => _context.Horariosala

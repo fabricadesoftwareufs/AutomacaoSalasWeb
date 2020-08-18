@@ -16,6 +16,7 @@
 CREATE DATABASE IF NOT EXISTS `str_db` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `str_db`;
 
+
 -- Copiando estrutura para tabela str_db.bloco
 CREATE TABLE IF NOT EXISTS `bloco` (
   `Id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -26,7 +27,34 @@ CREATE TABLE IF NOT EXISTS `bloco` (
   CONSTRAINT `fk_Bloco_Organizacao1` FOREIGN KEY (`Organizacao`) REFERENCES `organizacao` (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
--- Exportação de dados foi desmarcado.
+
+-- Copiando estrutura para tabela str_db.sala
+CREATE TABLE IF NOT EXISTS `sala` (
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Titulo` varchar(100) NOT NULL,
+  `Bloco` int unsigned NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `fk_Sala_Bloco1_idx` (`Bloco`),
+  CONSTRAINT `fk_Sala_Bloco1` FOREIGN KEY (`Bloco`) REFERENCES `bloco` (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `monitoramento` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `Luzes` TINYINT(4) NOT NULL,
+  `ArCondicionado` TINYINT(4) NOT NULL,
+  `Sala` INT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_Sala_Id` FOREIGN KEY (`Sala`) REFERENCES `usuario` (`Id`)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+
+
+-- Copiando estrutura para tabela str_db.tipohardware
+CREATE TABLE IF NOT EXISTS `tipohardware` (
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Descricao` varchar(45) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
 
 -- Copiando estrutura para tabela str_db.hardwaredebloco
 CREATE TABLE IF NOT EXISTS `hardwaredebloco` (
@@ -59,87 +87,6 @@ CREATE TABLE IF NOT EXISTS `hardwaredesala` (
 
 -- Exportação de dados foi desmarcado.
 
--- Copiando estrutura para tabela str_db.horariosala
-CREATE TABLE IF NOT EXISTS `horariosala` (
-  `Id` int unsigned NOT NULL AUTO_INCREMENT,
-  `Data` datetime NOT NULL,
-  `HorarioInicio` time NOT NULL,
-  `HorarioFim` time NOT NULL,
-  `Situacao` varchar(45) NOT NULL,
-  `Objetivo` varchar(500) NOT NULL,
-  `Usuario` int unsigned NOT NULL,
-  `Sala` int unsigned NOT NULL,
-  PRIMARY KEY (`Id`),
-  KEY `fk_HorarioSala_Usuario1_idx` (`Usuario`),
-  KEY `fk_HorarioSala_Sala1_idx` (`Sala`),
-  CONSTRAINT `fk_HorarioSala_Sala1` FOREIGN KEY (`Sala`) REFERENCES `sala` (`Id`),
-  CONSTRAINT `fk_HorarioSala_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Exportação de dados foi desmarcado.
-
--- Copiando estrutura para tabela str_db.organizacao
-CREATE TABLE IF NOT EXISTS `organizacao` (
-  `Id` int unsigned NOT NULL AUTO_INCREMENT,
-  `Cnpj` varchar(15) NOT NULL,
-  `RazaoSocial` varchar(45) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-
--- Exportação de dados foi desmarcado.
-
--- Copiando estrutura para tabela str_db.planejamento
-CREATE TABLE IF NOT EXISTS `planejamento` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `DataInicio` date NOT NULL,
-  `DataFim` date NOT NULL,
-  `HorarioInicio` time NOT NULL,
-  `HorarioFim` time NOT NULL,
-  `DiaSemana` enum('SEG','TER','QUA','QUI','SEX','SAB','DOM') NOT NULL,
-  `Objetivo` varchar(500) NOT NULL,
-  `Usuario` int unsigned NOT NULL,
-  `Sala` int unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_Planejamento_Usuario1_idx` (`Usuario`),
-  KEY `fk_Planejamento_Sala1_idx` (`Sala`),
-  CONSTRAINT `fk_Planejamento_Sala1` FOREIGN KEY (`Sala`) REFERENCES `sala` (`Id`),
-  CONSTRAINT `fk_Planejamento_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Exportação de dados foi desmarcado.
-
--- Copiando estrutura para tabela str_db.sala
-CREATE TABLE IF NOT EXISTS `sala` (
-  `Id` int unsigned NOT NULL AUTO_INCREMENT,
-  `Titulo` varchar(100) NOT NULL,
-  `Bloco` int unsigned NOT NULL,
-  PRIMARY KEY (`Id`),
-  KEY `fk_Sala_Bloco1_idx` (`Bloco`),
-  CONSTRAINT `fk_Sala_Bloco1` FOREIGN KEY (`Bloco`) REFERENCES `bloco` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
-
--- Exportação de dados foi desmarcado.
-
--- Copiando estrutura para tabela str_db.salaparticular
-CREATE TABLE IF NOT EXISTS `salaparticular` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `Usuario` int unsigned NOT NULL,
-  `Sala` int unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_MinhaSala_Usuario1_idx` (`Usuario`),
-  KEY `fk_MinhaSala_Sala1_idx` (`Sala`),
-  CONSTRAINT `fk_MinhaSala_Sala1` FOREIGN KEY (`Sala`) REFERENCES `sala` (`Id`),
-  CONSTRAINT `fk_MinhaSala_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Exportação de dados foi desmarcado.
-
--- Copiando estrutura para tabela str_db.tipohardware
-CREATE TABLE IF NOT EXISTS `tipohardware` (
-  `Id` int unsigned NOT NULL AUTO_INCREMENT,
-  `Descricao` varchar(45) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- Exportação de dados foi desmarcado.
 
@@ -181,6 +128,60 @@ CREATE TABLE IF NOT EXISTS `usuarioorganizacao` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Exportação de dados foi desmarcado.
+
+-- Copiando estrutura para tabela str_db.horariosala
+CREATE TABLE IF NOT EXISTS `horariosala` (
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Data` datetime NOT NULL,
+  `HorarioInicio` time NOT NULL,
+  `HorarioFim` time NOT NULL,
+  `Situacao` varchar(45) NOT NULL,
+  `Objetivo` varchar(500) NOT NULL,
+  `Usuario` int unsigned NOT NULL,
+  `Sala` int unsigned NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `fk_HorarioSala_Usuario1_idx` (`Usuario`),
+  KEY `fk_HorarioSala_Sala1_idx` (`Sala`),
+  CONSTRAINT `fk_HorarioSala_Sala1` FOREIGN KEY (`Sala`) REFERENCES `sala` (`Id`),
+  CONSTRAINT `fk_HorarioSala_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- Copiando estrutura para tabela str_db.planejamento
+CREATE TABLE IF NOT EXISTS `planejamento` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `DataInicio` date NOT NULL,
+  `DataFim` date NOT NULL,
+  `HorarioInicio` time NOT NULL,
+  `HorarioFim` time NOT NULL,
+  `DiaSemana` enum('SEG','TER','QUA','QUI','SEX','SAB','DOM') NOT NULL,
+  `Objetivo` varchar(500) NOT NULL,
+  `Usuario` int unsigned NOT NULL,
+  `Sala` int unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_Planejamento_Usuario1_idx` (`Usuario`),
+  KEY `fk_Planejamento_Sala1_idx` (`Sala`),
+  CONSTRAINT `fk_Planejamento_Sala1` FOREIGN KEY (`Sala`) REFERENCES `sala` (`Id`),
+  CONSTRAINT `fk_Planejamento_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Exportação de dados foi desmarcado.
+
+
+-- Exportação de dados foi desmarcado.
+
+-- Copiando estrutura para tabela str_db.salaparticular
+CREATE TABLE IF NOT EXISTS `salaparticular` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Usuario` int unsigned NOT NULL,
+  `Sala` int unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_MinhaSala_Usuario1_idx` (`Usuario`),
+  KEY `fk_MinhaSala_Sala1_idx` (`Sala`),
+  CONSTRAINT `fk_MinhaSala_Sala1` FOREIGN KEY (`Sala`) REFERENCES `sala` (`Id`),
+  CONSTRAINT `fk_MinhaSala_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;

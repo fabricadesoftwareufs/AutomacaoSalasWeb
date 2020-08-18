@@ -56,7 +56,7 @@ namespace SalasUfsWeb
             services.AddScoped<IUsuarioOrganizacaoService,UsuarioOrganizacaoService>();
             services.AddScoped<IHorarioSalaService, HorarioSalaService>();
             services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
-
+            services.AddScoped<IMonitoramentoService, MonitoramentoService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

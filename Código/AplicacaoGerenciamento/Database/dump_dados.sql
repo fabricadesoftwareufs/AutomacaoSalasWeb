@@ -62,6 +62,23 @@ INSERT INTO `sala` (`Id`, `Titulo`, `Bloco`) VALUES
 	(14, 'Sala 106', 4),
 /*!40000 ALTER TABLE `sala` ENABLE KEYS */;
 
+INSERT INTO `monitoramento` (`Id`, `Luzes`, `ArCondicionado`,`Sala`) VALUES
+	(1, 0,0, 1),
+	(2, 0,0, 2),
+	(3, 0,0, 3),
+	(4, 0,0, 4),
+	(5, 0,0, 5),
+	(6, 0,0, 6),
+	(7, 0,0, 7),
+	(8, 0,0, 8),
+	(9, 0,0, 9),
+	(10, 0,0, 10),
+	(11, 0,0, 11),
+	(12, 0,0, 12),
+	(13, 0,0, 13),
+	(14, 0,0, 14);
+	
+
 -- Copiando dados para a tabela str_db.tipohardware: ~3 rows (aproximadamente)
 /*!40000 ALTER TABLE `tipohardware` DISABLE KEYS */;
 INSERT INTO `tipohardware` (`Id`, `Descricao`) VALUES

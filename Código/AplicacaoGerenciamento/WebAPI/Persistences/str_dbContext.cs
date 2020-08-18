@@ -19,6 +19,7 @@ namespace Persistence
         public virtual DbSet<Hardwaredebloco> Hardwaredebloco { get; set; }
         public virtual DbSet<Hardwaredesala> Hardwaredesala { get; set; }
         public virtual DbSet<Horariosala> Horariosala { get; set; }
+        public virtual DbSet<Monitoramento> Monitoramento { get; set; }
         public virtual DbSet<Organizacao> Organizacao { get; set; }
         public virtual DbSet<Planejamento> Planejamento { get; set; }
         public virtual DbSet<Sala> Sala { get; set; }
@@ -30,11 +31,11 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           /* if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=igorb95;database=STR_DB");
-            }*/
+                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=1234;database=str_db");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -85,7 +86,7 @@ namespace Persistence
                 entity.Property(e => e.Mac)
                     .IsRequired()
                     .HasColumnName("MAC")
-                    .HasMaxLength(100)
+                    .HasMaxLength(45)
                     .IsUnicode(false);
 
                 entity.Property(e => e.TipoHardware).HasColumnType("int(10) unsigned");
@@ -177,6 +178,30 @@ namespace Persistence
                     .HasConstraintName("fk_HorarioSala_Usuario1");
             });
 
+            modelBuilder.Entity<Monitoramento>(entity =>
+            {
+                entity.ToTable("monitoramento", "str_db");
+
+                entity.HasIndex(e => e.Sala)
+                    .HasName("fk_Sala_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.ArCondicionado).HasColumnType("tinyint(4)");
+
+                entity.Property(e => e.Luzes).HasColumnType("tinyint(4)");
+
+                entity.Property(e => e.Sala).HasColumnType("int(10) unsigned");
+
+                entity.HasOne(d => d.SalaNavigation)
+                    .WithMany(p => p.Monitoramento)
+                    .HasForeignKey(d => d.Sala)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_Sala_Id");
+            });
+
             modelBuilder.Entity<Organizacao>(entity =>
             {
                 entity.ToTable("organizacao", "str_db");
@@ -185,7 +210,7 @@ namespace Persistence
 
                 entity.Property(e => e.Cnpj)
                     .IsRequired()
-                    .HasMaxLength(45)
+                    .HasMaxLength(15)
                     .IsUnicode(false);
 
                 entity.Property(e => e.RazaoSocial)
@@ -343,7 +368,7 @@ namespace Persistence
 
                 entity.Property(e => e.Senha)
                     .IsRequired()
-                    .HasMaxLength(45)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.TipoUsuario).HasColumnType("int(10) unsigned");
