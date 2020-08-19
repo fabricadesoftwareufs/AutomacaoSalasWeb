@@ -10,9 +10,10 @@
 });
 
 
+
 function adicionarNovoResponsavel() {
     let idUser = $('#select-usuario').val();
-    let texto = $("#select-usuario option:selected").text(); 
+    let texto = $("#select-usuario option:selected").text();
     let indice = 0;
 
     if (!verificaResponsavelRepetido(idUser)) {
@@ -46,14 +47,14 @@ function adicionarResponsavelNaTabela(indice, idUser, texto) {
     let responsavel =
         '<tr id="' + idItem + '" class="responsavel-sala">' +
         '<td>' +
-            '<input class="form-control" name="Responsaveis[' + indice + '].Id" hidden  value = "' + idUser + '"/>' +
-            '<p class="form-control" >' + texto + '</p>' +
-            '<input class="form-control" name="Responsaveis['+indice+'].Nome" hidden value="nulonulonulo" />'+
-            '<input class="form-control" name="Responsaveis['+indice+'].Senha" hidden value="nulonulonulo" />'+
-            '<input class="form-control" name="Responsaveis['+indice+'].Cpf" hidden value="nulonulonulo" />'+
+        '<input class="form-control" name="Responsaveis[' + indice + '].Id" hidden  value = "' + idUser + '"/>' +
+        '<p class="form-control" >' + texto + '</p>' +
+        '<input class="form-control" name="Responsaveis[' + indice + '].Nome" hidden value="nulonulonulo" />' +
+        '<input class="form-control" name="Responsaveis[' + indice + '].Senha" hidden value="nulonulonulo" />' +
+        '<input class="form-control" name="Responsaveis[' + indice + '].Cpf" hidden value="nulonulonulo" />' +
         '</td>' +
         '<td>' +
-            '<a id="remove-novo-horario"  onclick="removeNovoResponsavel(' + '\'' + idItem + '\'' + ')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +
+        '<a id="remove-novo-horario"  onclick="removeNovoResponsavel(' + '\'' + idItem + '\'' + ')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +
         '</td>' +
         '</tr>';
 
@@ -61,24 +62,24 @@ function adicionarResponsavelNaTabela(indice, idUser, texto) {
 
 }
 
-function removeNovoResponsavel(idItem){
+function removeNovoResponsavel(idItem) {
 
     document.getElementById(idItem).remove();
 
     let responsaveis = document.getElementsByClassName('responsavel-sala');
-    
+
     var novosResponsaveis = new Array();
     for (var indice = 0; indice < responsaveis.length; indice++)
         novosResponsaveis.push(adicionarResponsavelNaTabela(indice,
-                               responsaveis[indice].childNodes[0].childNodes[0].defaultValue,
-                               responsaveis[indice].childNodes[0].childNodes[1].innerText));
+            responsaveis[indice].childNodes[0].childNodes[0].defaultValue,
+            responsaveis[indice].childNodes[0].childNodes[1].innerText));
 
     document.getElementById('container-responsaveis').innerHTML = "";
     for (var i = 0; i < novosResponsaveis.length; i++)
-        $('#container-responsaveis').append(novosResponsaveis[i]); 
+        $('#container-responsaveis').append(novosResponsaveis[i]);
 
     if (!document.querySelector('.responsavel-sala'))
-        document.getElementById("btn-create-sala-exclusiva").disabled = true; 
+        document.getElementById("btn-create-sala-exclusiva").disabled = true;
 }
 
 function verificaResponsavelRepetido(idUser) {
@@ -86,31 +87,65 @@ function verificaResponsavelRepetido(idUser) {
     let responsaveis = document.getElementsByClassName('responsavel-sala');
 
     for (indice = 0; indice < responsaveis.length; indice++) {
-        if (idUser == responsaveis[indice].childNodes[0].childNodes[0].defaultValue) 
+        if (idUser == responsaveis[indice].childNodes[0].childNodes[0].defaultValue)
             return true;
     }
     return false;
 }
 
-function clearSelect() {
-    document.getElementById('select-sala').innerHTML = "";
+function loadBlocosAndUsuarios() {
+    loadBlocos();
+    loadUsuarios();
+}
+
+function loadBlocos() {
+    let idOrg = $('#select-organizacao').val();
+    let selectBlocos = document.getElementById('select-bloco');
+    let url = "/SalaParticular/GetBlocosByIdOrganizacao";
+
+    $.get(url, { idOrganizacao: idOrg }, function (data) {
+        selectBlocos.innerHTML = "";
+        for (let i = 0; i < data.length; i++) {
+            let option = document.createElement("option");
+            option.text = data[i].id + " | " + data[i].titulo;
+            option.value = data[i].id;
+
+            selectBlocos.add(option);
+        }
+        loadSalas();
+    });
+}
+
+function loadUsuarios() {
+    let idOrg = $('#select-organizacao').val();
+    let selectUsuarios = document.getElementById('select-usuario');
+    let url = "/SalaParticular/GetUsuariosByIdOrganizacao";
+
+    $.get(url, { idOrganizacao: idOrg }, function (data) {
+        selectUsuarios.innerHTML = "";
+        for (let i = 0; i < data.length; i++) {
+            let option = document.createElement("option");
+            option.text = data[i].cpf + " | " + data[i].nome;
+            option.value = data[i].id;
+
+            selectUsuarios.add(option);
+        }
+    });
 }
 
 function loadSalas() {
     let selectSalas = document.getElementById('select-sala');
-    let url = "/SalaParticular/GetSalas";
+    let url = "/SalaParticular/GetSalasByIdBloco";
     let blocoId = $('#select-bloco').val();
 
-    if (blocoId != 0) {
-        $.get(url, { idBloco: blocoId }, function (data) {
-            clearSelect();
-            for (let i = 0; i < data.length; i++) {
-                let option = document.createElement("option");
-                option.text = data[i].id + " | " + data[i].titulo;
-                option.value = data[i].id;
+    $.get(url, { idBloco: blocoId }, function (data) {
+        selectSalas.innerHTML = "";
+        for (let i = 0; i < data.length; i++) {
+            let option = document.createElement("option");
+            option.text = data[i].id + " | " + data[i].titulo;
+            option.value = data[i].id;
 
-                selectSalas.add(option);
-            }
-        })
-    } 
+            selectSalas.add(option);
+        }
+    })
 }

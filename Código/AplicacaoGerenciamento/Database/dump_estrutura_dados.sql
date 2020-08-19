@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `monitoramento` (
   `ArCondicionado` TINYINT(4) NOT NULL,
   `Sala` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_Sala_Id` FOREIGN KEY (`Sala`) REFERENCES `usuario` (`Id`)
+  CONSTRAINT `fk_Sala_Id` FOREIGN KEY (`Sala`) REFERENCES `sala` (`Id`)
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 
 INSERT INTO `monitoramento` (`Id`, `Luzes`, `ArCondicionado`,`Sala`) VALUES
@@ -285,7 +285,7 @@ CREATE TABLE IF NOT EXISTS `horariosala` (
   `Data` datetime NOT NULL,
   `HorarioInicio` time NOT NULL,
   `HorarioFim` time NOT NULL,
-  `Situacao` varchar(45) NOT NULL,
+  `Situacao`  ENUM('PENDENTE', 'FINALIZADA', 'CANCELADA') NOT NULL DEFAULT 'PENDENTE',
   `Objetivo` varchar(500) NOT NULL,
   `Usuario` int unsigned NOT NULL,
   `Sala` int unsigned NOT NULL,
@@ -298,9 +298,9 @@ CREATE TABLE IF NOT EXISTS `horariosala` (
 
 -- Copiando dados para a tabela str_db.horariosala: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `horariosala` DISABLE KEYS */;
-INSERT INTO `horariosala` (`Id`, `Data`, `HorarioInicio`,`HorarioFim`,`Situacao`,`Objetivo`,`Usuario`,`Sala`) VALUES
-							(1, '2020-08-24', '07:00','09:00','--','Palestra sobre Engenharia de Software',1,4),
-							(2, '2020-09-20', '07:00','09:00','--','Palestra sobre Engenharia de Software',2,4);
+INSERT INTO `horariosala` (`Id`, `Data`, `HorarioInicio`,`HorarioFim`,`Objetivo`,`Usuario`,`Sala`) VALUES
+							(1, '2020-08-24', '07:00','09:00','Palestra sobre Engenharia de Software',1,4),
+							(2, '2020-09-20', '07:00','09:00','Palestra sobre Engenharia de Software',2,4);
 			
 /*!40000 ALTER TABLE `horariosala` ENABLE KEYS */;
 

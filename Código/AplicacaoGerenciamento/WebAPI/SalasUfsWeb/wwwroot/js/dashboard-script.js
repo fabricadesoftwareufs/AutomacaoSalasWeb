@@ -37,7 +37,7 @@ function loadSalasByDiaSemana(dia) {
             for (var indice = 0; indice < data.salasUsuario.length; indice++)
                 addReserva(data.salasUsuario[indice], indice ,dia);
 
-        } else $('#container-reservas').append('<p class="text-center"> Não há nenhuma reserva para este dia da semana nos próximos meses! </p>');
+        } else $('#container-reservas').append('<p class="text-center"> Não há nenhuma reserva para este dia nessa semana! </p>');
     });
 }
 

@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.AuxModel;
 using Persistence;
 using Service.Interface;
 using System;
@@ -55,7 +56,7 @@ namespace Service
                    SalaId = sp.Sala
                }).FirstOrDefault();
 
-        public bool InsertListSalasParticulares(SalaParticularModel entity)
+        public bool InsertListSalasParticulares(SalaParticularAuxModel entity)
         {
             if (entity.Responsaveis.Count == 0)
                 throw new ServiceException("Você não adicionou nenhum responsável da sala!.");
@@ -68,8 +69,8 @@ namespace Service
                     {
                         Insert(new SalaParticularModel
                         {
-                            Id = entity.Id,
-                            SalaId = entity.SalaId,
+                            Id = entity.SalaParticular.Id,
+                            SalaId = entity.SalaParticular.SalaId,
                             UsuarioId = item.Id
                         });
                     }

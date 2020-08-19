@@ -15,7 +15,7 @@ namespace Service
         }
         public List<UsuarioOrganizacaoModel> GetAll() => _context.Usuarioorganizacao.Select(uo => new UsuarioOrganizacaoModel { UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao }).ToList();
 
-        public UsuarioOrganizacaoModel GetById(int id) => _context.Usuarioorganizacao.Where(uo => uo.Id == id).Select(uo => new UsuarioOrganizacaoModel { UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao }).FirstOrDefault();
+        public UsuarioOrganizacaoModel GetById(int id) => _context.Usuarioorganizacao.Where(uo => uo.Id == id).Select(uo => new UsuarioOrganizacaoModel {Id = uo.Id, UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao }).FirstOrDefault();
 
         public List<UsuarioOrganizacaoModel> GetByIdUsuario(int id) => _context.Usuarioorganizacao.Where(uo => uo.Usuario == id).Select(uo => new UsuarioOrganizacaoModel { UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao }).ToList();
         public List<UsuarioOrganizacaoModel> GetByIdOrganizacao(int id) => _context.Usuarioorganizacao.Where(uo => uo.Organizacao == id).Select(uo => new UsuarioOrganizacaoModel { UsuarioId = uo.Usuario, OrganizacaoId = uo.Organizacao }).ToList();

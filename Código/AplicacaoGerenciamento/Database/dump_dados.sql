@@ -175,9 +175,9 @@ INSERT INTO `usuarioorganizacao` (`Id`, `Organizacao`, `Usuario`) VALUES
 	(2, 1, 2);
 /*!40000 ALTER TABLE `usuarioorganizacao` ENABLE KEYS */;
 
-INSERT INTO `horariosala` (`Id`, `Data`, `HorarioInicio`,`HorarioFim`,`Situacao`,`Objetivo`,`Usuario`,`Sala`) VALUES
-							(1, '2020-08-24', '07:00','09:00','--','Palestra sobre Engenharia de Software',1,4),
-							(2, '2020-09-20', '07:00','09:00','--','Palestra sobre Engenharia de Software',2,4);
+INSERT INTO `horariosala` (`Id`, `Data`, `HorarioInicio`,`HorarioFim`,`Objetivo`,`Usuario`,`Sala`) VALUES
+							(1, '2020-08-24', '07:00','09:00','Palestra sobre Engenharia de Software',1,4),
+							(2, '2020-09-20', '07:00','09:00','Palestra sobre Engenharia de Software',2,4);
 			
 
 -- Copiando dados para a tabela str_db.planejamento: ~0 rows (aproximadamente)

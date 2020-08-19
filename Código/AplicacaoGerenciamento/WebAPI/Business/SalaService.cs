@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.AuxModel;
 using Model.ViewModel;
 using Persistence;
 using Service.Interface;
@@ -23,13 +24,13 @@ namespace Service
         public SalaModel GetByTitulo(string titulo) => _context.Sala.Where(s => s.Titulo.ToUpper().Equals(titulo.ToUpper())).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).FirstOrDefault();
 
 
-        public bool InsertSalaWithHardwares(SalaModel sala, int idUsuario) 
+        public bool InsertSalaWithHardwares(SalaAuxModel sala, int idUsuario) 
         {
 
             var salaInserida = new SalaModel();
             try
             {
-                salaInserida = Insert(sala);
+                salaInserida = Insert(new SalaModel {Id = sala.Sala.Id, Titulo = sala.Sala.Titulo, BlocoId = sala.Sala.BlocoId});
                 if (salaInserida == null) 
                     throw new ServiceException("Houve um problema ao cadastrar sala, tente novamente em alguns minutos!");
 

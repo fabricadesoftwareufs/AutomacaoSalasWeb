@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `monitoramento` (
   `ArCondicionado` TINYINT(4) NOT NULL,
   `Sala` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_Sala_Id` FOREIGN KEY (`Sala`) REFERENCES `usuario` (`Id`)
+  CONSTRAINT `fk_Sala_Id` FOREIGN KEY (`Sala`)  REFERENCES `sala` (`Id`)
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 
 
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `horariosala` (
   `Data` datetime NOT NULL,
   `HorarioInicio` time NOT NULL,
   `HorarioFim` time NOT NULL,
-  `Situacao` varchar(45) NOT NULL,
+  `Situacao` ENUM('PENDENTE', 'FINALIZADA', 'CANCELADA') NOT NULL DEFAULT 'PENDENTE',
   `Objetivo` varchar(500) NOT NULL,
   `Usuario` int unsigned NOT NULL,
   `Sala` int unsigned NOT NULL,

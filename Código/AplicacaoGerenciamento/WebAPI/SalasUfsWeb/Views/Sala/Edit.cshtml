@@ -1,4 +1,4 @@
-﻿@model Model.SalaModel
+﻿@model Model.AuxModel.SalaAuxModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -11,24 +11,45 @@
             <div class="col-md-12">
                 <div class="card card-secondary">
                     <div class="card-header">
-                        <h2 class="card-title">Atualizar Organizacao</h2>
+                        <h2 class="card-title">Atualizar Sala</h2>
                     </div>
                     <form asp-action="Edit">
                         <div class="card-body">
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group">
-                                <label asp-for="Titulo" class="control-label"></label>
-                                <input asp-for="Titulo" class="form-control" />
-                                <span asp-validation-for="Titulo" class="text-danger"></span>
-                            </div>
-                            <div class="form-group" id="ListElements">
-                                <label asp-for="BlocoId" class="control-label"></label>
-                                @Html.DropDownListFor(model => model.BlocoId, ViewBag.BlocoList as SelectList, new
-                                { @class = "form-control" })
-                                <span asp-validation-for="BlocoId" class="text-danger"></span>
+                            <div class="col-md-8">
+
+                                <div class="form-group col-md-12">
+                                    <label class="control-label">Selecione a Organização</label>
+                                    <select class="form-control" asp-for="OrganizacaoId" id="select-organizacao" onchange="filtrarBlocos()">
+                                        @foreach (var item in ViewBag.Organizacoes)
+                                        {
+                                            <option value="@item.Id"> @item.Cnpj | @item.RazaoSocial </option>
+                                        }
+                                    </select>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6" id="ListElements">
+                                    <label asp-for="Sala.BlocoId" class="control-label"></label>
+                                    <select class="form-control" asp-for="Sala.BlocoId" id="select-bloco">
+                                        @foreach (var item in ViewBag.BlocoList)
+                                        {
+                                            <option value="@item.Id"> @item.Id | @item.Titulo </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Sala.BlocoId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Sala.Titulo" class="control-label"></label>
+                                    <input asp-for="Sala.Titulo" class="form-control" />
+                                    <span asp-validation-for="Sala.Titulo" class="text-danger"></span>
+                                </div>
+                                <div class="form-group" hidden>
+                                    <input asp-for="Sala.Id" class="form-control" />
+                                </div>
                             </div>
                         </div>
+
                         <div class="card-footer">
                             <div class=" col-md-4">
                                 <input type="submit" value="Salvar" class="btn btn-success" /> |
@@ -59,6 +80,7 @@ else if (TempData["mensagemErro"] != null)
                 document.getElementById("mensagem-retorno").click();
         });
     </script>
+    <script src="~/js/sala-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

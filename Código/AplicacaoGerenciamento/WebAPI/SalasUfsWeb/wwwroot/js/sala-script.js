@@ -3,6 +3,31 @@
         document.getElementById("mensagem-retorno").click();
 });
 
+
+function filtrarBlocos() {
+    let org = $('#select-organizacao').val();
+    loadBlocos(org);
+}
+
+
+function loadBlocos(idOrg) {
+
+    let selectBlocos = document.getElementById('select-bloco');
+    let url = "/Sala/GetBlocosByIdOrganizacao";
+
+    $.get(url, { idOrganizacao: idOrg }, function (data) {
+        selectBlocos.innerHTML = "";
+        for (let i = 0; i < data.length; i++) {
+            let option = document.createElement("option");
+            option.text = data[i].id + " | " + data[i].titulo;
+            option.value = data[i].id;
+
+            selectBlocos.add(option);
+        }
+    })
+}
+
+
 function AdicionarHardware() {
 
     let enderecoMac = $('#input-mac').val();
@@ -11,7 +36,7 @@ function AdicionarHardware() {
     let indice = 0;
 
     if (!validacoesHardwareExistente(enderecoMac)) {
-
+        document.getElementById("mensagem-erro-hardwares").hidden = true;
         var novoHardware = new Array();
         novoHardware.push(adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardwareTexto));
 
