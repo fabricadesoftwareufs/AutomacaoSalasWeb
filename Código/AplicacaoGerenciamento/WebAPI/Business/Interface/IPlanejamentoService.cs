@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.AuxModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Service.Interface
         List<PlanejamentoModel> GetByIdUsuario(int idUsuario);
 
         List<PlanejamentoModel> GetByIdOrganizacao(int idOrganizacao);
-        bool InsertListHorariosPlanjamento(PlanejamentoModel entity);
+        bool InsertListHorariosPlanjamento(PlanejamentoAuxModel entity);
         bool Insert(PlanejamentoModel entity);
         bool Remove(int id);
         bool Update(PlanejamentoModel entity);

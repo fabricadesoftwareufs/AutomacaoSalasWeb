@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.AuxModel;
 using Model.ViewModel;
 using Persistence;
 using Service.Interface;
@@ -23,18 +24,20 @@ namespace Service
         public SalaModel GetByTitulo(string titulo) => _context.Sala.Where(s => s.Titulo.ToUpper().Equals(titulo.ToUpper())).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).FirstOrDefault();
 
 
-        public bool InsertSalaWithHardwares(SalaModel sala, int idUsuario) 
+        public bool InsertSalaWithHardwares(SalaAuxModel sala, int idUsuario) 
         {
+
             var salaInserida = new SalaModel();
             try
             {
-                salaInserida = Insert(new SalaModel { Id = sala.Id, Titulo = sala.Titulo, BlocoId = sala.BlocoId });
-                if (salaInserida == null) throw new ServiceException("Houve um problema ao cadastrar sala, tente novamente em alguns minutos!");
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+                salaInserida = Insert(new SalaModel {Id = sala.Sala.Id, Titulo = sala.Sala.Titulo, BlocoId = sala.Sala.BlocoId});
+                if (salaInserida == null) 
+                    throw new ServiceException("Houve um problema ao cadastrar sala, tente novamente em alguns minutos!");
+
+                var _monitoramentoService = new MonitoramentoService(_context);
+                _monitoramentoService.Insert(new MonitoramentoModel { Luzes = false, ArCondicionado = false, SalaId = salaInserida.Id });
+            
+            } catch (Exception e) { throw e; }
 
             if (sala.HardwaresSala.Count > 0)
             {
@@ -44,11 +47,12 @@ namespace Service
                     try
                     {
                         foreach (var item in sala.HardwaresSala)
+                        {
                             if (_hardwareDeSalaService.GetByMAC(item.MAC, idUsuario) != null)
                                 throw new ServiceException("Já existe um dispositivos com o endereço MAC informado, corrija e tente novamente!");
 
-                        foreach (var item in sala.HardwaresSala)
                             _hardwareDeSalaService.Insert(new HardwareDeSalaModel { MAC = item.MAC, SalaId = salaInserida.Id, TipoHardwareId = item.TipoHardwareId.Id }, idUsuario);
+                        }                           
 
                         transaction.Commit();
                         return true;

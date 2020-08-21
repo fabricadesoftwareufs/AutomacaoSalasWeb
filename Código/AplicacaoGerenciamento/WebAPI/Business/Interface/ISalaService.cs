@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.AuxModel;
 using Model.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Service.Interface
         List<SalaModel> GetByIdBloco(int id);
 
         List<SalaModel> GetAllByIdUsuarioOrganizacao(int idUsuario);
-        bool InsertSalaWithHardwares(SalaModel sala, int idUsuario);
+        bool InsertSalaWithHardwares(SalaAuxModel sala, int idUsuario);
         SalaModel Insert(SalaModel salaModel);
         bool Remove(int id);
         bool Update(SalaModel entity);

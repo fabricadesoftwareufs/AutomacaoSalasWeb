@@ -1,6 +1,7 @@
 ﻿using Service;
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service.Interface;
 
 namespace WebAPI.Controllers
 {
@@ -8,8 +9,8 @@ namespace WebAPI.Controllers
     [ApiController]
     public class HorarioSalaController : ControllerBase
     {
-        private readonly HorarioSalaService _service;
-        public HorarioSalaController(HorarioSalaService service)
+        private readonly IHorarioSalaService _service;
+        public HorarioSalaController(IHorarioSalaService service)
         {
             _service = service;
         }

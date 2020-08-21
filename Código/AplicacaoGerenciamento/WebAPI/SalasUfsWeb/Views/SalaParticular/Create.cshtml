@@ -1,4 +1,4 @@
-﻿@model Model.SalaParticularModel
+﻿@model Model.AuxModel.SalaParticularAuxModel
 
 @{
     ViewData["Title"] = "Create";
@@ -18,25 +18,49 @@
                         <div class="card-body">
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group col-md-7">
+                                <label class="control-label">Selecione a Organização</label>
+                                <select class="form-control" asp-for="Organizacao" id="select-organizacao" onchange="loadBlocosAndUsuarios()">
+                                    @foreach (var item in ViewBag.Organizacoes)
+                                    {
+                                        <option value="@item.Id"> @item.Cnpj | @item.RazaoSocial </option>
+                                    }
+                                </select>
+                                <span class="text-danger"></span>
+                            </div>
                             <div class="ocupation col-md-5">
-                                <div class="form-group">
-                                    <label class="form-control-label" for="select-bloco">Filtrar Salas por Bloco</label>
-                                    @Html.DropDownListFor(model => model.BlocoSalas, ViewBag.blocos as SelectList, new
-                                    { @class = "form-control", @id = "select-bloco", @onchange = "loadSalas()" })
+                                <div class="form-group" id="ListElements">
+                                    <label asp-for="BlocoSalas" class="control-label">Selecione o Bloco</label>
+                                    <select class="form-control" asp-for="BlocoSalas" onchange="loadSalas()" id="select-bloco">
+                                        @foreach (var item in ViewBag.Blocos)
+                                        {
+                                            <option value="@item.Id"> @item.Id | @item.Titulo </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="BlocoSalas" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="SalaId" class="form-control-label" for="select-sala">Selecionar Sala</label>
-                                    @Html.DropDownListFor(model => model.SalaId, ViewBag.salas as SelectList, new
-                                    { @class = "form-control", @id = "select-sala" })
-                                    <span asp-validation-for="SalaId" class="text-danger"></span>
+                                    <label asp-for="SalaParticular.SalaId" class="form-control-label" for="select-sala">Selecione a Sala</label>
+                                    <select class="form-control" asp-for="SalaParticular.SalaId" id="select-sala">
+                                        @foreach (var item in ViewBag.Salas)
+                                        {
+                                            <option value="@item.Id"> @item.Id | @item.Titulo </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="SalaParticular.SalaId" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-8">
                                 <div class="form-group align-element">
-                                    <label asp-for="UsuarioId" class="control-label">Adicione os Responsáveis</label>
-                                    @Html.DropDownListFor(model => model.UsuarioId, ViewBag.usuarios as SelectList, new
-                                    { @class = "form-control", @id = "select-usuario" })
-                                    <span asp-validation-for="UsuarioId" class="text-danger"></span>
+                                    <label asp-for="SalaParticular.UsuarioId" class="control-label">Adicione os Responsáveis</label>
+
+                                    <select class="form-control" asp-for="SalaParticular.UsuarioId" id="select-usuario">
+                                        @foreach (var item in ViewBag.Usuarios)
+                                        {
+                                            <option value="@item.Id"> @item.Cpf | @item.Nome </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="SalaParticular.UsuarioId" class="text-danger"></span>
                                 </div>
 
                                 <div class="form-group align-element">
@@ -110,6 +134,7 @@ else if (TempData["mensagemErro"] != null)
 
 @section Scripts {
 
+    <script src="~/js/load-itens-script.js"></script>
     <script src="~/js/sala-exclusiva-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>

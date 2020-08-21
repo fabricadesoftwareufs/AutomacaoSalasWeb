@@ -18,5 +18,9 @@ namespace Model
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Tipo de Hardware")]
         public int TipoHardwareId { get; set; }
+
+        // Variaveis auxiliares
+        public int Bloco { get; set; }
+        public int Organizacao { get; set; }
     }
 }

@@ -12,23 +12,32 @@
                     <div class="card-header">
                         <h2 class="card-title">Minhas Salas Exclusivas</h2>
                     </div>
-                    <div class="card-body">
-
+                    <div class="card-body col-xl-12">
+                        <div class="overlay-wrapper" id="tela-carregamento" hidden>
+                            <div class="overlay dark">
+                                <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+                            </div>
+                        </div>
                         <div class="container-salas-exclusivas">
-                            @foreach (var item in Model.SalasExclusivas)
+                            @if (Model.SalasUsuario.Count > 0)
                             {
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="card-title">
-                                            <h4>
-                                                @item.Bloco.Titulo <br />
-                                                @item.Sala.Titulo
-                                            </h4>
-                                        </div>
-                                        <form asp-controller="Home" asp-action="MonitorarSala" name="form-@item.SalaExclusiva.Id">
-                                            <div class="form-control" hidden>
-                                                <input class="form-control" name="IdSala" id="IdSala" value="@item.SalaExclusiva.Id" />
+                                @foreach (var item in Model.SalasUsuario)
+                                {
+                                    <div class="card">
+
+                                        <div class="card-body">
+                                            <div class="card-title">
+                                                <h4>
+                                                    @item.Bloco.Titulo <br />
+                                                    @item.Sala.Titulo
+                                                </h4>
                                             </div>
+<<<<<<< HEAD
+                                            <form asp-controller="Home" asp-action="MonitorarSala" id="form-@item.Monitoramento.Id">
+                                                <div class="form-control" hidden>
+                                                    <input class="form-control" name="SalaId" value="@item.Monitoramento.SalaId" />
+                                                    <input class="form-control" name="Id" value="@item.Monitoramento.Id" />
+=======
                                             <div class="float-right">
                                                 <div class="align-element">
                                                     <h5 class="card-text">Luzes</h5>
@@ -36,21 +45,49 @@
                                                         <input type="checkbox" name="AcaoLuzes" id="AcaoLuzes" checked/>
                                                         <span class="slider round"></span>
                                                     </label>
+>>>>>>> 1264b718d017b9a2fbdca1bf94907e0c81b7908a
                                                 </div>
-                                            </div>
-                                            <div class="float-right">
-                                                <div class="align-element">
-                                                    <h5 class="card-text">Ar Condicionado</h5>
-                                                    <label class="switch">
-                                                        <input type="checkbox" name="AcaoArCondicionado" checked/>
-                                                        <span class="slider round"></span>
-                                                    </label>
+                                                <div class="float-right">
+                                                    <div class="align-element">
+                                                        <h5 class="card-text">Luzes</h5>
+                                                        <label class="switch" onchange="submitForm('form-@item.Monitoramento.Id',@item.SalaExclusiva.Id,true)">
+                                                            @if (item.Monitoramento.Luzes)
+                                                            {
+                                                                <input type="checkbox" name="Luzes" id="luzes-@item.SalaExclusiva.Id" value="@item.Monitoramento.Luzes" checked />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="checkbox" name="Luzes" id="luzes-@item.SalaExclusiva.Id" value="@item.Monitoramento.Luzes" />
+                                                            }
+                                                            <span class="slider round"></span>
+                                                        </label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </form>
+                                                <div class="float-right">
+                                                    <div class="align-element">
+                                                        <h5 class="card-text">Ar Condicionado</h5>
+                                                        <label class="switch" onchange="submitForm('form-@item.Monitoramento.Id',@item.SalaExclusiva.Id,true)">
+                                                            @if (item.Monitoramento.ArCondicionado)
+                                                            {
+                                                                <input type="checkbox" name="ArCondicionado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.Monitoramento.ArCondicionado" checked />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="checkbox" name="ArCondicionado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.Monitoramento.ArCondicionado" />
+                                                            }
+                                                            <span class="slider round"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </form>
 
+                                        </div>
                                     </div>
-                                </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-center"> Não há nenhuma sala exclusiva associada a você! </p>
                             }
                         </div>
                     </div>
@@ -69,124 +106,41 @@
                         <h2 class="card-title">Minhas Reservas</h2>
                     </div>
                     <div class="card-body">
+                        <div class="overlay-wrapper" id="tela-carregamento-reserva" hidden>
+                            <div class="overlay dark">
+                                <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+                            </div>
+                        </div>
                         <div class="card-body">
                             <div class="btn-group btn-group-toggle col-md-12" data-toggle="buttons" style="overflow: auto">
                                 <label class="btn btn-primary active">
-                                    <input type="radio" name="options" id="option_a1" autocomplete="off" checked> Domingo
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('DOM')" id="option_dom" autocomplete="off"> Domingo
                                 </label>
                                 <label class="btn btn-primary">
-                                    <input type="radio" name="options" id="option_a2" autocomplete="off"> Segunda
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('SEG')" id="option_seg" autocomplete="off"> Segunda
                                 </label>
                                 <label class="btn btn-primary">
-                                    <input type="radio" name="options" id="option_a3" autocomplete="off"> Terça
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('TER')" id="option_ter" autocomplete="off"> Terça
                                 </label>
                                 <label class="btn btn-primary">
-                                    <input type="radio" name="options" id="option_a3" autocomplete="off"> Quarta
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('QUA')" id="option_qua" autocomplete="off"> Quarta
                                 </label>
                                 <label class="btn btn-primary">
-                                    <input type="radio" name="options" id="option_a3" autocomplete="off"> Quinta
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('QUI')" id="option_qui" autocomplete="off"> Quinta
                                 </label>
                                 <label class="btn btn-primary">
-                                    <input type="radio" name="options" id="option_a3" autocomplete="off"> Sexta
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('SEX')" id="option_sex" autocomplete="off"> Sexta
                                 </label>
                                 <label class="btn btn-primary">
-                                    <input type="radio" name="options" id="option_a3" autocomplete="off"> Sábado
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('SAB')" id="option_sab" autocomplete="off"> Sábado
                                 </label>
                             </div>
                         </div>
+                        <br />
 
-                        <div class="card">
-                            <div class="card-header card-title">
-                                <h4>Sala 105 / Bloco C</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="align-element">
-                                    <h5 class="card-text">7:15 às 8:40 </h5>
-                                    <a href="#" class="btn btn-danger">Cancelar</a>
-                                </div>
+                        <div id="container-reservas">
 
-                                <div class="float-right">
-                                    <div class="align-element">
-                                        <h5 class="card-text">Luzes</h5>
-                                        <label class="switch">
-                                            <input type="checkbox">
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </div>
-                                </div>
 
-                                <div class="float-right">
-                                    <div class="align-element">
-                                        <h5 class="card-text">Ar Condicionado</h5>
-                                        <label class="switch">
-                                            <input type="checkbox" checked>
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header card-title">
-                                <h4>Sala 110 / Bloco E</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="align-element">
-                                    <h5 class="card-text">7:15 às 8:40 </h5>
-                                    <a href="#" class="btn btn-danger">Cancelar</a>
-                                </div>
-
-                                <div class="float-right">
-                                    <div class="align-element">
-                                        <h5 class="card-text">Luzes</h5>
-                                        <label class="switch">
-                                            <input type="checkbox">
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="float-right">
-                                    <div class="align-element">
-                                        <h5 class="card-text">Ar Condicionado</h5>
-                                        <label class="switch">
-                                            <input type="checkbox" checked>
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header card-title">
-                                <h4>Sala 115 / Bloco D</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="align-element">
-                                    <h5 class="card-text">7:15 às 8:40 </h5>
-                                    <a href="#" class="btn btn-danger">Cancelar</a>
-                                </div>
-
-                                <div class="float-right">
-                                    <div class="align-element">
-                                        <h5 class="card-text">Luzes</h5>
-                                        <label class="switch">
-                                            <input type="checkbox">
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="float-right">
-                                    <div class="align-element">
-                                        <h5 class="card-text">Ar Condicionado</h5>
-                                        <label class="switch">
-                                            <input type="checkbox" checked>
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -195,13 +149,27 @@
     </div>
 </section>
 
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!','@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
 @section Scripts {
 
     <script>
-        function submitForm(name){
-            document.forms[name].submit();
-        }
+        $(document).ready(function () {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+        });
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+    <script type="text/javascript" src="~/js/moment.js"></script>
+    <script type="text/javascript" src="~/js/dashboard-script.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

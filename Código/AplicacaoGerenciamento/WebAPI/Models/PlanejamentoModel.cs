@@ -8,7 +8,6 @@ namespace Model
 {
     public class PlanejamentoModel
     {
-        public PlanejamentoModel() { Horarios = new List<HorarioPlanejamentoAuxModel>(); }
 
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Código")]
@@ -52,7 +51,7 @@ namespace Model
 
         [Display(Name = "Usuario")]
         public int UsuarioId { get; set; }
-        public List<HorarioPlanejamentoAuxModel> Horarios { get; set; }
+    
 
     }
 }

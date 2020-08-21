@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.AuxModel;
 using Model.ViewModel;
 using Persistence;
 using Remotion.Linq.Utilities;
@@ -67,7 +68,7 @@ namespace Service
                 }).ToList();
 
 
-        public bool InsertListHorariosPlanjamento(PlanejamentoModel entity)
+        public bool InsertListHorariosPlanjamento(PlanejamentoAuxModel entity)
         {
             using (var transcaction = _context.Database.BeginTransaction())
             {
@@ -84,15 +85,15 @@ namespace Service
                         {
                             Insert(new PlanejamentoModel
                             {
-                                Id = entity.Id,
-                                Objetivo = entity.Objetivo,
-                                DataInicio = entity.DataInicio,
-                                DataFim = entity.DataFim,
+                                Id = entity.Planejamento.Id,
+                                Objetivo = entity.Planejamento.Objetivo,
+                                DataInicio = entity.Planejamento.DataInicio,
+                                DataFim = entity.Planejamento.DataFim,
                                 HorarioFim = horario.HorarioFim,
                                 HorarioInicio = horario.HorarioInicio,
                                 DiaSemana = horario.DiaSemana,
-                                UsuarioId = entity.UsuarioId,
-                                SalaId = entity.SalaId
+                                UsuarioId = entity.Planejamento.UsuarioId,
+                                SalaId = entity.Planejamento.SalaId
                             });
                         }
                     }
@@ -110,18 +111,18 @@ namespace Service
             }
         }
 
-        private bool InsertReservasPlanejamento(PlanejamentoModel entity)
+        private bool InsertReservasPlanejamento(PlanejamentoAuxModel entity)
         {
             try
             {
                 var _horarioSalaService = new HorarioSalaService(_context);
-                var dataCorrente = entity.DataInicio;
+                var dataCorrente = entity.Planejamento.DataInicio;
                 var listaReservas = new List<HorarioSalaModel>();
                 var addDays = 1;
 
                 foreach (var item in entity.Horarios)
                 {
-                    while (dataCorrente >= entity.DataInicio && dataCorrente <= entity.DataFim)
+                    while (dataCorrente >= entity.Planejamento.DataInicio && dataCorrente <= entity.Planejamento.DataFim)
                     {
                         if (((int)dataCorrente.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(item.DiaSemana))
                         {
@@ -130,9 +131,9 @@ namespace Service
                                 {
                                     HorarioFim = item.HorarioFim,
                                     HorarioInicio = item.HorarioInicio,
-                                    SalaId = entity.SalaId,
-                                    UsuarioId = entity.UsuarioId,
-                                    Objetivo = entity.Objetivo,
+                                    SalaId = entity.Planejamento.SalaId,
+                                    UsuarioId = entity.Planejamento.UsuarioId,
+                                    Objetivo = entity.Planejamento.Objetivo,
                                     Situacao = "PENDENTE",
                                     Data = dataCorrente
                                 });
@@ -143,7 +144,7 @@ namespace Service
                         dataCorrente = dataCorrente.AddDays(addDays);
                     }
 
-                    dataCorrente = entity.DataInicio;
+                    dataCorrente = entity.Planejamento.DataInicio;
                     addDays = 1;
                 }
 
@@ -205,7 +206,7 @@ namespace Service
             {
                 try
                 {
-                    if (!(DateTime.Compare(entity.DataFim, entity.DataInicio) > 0 && TimeSpan.Compare(entity.HorarioFim, entity.HorarioInicio) != 1))
+                    if (!(DateTime.Compare(entity.DataFim, entity.DataInicio) > 0 && TimeSpan.Compare(entity.HorarioFim, entity.HorarioInicio) == 1))
                         throw new ServiceException("Suas Datas/Horarios possuem inconsistências, corrija e tente novamente");
 
                     _context.Update(SetEntity(entity, new Planejamento()));

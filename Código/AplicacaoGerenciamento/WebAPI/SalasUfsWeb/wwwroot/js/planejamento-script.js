@@ -114,4 +114,5 @@ function RemoveNovoHorario(idItem) {
 
     if (!document.querySelector('.horarios-planejamento'))
         document.getElementById("btn-create-planejamento").disabled = true;     
-} 
+}
+

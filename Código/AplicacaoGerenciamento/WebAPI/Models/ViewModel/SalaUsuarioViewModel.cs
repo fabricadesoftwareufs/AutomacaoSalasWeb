@@ -9,11 +9,9 @@ namespace Model.ViewModel
     {
         public SalaUsuarioViewModel()
         {
-            SalasExclusivas = new List<SalaUsuarioAuxModel>();
-            Reservadas = new List<SalaUsuarioAuxModel>();
+            SalasUsuario = new List<SalaUsuarioAuxModel>();
         }
 
-        public List<SalaUsuarioAuxModel> SalasExclusivas { get; set; }
-        public List<SalaUsuarioAuxModel> Reservadas { get; set; }
+        public List<SalaUsuarioAuxModel> SalasUsuario { get; set; }
     }
 }

@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Model;
-using Model.ViewModel;
-using Persistence;
+using Model.AuxModel;
 using Service;
 using Service.Interface;
 using System.Collections.Generic;
@@ -20,19 +17,22 @@ namespace SalasUfsWeb.Controllers
         private readonly IUsuarioService _usuarioService;
         private readonly IBlocoService _blocoService;
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
+        private readonly IOrganizacaoService _organizacaoService;
 
 
         public SalaParticularController(ISalaService salaService, 
                                         ISalaParticularService salaParticularService,
                                         IUsuarioService usuarioService,
                                         IBlocoService blocoService,
-                                        IUsuarioOrganizacaoService usuarioOrganizacaoService)
+                                        IUsuarioOrganizacaoService usuarioOrganizacaoService,
+                                        IOrganizacaoService organizacaoService)
         {
             _salaService = salaService;
             _salaParticularService = salaParticularService;
             _usuarioService = usuarioService;
             _blocoService = blocoService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
+            _organizacaoService = organizacaoService;
         }
 
         
@@ -43,11 +43,13 @@ namespace SalasUfsWeb.Controllers
 
         public ActionResult Create()
         {
-            var blocos = _blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id).Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }).ToList();
-            
-            ViewBag.usuarios = new SelectList(GetUsuarios().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
-            ViewBag.salas = new SelectList(GetSalas(blocos[0].Id).Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-            ViewBag.blocos = new SelectList(blocos, "Id", "Titulo");
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            var blocos = organizacoes.Count > 0 ? _blocoService.GetByIdOrganizacao(organizacoes[0].Id) : new List<BlocoModel>();
+
+            ViewBag.Organizacoes = organizacoes;
+            ViewBag.Usuarios     = organizacoes.Count > 0 ? _usuarioService.GetByIdOrganizacao(organizacoes[0].Id) : new List<UsuarioModel>();
+            ViewBag.Salas        = blocos.Count > 0 ? _salaService.GetByIdBloco(blocos[0].Id) : new List<SalaModel>();
+            ViewBag.Blocos       = blocos;
 
             return View();
         }
@@ -55,11 +57,12 @@ namespace SalasUfsWeb.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(SalaParticularModel salaParticularModel)
+        public ActionResult Create(SalaParticularAuxModel salaParticularModel)
         {
-            ViewBag.usuarios = new SelectList(GetUsuarios().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
-            ViewBag.salas = new SelectList(GetSalas(salaParticularModel.BlocoSalas).Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-            ViewBag.blocos = new SelectList(_blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id).Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id); ;
+            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(salaParticularModel.Organizacao);
+            ViewBag.Salas        = _salaService.GetByIdBloco(salaParticularModel.BlocoSalas);
+            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(salaParticularModel.Organizacao);   
 
             try
             {
@@ -91,35 +94,35 @@ namespace SalasUfsWeb.Controllers
         {
             var salaExclusivaModel = _salaParticularService.GetById(id);
             var salaModel = _salaService.GetById(salaExclusivaModel.SalaId);
+            var idOrg     = _blocoService.GetById(salaModel.BlocoId).OrganizacaoId;
 
-            ViewBag.usuarios = new SelectList(GetUsuarios().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
-            ViewBag.salas = new SelectList(GetSalas(salaModel.BlocoId).Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo)}), "Id", "Titulo");
-            ViewBag.blocos = new SelectList(_blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id).Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-
-            return View(new SalaParticularViewModel
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id); ;
+            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(idOrg);
+            ViewBag.Salas        = _salaService.GetByIdBloco(salaModel.BlocoId);
+            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(idOrg);
+           
+            return View(new SalaParticularAuxModel
             {
-                Id = salaExclusivaModel.Id,
-                Responsavel = new UsuarioModel { Id = salaExclusivaModel.UsuarioId },
-                SalaId = salaModel,
-                BlocoId = salaModel.BlocoId
-                
+                SalaParticular = new SalaParticularModel { Id = salaExclusivaModel.Id, SalaId = salaExclusivaModel.SalaId, UsuarioId = salaExclusivaModel.UsuarioId },
+                BlocoSalas = salaModel.BlocoId,
+                Organizacao = idOrg,
             });
         }
-
        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(SalaParticularViewModel salaParticularModel)
+        public ActionResult Edit(SalaParticularAuxModel salaParticularModel)
         {
-            ViewBag.usuarios = new SelectList(GetUsuarios().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
-            ViewBag.salas = new SelectList(GetSalas(salaParticularModel.BlocoId).Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-            ViewBag.blocos = new SelectList(_blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id).Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(salaParticularModel.Organizacao);
+            ViewBag.Salas        = _salaService.GetByIdBloco(salaParticularModel.BlocoSalas);
+            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(salaParticularModel.Organizacao);
+           
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (_salaParticularService.Update(new SalaParticularModel { Id = salaParticularModel.Id, SalaId = salaParticularModel.SalaId.Id, UsuarioId = salaParticularModel.Responsavel.Id}))
+                    if (_salaParticularService.Update(new SalaParticularModel { Id = salaParticularModel.SalaParticular.Id, SalaId = salaParticularModel.SalaParticular.SalaId, UsuarioId = salaParticularModel.SalaParticular.UsuarioId}))
                     {
                         TempData["mensagemSucesso"] = "Registro atualizado com sucesso!.";
                     }                        
@@ -169,7 +172,6 @@ namespace SalasUfsWeb.Controllers
             });
         }
 
-
         private List<SalaParticularViewModel> GetAllSalasParticularesViewModel() 
         {
             var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
@@ -187,23 +189,6 @@ namespace SalasUfsWeb.Controllers
             ));
 
             return salasParticularesViewModel;
-        }
-
-
-        public List<UsuarioModel> GetUsuarios() 
-        {
-            var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
-            var organizacoesLotadas = _usuarioOrganizacaoService.GetByIdUsuario(idUser).ToList();
-
-            var usuarios = new List<UsuarioModel>();
-            organizacoesLotadas.ForEach(org => usuarios.AddRange(_usuarioService.GetByIdOrganizacao(org.OrganizacaoId)));
-
-            return usuarios;
-        }
-
-        public List<SalaModel> GetSalas(int idBloco)
-        {
-            return _salaService.GetByIdBloco(idBloco);
         }
     }
 }
