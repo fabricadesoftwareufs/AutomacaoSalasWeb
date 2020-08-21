@@ -21,7 +21,7 @@
 
                                 <div class="form-group col-md-12">
                                     <label class="control-label">Selecione a Organização</label>
-                                    <select class="form-control" asp-for="OrganizacaoId" id="select-organizacao" onchange="filtrarBlocos()">
+                                    <select class="form-control" asp-for="OrganizacaoId" id="select-organizacao" onchange="loadBlocos()">
                                         @foreach (var item in ViewBag.Organizacoes)
                                         {
                                             <option value="@item.Id"> @item.Cnpj | @item.RazaoSocial </option>
@@ -80,7 +80,7 @@ else if (TempData["mensagemErro"] != null)
                 document.getElementById("mensagem-retorno").click();
         });
     </script>
-    <script src="~/js/sala-script.js"></script>
+    <script src="~/js/load-itens-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

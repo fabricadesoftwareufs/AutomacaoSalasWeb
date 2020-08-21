@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Model.AuxModel;
 using Service;
 using Service.Interface;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -45,12 +43,12 @@ namespace SalasUfsWeb.Controllers
 
         public ActionResult Create()
         {
-            var organizacoes = GetOrganizacoes();
-            var blocos = GetBlocosByIdOrganizacao(organizacoes[0].Id);
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            var blocos = organizacoes.Count > 0 ? _blocoService.GetByIdOrganizacao(organizacoes[0].Id) : new List<BlocoModel>();
 
             ViewBag.Organizacoes = organizacoes;
-            ViewBag.Usuarios     = GetUsuariosByIdOrganizacao(organizacoes[0].Id);
-            ViewBag.Salas        = GetSalasByIdBloco(blocos[0].Id);
+            ViewBag.Usuarios     = organizacoes.Count > 0 ? _usuarioService.GetByIdOrganizacao(organizacoes[0].Id) : new List<UsuarioModel>();
+            ViewBag.Salas        = blocos.Count > 0 ? _salaService.GetByIdBloco(blocos[0].Id) : new List<SalaModel>();
             ViewBag.Blocos       = blocos;
 
             return View();
@@ -61,10 +59,10 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(SalaParticularAuxModel salaParticularModel)
         {
-            ViewBag.Organizacoes = GetOrganizacoes();
-            ViewBag.Usuarios     = GetUsuariosByIdOrganizacao(salaParticularModel.Organizacao);
-            ViewBag.Salas        = GetSalasByIdBloco(salaParticularModel.BlocoSalas);
-            ViewBag.Blocos       = GetBlocosByIdOrganizacao(salaParticularModel.Organizacao);   
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id); ;
+            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(salaParticularModel.Organizacao);
+            ViewBag.Salas        = _salaService.GetByIdBloco(salaParticularModel.BlocoSalas);
+            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(salaParticularModel.Organizacao);   
 
             try
             {
@@ -96,12 +94,12 @@ namespace SalasUfsWeb.Controllers
         {
             var salaExclusivaModel = _salaParticularService.GetById(id);
             var salaModel = _salaService.GetById(salaExclusivaModel.SalaId);
-            var idOrg = _blocoService.GetById(salaModel.BlocoId).OrganizacaoId;
+            var idOrg     = _blocoService.GetById(salaModel.BlocoId).OrganizacaoId;
 
-            ViewBag.Organizacoes = GetOrganizacoes();
-            ViewBag.Usuarios     = GetUsuariosByIdOrganizacao(idOrg);
-            ViewBag.Salas        = GetSalasByIdBloco(salaModel.BlocoId);
-            ViewBag.Blocos       = GetBlocosByIdOrganizacao(idOrg);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id); ;
+            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(idOrg);
+            ViewBag.Salas        = _salaService.GetByIdBloco(salaModel.BlocoId);
+            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(idOrg);
            
             return View(new SalaParticularAuxModel
             {
@@ -115,10 +113,10 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(SalaParticularAuxModel salaParticularModel)
         {
-            ViewBag.Organizacoes = GetOrganizacoes();
-            ViewBag.Usuarios     = GetUsuariosByIdOrganizacao(salaParticularModel.Organizacao);
-            ViewBag.Salas        = GetSalasByIdBloco(salaParticularModel.BlocoSalas);
-            ViewBag.Blocos       = GetBlocosByIdOrganizacao(salaParticularModel.Organizacao);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(salaParticularModel.Organizacao);
+            ViewBag.Salas        = _salaService.GetByIdBloco(salaParticularModel.BlocoSalas);
+            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(salaParticularModel.Organizacao);
            
             try
             {
@@ -174,15 +172,6 @@ namespace SalasUfsWeb.Controllers
             });
         }
 
-        private List<OrganizacaoModel> GetOrganizacoes() {
-
-            var organizacoes = new List<OrganizacaoModel>();
-            _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id).
-                ForEach(ex => organizacoes.Add(_organizacaoService.GetById(ex.OrganizacaoId)));
-            
-            return organizacoes;
-        }
-
         private List<SalaParticularViewModel> GetAllSalasParticularesViewModel() 
         {
             var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
@@ -200,21 +189,6 @@ namespace SalasUfsWeb.Controllers
             ));
 
             return salasParticularesViewModel;
-        }
-
-        public List<UsuarioModel> GetUsuariosByIdOrganizacao(int idOrganizacao)
-        {
-            return _usuarioService.GetByIdOrganizacao(idOrganizacao);
-        }
-
-        public List<BlocoModel> GetBlocosByIdOrganizacao(int idOrganizacao)
-        {
-            return _blocoService.GetByIdOrganizacao(idOrganizacao);
-        }
-
-        public List<SalaModel> GetSalasByIdBloco(int idBloco)
-        {
-            return _salaService.GetByIdBloco(idBloco);
         }
     }
 }

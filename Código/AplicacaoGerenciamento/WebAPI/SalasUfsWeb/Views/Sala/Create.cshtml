@@ -20,8 +20,8 @@
                             <div class="col-md-8">
                                 <div class="form-group col-md-12">
                                     <label class="control-label">Selecione a Organização</label>
-                                    <select class="form-control" asp-for="OrganizacaoId" id="select-organizacao" onchange="filtrarBlocos()">
-                                        @foreach(var item in ViewBag.Organizacoes)
+                                    <select class="form-control" asp-for="OrganizacaoId" id="select-organizacao" onchange="loadBlocos()">
+                                        @foreach (var item in ViewBag.Organizacoes)
                                         {
                                             <option value="@item.Id"> @item.Cnpj | @item.RazaoSocial </option>
                                         }
@@ -141,6 +141,7 @@ else if (TempData["mensagemErro"] != null)
         });
     </script>
 
+    <script src="~/js/load-itens-script.js"></script>
     <script src="~/js/sala-script.js"></script>
     <script src="~/js/custom.js"></script>
     <script src="~/plugins/inputmask/inputmask/jquery.mask.js"></script>

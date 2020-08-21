@@ -4,30 +4,6 @@
 });
 
 
-function filtrarBlocos() {
-    let org = $('#select-organizacao').val();
-    loadBlocos(org);
-}
-
-
-function loadBlocos(idOrg) {
-
-    let selectBlocos = document.getElementById('select-bloco');
-    let url = "/Sala/GetBlocosByIdOrganizacao";
-
-    $.get(url, { idOrganizacao: idOrg }, function (data) {
-        selectBlocos.innerHTML = "";
-        for (let i = 0; i < data.length; i++) {
-            let option = document.createElement("option");
-            option.text = data[i].id + " | " + data[i].titulo;
-            option.value = data[i].id;
-
-            selectBlocos.add(option);
-        }
-    })
-}
-
-
 function AdicionarHardware() {
 
     let enderecoMac = $('#input-mac').val();

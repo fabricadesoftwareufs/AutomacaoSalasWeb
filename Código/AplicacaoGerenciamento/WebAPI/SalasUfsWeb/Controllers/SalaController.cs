@@ -55,9 +55,10 @@ namespace SalasUfsWeb.Controllers
         // GET: Sala/Create
         public ActionResult Create()
         {
-            var orgs = GetOrganizacoesUsuario();
+            var orgs = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            
             ViewBag.Organizacoes = orgs;
-            ViewBag.BlocoList = GetBlocosByIdOrganizacao(orgs[0].Id);
+            ViewBag.BlocoList    = orgs.Count > 0 ? _blocoService.GetByIdOrganizacao(orgs[0].Id) : new List<BlocoModel>();
             ViewBag.TipoHardware = _tipoHardwareService.GetAll();
 
             return View();
@@ -69,8 +70,8 @@ namespace SalasUfsWeb.Controllers
         public ActionResult Create(SalaAuxModel salaModel)
         {
             var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
-            ViewBag.Organizacoes = GetOrganizacoesUsuario();
-            ViewBag.BlocoList = GetBlocosByIdOrganizacao(salaModel.OrganizacaoId);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(usuario.Id);
+            ViewBag.BlocoList    = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
             ViewBag.TipoHardware = _tipoHardwareService.GetAll();
 
             try
@@ -99,8 +100,8 @@ namespace SalasUfsWeb.Controllers
             var salaModel = _salaService.GetById(id);
             var idOrganizacao = _blocoService.GetById(salaModel.BlocoId).OrganizacaoId;
 
-            ViewBag.BlocoList = GetBlocosByIdOrganizacao(idOrganizacao);
-            ViewBag.Organizacoes = GetOrganizacoesUsuario();
+            ViewBag.BlocoList    = _blocoService.GetByIdOrganizacao(idOrganizacao);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
 
             return View(new SalaAuxModel { Sala = new SalaModel { Id = salaModel.Id, Titulo = salaModel.Titulo,BlocoId = salaModel.BlocoId}, OrganizacaoId = idOrganizacao });
         }
@@ -110,8 +111,8 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, SalaAuxModel salaModel)
         {
-            ViewBag.BlocoList    = GetBlocosByIdOrganizacao(salaModel.OrganizacaoId);
-            ViewBag.Organizacoes = GetOrganizacoesUsuario();
+            ViewBag.BlocoList    = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
             try
             {
                 if (ModelState.IsValid)
@@ -186,32 +187,6 @@ namespace SalasUfsWeb.Controllers
                 HardwaresSala = hardwaresViewModel,
                 BlocoSala = _blocoService.GetById(sala.BlocoId)
             };
-        }
-
-        public List<OrganizacaoModel>  GetOrganizacoesUsuario()
-        {
-            var organizacoesModel = new List<OrganizacaoModel>();
-            var orgs = _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
-                                                        
-            orgs.ForEach(og => organizacoesModel.Add(_organizacaoService.GetById(og.OrganizacaoId)));
-
-            return organizacoesModel;
-        }
-
-
-
-        public List<BlocoModel> GetBlocosByIdOrganizacao(int idOrganizacao)
-        {
-            var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
-
-            return _blocoService.GetByIdOrganizacao(idOrganizacao);
-        }
-
-        public List<BlocoModel> GetBlocos()
-        {
-            var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
-
-            return _blocoService.GetAllByIdUsuarioOrganizacao(idUser);
         }
     }
 }
