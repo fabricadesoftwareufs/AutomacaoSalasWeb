@@ -32,10 +32,20 @@
                                                     @item.Sala.Titulo
                                                 </h4>
                                             </div>
+<<<<<<< HEAD
                                             <form asp-controller="Home" asp-action="MonitorarSala" id="form-@item.Monitoramento.Id">
                                                 <div class="form-control" hidden>
                                                     <input class="form-control" name="SalaId" value="@item.Monitoramento.SalaId" />
                                                     <input class="form-control" name="Id" value="@item.Monitoramento.Id" />
+=======
+                                            <div class="float-right">
+                                                <div class="align-element">
+                                                    <h5 class="card-text">Luzes</h5>
+                                                    <label class="switch" oninput="submitForm('form-@item.SalaExclusiva.Id')">
+                                                        <input type="checkbox" name="AcaoLuzes" id="AcaoLuzes" checked/>
+                                                        <span class="slider round"></span>
+                                                    </label>
+>>>>>>> 1264b718d017b9a2fbdca1bf94907e0c81b7908a
                                                 </div>
                                                 <div class="float-right">
                                                     <div class="align-element">

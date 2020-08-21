@@ -1,5 +1,13 @@
-﻿@{
+﻿@using System.Security.Claims;
+@{
     ViewData["Title"] = "_MenuPartial";
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    string nome = "";
+
+    if (claimsIdentity != null)
+    {
+        nome = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Name).Select(s => s.Value).FirstOrDefault();
+    }
 }
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -28,7 +36,7 @@
                 <img src="~/img/user.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">Alexander Pierce</a>
+                <a href="#" class="d-block">@nome</a>
             </div>
         </div>
 

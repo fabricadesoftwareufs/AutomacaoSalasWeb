@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using Microsoft.EntityFrameworkCore;
+using Model;
 using Persistence;
 using Service.Interface;
 using System.Collections.Generic;
@@ -22,8 +23,10 @@ namespace Service
 
         public bool Insert(UsuarioOrganizacaoModel entity)
         {
-            _context.Add(SetEntity(entity, new Usuarioorganizacao()));
-            return _context.SaveChanges() == 1 ? true : false;
+            var usuario = SetEntity(entity);
+            _context.Add(usuario);
+            var ok = _context.SaveChanges();
+            return ok == 1 ? true : false;
         }
 
         public bool Remove(int id)
@@ -43,20 +46,20 @@ namespace Service
             var x = _context.Usuarioorganizacao.Where(uo => uo.Id == entity.Id).FirstOrDefault();
             if (x != null)
             {
-                _context.Update(SetEntity(entity, x));
+                _context.Update(SetEntity(entity));
                 return _context.SaveChanges() == 1 ? true : false;
             }
 
             return false;
         }
 
-        private static Usuarioorganizacao SetEntity(UsuarioOrganizacaoModel model, Usuarioorganizacao entity)
+        private static Usuarioorganizacao SetEntity(UsuarioOrganizacaoModel model)
+        => new Usuarioorganizacao()
         {
-            entity.Id = model.Id;
-            entity.Usuario = model.UsuarioId;
-            entity.Organizacao = model.OrganizacaoId;
+            Id = model.Id,
+            Usuario = model.UsuarioId,
+            Organizacao = model.OrganizacaoId
 
-            return entity;
-        }
+        };
     }
 }

@@ -1,4 +1,8 @@
 ﻿$(document).ready(function () {
+
+    if ($('#mensagem-retorno') != null)
+       $("mensagem-retorno").click();
+
     $('#login_auth').inputmask({
         mask: '999.999.999-99',
         keepStatic: true

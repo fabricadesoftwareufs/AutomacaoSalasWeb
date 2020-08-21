@@ -17,7 +17,7 @@ namespace Model
         [StringLength(45, ErrorMessage = "Máximo são 45 caracteres")]
         public string Nome { get; set; }
         [Display(Name = "Data de Nascimento")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DataNascimento { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Senha")]

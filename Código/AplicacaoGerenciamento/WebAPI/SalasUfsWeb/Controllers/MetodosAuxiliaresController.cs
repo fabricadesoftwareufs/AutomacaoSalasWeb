@@ -6,6 +6,7 @@ using Service.Interface;
 
 namespace SalasUfsWeb.Controllers
 {
+
     public class MetodosAuxiliaresController : ControllerBase
     {
         private readonly ISalaService _salaService;
