@@ -16,12 +16,11 @@ namespace SalasUfsWeb.Controllers
         private readonly IOrganizacaoService _organizacaoService;
 
 
-        public MetodosAuxiliaresController(IPlanejamentoService service,
-                                      ISalaService salaService,
-                                      IUsuarioService usuarioService,
-                                      IUsuarioOrganizacaoService usuarioOrganizacaoService,
-                                      IBlocoService blocoService,
-                                      IOrganizacaoService organizacaoService)
+        public MetodosAuxiliaresController(ISalaService salaService,
+                                           IUsuarioService usuarioService,
+                                           IUsuarioOrganizacaoService usuarioOrganizacaoService,
+                                           IBlocoService blocoService,
+                                           IOrganizacaoService organizacaoService)
         {
             _salaService = salaService;
             _usuarioService = usuarioService;

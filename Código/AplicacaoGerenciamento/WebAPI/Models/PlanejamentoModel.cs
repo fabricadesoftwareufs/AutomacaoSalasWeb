@@ -49,7 +49,7 @@ namespace Model
         public int SalaId { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
 
-        [Display(Name = "Usuario")]
+        [Display(Name = "Responsável")]
         public int UsuarioId { get; set; }
     
 
