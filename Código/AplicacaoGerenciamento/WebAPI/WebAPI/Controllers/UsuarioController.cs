@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service.Interface;
+using Model.ViewModel;
 
 namespace WebAPI.Controllers
 {
@@ -38,7 +39,7 @@ namespace WebAPI.Controllers
 
         // POST: api/Usuario
         [HttpPost]
-        public ActionResult Post([FromBody] UsuarioModel usuario) => _service.Insert(usuario) ? Ok(true) : Ok(false);
+        public ActionResult Post([FromBody] UsuarioViewModel usuario) => _service.Insert(usuario) != null ? Ok(true) : Ok(false);
 
         // PUT: api/Usuario/5
         [HttpPut("{id}")]
