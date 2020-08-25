@@ -12,64 +12,73 @@
                     <div class="card-header">
                         <h2 class="card-title">Minhas Salas Exclusivas</h2>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body col-xl-12">
                         <div class="overlay-wrapper" id="tela-carregamento" hidden>
                             <div class="overlay dark">
                                 <i class="fas fa-3x fa-sync-alt fa-spin"></i>
                             </div>
                         </div>
                         <div class="container-salas-exclusivas">
-                            @foreach (var item in Model.SalasUsuario)
+                            @if (Model.SalasUsuario.Count > 0)
                             {
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="card-title">
-                                            <h4>
-                                                @item.Bloco.Titulo <br />
-                                                @item.Sala.Titulo
-                                            </h4>
-                                        </div>
-                                        <form asp-controller="Home" asp-action="MonitorarSala" id="form-@item.Monitoramento.Id">
+                                @foreach (var item in Model.SalasUsuario)
+                                {
+                                    <div class="card">
 
-                                            <div class="form-control" hidden>
-                                                <input class="form-control" name="SalaId" value="@item.Monitoramento.SalaId" />
-                                                <input class="form-control" name="Id" value="@item.Monitoramento.Id" />
+                                        <div class="card-body">
+                                            <div class="card-title">
+                                                <h4>
+                                                    @item.Bloco.Titulo <br />
+                                                    @item.Sala.Titulo
+                                                </h4>
                                             </div>
-                                            <div class="float-right">
-                                                <div class="align-element">
-                                                    <h5 class="card-text">Luzes</h5>
-                                                    <label class="switch" onchange="submitForm('form-@item.Monitoramento.Id',@item.SalaExclusiva.Id,true)">
-                                                        @if (item.Monitoramento.Luzes)
-                                                        {
-                                                            <input type="checkbox" name="Luzes" id="luzes-@item.SalaExclusiva.Id" value="@item.Monitoramento.Luzes" checked />
-                                                        }
-                                                        else
-                                                        {
-                                                            <input type="checkbox" name="Luzes" id="luzes-@item.SalaExclusiva.Id" value="@item.Monitoramento.Luzes" />
-                                                        }
-                                                        <span class="slider round"></span>
-                                                    </label>
+                                            <form asp-controller="Home" asp-action="MonitorarSala" id="form-@item.Monitoramento.Id">
+                                                <div class="form-control" hidden>
+                                                    <input class="form-control" name="SalaId" value="@item.Monitoramento.SalaId" />
+                                                    <input class="form-control" name="Id" value="@item.Monitoramento.Id" />
                                                 </div>
-                                            </div>
-                                            <div class="float-right">
-                                                <div class="align-element">
-                                                    <h5 class="card-text">Ar Condicionado</h5>
-                                                    <label class="switch" onchange="submitForm('form-@item.Monitoramento.Id',@item.SalaExclusiva.Id,true)">
-                                                        @if (item.Monitoramento.ArCondicionado)
-                                                        {
-                                                            <input type="checkbox" name="ArCondicionado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.Monitoramento.ArCondicionado" checked />
-                                                        }
-                                                        else
-                                                        {
-                                                            <input type="checkbox" name="ArCondicionado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.Monitoramento.ArCondicionado" />
-                                                        }
-                                                        <span class="slider round"></span>
-                                                    </label>
+                                                <div class="float-right">
+                                                    <div class="float-right">
+                                                        <div class="align-element">
+                                                            <h5 class="card-text">Luzes</h5>
+                                                            <label class="switch" onchange="submitForm('form-@item.Monitoramento.Id',@item.SalaExclusiva.Id,true)">
+                                                                @if (item.Monitoramento.Luzes)
+                                                                {
+                                                                    <input type="checkbox" name="Luzes" id="luzes-@item.SalaExclusiva.Id" value="@item.Monitoramento.Luzes" checked />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="checkbox" name="Luzes" id="luzes-@item.SalaExclusiva.Id" value="@item.Monitoramento.Luzes" />
+                                                                }
+                                                                <span class="slider round"></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="float-right">
+                                                        <div class="align-element">
+                                                            <h5 class="card-text">Ar Condicionado</h5>
+                                                            <label class="switch" onchange="submitForm('form-@item.Monitoramento.Id',@item.SalaExclusiva.Id,true)">
+                                                                @if (item.Monitoramento.ArCondicionado)
+                                                                {
+                                                                    <input type="checkbox" name="ArCondicionado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.Monitoramento.ArCondicionado" checked />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="checkbox" name="ArCondicionado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.Monitoramento.ArCondicionado" />
+                                                                }
+                                                                <span class="slider round"></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </form>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-center"> Não há nenhuma sala exclusiva associada a você! </p>
                             }
                         </div>
                     </div>
@@ -143,11 +152,14 @@ else if (TempData["mensagemErro"] != null)
 
 @section Scripts {
 
-    $(document).ready(function () {
-        if (document.querySelector('#mensagem-retorno'))
-        document.getElementById("mensagem-retorno").click();
-    });
-
+    <script>
+        $(document).ready(function () {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
     <script type="text/javascript" src="~/js/moment.js"></script>
     <script type="text/javascript" src="~/js/dashboard-script.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

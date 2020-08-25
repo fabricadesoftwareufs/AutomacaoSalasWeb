@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.AuxModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Service.Interface
 
         List<SalaParticularModel> GetByIdOrganizacao(int idOrganizacao);
 
-        bool InsertListSalasParticulares(SalaParticularModel entity);
+        bool InsertListSalasParticulares(SalaParticularAuxModel entity);
         bool Insert(SalaParticularModel entity);
         bool VerificaSalaExclusivaExistente(int? idSalaExclusiva, int idUsuario, int idSala);
         bool Remove(int id);

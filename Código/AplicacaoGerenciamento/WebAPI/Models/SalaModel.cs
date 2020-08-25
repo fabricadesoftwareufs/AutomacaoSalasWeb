@@ -6,8 +6,6 @@ namespace Model
 {
     public class SalaModel
     {
-        public SalaModel() { HardwaresSala = new List<HardwareAuxModel>();}
-
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Código")]
         public int Id { get; set; }
@@ -17,8 +15,5 @@ namespace Model
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Bloco")]
         public int BlocoId { get; set; }
-        public List<HardwareAuxModel> HardwaresSala { get; set; }
-        public TipoHardwareModel TipoHardware { get; set; }
-
     }
 }

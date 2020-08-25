@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
+using Model.AuxModel;
 using Model.ViewModel;
 using Service;
 using Service.Interface;
@@ -20,17 +16,22 @@ namespace SalasUfsWeb.Controllers
         private readonly ISalaService _salaService;
         private readonly IUsuarioService _usuarioService;
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
-
+        private readonly IBlocoService _blocoService;
+        private readonly IOrganizacaoService _organizacaoService;
 
         public PlanejamentoController(IPlanejamentoService service,
                                       ISalaService salaService,
                                       IUsuarioService usuarioService,
-                                      IUsuarioOrganizacaoService usuarioOrganizacaoService)
+                                      IUsuarioOrganizacaoService usuarioOrganizacaoService,
+                                      IBlocoService blocoService,
+                                      IOrganizacaoService organizacaoService)
         {
             _planejamentoService = service;
             _salaService = salaService;
             _usuarioService = usuarioService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
+            _blocoService = blocoService;
+            _organizacaoService = organizacaoService;
         }
 
         public IActionResult Index()
@@ -40,73 +41,79 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Create()
         {
-            var id = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
-            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(id)
-                .Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-            
-            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            var blocos = organizacoes.Count > 0 ? _blocoService.GetByIdOrganizacao(organizacoes[0].Id) : new List<BlocoModel>();
+
+            ViewBag.Organizacoes = organizacoes;
+            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(organizacoes[0].Id);
+            ViewBag.Salas        = blocos.Count > 0 ? _salaService.GetByIdBloco(blocos[0].Id) : new List<SalaModel>();
+            ViewBag.Blocos       = blocos;
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(PlanejamentoModel planejamento)
+        public IActionResult Create(PlanejamentoAuxModel planejamentoModel)
         {
-            var id = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
-            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(id)
-                .Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id); ;
+            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(planejamentoModel.Organizacao);
+            ViewBag.Salas        = _salaService.GetByIdBloco(planejamentoModel.Bloco);
+            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(planejamentoModel.Organizacao);
 
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (_planejamentoService.InsertListHorariosPlanjamento(planejamento))
+                    if (_planejamentoService.InsertListHorariosPlanjamento(planejamentoModel))
                     {
                         TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
                         return View();
                     }
                     else TempData["mensagemErro"] = "Houve um problema ao inserir novo planejamento, tente novamente em alguns minutos.";
                 }
-
-
             }
             catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
             }
 
-            return View(planejamento);
+            return View(planejamentoModel);
         }
 
 
         public IActionResult Edit(int id)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
-            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(idUsuario)
-                        .Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
+            var planejamento = _planejamentoService.GetById(id);
+            var bloco = _blocoService.GetById(_salaService.GetById(planejamento.SalaId).BlocoId);
 
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id); ;
+            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(bloco.OrganizacaoId);
+            ViewBag.Salas        = _salaService.GetByIdBloco(bloco.Id);
+            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(bloco.OrganizacaoId);
 
-            return View(_planejamentoService.GetById(id));
+            return View(new PlanejamentoAuxModel
+            {
+                Planejamento = _planejamentoService.GetById(id),
+                Organizacao = bloco.OrganizacaoId,
+                Bloco = bloco.Id
+            });
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, PlanejamentoModel planejamento)
+        public IActionResult Edit(int id, PlanejamentoAuxModel planejamentoModel)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
-            ViewBag.salas = new SelectList(_salaService.GetAllByIdUsuarioOrganizacao(idUsuario)
-                          .Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-            ViewBag.usuarios = new SelectList(GetAllUsersByOrganizacao().Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
-
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id); ;
+            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(planejamentoModel.Organizacao);
+            ViewBag.Salas        = _salaService.GetByIdBloco(planejamentoModel.Bloco);
+            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(planejamentoModel.Organizacao);
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (_planejamentoService.Update(planejamento))
+                    if (_planejamentoService.Update(planejamentoModel.Planejamento))
                     {
                         TempData["mensagemSucesso"] = "Planejamento Atualizado com sucesso!";
                     }
@@ -121,7 +128,7 @@ namespace SalasUfsWeb.Controllers
                 TempData["mensagemErro"] = se.Message;
             }
 
-            return View(planejamento);
+            return View(planejamentoModel);
         }
 
 
@@ -164,17 +171,6 @@ namespace SalasUfsWeb.Controllers
             );
 
             return planejamentos;
-        }
-
-        private List<UsuarioModel> GetAllUsersByOrganizacao()
-        {
-            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
-            var orgs = _usuarioOrganizacaoService.GetByIdUsuario(usuario.Id);
-
-            var usuariosOrganizacoes = new List<UsuarioModel>();
-            orgs.ForEach(o => usuariosOrganizacoes.AddRange(_usuarioService.GetByIdOrganizacao(o.OrganizacaoId)));
-
-            return usuariosOrganizacoes;
         }
 
         private PlanejamentoViewModel GetByIdViewModel(int id)

@@ -96,5 +96,20 @@ namespace Service
 
             return entity;
         }
+
+        public List<OrganizacaoModel> GetByIdUsuario(int idUsuario)
+        {
+            var _usuarioOrgService = new UsuarioOrganizacaoService(_context);
+            var query = (from uo in _usuarioOrgService.GetByIdUsuario(idUsuario)
+                         join org in GetAll() on uo.OrganizacaoId equals org.Id
+                         select new OrganizacaoModel 
+                         { 
+                            Id = org.Id,
+                            Cnpj = org.Cnpj,
+                            RazaoSocial = org.RazaoSocial,
+                         }).ToList();
+
+            return query;
+        }
     }
 }

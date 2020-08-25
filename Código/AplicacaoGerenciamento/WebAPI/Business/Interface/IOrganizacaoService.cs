@@ -10,6 +10,7 @@ namespace Service.Interface
         List<OrganizacaoModel> GetAll();
         List<OrganizacaoModel> GetInList(List<int> ids);
         OrganizacaoModel GetById(int id);
+        List<OrganizacaoModel> GetByIdUsuario(int idUsuario);
         OrganizacaoModel GetByCnpj(string cnpj);
         bool Insert(OrganizacaoModel entity);
         bool Remove(int id);

@@ -21,6 +21,7 @@ namespace SalasUfsWeb.Controllers
         private readonly ITipoHardwareService _tipoHardwareService;
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
         private readonly IUsuarioService _usuarioService;
+        private readonly IOrganizacaoService _organizacaoService;
 
 
         public SalaController(ISalaService salaService,
@@ -28,7 +29,8 @@ namespace SalasUfsWeb.Controllers
                               IHardwareDeSalaService hardwareDeSalaService,
                               ITipoHardwareService tipoHardwareService,
                               IUsuarioOrganizacaoService usuarioOrganizacaoService,
-                              IUsuarioService usuarioService)
+                              IUsuarioService usuarioService,
+                              IOrganizacaoService organizacaoService)
         {
             _salaService = salaService;
             _blocoService = blocoService;
@@ -36,6 +38,7 @@ namespace SalasUfsWeb.Controllers
             _tipoHardwareService = tipoHardwareService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
             _usuarioService = usuarioService;
+            _organizacaoService = organizacaoService;
         }
         // GET: Sala
         public ActionResult Index()
@@ -52,7 +55,10 @@ namespace SalasUfsWeb.Controllers
         // GET: Sala/Create
         public ActionResult Create()
         {
-            ViewBag.BlocoList = new SelectList(GetBlocos(), "Id", "Titulo");
+            var orgs = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            
+            ViewBag.Organizacoes = orgs;
+            ViewBag.BlocoList    = orgs.Count > 0 ? _blocoService.GetByIdOrganizacao(orgs[0].Id) : new List<BlocoModel>();
             ViewBag.TipoHardware = _tipoHardwareService.GetAll();
 
             return View();
@@ -61,10 +67,11 @@ namespace SalasUfsWeb.Controllers
         // POST: Sala/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(SalaModel salaModel)
+        public ActionResult Create(SalaAuxModel salaModel)
         {
             var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
-            ViewBag.BlocoList = new SelectList(GetBlocos(), "Id", "Titulo");
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(usuario.Id);
+            ViewBag.BlocoList    = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
             ViewBag.TipoHardware = _tipoHardwareService.GetAll();
 
             try
@@ -90,21 +97,27 @@ namespace SalasUfsWeb.Controllers
         // GET: Sala/Edit/5
         public ActionResult Edit(int id)
         {
-            ViewBag.BlocoList = new SelectList(GetBlocos(), "Id", "Titulo");
-            SalaModel salaModel = _salaService.GetById(id);
-            return View(salaModel);
+            var salaModel = _salaService.GetById(id);
+            var idOrganizacao = _blocoService.GetById(salaModel.BlocoId).OrganizacaoId;
+
+            ViewBag.BlocoList    = _blocoService.GetByIdOrganizacao(idOrganizacao);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+
+            return View(new SalaAuxModel { Sala = new SalaModel { Id = salaModel.Id, Titulo = salaModel.Titulo,BlocoId = salaModel.BlocoId}, OrganizacaoId = idOrganizacao });
         }
 
         // POST: Sala/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, SalaModel salaModel)
+        public ActionResult Edit(int id, SalaAuxModel salaModel)
         {
+            ViewBag.BlocoList    = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (_salaService.Update(salaModel))
+                    if (_salaService.Update(new SalaModel { Id = salaModel.Sala.Id, BlocoId = salaModel.Sala.BlocoId, Titulo = salaModel.Sala.Titulo}))
                         TempData["mensagemSucesso"] = "Sala atualizada com sucesso!";
                     else
                         TempData["mensagemErro"] = "Houve um problema ao atualizar sala, tente novamente em alguns minutos!";
@@ -174,13 +187,6 @@ namespace SalasUfsWeb.Controllers
                 HardwaresSala = hardwaresViewModel,
                 BlocoSala = _blocoService.GetById(sala.BlocoId)
             };
-        }
-
-        public List<BlocoModel> GetBlocos()
-        {
-            var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
-
-            return _blocoService.GetAllByIdUsuarioOrganizacao(idUser);
         }
     }
 }

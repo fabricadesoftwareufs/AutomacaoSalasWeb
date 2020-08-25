@@ -3,6 +3,7 @@
         document.getElementById("mensagem-retorno").click();
 });
 
+
 function AdicionarHardware() {
 
     let enderecoMac = $('#input-mac').val();
@@ -11,7 +12,7 @@ function AdicionarHardware() {
     let indice = 0;
 
     if (!validacoesHardwareExistente(enderecoMac)) {
-
+        document.getElementById("mensagem-erro-hardwares").hidden = true;
         var novoHardware = new Array();
         novoHardware.push(adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardwareTexto));
 

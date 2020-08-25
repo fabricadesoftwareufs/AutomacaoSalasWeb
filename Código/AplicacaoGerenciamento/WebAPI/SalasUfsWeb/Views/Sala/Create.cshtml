@@ -1,4 +1,4 @@
-﻿@model Model.SalaModel
+﻿@model Model.AuxModel.SalaAuxModel
 
 @{
     ViewData["Title"] = "Create";
@@ -17,18 +17,31 @@
                         <div class="card-body">
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="col-md-4">
-                                <div class="form-group" id="ListElements">
-                                    <label asp-for="BlocoId" class="control-label"></label>
-                                    @Html.DropDownListFor(model => model.BlocoId, ViewBag.BlocoList as SelectList, new
-                                    { @class = "form-control" })
-                                    <span asp-validation-for="BlocoId" class="text-danger"></span>
-                                    <input class="form-control" name="BlocoSala.Titulo" value="nulo" hidden />
+                            <div class="col-md-8">
+                                <div class="form-group col-md-12">
+                                    <label class="control-label">Selecione a Organização</label>
+                                    <select class="form-control" asp-for="OrganizacaoId" id="select-organizacao" onchange="loadBlocos()">
+                                        @foreach (var item in ViewBag.Organizacoes)
+                                        {
+                                            <option value="@item.Id"> @item.Cnpj | @item.RazaoSocial </option>
+                                        }
+                                    </select>
+                                    <span class="text-danger"></span>
                                 </div>
-                                <div class="form-group">
-                                    <label asp-for="Titulo" class="control-label"></label>
-                                    <input asp-for="Titulo" class="form-control" />
-                                    <span asp-validation-for="Titulo" class="text-danger"></span>
+                                <div class="form-group col-md-6" id="ListElements">
+                                    <label asp-for="Sala.BlocoId" class="control-label"></label>
+                                    <select class="form-control" asp-for="Sala.BlocoId" id="select-bloco">
+                                        @foreach (var item in ViewBag.BlocoList)
+                                        {
+                                            <option value="@item.Id"> @item.Id | @item.Titulo </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Sala.BlocoId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Sala.Titulo" class="control-label"></label>
+                                    <input asp-for="Sala.Titulo" class="form-control" />
+                                    <span asp-validation-for="Sala.Titulo" class="text-danger"></span>
                                 </div>
                             </div>
                             <br />
@@ -128,6 +141,7 @@ else if (TempData["mensagemErro"] != null)
         });
     </script>
 
+    <script src="~/js/load-itens-script.js"></script>
     <script src="~/js/sala-script.js"></script>
     <script src="~/js/custom.js"></script>
     <script src="~/plugins/inputmask/inputmask/jquery.mask.js"></script>

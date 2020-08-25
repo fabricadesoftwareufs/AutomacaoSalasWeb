@@ -105,7 +105,7 @@ namespace SalasUfsWeb.Controllers
                         HorarioInicio = reservaModel.HorarioSalaModel.HorarioInicio,
                         HorarioFim = reservaModel.HorarioSalaModel.HorarioFim,
                         SalaId = reservaModel.HorarioSalaModel.SalaId,
-                        Situacao = "Reservado",
+                        Situacao = "PENDENTE",
                         Data = reservaModel.HorarioSalaModel.Data,
                         Objetivo = reservaModel.HorarioSalaModel.Objetivo,
                         UsuarioId = idUsuario
@@ -184,7 +184,7 @@ namespace SalasUfsWeb.Controllers
                         HorarioInicio = reservaModel.HorarioSalaModel.HorarioInicio,
                         HorarioFim = reservaModel.HorarioSalaModel.HorarioFim,
                         SalaId = reservaModel.HorarioSalaModel.SalaId,
-                        Situacao = "Reservado",
+                        Situacao = "PENDENTE",
                         Data = reservaModel.HorarioSalaModel.Data,
                         Objetivo = reservaModel.HorarioSalaModel.Objetivo,
                         UsuarioId = reservaModel.HorarioSalaModel.UsuarioId,
