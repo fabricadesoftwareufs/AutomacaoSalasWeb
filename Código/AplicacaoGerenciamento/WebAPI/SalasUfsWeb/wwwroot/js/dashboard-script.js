@@ -31,6 +31,8 @@ function setValueSwitch(idMonitoramento) {
 function loadSalasByDiaSemana(dia) {
     let url = "/Home/GetReservasUsuario";
 
+    checkButtonByCodigoDia(getCodigoSemana(dia));
+
     document.getElementById('container-reservas').innerHTML = "";
     $.get(url, { diaSemana: dia }, function (data) {
         if (data.salasUsuario.length > 0) {
@@ -62,6 +64,7 @@ function addReserva(data, indice ,dia) {
         '<div class="form-control" hidden>' +
         '<input class="form-control" name="SalaId" value="' + data.monitoramento.salaId + '" />' +
         '<input class="form-control" name="Id" value="' + data.monitoramento.id + '" />' +
+        '<input class="form-control" name="SalaParticular" value="False" />' +
         '</div>' +
 
         '<div class="float-right">' +
@@ -110,8 +113,8 @@ function checkButtonByCodigoDia(dia) {
     }
 }
 
-function getDiaSemana(dia) {
-    switch (dia) {
+function getDiaSemana(codigoDia) {
+    switch (codigoDia) {
         case 0: return "DOM";
         case 1: return "SEG";
         case 2: return "TER";
@@ -120,6 +123,19 @@ function getDiaSemana(dia) {
         case 5: return "SEX";
         case 6: return "SAB";
         default: return "";
+    }
+}
+
+function getCodigoSemana(dia) {
+    switch (dia) {
+        case "DOM": return 0;
+        case "SEG": return 1;
+        case "TER": return 2;
+        case "QUA": return 3;
+        case "QUI": return 4;
+        case "SEX": return 5;
+        case "SAB": return 6;
+        default: return 0;
     }
 }
 

@@ -45,14 +45,20 @@ namespace Service
             var _salaParticular = new SalaParticularService(_context);
             try
             {
-                if (_salaParticular.GetByIdUsuarioAndIdSala(idUsuario, model.SalaId) != null)
-                    return Update(model);
+                if (model.SalaParticular)
+                {
+                    if (_salaParticular.GetByIdUsuarioAndIdSala(idUsuario, model.SalaId) == null)
+                        throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente!");
 
-                if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, model.SalaId))
-                    throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
+                    return Update(model);
+                }
                 else
-                    return Update(model);
+                {
+                    if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, model.SalaId))
+                        throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
 
+                    return Update(model);
+                }
             }
             catch (Exception e)
             {
