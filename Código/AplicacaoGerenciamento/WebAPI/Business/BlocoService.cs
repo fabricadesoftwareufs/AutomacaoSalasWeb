@@ -150,5 +150,21 @@ namespace Service
 
             return query;
         }
+
+        public List<BlocoModel> GetAllByIdOrganizacao(int idUsuario)
+        {
+            var _usuarioOrganizacao = new UsuarioOrganizacaoService(_context);
+
+            var query = (from bl in GetAll()
+                         join uo in _usuarioOrganizacao.GetByIdUsuario(idUsuario) on bl.OrganizacaoId equals uo.OrganizacaoId
+                         select new BlocoModel
+                         {
+                             Id = bl.Id,
+                             Titulo = bl.Titulo,
+                             OrganizacaoId = bl.OrganizacaoId
+                         }).ToList();
+
+            return query;
+        }
     }
 }
