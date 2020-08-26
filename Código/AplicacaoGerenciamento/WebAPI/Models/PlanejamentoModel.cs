@@ -1,8 +1,5 @@
-﻿using Model.ViewModel;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Model
 {
@@ -51,7 +48,7 @@ namespace Model
 
         [Display(Name = "Responsável")]
         public int UsuarioId { get; set; }
-    
+
 
     }
 }

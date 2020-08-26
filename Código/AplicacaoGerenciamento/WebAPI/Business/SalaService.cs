@@ -1,6 +1,5 @@
 ﻿using Model;
 using Model.AuxModel;
-using Model.ViewModel;
 using Persistence;
 using Service.Interface;
 using System;
@@ -24,20 +23,21 @@ namespace Service
         public SalaModel GetByTitulo(string titulo) => _context.Sala.Where(s => s.Titulo.ToUpper().Equals(titulo.ToUpper())).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).FirstOrDefault();
 
 
-        public bool InsertSalaWithHardwares(SalaAuxModel sala, int idUsuario) 
+        public bool InsertSalaWithHardwares(SalaAuxModel sala, int idUsuario)
         {
 
             var salaInserida = new SalaModel();
             try
             {
-                salaInserida = Insert(new SalaModel {Id = sala.Sala.Id, Titulo = sala.Sala.Titulo, BlocoId = sala.Sala.BlocoId});
-                if (salaInserida == null) 
+                salaInserida = Insert(new SalaModel { Id = sala.Sala.Id, Titulo = sala.Sala.Titulo, BlocoId = sala.Sala.BlocoId });
+                if (salaInserida == null)
                     throw new ServiceException("Houve um problema ao cadastrar sala, tente novamente em alguns minutos!");
 
                 var _monitoramentoService = new MonitoramentoService(_context);
                 _monitoramentoService.Insert(new MonitoramentoModel { Luzes = false, ArCondicionado = false, SalaId = salaInserida.Id });
-            
-            } catch (Exception e) { throw e; }
+
+            }
+            catch (Exception e) { throw e; }
 
             if (sala.HardwaresSala.Count > 0)
             {
@@ -52,7 +52,7 @@ namespace Service
                                 throw new ServiceException("Já existe um dispositivos com o endereço MAC informado, corrija e tente novamente!");
 
                             _hardwareDeSalaService.Insert(new HardwareDeSalaModel { MAC = item.MAC, SalaId = salaInserida.Id, TipoHardwareId = item.TipoHardwareId.Id }, idUsuario);
-                        }                           
+                        }
 
                         transaction.Commit();
                         return true;
@@ -77,7 +77,7 @@ namespace Service
                     throw new ServiceException("Uma sala com o mesmo Titulo já está associada a este bloco!");
 
                 var entity = new Sala();
-                _context.Add(SetEntity(salaModel,entity));
+                _context.Add(SetEntity(salaModel, entity));
                 var save = _context.SaveChanges();
 
                 if (save == 1)
@@ -111,7 +111,7 @@ namespace Service
                 }
                 else throw new ServiceException("Essa sala nao pode ser removida pois existem outros registros associados a ela!");
             }
-            catch (Exception e) { throw e;}
+            catch (Exception e) { throw e; }
 
             return false;
         }
@@ -127,7 +127,7 @@ namespace Service
                     return _context.SaveChanges() == 1 ? true : false;
                 }
             }
-            catch (Exception e) { throw new ServiceException("Houve um problema ao atualizar registro, tente novamente em alguns minutos");}
+            catch (Exception e) { throw new ServiceException("Houve um problema ao atualizar registro, tente novamente em alguns minutos"); }
 
             return false;
         }

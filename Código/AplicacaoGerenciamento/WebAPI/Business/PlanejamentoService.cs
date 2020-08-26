@@ -2,11 +2,9 @@
 using Model.AuxModel;
 using Model.ViewModel;
 using Persistence;
-using Remotion.Linq.Utilities;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 
 namespace Service

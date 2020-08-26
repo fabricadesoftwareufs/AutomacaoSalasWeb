@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service.Interface;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
-
+    [Authorize(Roles = "GESTOR, ADMIN, CLIENTE")]
     public class MetodosAuxiliaresController : ControllerBase
     {
         private readonly ISalaService _salaService;
@@ -33,7 +34,7 @@ namespace SalasUfsWeb.Controllers
         {
 
             var organizacoes = new List<OrganizacaoModel>();
-            _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id).
+            _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id).
                 ForEach(ex => organizacoes.Add(_organizacaoService.GetById(ex.OrganizacaoId)));
 
             return organizacoes;

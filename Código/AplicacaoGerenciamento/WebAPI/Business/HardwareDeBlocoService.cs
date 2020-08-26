@@ -4,7 +4,6 @@ using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks.Dataflow;
 using Utils;
 
 namespace Service
@@ -26,7 +25,7 @@ namespace Service
             var _blocoService = new BlocoService(_context);
             var hardwares = GetAll();
 
-            var query = (from hr in hardwares 
+            var query = (from hr in hardwares
                          join sl in _blocoService.GetAllByIdUsuarioOrganizacao(idUsuario) on hr.BlocoId equals sl.Id
                          select new HardwareDeBlocoModel
                          {
@@ -43,7 +42,7 @@ namespace Service
         {
             var _usuarioOrganizacao = new UsuarioOrganizacaoService(_context);
             var _blocoService = new BlocoService(_context);
-            
+
             var hardware = _context.Hardwaredebloco.Where(h => h.Mac.Equals(mac)).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).FirstOrDefault();
 
 
@@ -65,13 +64,13 @@ namespace Service
             try
             {
                 var hardware = GetByMAC(entity.MAC, idUsuario);
-                if(hardware != null)
+                if (hardware != null)
                     throw new ServiceException("Já existe outro hardware com esse endereço MAC!");
 
                 _context.Add(SetEntity(entity, new Hardwaredebloco()));
                 return _context.SaveChanges() == 1 ? true : false;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }

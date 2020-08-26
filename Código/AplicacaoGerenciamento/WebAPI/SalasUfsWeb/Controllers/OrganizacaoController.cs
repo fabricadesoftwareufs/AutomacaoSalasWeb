@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service;
 using Service.Interface;
+using System.Collections.Generic;
 
 namespace SalasUfsWeb.Controllers
 {
+    [Authorize(Roles = "ADMIN")]
     public class OrganizacaoController : Controller
     {
         private readonly IOrganizacaoService _organizacaoService;
@@ -56,7 +55,7 @@ namespace SalasUfsWeb.Controllers
 
                 }
             }
-            catch(ServiceException se)
+            catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
 
@@ -88,7 +87,7 @@ namespace SalasUfsWeb.Controllers
 
                 }
             }
-            catch(ServiceException se)
+            catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
             }
@@ -109,7 +108,7 @@ namespace SalasUfsWeb.Controllers
                     TempData["mensagemSucesso"] = "Organizacao removida com sucesso!";
                 else
                     TempData["mensagemErro"] = "Houve um problema ao remover organizacao, tente novamente em alguns minutos!";
-                    
+
             }
             catch (ServiceException se)
             {

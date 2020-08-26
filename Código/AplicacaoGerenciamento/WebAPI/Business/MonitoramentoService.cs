@@ -4,7 +4,6 @@ using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Service
 {
@@ -38,6 +37,29 @@ namespace Service
             }
         }
 
+
+
+        public bool MonitorarSala(int idUsuario, MonitoramentoModel model)
+        {
+            var _horarioSalaService = new HorarioSalaService(_context);
+            var _salaParticular = new SalaParticularService(_context);
+            try
+            {
+                if (_salaParticular.GetByIdUsuarioAndIdSala(idUsuario, model.SalaId) != null)
+                    return Update(model);
+
+                if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, model.SalaId))
+                    throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
+                else
+                    return Update(model);
+
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public bool Update(MonitoramentoModel model)
         {
             try
@@ -54,8 +76,8 @@ namespace Service
         private Monitoramento SetEntity(MonitoramentoModel model)
         {
             return new Monitoramento
-            { 
-                Id =  model.Id,
+            {
+                Id = model.Id,
                 Luzes = Convert.ToByte(model.Luzes),
                 ArCondicionado = Convert.ToByte(model.ArCondicionado),
                 Sala = model.SalaId

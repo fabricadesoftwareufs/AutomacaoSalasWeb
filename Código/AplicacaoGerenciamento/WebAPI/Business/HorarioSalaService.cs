@@ -1,6 +1,5 @@
 ﻿using Model;
 using Model.ViewModel;
-using Org.BouncyCastle.Asn1.Cms;
 using Persistence;
 using Service.Interface;
 using System;
@@ -137,6 +136,23 @@ namespace Service
                    Objetivo = hs.Objetivo,
                    UsuarioId = hs.Usuario
                }).FirstOrDefault();
+
+
+        public bool VerificaSeEstaEmHorarioAula(int idUsuario, int idSala)
+        {
+            var date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time"));
+            var horaAtual = new TimeSpan(date.TimeOfDay.Hours, date.TimeOfDay.Minutes, date.TimeOfDay.Seconds);
+
+            var query = _context.Horariosala
+                        .Where(hs => hs.Sala == idSala && hs.Usuario == idUsuario && (horaAtual >= hs.HorarioInicio && horaAtual <= hs.HorarioFim) && date.Date == hs.Data)
+                        .Select(hs => new HorarioSalaModel
+                        {
+                           Id = hs.Id,
+                        }).FirstOrDefault();
+
+            return query == null ? false : true;
+        }
+       
 
         public bool Insert(HorarioSalaModel entity)
         {

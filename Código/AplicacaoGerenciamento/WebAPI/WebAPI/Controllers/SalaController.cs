@@ -1,5 +1,4 @@
-﻿using Service;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service.Interface;
 
@@ -39,7 +38,7 @@ namespace WebAPI.Controllers
 
         // POST: api/Sala
         [HttpPost]
-        public ActionResult Post([FromBody] SalaModel salaModel) => _service.Insert(salaModel) != null? Ok(true) : Ok(false);
+        public ActionResult Post([FromBody] SalaModel salaModel) => _service.Insert(salaModel) != null ? Ok(true) : Ok(false);
 
         // PUT: api/Sala/5
         [HttpPut("{id}")]

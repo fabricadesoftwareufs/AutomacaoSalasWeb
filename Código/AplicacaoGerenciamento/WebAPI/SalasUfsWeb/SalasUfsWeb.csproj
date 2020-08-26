@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Views\Planejamento\Create.cshtml~RF7440ec.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\css\adminlte.css.map" />
     <None Include="wwwroot\css\adminlte.min.css.map" />
     <None Include="wwwroot\css\alt\adminlte.components.css.map" />

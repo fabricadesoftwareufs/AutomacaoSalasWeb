@@ -88,7 +88,7 @@ namespace Service
         public bool Insert(SalaParticularModel entity)
         {
 
-            if (!VerificaSalaExclusivaExistente(null,entity.UsuarioId, entity.SalaId))
+            if (!VerificaSalaExclusivaExistente(null, entity.UsuarioId, entity.SalaId))
             {
                 try
                 {
@@ -105,7 +105,7 @@ namespace Service
             return true;
         }
 
-        public bool VerificaSalaExclusivaExistente(int? idSalaExclusiva,int idUsuario, int idSala)
+        public bool VerificaSalaExclusivaExistente(int? idSalaExclusiva, int idUsuario, int idSala)
         {
             var salaExclusiva = GetByIdUsuarioAndIdSala(idUsuario, idSala);
 
@@ -138,7 +138,7 @@ namespace Service
 
         public bool Update(SalaParticularModel entity)
         {
-            if (VerificaSalaExclusivaExistente(entity.Id,entity.UsuarioId, entity.SalaId))
+            if (VerificaSalaExclusivaExistente(entity.Id, entity.UsuarioId, entity.SalaId))
                 throw new ServiceException("Atualização não pode ser concluida pois este usuário já esta associado a essa sala em outro registro!.");
 
             try

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Model;
 using Model.ViewModel;
-using Service;
 using Service.Interface;
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Utils;
 
 namespace SalasUfsWeb.Controllers
@@ -17,10 +14,14 @@ namespace SalasUfsWeb.Controllers
     [AllowAnonymous]
     public class LoginController : Controller
     {
-        private readonly IUsuarioService _service;
-        public LoginController(IUsuarioService service)
+        private readonly IUsuarioService _usuarioService;
+        private readonly ITipoUsuarioService _tipoUsuarioService;
+
+        public LoginController(IUsuarioService service,
+                               ITipoUsuarioService tipoUsuarioService)
         {
-            _service = service;
+            _usuarioService = service;
+            _tipoUsuarioService = tipoUsuarioService;
         }
 
         public IActionResult Index() => View();
@@ -33,17 +34,18 @@ namespace SalasUfsWeb.Controllers
                 if (ValidaCpf(loginViewModel.Login))
                 {
                     // Obtendo o usuario baseado nas informações passadas.
-                    var user = _service.GetByLoginAndPass(Methods.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));
+                    var user = _usuarioService.GetByLoginAndPass(Methods.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));
                     if (user != null)
                     {
+
                         var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.SerialNumber, user.Id.ToString()),
-                        new Claim(ClaimTypes.UserData, user.Cpf),
-                        new Claim(ClaimTypes.NameIdentifier, user.Nome),
-                        new Claim(ClaimTypes.DateOfBirth, user.DataNascimento.ToString()),
-                        new Claim(ClaimTypes.Role, user.TipoUsuarioId.ToString())
-                    };
+                        {
+                            new Claim(ClaimTypes.SerialNumber, user.Id.ToString()),
+                            new Claim(ClaimTypes.UserData, user.Cpf),
+                            new Claim(ClaimTypes.NameIdentifier, user.Nome),
+                            new Claim(ClaimTypes.DateOfBirth, user.DataNascimento.ToString()),
+                            new Claim(ClaimTypes.Role, _tipoUsuarioService.GetById(user.TipoUsuarioId).Descricao)
+                        };
 
                         // Adicionando uma identidade as claims.
                         var identity = new ClaimsIdentity(claims, "login");

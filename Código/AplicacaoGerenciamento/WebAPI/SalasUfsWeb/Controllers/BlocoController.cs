@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Model.ViewModel;
-using Persistence;
 using Service;
 using Service.Interface;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
+    [Authorize(Roles = "ADMIN")]
     public class BlocoController : Controller
     {
         private readonly IBlocoService _blocoService;
@@ -62,7 +60,7 @@ namespace SalasUfsWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (_blocoService.InsertBlocoWithHardware(blocoModel,_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id))
+                    if (_blocoService.InsertBlocoWithHardware(blocoModel, _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id))
                     {
                         TempData["mensagemSucesso"] = "Bloco adicionado com sucesso!"; return View();
                     }
@@ -134,7 +132,7 @@ namespace SalasUfsWeb.Controllers
 
         private List<OrganizacaoModel> GetOrganizacaos()
         {
-            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
 
             var organizacoesLotadas = new List<OrganizacaoModel>();
             usuarioOrg.ForEach(uo => organizacoesLotadas.Add(_organizacaoService.GetById(uo.OrganizacaoId)));
@@ -144,7 +142,7 @@ namespace SalasUfsWeb.Controllers
 
         private List<BlocoViewModel> ReturnAllViewModels()
         {
-            var bs = _blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            var bs = _blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             List<BlocoViewModel> bvm = new List<BlocoViewModel>();
             bs.ForEach(b => bvm.Add(Cast(b)));
 

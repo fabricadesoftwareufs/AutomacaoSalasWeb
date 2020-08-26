@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
-
-namespace Model
+﻿namespace Model
 {
     public class TipoHardwareModel
     {

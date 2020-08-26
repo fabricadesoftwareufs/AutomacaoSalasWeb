@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.AuxModel;
@@ -12,18 +6,20 @@ using Model.ViewModel;
 using SalasUfsWeb.Models;
 using Service;
 using Service.Interface;
+using System.Diagnostics;
+using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "GESTOR, ADMIN, CLIENTE")]
     public class HomeController : Controller
     {
         private readonly ISalaParticularService _salaParticularService;
-        private readonly ISalaService           _salaService;
-        private readonly IBlocoService          _blocoService;
-        private readonly IHorarioSalaService    _horarioSalaService;
-        private readonly IUsuarioService        _usuarioService;
-        private readonly IMonitoramentoService  _monitoramentoService;
+        private readonly ISalaService _salaService;
+        private readonly IBlocoService _blocoService;
+        private readonly IHorarioSalaService _horarioSalaService;
+        private readonly IUsuarioService _usuarioService;
+        private readonly IMonitoramentoService _monitoramentoService;
 
 
         public HomeController(ISalaParticularService salaParticularService,
@@ -50,7 +46,7 @@ namespace SalasUfsWeb.Controllers
         {
             try
             {
-                if (!_monitoramentoService.Update(monitoramento))
+                if (!_monitoramentoService.MonitorarSala(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id,monitoramento))
                     TempData["mensagemErro"] = "Não foi possível atender a sua solicitacao, tente novamente!";
             }
             catch (ServiceException se)
@@ -61,7 +57,7 @@ namespace SalasUfsWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult CancelarReserva(int idReserva) 
+        public IActionResult CancelarReserva(int idReserva)
         {
             try
             {
@@ -89,12 +85,12 @@ namespace SalasUfsWeb.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public SalaUsuarioViewModel GetSalasUsuario() 
+        public SalaUsuarioViewModel GetSalasUsuario()
         {
             var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
 
             var salas = new SalaUsuarioViewModel();
-            foreach (var item in _salaParticularService.GetByIdUsuario(usuario.Id))
+            foreach (var item in _salaParticularService.GetByIdUsuario(usuario.UsuarioModel.Id))
             {
                 var sala = _salaService.GetById(item.SalaId);
                 var bloco = _blocoService.GetById(sala.BlocoId);
@@ -112,25 +108,25 @@ namespace SalasUfsWeb.Controllers
             return salas;
         }
 
-        public SalaUsuarioViewModel GetReservasUsuario(string diaSemana) 
+        public SalaUsuarioViewModel GetReservasUsuario(string diaSemana)
         {
-            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity) User.Identity);
+            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
             var salas = new SalaUsuarioViewModel();
 
-            foreach (var item in _horarioSalaService.GetProximasReservasByIdUsuarioAndDiaSemana(usuario.Id, diaSemana))
+            foreach (var item in _horarioSalaService.GetProximasReservasByIdUsuarioAndDiaSemana(usuario.UsuarioModel.Id, diaSemana))
             {
                 var sala = _salaService.GetById(item.SalaId);
                 var bloco = _blocoService.GetById(sala.BlocoId);
                 var monitoramento = _monitoramentoService.GetByIdSala(item.SalaId);
 
-                salas.SalasUsuario.Add(new SalaUsuarioAuxModel 
+                salas.SalasUsuario.Add(new SalaUsuarioAuxModel
                 {
                     HorarioSala = item,
                     Sala = sala,
                     Bloco = bloco,
                     Monitoramento = monitoramento,
-                });    
-           }
+                });
+            }
 
             return salas;
         }

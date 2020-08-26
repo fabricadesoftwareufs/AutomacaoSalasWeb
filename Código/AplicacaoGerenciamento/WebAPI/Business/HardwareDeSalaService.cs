@@ -1,5 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using Model;
+﻿using Model;
 using Persistence;
 using Service.Interface;
 using System;
@@ -45,7 +44,7 @@ namespace Service
             var _salaService = new SalaService(_context);
 
             var hardware = _context.Hardwaredesala.Where(h => h.Mac.Equals(mac)).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware }).FirstOrDefault();
-            
+
             if (hardware != null)
             {
                 var bloco = _blocoService.GetById(_salaService.GetById(hardware.SalaId).BlocoId);
@@ -72,11 +71,11 @@ namespace Service
                 _context.Add(SetEntity(entity, new Hardwaredesala()));
                 return _context.SaveChanges() == 1 ? true : false;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }
-           
+
         }
 
         public bool Remove(int id)
@@ -114,7 +113,7 @@ namespace Service
                     return _context.SaveChanges() == 1 ? true : false;
                 }
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 throw e;
             }

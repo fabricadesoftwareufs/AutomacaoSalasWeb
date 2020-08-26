@@ -25,7 +25,7 @@ namespace Service
         {
             try
             {
-                if(GetByCnpj(entity.Cnpj) != null)
+                if (GetByCnpj(entity.Cnpj) != null)
                     throw new ServiceException("Uma organização com esse cnpj já está cadastrada!");
 
                 _context.Add(SetEntity(entity, new Organizacao()));
@@ -36,7 +36,7 @@ namespace Service
             {
                 throw e;
             }
-            
+
         }
 
         public bool Remove(int id)
@@ -100,11 +100,11 @@ namespace Service
             var _usuarioOrgService = new UsuarioOrganizacaoService(_context);
             var query = (from uo in _usuarioOrgService.GetByIdUsuario(idUsuario)
                          join org in GetAll() on uo.OrganizacaoId equals org.Id
-                         select new OrganizacaoModel 
-                         { 
-                            Id = org.Id,
-                            Cnpj = org.Cnpj,
-                            RazaoSocial = org.RazaoSocial,
+                         select new OrganizacaoModel
+                         {
+                             Id = org.Id,
+                             Cnpj = org.Cnpj,
+                             RazaoSocial = org.RazaoSocial,
                          }).ToList();
 
             return query;

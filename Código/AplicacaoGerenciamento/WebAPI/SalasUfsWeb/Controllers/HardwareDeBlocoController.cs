@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
-using Model.ViewModel;
 using Service;
 using Service.Interface;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
+    [Authorize(Roles = "ADMIN")]
     public class HardwareDeBlocoController : Controller
     {
         private readonly IHardwareDeBlocoService _hardwareService;
@@ -22,21 +21,21 @@ namespace SalasUfsWeb.Controllers
         private readonly IOrganizacaoService _organizacaoService;
         private readonly IUsuarioService _usuarioService;
 
-        public HardwareDeBlocoController(IHardwareDeBlocoService hardwareService, 
-                                         ITipoHardwareService tipoHardwareService, 
+        public HardwareDeBlocoController(IHardwareDeBlocoService hardwareService,
+                                         ITipoHardwareService tipoHardwareService,
                                          IBlocoService blocoService,
                                          IUsuarioService usuarioService,
                                          ISalaService salaService,
                                          IUsuarioOrganizacaoService usuarioOrganizacaoService,
                                          IOrganizacaoService organizacaoService)
         {
-            _hardwareService     = hardwareService;
+            _hardwareService = hardwareService;
             _tipoHardwareService = tipoHardwareService;
-            _blocoService        = blocoService;
-            _usuarioService      = usuarioService;
-            _salaService         = salaService;
+            _blocoService = blocoService;
+            _usuarioService = usuarioService;
+            _salaService = salaService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
-            _organizacaoService        = organizacaoService;
+            _organizacaoService = organizacaoService;
         }
 
 
@@ -47,7 +46,7 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Create()
         {
-            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
 
             ViewBag.Organizacoes = organizacoes;
             ViewBag.Blocos = organizacoes.Count > 0 ? _blocoService.GetByIdOrganizacao(organizacoes[0].Id) : new List<BlocoModel>();
@@ -60,7 +59,7 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(HardwareDeBlocoModel hardware)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(idUsuario);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(hardware.Organizacao);
             ViewBag.TipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
@@ -91,10 +90,10 @@ namespace SalasUfsWeb.Controllers
             var hardware = _hardwareService.GetById(id);
             hardware.Organizacao = _blocoService.GetById(hardware.BlocoId).OrganizacaoId;
 
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(hardware.Organizacao);
             ViewBag.TipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
-            
+
             return View(hardware);
         }
 
@@ -105,7 +104,7 @@ namespace SalasUfsWeb.Controllers
         {
             var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
 
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(usuario.Id);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(usuario.UsuarioModel.Id);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(hardware.Organizacao);
             ViewBag.TipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
 
@@ -113,7 +112,7 @@ namespace SalasUfsWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (_hardwareService.Update(hardware, usuario.Id)) TempData["mensagemSucesso"] = "Hardware atualizado com sucesso!";
+                    if (_hardwareService.Update(hardware, usuario.UsuarioModel.Id)) TempData["mensagemSucesso"] = "Hardware atualizado com sucesso!";
                     else TempData["mensagemErro"] = "Houve um problema ao atualizar Hardware, tente novamente em alguns minutos!";
                 }
             }
@@ -145,15 +144,15 @@ namespace SalasUfsWeb.Controllers
             {
                 TempData["mensagemErro"] = se.Message;
             }
-            
+
             return RedirectToAction(nameof(Index));
         }
 
         private List<HardwareDeBlocoViewModel> ReturnAllViewModels()
         {
             var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
-            var hardwares = _hardwareService.GetAllHardwaresBlacoByUsuarioOrganizacao(usuario.Id);
-            
+            var hardwares = _hardwareService.GetAllHardwaresBlacoByUsuarioOrganizacao(usuario.UsuarioModel.Id);
+
             var hardwaresViewModel = new List<HardwareDeBlocoViewModel>();
             hardwares.ForEach(e => hardwaresViewModel.Add(Cast(e)));
 
