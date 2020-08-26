@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Model;
 using Model.ViewModel;
 using Service;
 using Service.Interface;
@@ -13,6 +9,7 @@ using Utils;
 
 namespace SalasUfsWeb.Controllers
 {
+    [Authorize(Roles = "ADMIN")]
     public class UsuarioController : Controller
     {
         private readonly IUsuarioService _usuarioService;
@@ -80,10 +77,10 @@ namespace SalasUfsWeb.Controllers
                 return RedirectToAction("Authenticate", "Login", sucesso);
             }
             // Se nao inserir, vem pra cá e sai.
-           /*var erros = ModelState.Values.SelectMany(m => m.Errors)
-                                 .Select(e => e.ErrorMessage)
-                                 .ToList();
-          */
+            /*var erros = ModelState.Values.SelectMany(m => m.Errors)
+                                  .Select(e => e.ErrorMessage)
+                                  .ToList();
+           */
             return View(usuarioViewModel);
         }
 

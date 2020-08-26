@@ -1,6 +1,6 @@
-﻿using Service;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service;
 using Service.Interface;
 
 namespace WebAPI.Controllers

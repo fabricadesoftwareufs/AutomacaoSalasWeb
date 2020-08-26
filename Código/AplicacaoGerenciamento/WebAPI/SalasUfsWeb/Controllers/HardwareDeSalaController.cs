@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Service;
 using Service.Interface;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
+    [Authorize(Roles = "ADMIN")]
     public class HardwareDeSalaController : Controller
     {
         private readonly IHardwareDeSalaService _hardwareService;
@@ -19,8 +20,8 @@ namespace SalasUfsWeb.Controllers
         private readonly IOrganizacaoService _organizacaoService;
         private readonly IBlocoService _blocoService;
 
-        public HardwareDeSalaController(IHardwareDeSalaService hardwareService, 
-                                        ITipoHardwareService tipoHardwareService, 
+        public HardwareDeSalaController(IHardwareDeSalaService hardwareService,
+                                        ITipoHardwareService tipoHardwareService,
                                         ISalaService salaService,
                                         IUsuarioService usuarioService,
                                         IOrganizacaoService organizacaoService,
@@ -43,12 +44,12 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Create()
         {
-            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = organizacoes.Count > 0 ? _blocoService.GetByIdOrganizacao(organizacoes[0].Id) : new List<BlocoModel>();
 
             ViewBag.Organizacoes = organizacoes;
-            ViewBag.Salas        = blocos.Count > 0 ? _salaService.GetByIdBloco(blocos[0].Id) : new List<SalaModel>();
-            ViewBag.Blocos       = blocos;
+            ViewBag.Salas = blocos.Count > 0 ? _salaService.GetByIdBloco(blocos[0].Id) : new List<SalaModel>();
+            ViewBag.Blocos = blocos;
             ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
 
             return View();
@@ -58,18 +59,18 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(HardwareDeSalaModel hardware)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
 
             ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(idUsuario);
-            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(hardware.Organizacao);
-            ViewBag.Salas        = _salaService.GetByIdBloco(hardware.Bloco);
+            ViewBag.Blocos = _blocoService.GetByIdOrganizacao(hardware.Organizacao);
+            ViewBag.Salas = _salaService.GetByIdBloco(hardware.Bloco);
             ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
 
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (_hardwareService.Insert(hardware,idUsuario))
+                    if (_hardwareService.Insert(hardware, idUsuario))
                     {
                         TempData["mensagemSucesso"] = "Hardware adicionado com sucesso!";
                         return View();
@@ -89,13 +90,13 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Edit(int id)
         {
-            var hardware  = _hardwareService.GetById(id);
-            var bloco     = _blocoService.GetById(_salaService.GetById(hardware.SalaId).BlocoId);
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+            var hardware = _hardwareService.GetById(id);
+            var bloco = _blocoService.GetById(_salaService.GetById(hardware.SalaId).BlocoId);
+            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
 
             ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(idUsuario);
-            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(bloco.OrganizacaoId);
-            ViewBag.Salas        = _salaService.GetByIdBloco(bloco.Id);
+            ViewBag.Blocos = _blocoService.GetByIdOrganizacao(bloco.OrganizacaoId);
+            ViewBag.Salas = _salaService.GetByIdBloco(bloco.Id);
             ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
 
             return View(hardware);
@@ -106,11 +107,11 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, HardwareDeSalaModel hardware)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
 
             ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(idUsuario);
-            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(hardware.Organizacao);
-            ViewBag.Salas        = _salaService.GetByIdBloco(hardware.Bloco);
+            ViewBag.Blocos = _blocoService.GetByIdOrganizacao(hardware.Organizacao);
+            ViewBag.Salas = _salaService.GetByIdBloco(hardware.Bloco);
             ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
 
             try
@@ -155,8 +156,8 @@ namespace SalasUfsWeb.Controllers
 
         private List<HardwareDeSalaViewModel> GetAllViewModels()
         {
-            var hardwares = _hardwareService.GetAllHardwaresSalaByUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
-            var  hardwaresViewModel = new List<HardwareDeSalaViewModel>();
+            var hardwares = _hardwareService.GetAllHardwaresSalaByUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var hardwaresViewModel = new List<HardwareDeSalaViewModel>();
 
             hardwares.ForEach(h => hardwaresViewModel.Add(Cast(h)));
 

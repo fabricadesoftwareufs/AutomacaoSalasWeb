@@ -1,8 +1,10 @@
+
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Model.AuxModel;
@@ -12,6 +14,7 @@ using Service.Interface;
 
 namespace SalasUfsWeb.Controllers
 {
+    [Authorize(Roles = "GESTOR, ADMIN, CLIENTE")]
     public class ReservaSalaController : Controller
     {
         private readonly ISalaService _salaService;
@@ -36,7 +39,9 @@ namespace SalasUfsWeb.Controllers
             _organizacaoService = organizacaoService;
             _horarioSalaService = horarioSalaService;
         }
+
         // GET: ReservaSalaController
+        [Authorize(Roles = "GESTOR, ADMIN")]
         public ActionResult Index()
         {
             var reservas = _horarioSalaService.GetAll();
@@ -46,6 +51,7 @@ namespace SalasUfsWeb.Controllers
         }
 
         // GET: ReservaSalaController/Details/5
+        [Authorize(Roles = "GESTOR, ADMIN")]
         public ActionResult Details(int id)
         {
             var horarioSala = _horarioSalaService.GetById(id);
@@ -60,10 +66,12 @@ namespace SalasUfsWeb.Controllers
             });
         }
 
+
         // GET: ReservaSalaController/Create
         public ActionResult Create()
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+
+            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
@@ -84,7 +92,7 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(ReservaSalaViewModel reservaModel)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
@@ -128,10 +136,12 @@ namespace SalasUfsWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         // GET: ReservaSalaController/Edit/5
+        [Authorize(Roles = "GESTOR, ADMIN")]
         public ActionResult Edit(int id)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
@@ -160,9 +170,10 @@ namespace SalasUfsWeb.Controllers
         // POST: ReservaSalaController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "GESTOR, ADMIN")]
         public ActionResult Edit(ReservaSalaViewModel reservaModel)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id;
+            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
@@ -208,9 +219,17 @@ namespace SalasUfsWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: ReservaSalaController/Delete/5
+        [Authorize(Roles = "GESTOR, ADMIN")]
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
         // POST: ReservaSalaController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "GESTOR, ADMIN")]
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try

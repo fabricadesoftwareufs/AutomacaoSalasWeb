@@ -1,14 +1,13 @@
-﻿using Service;
-using Persistence;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Persistence;
+using Service;
 using Service.Interface;
 
 namespace SalasUfsWeb
@@ -39,21 +38,21 @@ namespace SalasUfsWeb
                     // User nao logado, é redirecionado a essa pagina.
                     options.LoginPath = "/Login";
                     // Redirecionado pra cá, caso não haja permissão para determinada ação.
-                    options.AccessDeniedPath = "/Login/AcessoNegado"; 
+                    options.AccessDeniedPath = "/Login/AcessoNegado";
                 });
 
             services.AddDbContext<STR_DBContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
 
-            services.AddScoped<IOrganizacaoService,OrganizacaoService>();
-            services.AddScoped<IBlocoService,BlocoService>();
-            services.AddScoped<ISalaService,SalaService>();
-            services.AddScoped<IPlanejamentoService,PlanejamentoService>();
-            services.AddScoped<IUsuarioService,UsuarioService>();
-            services.AddScoped<IHardwareDeBlocoService,HardwareDeBlocoService>();
+            services.AddScoped<IOrganizacaoService, OrganizacaoService>();
+            services.AddScoped<IBlocoService, BlocoService>();
+            services.AddScoped<ISalaService, SalaService>();
+            services.AddScoped<IPlanejamentoService, PlanejamentoService>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
+            services.AddScoped<IHardwareDeBlocoService, HardwareDeBlocoService>();
             services.AddScoped<ITipoHardwareService, TipoHardwareService>();
-            services.AddScoped<IHardwareDeSalaService,HardwareDeSalaService>();
-            services.AddScoped<ISalaParticularService,SalaParticularService>();
-            services.AddScoped<IUsuarioOrganizacaoService,UsuarioOrganizacaoService>();
+            services.AddScoped<IHardwareDeSalaService, HardwareDeSalaService>();
+            services.AddScoped<ISalaParticularService, SalaParticularService>();
+            services.AddScoped<IUsuarioOrganizacaoService, UsuarioOrganizacaoService>();
             services.AddScoped<IHorarioSalaService, HorarioSalaService>();
             services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
             services.AddScoped<IMonitoramentoService, MonitoramentoService>();

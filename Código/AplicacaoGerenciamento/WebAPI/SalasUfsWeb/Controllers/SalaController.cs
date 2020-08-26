@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Model.AuxModel;
 using Model.ViewModel;
-using Persistence;
 using Service;
 using Service.Interface;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
+    [Authorize(Roles = "GESTOR, ADMIN")]
     public class SalaController : Controller
     {
         private readonly ISalaService _salaService;
@@ -55,10 +55,10 @@ namespace SalasUfsWeb.Controllers
         // GET: Sala/Create
         public ActionResult Create()
         {
-            var orgs = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
-            
+            var orgs = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+
             ViewBag.Organizacoes = orgs;
-            ViewBag.BlocoList    = orgs.Count > 0 ? _blocoService.GetByIdOrganizacao(orgs[0].Id) : new List<BlocoModel>();
+            ViewBag.BlocoList = orgs.Count > 0 ? _blocoService.GetByIdOrganizacao(orgs[0].Id) : new List<BlocoModel>();
             ViewBag.TipoHardware = _tipoHardwareService.GetAll();
 
             return View();
@@ -70,8 +70,8 @@ namespace SalasUfsWeb.Controllers
         public ActionResult Create(SalaAuxModel salaModel)
         {
             var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(usuario.Id);
-            ViewBag.BlocoList    = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(usuario.UsuarioModel.Id);
+            ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
             ViewBag.TipoHardware = _tipoHardwareService.GetAll();
 
             try
@@ -79,7 +79,7 @@ namespace SalasUfsWeb.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    if (_salaService.InsertSalaWithHardwares(salaModel, usuario.Id))
+                    if (_salaService.InsertSalaWithHardwares(salaModel, usuario.UsuarioModel.Id))
                     {
                         TempData["mensagemSucesso"] = "Sala inserida com sucesso!"; return View();
                     }
@@ -100,10 +100,10 @@ namespace SalasUfsWeb.Controllers
             var salaModel = _salaService.GetById(id);
             var idOrganizacao = _blocoService.GetById(salaModel.BlocoId).OrganizacaoId;
 
-            ViewBag.BlocoList    = _blocoService.GetByIdOrganizacao(idOrganizacao);
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(idOrganizacao);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
 
-            return View(new SalaAuxModel { Sala = new SalaModel { Id = salaModel.Id, Titulo = salaModel.Titulo,BlocoId = salaModel.BlocoId}, OrganizacaoId = idOrganizacao });
+            return View(new SalaAuxModel { Sala = new SalaModel { Id = salaModel.Id, Titulo = salaModel.Titulo, BlocoId = salaModel.BlocoId }, OrganizacaoId = idOrganizacao });
         }
 
         // POST: Sala/Edit/5
@@ -111,13 +111,13 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, SalaAuxModel salaModel)
         {
-            ViewBag.BlocoList    = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (_salaService.Update(new SalaModel { Id = salaModel.Sala.Id, BlocoId = salaModel.Sala.BlocoId, Titulo = salaModel.Sala.Titulo}))
+                    if (_salaService.Update(new SalaModel { Id = salaModel.Sala.Id, BlocoId = salaModel.Sala.BlocoId, Titulo = salaModel.Sala.Titulo }))
                         TempData["mensagemSucesso"] = "Sala atualizada com sucesso!";
                     else
                         TempData["mensagemErro"] = "Houve um problema ao atualizar sala, tente novamente em alguns minutos!";

@@ -3,10 +3,12 @@
     ViewData["Title"] = "_MenuPartial";
     var claimsIdentity = User.Identity as ClaimsIdentity;
     string nome = "";
+    string role = "";
 
     if (claimsIdentity != null)
     {
         nome = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Name).Select(s => s.Value).FirstOrDefault();
+        role = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault();
     }
 }
 <!-- Navbar -->
@@ -45,89 +47,148 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
 
-                <li class="nav-header">MINHAS SALAS</li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">
-                        <i class="nav-icon fa fa-temperature-high"></i>
-                        <p>
-                            Monitorar Salas
-                        </p>
-                    </a>
-                </li>
+                @if (role.Equals("CLIENTE"))
+                {
+                    <li class="nav-header">MINHAS SALAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">
+                            <i class="nav-icon fa fa-temperature-high"></i>
+                            <p>
+                                Monitorar Salas
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-header">RESERVAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="ReservaSala" asp-action="Create">
+                            <i class="nav-icon fas fa-ticket-alt"></i>
+                            <p>
+                                Reservar Sala
+                            </p>
+                        </a>
+                    </li>
+                }
+                else if (role.Equals("GESTOR"))
+                {
+                    <li class="nav-header">MINHAS SALAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">
+                            <i class="nav-icon fa fa-temperature-high"></i>
+                            <p>
+                                Monitorar Salas
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-header">RESERVAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="ReservaSala" asp-action="Index">
+                            <i class="nav-icon fas fa-ticket-alt"></i>
+                            <p>
+                                Reservar Sala
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Planejamento" asp-action="Index">
+                            <i class="nav-icon far fa-calendar-alt"></i>
+                            <p>
+                                Planejamento
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="SalaParticular" asp-action="Index">
+                            <i class="nav-icon  fa fa-lock"></i>
+                            <p>
+                                Sala Particular
+                            </p>
+                        </a>
+                    </li>
+                }
+                else if (role.Equals("ADMIN"))
+                {
+                    <li class="nav-header">MINHAS SALAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">
+                            <i class="nav-icon fa fa-temperature-high"></i>
+                            <p>
+                                Monitorar Salas
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-header">COMPARTIMENTOS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Organizacao" asp-action="Index">
+                            <i class="nav-icon fa fa-industry"></i>
+                            <p>
+                                Organização
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Sala" asp-action="Index">
+                            <i class="nav-icon fa fa-home"></i>
+                            <p>
+                                Sala
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Bloco" asp-action="Index">
+                            <i class="nav-icon fa fa-building"></i>
+                            <p>
+                                Bloco
+                            </p>
+                        </a>
+                    </li>
 
-                <li class="nav-header">COMPARTIMENTOS</li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Organizacao" asp-action="Index">
-                        <i class="nav-icon fa fa-industry"></i>
-                        <p>
-                            Organização
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Sala" asp-action="Index">
-                        <i class="nav-icon fa fa-home"></i>
-                        <p>
-                            Sala
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Bloco" asp-action="Index">
-                        <i class="nav-icon fa fa-building"></i>
-                        <p>
-                            Bloco
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-header">RESERVAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="ReservaSala" asp-action="Index">
+                            <i class="nav-icon fas fa-ticket-alt"></i>
+                            <p>
+                                Reservar Sala
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Planejamento" asp-action="Index">
+                            <i class="nav-icon far fa-calendar-alt"></i>
+                            <p>
+                                Planejamento
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="SalaParticular" asp-action="Index">
+                            <i class="nav-icon  fa fa-lock"></i>
+                            <p>
+                                Sala Particular
+                            </p>
+                        </a>
+                    </li>
 
-                <li class="nav-header">RESERVAS</li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="ReservaSala" asp-action="Index">
-                        <i class="nav-icon fas fa-ticket-alt"></i>
-                        <p>
-                            Reservar Sala
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Planejamento" asp-action="Index">
-                        <i class="nav-icon far fa-calendar-alt"></i>
-                        <p>
-                            Planejamento
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="SalaParticular" asp-action="Index">
-                        <i class="nav-icon  fa fa-lock"></i>
-                        <p>
-                            Sala Particular
-                        </p>
-                    </a>
-                </li>
-
-                <li class="nav-header">HARDWARES</li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="HardwareDeBloco" asp-action="Index">
-                        <i class="nav-icon fas fa-desktop"></i>
-                        <p>Hardware de Bloco</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="HardwareDeSala" asp-action="Index">
-                        <i class="nav-icon fa fa-microchip"></i>
-                        <p>Hardware de Sala</p>
-                    </a>
-                </li>
-
-                <li class="nav-header">COLABORADORES</li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="#" asp-action="#">
-                        <i class="nav-icon fa fa-users"></i>
-                        <p>Usuários</p>
-                    </a>
-                </li>
+                    <li class="nav-header">HARDWARES</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="HardwareDeBloco" asp-action="Index">
+                            <i class="nav-icon fas fa-desktop"></i>
+                            <p>Hardware de Bloco</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="HardwareDeSala" asp-action="Index">
+                            <i class="nav-icon fa fa-microchip"></i>
+                            <p>Hardware de Sala</p>
+                        </a>
+                    </li>
+                    <li class="nav-header">COLABORADORES</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="#" asp-action="#">
+                            <i class="nav-icon fa fa-users"></i>
+                            <p>Usuários</p>
+                        </a>
+                    </li>
+                }
                 <li class="nav-header">SISTEMA</li>
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="login" asp-action="logout">

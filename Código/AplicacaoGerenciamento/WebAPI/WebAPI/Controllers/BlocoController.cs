@@ -1,5 +1,4 @@
-﻿using Service;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service.Interface;
 

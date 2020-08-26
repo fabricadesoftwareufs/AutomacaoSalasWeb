@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace WebAPI.Controllers
 {
@@ -27,12 +27,12 @@ namespace WebAPI.Controllers
             {
                 hora = DateTime.Now.ToString("HH:mm:ss;dd/MM/yyyy");
             }
-           
-            else if(id.ToUpper() == "GETTIME")
+
+            else if (id.ToUpper() == "GETTIME")
             {
                 hora = DateTime.Now.ToString("HH:mm:ss");
             }
-            else if(id.ToUpper() == "GETDATE")
+            else if (id.ToUpper() == "GETDATE")
             {
                 hora = DateTime.Now.ToString("dd/MM/yyyy");
             }

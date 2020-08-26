@@ -1,5 +1,4 @@
 ﻿using Model;
-using Model.ViewModel;
 using Persistence;
 using Service.Interface;
 using System;
@@ -21,7 +20,7 @@ namespace Service
 
         public List<BlocoModel> GetByIdOrganizacao(int id) => _context.Bloco.Where(b => b.Organizacao == id).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).ToList();
 
-        public BlocoModel GetByTitulo(string titulo, int  idOrganizacao) => _context.Bloco.Where(b => b.Titulo.ToUpper().Equals(titulo.ToUpper()) && b.Organizacao == idOrganizacao).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).FirstOrDefault();
+        public BlocoModel GetByTitulo(string titulo, int idOrganizacao) => _context.Bloco.Where(b => b.Titulo.ToUpper().Equals(titulo.ToUpper()) && b.Organizacao == idOrganizacao).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).FirstOrDefault();
 
         public bool InsertBlocoWithHardware(BlocoModel blocoModel, int idUsuario)
         {
@@ -78,7 +77,7 @@ namespace Service
                 {
                     blocoModel.Id = entity.Id; return blocoModel;
                 }
-                else return null;   
+                else return null;
             }
             catch (Exception e) { throw e; }
         }
@@ -101,7 +100,7 @@ namespace Service
                 else throw new ServiceException("Esse Bloco não pode ser removido pois possui hardwares e salas associados a ele!");
 
             }
-            catch (Exception e) { throw e;}
+            catch (Exception e) { throw e; }
 
             return false;
         }
@@ -110,7 +109,7 @@ namespace Service
         {
             try
             {
-                var bloco = GetByTitulo(entity.Titulo,entity.OrganizacaoId);
+                var bloco = GetByTitulo(entity.Titulo, entity.OrganizacaoId);
                 if (bloco != null && bloco.Id != entity.Id)
                     throw new ServiceException("Essa organização já possui um bloco com esse nome");
 
@@ -121,7 +120,7 @@ namespace Service
                     return _context.SaveChanges() == 1 ? true : false;
                 }
             }
-            catch (Exception e) { throw e;}
+            catch (Exception e) { throw e; }
 
             return false;
         }
@@ -135,7 +134,7 @@ namespace Service
             return entity;
         }
 
-      
+
         public List<BlocoModel> GetAllByIdUsuarioOrganizacao(int idUsuario)
         {
             var _usuarioOrganizacao = new UsuarioOrganizacaoService(_context);

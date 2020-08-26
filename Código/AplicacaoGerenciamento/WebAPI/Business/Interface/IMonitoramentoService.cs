@@ -1,7 +1,5 @@
 ﻿using Model;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Service.Interface
 {
@@ -12,5 +10,7 @@ namespace Service.Interface
         MonitoramentoModel GetByIdSala(int idSala);
         bool Insert(MonitoramentoModel model);
         bool Update(MonitoramentoModel model);
+        bool MonitorarSala(int idUsuario, MonitoramentoModel model);
+
     }
 }

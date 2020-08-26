@@ -15,6 +15,6 @@ namespace Service.Interface
         UsuarioViewModel Insert(UsuarioViewModel entity);
         bool Remove(int id);
         bool Update(UsuarioModel entity);
-        UsuarioModel RetornLoggedUser(ClaimsIdentity claimsIdentity);
+        UsuarioViewModel RetornLoggedUser(ClaimsIdentity claimsIdentity);
     }
 }

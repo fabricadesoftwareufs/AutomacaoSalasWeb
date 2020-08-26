@@ -46,24 +46,25 @@ namespace Service
         public List<UsuarioModel> GetByIdOrganizacao(int id)
         {
             var _usuarioOrganizacaoService = new UsuarioOrganizacaoService(_context);
-            
-            var usuarioOrganizacao = _usuarioOrganizacaoService.GetByIdOrganizacao(id); 
+
+            var usuarioOrganizacao = _usuarioOrganizacaoService.GetByIdOrganizacao(id);
             var todosUsuarios = GetAll();
 
             var query = (from usuario in todosUsuarios
                          join usuarioOrg in usuarioOrganizacao
                          on usuario.Id equals usuarioOrg.UsuarioId
-                         select new UsuarioModel {
-                            Id = usuario.Id,
-                            Cpf = usuario.Cpf,
-                            Nome = usuario.Nome,
-                            DataNascimento = usuario.DataNascimento,
-                            TipoUsuarioId = usuario.TipoUsuarioId
+                         select new UsuarioModel
+                         {
+                             Id = usuario.Id,
+                             Cpf = usuario.Cpf,
+                             Nome = usuario.Nome,
+                             DataNascimento = usuario.DataNascimento,
+                             TipoUsuarioId = usuario.TipoUsuarioId
                          }).ToList();
 
             return query;
         }
-        
+
         public UsuarioModel GetByLoginAndPass(string login, string senha)
             => _context.Usuario
                 .Where(u => u.Cpf.Equals(login) && u.Senha.Equals(senha))
@@ -142,14 +143,21 @@ namespace Service
             return false;
         }
 
-        public UsuarioModel RetornLoggedUser(ClaimsIdentity claimsIdentity)
+        public UsuarioViewModel RetornLoggedUser(ClaimsIdentity claimsIdentity)
         {
-            var usuario = new UsuarioModel
+            var usuario = new UsuarioViewModel
             {
-                Id = int.Parse(claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault()),
-                Cpf = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.UserData).Select(s => s.Value).FirstOrDefault(),
-                Nome = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.NameIdentifier).Select(s => s.Value).FirstOrDefault(),
+                UsuarioModel = new UsuarioModel
+                {
+                    Id = int.Parse(claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault()),
+                    Cpf = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.UserData).Select(s => s.Value).FirstOrDefault(),
+                    Nome = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.NameIdentifier).Select(s => s.Value).FirstOrDefault(),
+                },
 
+                TipoUsuarioModel = new TipoUsuarioModel
+                {
+                    Descricao = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault()
+                }
             };
 
             return usuario;

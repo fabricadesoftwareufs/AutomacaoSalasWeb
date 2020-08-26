@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.AuxModel;
@@ -10,6 +11,7 @@ using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
+    [Authorize(Roles = "GESTOR, ADMIN")]
     public class SalaParticularController : Controller
     {
         private readonly ISalaParticularService _salaParticularService;
@@ -20,7 +22,7 @@ namespace SalasUfsWeb.Controllers
         private readonly IOrganizacaoService _organizacaoService;
 
 
-        public SalaParticularController(ISalaService salaService, 
+        public SalaParticularController(ISalaService salaService,
                                         ISalaParticularService salaParticularService,
                                         IUsuarioService usuarioService,
                                         IBlocoService blocoService,
@@ -35,7 +37,7 @@ namespace SalasUfsWeb.Controllers
             _organizacaoService = organizacaoService;
         }
 
-        
+
         public ActionResult Index()
         {
             return View(GetAllSalasParticularesViewModel());
@@ -43,26 +45,26 @@ namespace SalasUfsWeb.Controllers
 
         public ActionResult Create()
         {
-            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = organizacoes.Count > 0 ? _blocoService.GetByIdOrganizacao(organizacoes[0].Id) : new List<BlocoModel>();
 
             ViewBag.Organizacoes = organizacoes;
-            ViewBag.Usuarios     = organizacoes.Count > 0 ? _usuarioService.GetByIdOrganizacao(organizacoes[0].Id) : new List<UsuarioModel>();
-            ViewBag.Salas        = blocos.Count > 0 ? _salaService.GetByIdBloco(blocos[0].Id) : new List<SalaModel>();
-            ViewBag.Blocos       = blocos;
+            ViewBag.Usuarios = organizacoes.Count > 0 ? _usuarioService.GetByIdOrganizacao(organizacoes[0].Id) : new List<UsuarioModel>();
+            ViewBag.Salas = blocos.Count > 0 ? _salaService.GetByIdBloco(blocos[0].Id) : new List<SalaModel>();
+            ViewBag.Blocos = blocos;
 
             return View();
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(SalaParticularAuxModel salaParticularModel)
         {
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id); ;
-            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(salaParticularModel.Organizacao);
-            ViewBag.Salas        = _salaService.GetByIdBloco(salaParticularModel.BlocoSalas);
-            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(salaParticularModel.Organizacao);   
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id); ;
+            ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(salaParticularModel.Organizacao);
+            ViewBag.Salas = _salaService.GetByIdBloco(salaParticularModel.BlocoSalas);
+            ViewBag.Blocos = _blocoService.GetByIdOrganizacao(salaParticularModel.Organizacao);
 
             try
             {
@@ -85,7 +87,7 @@ namespace SalasUfsWeb.Controllers
             }
 
             for (var i = 0; i < salaParticularModel.Responsaveis.Count; i++)
-                salaParticularModel.Responsaveis[i] = _usuarioService.GetById(salaParticularModel.Responsaveis[i].Id); 
+                salaParticularModel.Responsaveis[i] = _usuarioService.GetById(salaParticularModel.Responsaveis[i].Id);
 
             return View(salaParticularModel);
         }
@@ -94,13 +96,13 @@ namespace SalasUfsWeb.Controllers
         {
             var salaExclusivaModel = _salaParticularService.GetById(id);
             var salaModel = _salaService.GetById(salaExclusivaModel.SalaId);
-            var idOrg     = _blocoService.GetById(salaModel.BlocoId).OrganizacaoId;
+            var idOrg = _blocoService.GetById(salaModel.BlocoId).OrganizacaoId;
 
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id); ;
-            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(idOrg);
-            ViewBag.Salas        = _salaService.GetByIdBloco(salaModel.BlocoId);
-            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(idOrg);
-           
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id); ;
+            ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(idOrg);
+            ViewBag.Salas = _salaService.GetByIdBloco(salaModel.BlocoId);
+            ViewBag.Blocos = _blocoService.GetByIdOrganizacao(idOrg);
+
             return View(new SalaParticularAuxModel
             {
                 SalaParticular = new SalaParticularModel { Id = salaExclusivaModel.Id, SalaId = salaExclusivaModel.SalaId, UsuarioId = salaExclusivaModel.UsuarioId },
@@ -108,24 +110,24 @@ namespace SalasUfsWeb.Controllers
                 Organizacao = idOrg,
             });
         }
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(SalaParticularAuxModel salaParticularModel)
         {
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).Id);
-            ViewBag.Usuarios     = _usuarioService.GetByIdOrganizacao(salaParticularModel.Organizacao);
-            ViewBag.Salas        = _salaService.GetByIdBloco(salaParticularModel.BlocoSalas);
-            ViewBag.Blocos       = _blocoService.GetByIdOrganizacao(salaParticularModel.Organizacao);
-           
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(salaParticularModel.Organizacao);
+            ViewBag.Salas = _salaService.GetByIdBloco(salaParticularModel.BlocoSalas);
+            ViewBag.Blocos = _blocoService.GetByIdOrganizacao(salaParticularModel.Organizacao);
+
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (_salaParticularService.Update(new SalaParticularModel { Id = salaParticularModel.SalaParticular.Id, SalaId = salaParticularModel.SalaParticular.SalaId, UsuarioId = salaParticularModel.SalaParticular.UsuarioId}))
+                    if (_salaParticularService.Update(new SalaParticularModel { Id = salaParticularModel.SalaParticular.Id, SalaId = salaParticularModel.SalaParticular.SalaId, UsuarioId = salaParticularModel.SalaParticular.UsuarioId }))
                     {
                         TempData["mensagemSucesso"] = "Registro atualizado com sucesso!.";
-                    }                        
+                    }
                     else
                     {
                         TempData["mensagemErro"] = "Houve um probelma ao atualizar registro, tente novamente em alguns minutos!.";
@@ -134,12 +136,12 @@ namespace SalasUfsWeb.Controllers
             }
             catch (ServiceException se)
             {
-                TempData["mensagemErro"] = se.Message; 
+                TempData["mensagemErro"] = se.Message;
             }
 
             return View(salaParticularModel);
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
@@ -172,7 +174,7 @@ namespace SalasUfsWeb.Controllers
             });
         }
 
-        private List<SalaParticularViewModel> GetAllSalasParticularesViewModel() 
+        private List<SalaParticularViewModel> GetAllSalasParticularesViewModel()
         {
             var idUser = int.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
             var organizacoesLotadas = _usuarioOrganizacaoService.GetByIdUsuario(idUser).ToList();
