@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Model.SalaParticularViewModel>
+﻿@model IEnumerable<Model.AuxModel.UsuarioAuxModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,25 +13,24 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <h2 class="card-title">
-                                    Salas Exclusivas
+                                   Usuários
                                 </h2>
-                                <a class="btn btn-primary" style="float:right" asp-controller="SalaParticular" asp-action="Create">Associar Nova Sala Exclusiva</a>
-
+                                <a class="btn btn-primary" style="float:right" asp-controller="Usuario" asp-action="Create">Adicionar Usuário</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <table id="table-search" class="table table-bordered table-striped">
-                            <thead>++++++++++++++++++++++++++++++
+                            <thead>
                                 <tr>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Id)
+                                        @Html.DisplayNameFor(model => model.FirstOrDefault().UsuarioModel.Nome)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Responsavel)
+                                        @Html.DisplayNameFor(model => model.FirstOrDefault().UsuarioModel.Cpf)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.SalaId)
+                                        @Html.DisplayNameFor(model => model.FirstOrDefault().TipoUsuarioModel.Descricao)
                                     </th>
                                     <th>Ações</th>
                                 </tr>
@@ -41,36 +40,38 @@
                                 {
                                     <tr>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Id)
+                                            @Html.DisplayFor(modelItem => item.UsuarioModel.Nome)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Responsavel.Cpf) | @Html.DisplayFor(modelItem => item.Responsavel.Nome)
+                                            @Html.DisplayFor(modelItem => item.UsuarioModel.Cpf)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.SalaId.Titulo)
+                                            @Html.DisplayFor(modelItem => item.TipoUsuarioModel.Descricao)
                                         </td>
                                         <td>
-                                            <a href="@Url.Action("Details", "SalaParticular", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
-                                            <a href="@Url.Action("Edit", "SalaParticular", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
-                                            <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
+                                            <a href="@Url.Action("Details", "Usuario", new { id = item.UsuarioModel.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
+                                            <a href="@Url.Action("Edit", "Usuario", new { id = item.UsuarioModel.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
+
+                                            <a data-toggle="modal" data-target="#modal-remover-@item.UsuarioModel.Id" onclick="containsAssociacao(@item.UsuarioModel.Id)" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
 
 
-                                            <div class="modal fade" id="modal-remover-@item.Id">
+                                            <div class="modal fade" id="modal-remover-@item.UsuarioModel.Id">
                                                 <div class="modal-dialog modal-sm">
                                                     <div class="modal-content card card-secondary">
                                                         <div class="modal-header card-header">
-                                                            <h5 class="modal-title">Desassociar responsável da sala ?</h5>
+                                                            <h5 class="modal-title">Confirmar Remoção do Usuário ?</h5>
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true" class="text-white">&times;</span>
                                                             </button>
                                                         </div>
                                                         <div class="modal-body text-center">
-                                                            <h5>Código</h5><p>@item.Id</p>
-                                                            <h5>Sala</h5> <p>@item.SalaId.Titulo </p>
-                                                            <h5>Responsável</h5> <p>@item.Responsavel.Cpf | @item.Responsavel.Nome</p>
+                                                            <h5>Nome</h5><p>@item.UsuarioModel.Nome</p>
+                                                            <h5>CPF</h5> <p>@item.UsuarioModel.Cpf</p>
+                                                            <h5>Tipo Usuário</h5> <p>@item.TipoUsuarioModel.Descricao</p>
+                                                            <h5>Obs: </h5><p class="obs"></p>
                                                         </div>
 
-                                                        @using (Html.BeginForm("Delete", "SalaParticular", new { id = item.Id }, FormMethod.Post))
+                                                        @using (Html.BeginForm("Delete", "Usuario", new { id = item.UsuarioModel.Id }, FormMethod.Post))
                                                         {
                                                             <div class="modal-footer justify-content-between">
                                                                 <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
@@ -91,8 +92,11 @@
         </div>
     </div>
 </section>
+
+
 @if (TempData["mensagemSucesso"] != null)
-{<div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!','@TempData["mensagemSucesso"]')"></div>
 }
 else if (TempData["mensagemErro"] != null)
 {
@@ -107,10 +111,9 @@ else if (TempData["mensagemErro"] != null)
                 document.getElementById("mensagem-retorno").click();
         });
     </script>
-    
 
+    <script src="~/js/usuario-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
-
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

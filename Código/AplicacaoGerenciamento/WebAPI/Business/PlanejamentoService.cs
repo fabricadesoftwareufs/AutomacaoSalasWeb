@@ -277,5 +277,32 @@ namespace Service
             return query;
         }
 
+        public bool RemoveByUsuario(int id)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var x = _context.Planejamento.Where(th => th.Usuario == id);
+                    if (x != null)
+                    {
+                        _context.RemoveRange(x);
+                        var save = _context.SaveChanges() == 1 ? true : false;
+                        transaction.Commit();
+                        return save;
+                    }
+                    else
+                    {
+                        throw new ServiceException("Algo deu errado, tente novamente em alguns minutos.");
+                    }
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e;
+
+                }
+            }
+        }
     }
 }

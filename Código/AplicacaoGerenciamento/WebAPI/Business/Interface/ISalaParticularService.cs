@@ -19,6 +19,7 @@ namespace Service.Interface
         bool Insert(SalaParticularModel entity);
         bool VerificaSalaExclusivaExistente(int? idSalaExclusiva, int idUsuario, int idSala);
         bool Remove(int id);
+        bool RemoveByUsuario(int id);
         bool Update(SalaParticularModel entity);
     }
 }

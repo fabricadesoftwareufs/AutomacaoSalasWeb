@@ -15,6 +15,7 @@ namespace Service.Interface
         bool InsertListHorariosPlanjamento(PlanejamentoAuxModel entity);
         bool Insert(PlanejamentoModel entity);
         bool Remove(int id);
+        bool RemoveByUsuario(int id);
         bool Update(PlanejamentoModel entity);
     }
 }

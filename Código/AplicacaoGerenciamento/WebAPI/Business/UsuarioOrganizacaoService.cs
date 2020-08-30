@@ -60,5 +60,17 @@ namespace Service
             Organizacao = model.OrganizacaoId
 
         };
+
+        public bool RemoveByUsuario(int id)
+        {
+            var x = _context.Usuarioorganizacao.Where(uo => uo.Usuario == id);
+            if (x != null)
+            {
+                _context.RemoveRange(x);
+                return _context.SaveChanges() == 1 ? true : false;
+            }
+
+            return false;
+        }
     }
 }
