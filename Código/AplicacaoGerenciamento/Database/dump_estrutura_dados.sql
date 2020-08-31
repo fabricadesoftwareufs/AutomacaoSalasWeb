@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS `tipousuario` (
 -- Copiando dados para a tabela str_db.tipousuario: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `tipousuario` DISABLE KEYS */;
 INSERT INTO `tipousuario` (`Id`, `Descricao`) VALUES
-	(1, 'ADM'),
+	(1, 'ADMIN'),
 	(2, 'PROFESSOR'),
 	(3, 'ALUNO'),
 	(4, 'TÉCNICO');

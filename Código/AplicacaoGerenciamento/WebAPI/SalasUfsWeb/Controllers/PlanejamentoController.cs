@@ -89,7 +89,7 @@ namespace SalasUfsWeb.Controllers
             var planejamento = _planejamentoService.GetById(id);
             var bloco = _blocoService.GetById(_salaService.GetById(planejamento.SalaId).BlocoId);
 
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id); ;
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id); 
             ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(bloco.OrganizacaoId);
             ViewBag.Salas = _salaService.GetByIdBloco(bloco.Id);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(bloco.OrganizacaoId);

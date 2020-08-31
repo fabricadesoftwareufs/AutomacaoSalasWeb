@@ -2,9 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Model.AuxModel;
 using Model.ViewModel;
 using Service;
 using Service.Interface;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using Utils;
 
 namespace SalasUfsWeb.Controllers
@@ -15,22 +19,45 @@ namespace SalasUfsWeb.Controllers
         private readonly IUsuarioService _usuarioService;
         private readonly ITipoUsuarioService _tipoUsuarioService;
         private readonly IOrganizacaoService _organizacaoService;
-        public UsuarioController(IUsuarioService usuarioService, ITipoUsuarioService tipoUsuarioService, IOrganizacaoService organizacaoService)
+        private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
+        private readonly IPlanejamentoService _planejamentoService;
+        private readonly IHorarioSalaService _horarioSalaService;
+
+        public UsuarioController(
+                                    IUsuarioService usuarioService, 
+                                    ITipoUsuarioService tipoUsuarioService, 
+                                    IOrganizacaoService organizacaoService, 
+                                    IUsuarioOrganizacaoService usuarioOrganizacaoService,
+                                    IPlanejamentoService planejamentoService,
+                                    IHorarioSalaService horarioSalaService
+                                )
         {
             _usuarioService = usuarioService;
             _tipoUsuarioService = tipoUsuarioService;
             _organizacaoService = organizacaoService;
+            _usuarioOrganizacaoService = usuarioOrganizacaoService;
+            _planejamentoService = planejamentoService;
+            _horarioSalaService = horarioSalaService;
         }
         // GET: Usuario
         public ActionResult Index()
         {
-            return View();
+            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
+            var orgsUsuario = _usuarioOrganizacaoService.GetByIdUsuario(usuario.UsuarioModel.Id).Select((o) => o.OrganizacaoId).ToList();
+            var usuarios = _usuarioService.GetAllByIdsOrganizacao(orgsUsuario).GroupBy(u => u.Id).ToList();
+            List<UsuarioAuxModel> lista = new List<UsuarioAuxModel>();
+
+            usuarios.ForEach(s => lista.Add(new UsuarioAuxModel { UsuarioModel = s.FirstOrDefault(), TipoUsuarioModel = _tipoUsuarioService.GetById(s.FirstOrDefault().TipoUsuarioId), OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.FirstOrDefault().Id)  })); 
+
+            return View(lista);
         }
 
         // GET: Usuario/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var usuario = _usuarioService.GetById(id);
+            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = _tipoUsuarioService.GetById(usuario.TipoUsuarioId)};
+            return View(usuarioView);
         }
 
         // GET: Usuario/Create
@@ -87,30 +114,43 @@ namespace SalasUfsWeb.Controllers
         // GET: Usuario/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
+            
+            var usuario = _usuarioService.GetById(id);
+            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = _tipoUsuarioService.GetById(usuario.TipoUsuarioId) };
+            
+            return View(usuarioView);
         }
 
         // POST: Usuario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, UsuarioViewModel usuarioView)
         {
+            ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
+          
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    usuarioView.UsuarioModel.TipoUsuarioId = usuarioView.TipoUsuarioModel.Id;
+                    if (_usuarioService.Update(usuarioView.UsuarioModel))
+                    {
+                        TempData["mensagemSucesso"] = "Usuário editado com sucesso!";
+                    }
+                    else
+                    {
+                        TempData["mensagemErro"] = "Houve um problema ao editar o usuário, tente novamente em alguns minutos.";
+                        return View(usuarioView);
+                    }
+                }
             }
-            catch
+            catch (ServiceException se)
             {
-                return View();
+                TempData["mensagemErro"] = se.Message;
+                return View(usuarioView);
             }
-        }
-
-        // GET: Usuario/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Usuario/Delete/5
@@ -120,13 +160,28 @@ namespace SalasUfsWeb.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
+                if (_usuarioService.Remove(id))
+                    TempData["mensagemSucesso"] = "Usuário removido com sucesso!";
+                else
+                    TempData["mensagemErro"] = "Houve um problema ou remover usuário, tente novamente em alguns minutos";
 
-                return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (ServiceException se)
             {
-                return View();
+                TempData["mensagemErro"] = se.Message;
+            }
+            
+            return RedirectToAction(nameof(Index));
+        }
+
+        public bool HasPlanOrReserv(int idUsuario)
+        {
+            var plan =  _planejamentoService.GetByIdUsuario(idUsuario);
+            if (plan != null)
+                return true;
+            else
+            {
+                return _horarioSalaService.GetByIdUsuario(idUsuario) != null ? true : false;
             }
         }
     }

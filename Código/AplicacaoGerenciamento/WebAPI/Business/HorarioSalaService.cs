@@ -211,5 +211,17 @@ namespace Service
 
             return entity;
         }
+
+        public bool RemoveByUsuario(int id)
+        {
+            var x = _context.Horariosala.Where(th => th.Id == id);
+            if (x != null)
+            {
+                _context.RemoveRange(x);
+                return _context.SaveChanges() == 1 ? true : false;
+            }
+
+            return false;
+        }
     }
 }

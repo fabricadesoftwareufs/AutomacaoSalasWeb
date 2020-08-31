@@ -194,5 +194,24 @@ namespace Service
 
             return query;
         }
+
+        public bool RemoveByUsuario(int id)
+        {
+            try
+            {
+                var x = _context.Salaparticular.Where(th => th.Usuario == id);
+                if (x != null)
+                {
+                    _context.RemoveRange(x);
+                    return _context.SaveChanges() == 1 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return false;
+        }
     }
 }
