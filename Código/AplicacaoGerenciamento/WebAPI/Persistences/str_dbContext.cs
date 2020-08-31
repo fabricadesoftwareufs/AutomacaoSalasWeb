@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Persistence
 {
@@ -157,8 +159,8 @@ namespace Persistence
 
                 entity.Property(e => e.Situacao)
                     .IsRequired()
-                    .HasColumnType("enum('PENDENTE','FINALIZADA','CANCELADA')")
-                    .HasDefaultValueSql("PENDENTE");
+                    .HasColumnType("enum('PENDENTE','APROVADA','REPROVADA','CANCELADA')")
+                    .HasDefaultValueSql("APROVADA");
 
                 entity.Property(e => e.Usuario).HasColumnType("int(10) unsigned");
 

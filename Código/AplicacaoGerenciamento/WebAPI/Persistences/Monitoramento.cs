@@ -1,4 +1,7 @@
-﻿namespace Persistence
+﻿using System;
+using System.Collections.Generic;
+
+namespace Persistence
 {
     public partial class Monitoramento
     {
@@ -7,6 +10,6 @@
         public byte ArCondicionado { get; set; }
         public int Sala { get; set; }
 
-        public Usuario SalaNavigation { get; set; }
+        public Sala SalaNavigation { get; set; }
     }
 }
