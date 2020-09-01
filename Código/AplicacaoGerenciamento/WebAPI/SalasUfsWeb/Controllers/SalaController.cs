@@ -58,7 +58,7 @@ namespace SalasUfsWeb.Controllers
             var orgs = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
 
             ViewBag.Organizacoes = orgs;
-            ViewBag.BlocoList = orgs.Count > 0 ? _blocoService.GetByIdOrganizacao(orgs[0].Id) : new List<BlocoModel>();
+            ViewBag.BlocoList = orgs.Count > 0 ? _blocoService.GetByIdOrganizacao(orgs.FirstOrDefault().Id) : new List<BlocoModel>();
             ViewBag.TipoHardware = _tipoHardwareService.GetAll();
 
             return View();

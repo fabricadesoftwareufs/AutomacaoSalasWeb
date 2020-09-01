@@ -130,8 +130,7 @@ CREATE TABLE IF NOT EXISTS `tipohardware` (
 INSERT INTO `tipohardware` (`Id`, `Descricao`) VALUES
 	(1, 'CONTROLADOR DE BLOCO'),
 	(2, 'CONTROLADOR DE SALA'),
-	(3, 'MASTER'),
-	(4, 'SLAVE');
+	(3, 'MODULO DE SENSORIAMENTO');
 /*!40000 ALTER TABLE `tipohardware` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.hardwaredebloco
@@ -232,9 +231,8 @@ CREATE TABLE IF NOT EXISTS `tipousuario` (
 /*!40000 ALTER TABLE `tipousuario` DISABLE KEYS */;
 INSERT INTO `tipousuario` (`Id`, `Descricao`) VALUES
 	(1, 'ADMIN'),
-	(2, 'PROFESSOR'),
-	(3, 'ALUNO'),
-	(4, 'TÉCNICO');
+	(2, 'GESTOR'),
+	(3, 'CLIENTE');
 /*!40000 ALTER TABLE `tipousuario` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.usuario
@@ -285,7 +283,7 @@ CREATE TABLE IF NOT EXISTS `horariosala` (
   `Data` datetime NOT NULL,
   `HorarioInicio` time NOT NULL,
   `HorarioFim` time NOT NULL,
-  `Situacao`  ENUM('PENDENTE', 'FINALIZADA', 'CANCELADA') NOT NULL DEFAULT 'PENDENTE',
+  `Situacao` ENUM('PENDENTE', 'APROVADA','REPROVADA', 'CANCELADA') NOT NULL DEFAULT 'APROVADA',
   `Objetivo` varchar(500) NOT NULL,
   `Usuario` int unsigned NOT NULL,
   `Sala` int unsigned NOT NULL,

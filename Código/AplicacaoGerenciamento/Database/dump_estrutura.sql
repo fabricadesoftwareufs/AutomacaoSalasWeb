@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `horariosala` (
   `Data` datetime NOT NULL,
   `HorarioInicio` time NOT NULL,
   `HorarioFim` time NOT NULL,
-  `Situacao` ENUM('PENDENTE', 'FINALIZADA', 'CANCELADA') NOT NULL DEFAULT 'PENDENTE',
+  `Situacao` ENUM('PENDENTE', 'APROVADA','REPROVADA', 'CANCELADA') NOT NULL DEFAULT 'APROVADA',
   `Objetivo` varchar(500) NOT NULL,
   `Usuario` int unsigned NOT NULL,
   `Sala` int unsigned NOT NULL,

@@ -46,11 +46,11 @@ namespace SalasUfsWeb.Controllers
         public ActionResult Create()
         {
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
-            var blocos = organizacoes.Count > 0 ? _blocoService.GetByIdOrganizacao(organizacoes[0].Id) : new List<BlocoModel>();
+            var blocos = organizacoes.Count > 0 ? _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id) : new List<BlocoModel>();
 
             ViewBag.Organizacoes = organizacoes;
-            ViewBag.Usuarios = organizacoes.Count > 0 ? _usuarioService.GetByIdOrganizacao(organizacoes[0].Id) : new List<UsuarioModel>();
-            ViewBag.Salas = blocos.Count > 0 ? _salaService.GetByIdBloco(blocos[0].Id) : new List<SalaModel>();
+            ViewBag.Usuarios = organizacoes.Count > 0 ? _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id) : new List<UsuarioModel>();
+            ViewBag.Salas = blocos.Count > 0 ? _salaService.GetByIdBloco(blocos.FirstOrDefault().Id) : new List<SalaModel>();
             ViewBag.Blocos = blocos;
 
             return View();

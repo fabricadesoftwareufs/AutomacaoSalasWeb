@@ -80,7 +80,6 @@ namespace Service
                         if (TimeSpan.Compare(horario.HorarioFim, horario.HorarioInicio) != 1)
                             throw new ServiceException("Os horários possuem inconsistências, corrija e tente novamente");
                         else
-                        {
                             Insert(new PlanejamentoModel
                             {
                                 Id = entity.Planejamento.Id,
@@ -93,7 +92,7 @@ namespace Service
                                 UsuarioId = entity.Planejamento.UsuarioId,
                                 SalaId = entity.Planejamento.SalaId
                             });
-                        }
+                        
                     }
 
                     InsertReservasPlanejamento(entity);
@@ -132,7 +131,7 @@ namespace Service
                                     SalaId = entity.Planejamento.SalaId,
                                     UsuarioId = entity.Planejamento.UsuarioId,
                                     Objetivo = entity.Planejamento.Objetivo,
-                                    Situacao = "PENDENTE",
+                                    Situacao = "APROVADA",
                                     Data = dataCorrente
                                 });
 
@@ -150,7 +149,7 @@ namespace Service
             }
             catch (Exception e)
             {
-                throw e;
+                throw new ServiceException("Houve um problema ao inserir as reservas do planejamento, tente novamente em alguns minutos");
             }
         }
 

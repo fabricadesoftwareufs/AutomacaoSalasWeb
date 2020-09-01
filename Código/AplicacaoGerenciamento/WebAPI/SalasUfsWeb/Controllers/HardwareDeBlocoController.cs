@@ -6,6 +6,7 @@ using Model;
 using Service;
 using Service.Interface;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
@@ -49,7 +50,7 @@ namespace SalasUfsWeb.Controllers
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
 
             ViewBag.Organizacoes = organizacoes;
-            ViewBag.Blocos = organizacoes.Count > 0 ? _blocoService.GetByIdOrganizacao(organizacoes[0].Id) : new List<BlocoModel>();
+            ViewBag.Blocos = organizacoes.Count > 0 ? _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id) : new List<BlocoModel>();
             ViewBag.TipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
 
             return View();

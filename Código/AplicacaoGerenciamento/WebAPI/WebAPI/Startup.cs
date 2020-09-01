@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
 using Service;
+using Service.Interface;
 using System.Text;
 
 namespace WebAPI
@@ -61,18 +62,19 @@ namespace WebAPI
                 });
 
             // Injections
-            services.AddScoped<BlocoService>();
-            services.AddScoped<HardwareDeBlocoService>();
-            services.AddScoped<HardwareDeSalaService>();
-            services.AddScoped<HorarioSalaService>();
-            services.AddScoped<OrganizacaoService>();
-            services.AddScoped<SalaService>();
-            services.AddScoped<SalaParticularService>();
-            services.AddScoped<PlanejamentoService>();
-            services.AddScoped<TipoHardwareService>();
-            services.AddScoped<TipoUsuarioService>();
-            services.AddScoped<UsuarioOrganizacaoService>();
-            services.AddScoped<UsuarioService>();
+            services.AddScoped<IOrganizacaoService, OrganizacaoService>();
+            services.AddScoped<IBlocoService, BlocoService>();
+            services.AddScoped<ISalaService, SalaService>();
+            services.AddScoped<IPlanejamentoService, PlanejamentoService>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
+            services.AddScoped<IHardwareDeBlocoService, HardwareDeBlocoService>();
+            services.AddScoped<ITipoHardwareService, TipoHardwareService>();
+            services.AddScoped<IHardwareDeSalaService, HardwareDeSalaService>();
+            services.AddScoped<ISalaParticularService, SalaParticularService>();
+            services.AddScoped<IUsuarioOrganizacaoService, UsuarioOrganizacaoService>();
+            services.AddScoped<IHorarioSalaService, HorarioSalaService>();
+            services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
+            services.AddScoped<IMonitoramentoService, MonitoramentoService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

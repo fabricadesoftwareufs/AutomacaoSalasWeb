@@ -84,8 +84,7 @@ INSERT INTO `monitoramento` (`Id`, `Luzes`, `ArCondicionado`,`Sala`) VALUES
 INSERT INTO `tipohardware` (`Id`, `Descricao`) VALUES
 	(1, 'CONTROLADOR DE BLOCO'),
 	(2, 'CONTROLADOR DE SALA'),
-	(3, 'MASTER'),
-	(4, 'SLAVE');
+	(3, 'MODULO DE SENSORIAMENTO');
 /*!40000 ALTER TABLE `tipohardware` ENABLE KEYS */;
 
 -- Copiando dados para a tabela str_db.hardwaredebloco: ~11 rows (aproximadamente)
@@ -151,10 +150,9 @@ INSERT INTO `hardwaredesala` (`Id`, `MAC`, `Sala`, `TipoHardware`) VALUES
 -- Copiando dados para a tabela str_db.tipousuario: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `tipousuario` DISABLE KEYS */;
 INSERT INTO `tipousuario` (`Id`, `Descricao`) VALUES
-	(1, 'ADM'),
-	(2, 'PROFESSOR');
-	(3, 'ALUNO');
-	(4, 'TÉCNICO');
+	(1, 'ADMIN'),
+	(2, 'GESTOR'),
+	(3, 'CLIENTE');
 /*!40000 ALTER TABLE `tipousuario` ENABLE KEYS */;
 
 -- Copiando dados para a tabela str_db.usuario: ~2 rows (aproximadamente)
