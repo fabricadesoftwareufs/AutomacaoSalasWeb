@@ -130,8 +130,7 @@ CREATE TABLE IF NOT EXISTS `tipohardware` (
 INSERT INTO `tipohardware` (`Id`, `Descricao`) VALUES
 	(1, 'CONTROLADOR DE BLOCO'),
 	(2, 'CONTROLADOR DE SALA'),
-	(3, 'MASTER'),
-	(4, 'SLAVE');
+	(3, 'MODULO DE SENSORIAMENTO');
 /*!40000 ALTER TABLE `tipohardware` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.hardwaredebloco

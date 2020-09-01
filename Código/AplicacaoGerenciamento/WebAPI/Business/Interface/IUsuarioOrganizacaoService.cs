@@ -12,6 +12,7 @@ namespace Service.Interface
         bool Insert(UsuarioOrganizacaoModel entity);
 
         bool Remove(int id);
+        bool RemoveByUsuario(int id);
         bool Update(UsuarioOrganizacaoModel entity);
     }
 }

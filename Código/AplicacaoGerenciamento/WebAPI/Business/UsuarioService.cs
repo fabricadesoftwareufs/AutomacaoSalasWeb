@@ -121,13 +121,50 @@ namespace Service
 
         public bool Remove(int id)
         {
+            
+            var plan = new PlanejamentoService(_context);
+            var particular = new SalaParticularService(_context);
+            var horarios = new HorarioSalaService(_context);
+            var usuarioOrg = new UsuarioOrganizacaoService(_context);
+
+               
             var x = _context.Usuario.Where(u => u.Id == id).FirstOrDefault();
             if (x != null)
             {
-                _context.Remove(x);
-                return _context.SaveChanges() == 1 ? true : false;
-            }
+                //atualizar depois para escolher da qual org
+                //removendo tudo associado ao usuario, pois na tela de remover irá aparecer se tem itens associados
+                // se o usuario concordar, obviamente irá excluir tudo
 
+                //planejamentos
+                plan.RemoveByUsuario(x.Id);
+
+                //salas particulares
+                particular.RemoveByUsuario(x.Id);
+
+                //reservas
+                horarios.RemoveByUsuario(x.Id);
+
+                // associacao 
+                usuarioOrg.RemoveByUsuario(x.Id);
+                using (var transaction = _context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        _context.Remove(x);
+                        transaction.Commit();
+                        return _context.SaveChanges() == 1 ? true : false;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        throw e;
+                    }
+                }
+            }
+            else
+            {
+                new ServiceException("Houve um erro ao remover o usuário!");
+            }
             return false;
         }
 
@@ -186,5 +223,7 @@ namespace Service
                     Senha = u.Senha,
                     TipoUsuarioId = u.TipoUsuario
                 }).FirstOrDefault();
+
+        public List<UsuarioModel> GetAllByIdsOrganizacao(List<int> ids) => _context.Usuario.Where(u => ids.Contains(u.Id)).Select(u => new UsuarioModel { Id = u.Id, Cpf = u.Cpf, DataNascimento = (DateTime)u.DataNascimento, Nome = u.Nome, TipoUsuarioId = u.TipoUsuario, Senha = u.Senha  }).ToList();
     }
 }

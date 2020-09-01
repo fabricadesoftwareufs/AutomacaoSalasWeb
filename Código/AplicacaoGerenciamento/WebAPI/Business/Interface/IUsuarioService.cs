@@ -11,6 +11,7 @@ namespace Service.Interface
         UsuarioModel GetById(int id);
         UsuarioModel GetByCpf(string cpf);
         List<UsuarioModel> GetByIdOrganizacao(int id);
+        List<UsuarioModel> GetAllByIdsOrganizacao(List<int> ids);
         UsuarioModel GetByLoginAndPass(string login, string senha);
         UsuarioViewModel Insert(UsuarioViewModel entity);
         bool Remove(int id);
