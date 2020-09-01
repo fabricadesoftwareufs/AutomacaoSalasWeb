@@ -231,10 +231,9 @@ CREATE TABLE IF NOT EXISTS `tipousuario` (
 -- Copiando dados para a tabela str_db.tipousuario: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `tipousuario` DISABLE KEYS */;
 INSERT INTO `tipousuario` (`Id`, `Descricao`) VALUES
-	(1, 'ADM'),
-	(2, 'PROFESSOR'),
-	(3, 'ALUNO'),
-	(4, 'TÉCNICO');
+	(1, 'ADMIN'),
+	(2, 'GESTOR'),
+	(3, 'CLIENTE');
 /*!40000 ALTER TABLE `tipousuario` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.usuario
@@ -285,7 +284,7 @@ CREATE TABLE IF NOT EXISTS `horariosala` (
   `Data` datetime NOT NULL,
   `HorarioInicio` time NOT NULL,
   `HorarioFim` time NOT NULL,
-  `Situacao`  ENUM('PENDENTE', 'FINALIZADA', 'CANCELADA') NOT NULL DEFAULT 'PENDENTE',
+  `Situacao` ENUM('PENDENTE', 'APROVADA','REPROVADA', 'CANCELADA') NOT NULL DEFAULT 'APROVADA',
   `Objetivo` varchar(500) NOT NULL,
   `Usuario` int unsigned NOT NULL,
   `Sala` int unsigned NOT NULL,
