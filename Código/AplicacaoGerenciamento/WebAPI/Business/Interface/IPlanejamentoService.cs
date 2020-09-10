@@ -12,9 +12,9 @@ namespace Service.Interface
         List<PlanejamentoModel> GetByIdUsuario(int idUsuario);
 
         List<PlanejamentoModel> GetByIdOrganizacao(int idOrganizacao);
-        bool InsertListHorariosPlanjamento(PlanejamentoAuxModel entity);
-        bool Insert(PlanejamentoModel entity);
-        bool Remove(int id);
+        bool InsertPlanejamentoWithListHorarios(PlanejamentoAuxModel entity);
+        PlanejamentoModel Insert(PlanejamentoModel entity);
+        bool Remove(int id, bool excluirReservas);
         bool RemoveByUsuario(int id);
         bool Update(PlanejamentoModel entity);
     }

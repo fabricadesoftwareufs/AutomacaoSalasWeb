@@ -71,7 +71,7 @@
                             <section class="content">
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <div class="col-md-7">
+                                        <div class="col-md-5">
                                             <div class="card">
                                                 <div class="card-header">
                                                     <h3 class="card-title">Responsáveis Adicionados</h3>
@@ -91,12 +91,11 @@
                                                                         <td>
                                                                             <input class="form-control" name="Responsaveis[@i].Id" hidden value="@Model.Responsaveis[i].Id" />
                                                                             <p class="form-control" type="time"> @Model.Responsaveis[i].Cpf | @Model.Responsaveis[i].Nome </p>
-                                                                            <input class="form-control" name="Responsaveis[@i].Nome" hidden value="nulonulonulo" />
-                                                                            <input class="form-control" name="Responsaveis[@i].Senha" hidden value="nulonulonulo" />
-                                                                            <input class="form-control" name="Responsaveis[@i].Cpf" hidden value="nulonulonulo" />
+                                                                            <input class="form-control" name="Responsaveis[@i].Nome" hidden value="@Model.Responsaveis[i].Nome" />
+                                                                            <input class="form-control" name="Responsaveis[@i].Cpf" hidden value="@Model.Responsaveis[i].Cpf" />
                                                                         </td>
                                                                         <td>
-                                                                            <a id="remove-novo-horario" onclick="removeNovoResponsavel('novo-responsavel-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
+                                                                            <a id="text-overflow remove-novo-horario" onclick="removeNovoResponsavel('novo-responsavel-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
                                                                         </td>
                                                                     </tr>
                                                                 }

@@ -48,10 +48,9 @@ function adicionarResponsavelNaTabela(indice, idUser, texto) {
         '<tr id="' + idItem + '" class="responsavel-sala">' +
         '<td>' +
         '<input class="form-control" name="Responsaveis[' + indice + '].Id" hidden  value = "' + idUser + '"/>' +
-        '<p class="form-control" >' + texto + '</p>' +
-        '<input class="form-control" name="Responsaveis[' + indice + '].Nome" hidden value="nulonulonulo" />' +
-        '<input class="form-control" name="Responsaveis[' + indice + '].Senha" hidden value="nulonulonulo" />' +
-        '<input class="form-control" name="Responsaveis[' + indice + '].Cpf" hidden value="nulonulonulo" />' +
+        '<p class="text-overflow form-control" >' + texto + '</p>' +
+        '<input class="form-control" name="Responsaveis[' + indice + '].Nome" hidden value="' + texto.split('|')[1] + '" />' +
+        '<input class="form-control" name="Responsaveis[' + indice + '].Cpf" hidden value="' + texto.split('|')[0]+'" />' +
         '</td>' +
         '<td>' +
         '<a id="remove-novo-horario"  onclick="removeNovoResponsavel(' + '\'' + idItem + '\'' + ')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +

@@ -5,6 +5,11 @@ namespace Persistence
 {
     public partial class Planejamento
     {
+        public Planejamento()
+        {
+            Horariosala = new HashSet<Horariosala>();
+        }
+
         public int Id { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
@@ -17,5 +22,6 @@ namespace Persistence
 
         public Sala SalaNavigation { get; set; }
         public Usuario UsuarioNavigation { get; set; }
+        public ICollection<Horariosala> Horariosala { get; set; }
     }
 }

@@ -5,6 +5,11 @@ namespace Model
 {
     public class HorarioSalaModel
     {
+        public HorarioSalaModel()
+        {
+            Planejamento = null;
+        }
+
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Código")]
         public int Id { get; set; }
@@ -37,6 +42,6 @@ namespace Model
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Sala")]
         public int SalaId { get; set; }
-
+        public int? Planejamento { get; set; }
     }
 }

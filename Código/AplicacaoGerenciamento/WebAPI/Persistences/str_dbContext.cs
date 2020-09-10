@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
@@ -31,7 +29,7 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            /*if (!optionsBuilder.IsConfigured)
+           /* if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=1234;database=str_db");
             }*/
@@ -142,6 +140,9 @@ namespace Persistence
             {
                 entity.ToTable("horariosala", "str_db");
 
+                entity.HasIndex(e => e.Planejamento)
+                    .HasName("fk_HorarioSala_Planejamento1_idx");
+
                 entity.HasIndex(e => e.Sala)
                     .HasName("fk_HorarioSala_Sala1_idx");
 
@@ -155,6 +156,8 @@ namespace Persistence
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Planejamento).HasColumnType("int(10) unsigned");
+
                 entity.Property(e => e.Sala).HasColumnType("int(10) unsigned");
 
                 entity.Property(e => e.Situacao)
@@ -163,6 +166,11 @@ namespace Persistence
                     .HasDefaultValueSql("APROVADA");
 
                 entity.Property(e => e.Usuario).HasColumnType("int(10) unsigned");
+
+                entity.HasOne(d => d.PlanejamentoNavigation)
+                    .WithMany(p => p.Horariosala)
+                    .HasForeignKey(d => d.Planejamento)
+                    .HasConstraintName("fk_HorarioSala_Planejamento1");
 
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Horariosala)

@@ -6,11 +6,11 @@ namespace Model.AuxModel
     {
         public SalaParticularAuxModel()
         {
-            Responsaveis = new List<UsuarioModel>();
+            Responsaveis = new List<ResponsavelAuxModel>();
         }
 
         public SalaParticularModel SalaParticular { get; set; }
-        public List<UsuarioModel> Responsaveis { get; set; }
+        public List<ResponsavelAuxModel> Responsaveis { get; set; }
         public int BlocoSalas { get; set; }
         public int Organizacao { get; set; }
     }

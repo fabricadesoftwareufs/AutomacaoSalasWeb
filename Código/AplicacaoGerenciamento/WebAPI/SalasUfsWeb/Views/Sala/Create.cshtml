@@ -17,8 +17,8 @@
                         <div class="card-body">
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="col-md-8">
-                                <div class="form-group col-md-12">
+                            <div>
+                                <div class="form-group col-md-6">
                                     <label class="control-label">Selecione a Organização</label>
                                     <select class="form-control" asp-for="OrganizacaoId" id="select-organizacao" onchange="loadBlocos()">
                                         @foreach (var item in ViewBag.Organizacoes)
@@ -28,7 +28,7 @@
                                     </select>
                                     <span class="text-danger"></span>
                                 </div>
-                                <div class="form-group col-md-6" id="ListElements">
+                                <div class="form-group col-md-4" id="ListElements">
                                     <label asp-for="Sala.BlocoId" class="control-label"></label>
                                     <select class="form-control" asp-for="Sala.BlocoId" id="select-bloco">
                                         @foreach (var item in ViewBag.BlocoList)
@@ -38,14 +38,14 @@
                                     </select>
                                     <span asp-validation-for="Sala.BlocoId" class="text-danger"></span>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label asp-for="Sala.Titulo" class="control-label"></label>
                                     <input asp-for="Sala.Titulo" class="form-control" />
                                     <span asp-validation-for="Sala.Titulo" class="text-danger"></span>
                                 </div>
                             </div>
-                            <br />
-                            <div class="col-md-10">
+
+                            <div class="col-md-6">
                                 <h4>Hardwares</h4>
                                 <div class="form-group align-element">
                                     <label class="control-label">MAC</label>
@@ -71,7 +71,7 @@
                             <section class="content">
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <div class="col-md-7">
+                                        <div class="col-md-4">
                                             <div class="card">
                                                 <div class="card-header">
                                                     <h3 class="card-title">Hardwares Adicionados</h3>
@@ -92,7 +92,7 @@
                                                                             <input class="form-control" name="HardwaresSala[@i].TipoHardwareId.Id" hidden value="@Model.HardwaresSala[i].TipoHardwareId.Id" />
                                                                             <input class="form-control" name="HardwaresSala[@i].MAC" hidden value="@Model.HardwaresSala[i].MAC" />
                                                                             <input class="form-control" name="HardwaresSala[@i].TipoHardwareId.Descricao" value="@Model.HardwaresSala[i].TipoHardwareId.Descricao" hidden />
-                                                                            <p class="form-control"> @Model.HardwaresSala[i].MAC | @Model.HardwaresSala[i].TipoHardwareId.Descricao </p>
+                                                                            <p class="text-overflow form-control"> @Model.HardwaresSala[i].MAC | @Model.HardwaresSala[i].TipoHardwareId.Descricao </p>
                                                                         </td>
                                                                         <td>
                                                                             <a id="remove-novo-hardware" onclick="removeNovoHardware('novo-hardware-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>

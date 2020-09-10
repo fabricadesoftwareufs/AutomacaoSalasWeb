@@ -16,8 +16,6 @@
 CREATE DATABASE IF NOT EXISTS `str_db` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `str_db`;
 
-
-
 -- Copiando estrutura para tabela str_db.organizacao
 CREATE TABLE IF NOT EXISTS `organizacao` (
   `Id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -287,18 +285,21 @@ CREATE TABLE IF NOT EXISTS `horariosala` (
   `Objetivo` varchar(500) NOT NULL,
   `Usuario` int unsigned NOT NULL,
   `Sala` int unsigned NOT NULL,
+  `Planejamento` int unsigned NULL DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `fk_HorarioSala_Usuario1_idx` (`Usuario`),
   KEY `fk_HorarioSala_Sala1_idx` (`Sala`),
+  KEY `fk_HorarioSala_Planejamento1_idx` (`Planejamento`),
   CONSTRAINT `fk_HorarioSala_Sala1` FOREIGN KEY (`Sala`) REFERENCES `sala` (`Id`),
-  CONSTRAINT `fk_HorarioSala_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_HorarioSala_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`),
+  CONSTRAINT `fk_HorarioSala_Planejamento1` FOREIGN KEY (`Planejamento`) REFERENCES `Planejamento` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
 
 -- Copiando dados para a tabela str_db.horariosala: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `horariosala` DISABLE KEYS */;
-INSERT INTO `horariosala` (`Id`, `Data`, `HorarioInicio`,`HorarioFim`,`Objetivo`,`Usuario`,`Sala`) VALUES
-							(1, '2020-08-24', '07:00','09:00','Palestra sobre Engenharia de Software',1,4),
-							(2, '2020-09-20', '07:00','09:00','Palestra sobre Engenharia de Software',2,4);
+INSERT INTO `horariosala` (`Id`, `Data`, `HorarioInicio`,`HorarioFim`,`Objetivo`,`Usuario`,`Sala`,`Planejamento`) VALUES
+							(1, '2020-08-24', '07:00','09:00','Palestra sobre Engenharia de Software',1,4,null),
+							(2, '2020-09-20', '07:00','09:00','Palestra sobre Engenharia de Software',2,4,null);
 			
 /*!40000 ALTER TABLE `horariosala` ENABLE KEYS */;
 
