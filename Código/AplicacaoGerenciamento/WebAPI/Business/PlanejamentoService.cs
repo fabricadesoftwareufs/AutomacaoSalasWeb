@@ -190,8 +190,7 @@ namespace Service
                         transaction.Commit();
                         return save;
                     }
-                    else
-                        throw new ServiceException("Algo deu errado, tente novamente em alguns minutos.");
+                    else throw new ServiceException("Algo deu errado, tente novamente em alguns minutos.");
                 }
                 catch (Exception e)
                 {

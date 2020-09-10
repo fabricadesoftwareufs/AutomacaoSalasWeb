@@ -154,12 +154,12 @@ namespace Service
                         .Where(hs => hs.Sala == idSala && hs.Usuario == idUsuario && (horaAtual >= hs.HorarioInicio && horaAtual <= hs.HorarioFim) && date.Date == hs.Data)
                         .Select(hs => new HorarioSalaModel
                         {
-                           Id = hs.Id,
+                            Id = hs.Id,
                         }).FirstOrDefault();
 
             return query == null ? false : true;
         }
-       
+
 
         public bool Insert(HorarioSalaModel entity)
         {
@@ -194,11 +194,18 @@ namespace Service
 
         public bool RemoveByIdPlanejamento(int idPlanejamento)
         {
-            var x = _context.Horariosala.Where(th => th.Planejamento == idPlanejamento).ToList();
-            if (x != null)
+            try
             {
-                _context.RemoveRange(x);
-                return _context.SaveChanges() == 1 ? true : false;
+                var x = _context.Horariosala.Where(th => th.Planejamento == idPlanejamento).ToList();
+                if (x != null)
+                {
+                    _context.RemoveRange(x);
+                    return _context.SaveChanges() == 1 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ServiceException("Houve um problema ao remover reservas associadas ao planejamento, por favor tente novamente mais tarde!");
             }
 
             return false;
@@ -217,12 +224,19 @@ namespace Service
         }
         public bool UpdateColumnPlanejamentoForNull(int idPlanejamento)
         {
-            var x = _context.Horariosala.Where(th => th.Planejamento == idPlanejamento).ToList();
-            if (x != null)
+            try
             {
-                x.ForEach(r => r.Planejamento = null);
-                _context.UpdateRange(x);
-                return _context.SaveChanges() == 1 ? true : false;
+                var x = _context.Horariosala.Where(th => th.Planejamento == idPlanejamento).ToList();
+                if (x != null)
+                {
+                    x.ForEach(r => r.Planejamento = null);
+                    _context.UpdateRange(x);
+                    return _context.SaveChanges() == 1 ? true : false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ServiceException("Houve um problema ao atualizar reservas associadas ao planejamento, por favor tente novamente mais tarde!");
             }
 
             return false;
