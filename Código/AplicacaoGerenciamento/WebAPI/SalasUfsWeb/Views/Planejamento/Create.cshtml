@@ -64,33 +64,32 @@
                                     <span asp-validation-for="Planejamento.Objetivo" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="ocupation">
-                                <div class="form-group align-element col-lg-2">
+                            <div class="ocupation col-md-10">
+                                <div class="form-group align-element">
                                     <label asp-for="Planejamento.DataInicio" class="control-label"></label>
                                     <input asp-for="Planejamento.DataInicio" id="dataInicio" class="form-control" />
                                     <span asp-validation-for="Planejamento.DataInicio" class="text-danger"></span>
                                 </div>
-                                <div class="form-group align-element col-lg-2">
+                                <div class="form-group align-element">
                                     <label asp-for="Planejamento.DataFim" class="control-label"></label>
                                     <input asp-for="Planejamento.DataFim" id="dataFim" class="form-control" />
                                     <span asp-validation-for="Planejamento.DataFim" class="text-danger"></span>
                                 </div>
                             </div>
-
-                            <div class="ocupation">
-                                <div class="form-group align-element col-lg-1">
+                            <div class="ocupation col-md-10">
+                                <div class="form-group align-element">
                                     <label asp-for="Planejamento.HorarioInicio" class="control-label"></label>
                                     <input asp-for="Planejamento.HorarioInicio" id="horarioInicio" class="form-control" />
                                     <span asp-validation-for="Planejamento.HorarioInicio" class="text-danger"></span>
                                 </div>
 
-                                <div class="form-group align-element col-lg-1">
+                                <div class="form-group align-element">
                                     <label asp-for="Planejamento.HorarioFim" class="control-label"></label>
                                     <input asp-for="Planejamento.HorarioFim" id="horarioFim" class="form-control" />
                                     <span asp-validation-for="Planejamento.HorarioFim" class="text-danger"></span>
                                 </div>
 
-                                <div class="form-group align-element col-lg-1">
+                                <div class="form-group align-element">
                                     <label asp-for="Planejamento.DiaSemana" class="control-label"></label>
                                     <select asp-for="Planejamento.DiaSemana" id="input-dia-semana" class="select2_single form-control" tabindex="-1">
                                         <option value="SEG" selected> Segunda </option>
@@ -113,7 +112,7 @@
                             <section class="content">
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-5">
                                             <div class="card">
                                                 <div class="card-header">
                                                     <h3 class="card-title">Horários Adicionados</h3>
@@ -135,7 +134,7 @@
                                                                             <input class="form-control" type="time" name="Horarios[@i].HorarioFim" hidden readonly value="@Model.Horarios[i].HorarioFim" />
                                                                             <input class="form-control" name="Horarios[@i].DiaSemana" hidden readonly value="@Model.Horarios[i].DiaSemana" />
 
-                                                                            <p class="form-control"> @Model.Horarios[i].HorarioInicio / @Model.Horarios[i].HorarioFim - @Model.Horarios[i].DiaSemana</p>
+                                                                            <p class="text-overflow form-control"> @Model.Horarios[i].HorarioInicio / @Model.Horarios[i].HorarioFim - @Model.Horarios[i].DiaSemana</p>
                                                                         </td>
 
                                                                         <td>

@@ -68,7 +68,7 @@ namespace SalasUfsWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (_planejamentoService.InsertListHorariosPlanjamento(planejamentoModel))
+                    if (_planejamentoService.InsertPlanejamentoWithListHorarios(planejamentoModel))
                     {
                         TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
                         return View();
@@ -90,7 +90,7 @@ namespace SalasUfsWeb.Controllers
             var planejamento = _planejamentoService.GetById(id);
             var bloco = _blocoService.GetById(_salaService.GetById(planejamento.SalaId).BlocoId);
 
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id); 
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(bloco.OrganizacaoId);
             ViewBag.Salas = _salaService.GetByIdBloco(bloco.Id);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(bloco.OrganizacaoId);
@@ -117,13 +117,9 @@ namespace SalasUfsWeb.Controllers
                 if (ModelState.IsValid)
                 {
                     if (_planejamentoService.Update(planejamentoModel.Planejamento))
-                    {
                         TempData["mensagemSucesso"] = "Planejamento Atualizado com sucesso!";
-                    }
                     else
-                    {
                         TempData["mensagemErro"] = "Houve um problema ao inserir novo planejamento, tente novamente em alguns minutos.";
-                    }
                 }
             }
             catch (ServiceException se)
@@ -142,11 +138,11 @@ namespace SalasUfsWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, IFormCollection collection)
+        public IActionResult Delete(int id, bool excluirReservas, IFormCollection collection)
         {
             try
             {
-                if (_planejamentoService.Remove(id))
+                if (_planejamentoService.Remove(id, excluirReservas))
                     TempData["mensagemSucesso"] = "Planejmento removido com sucesso!";
                 else
                     TempData["mensagemErro"] = "Houve um problema ou remover o Planejamento, tente novamente em alguns minutos";
@@ -167,9 +163,9 @@ namespace SalasUfsWeb.Controllers
 
             var planejamentos = new List<PlanejamentoViewModel>();
 
-            orgs.ForEach(e =>
-                _planejamentoService.GetByIdOrganizacao(e.OrganizacaoId).ForEach(p =>
-                        planejamentos.Add(Cast(p))
+            orgs.ForEach(e => 
+                    _planejamentoService.GetByIdOrganizacao(e.OrganizacaoId).ForEach(p =>
+                         planejamentos.Add(Cast(p))
                 )
             );
 

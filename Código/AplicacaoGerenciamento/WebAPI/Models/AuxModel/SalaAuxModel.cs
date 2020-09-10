@@ -8,6 +8,5 @@ namespace Model.AuxModel
         public SalaModel Sala { get; set; }
         public int OrganizacaoId { get; set; }
         public List<HardwareAuxModel> HardwaresSala { get; set; }
-        public TipoHardwareModel TipoHardware { get; set; }
     }
 }

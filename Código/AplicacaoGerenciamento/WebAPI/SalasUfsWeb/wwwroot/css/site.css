@@ -67,4 +67,9 @@ body {
     width: 150%;
 }
 
+.text-overflow {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: clip;
+}
 

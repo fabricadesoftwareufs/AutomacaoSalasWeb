@@ -76,18 +76,13 @@ namespace SalasUfsWeb.Controllers
                         return View();
                     }
                     else
-                    {
                         TempData["mensagemErro"] = "Houve um problema ao inserir novo registro, tente novamente em alguns minutos.";
-                    }
                 }
             }
             catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
             }
-
-            for (var i = 0; i < salaParticularModel.Responsaveis.Count; i++)
-                salaParticularModel.Responsaveis[i] = _usuarioService.GetById(salaParticularModel.Responsaveis[i].Id);
 
             return View(salaParticularModel);
         }

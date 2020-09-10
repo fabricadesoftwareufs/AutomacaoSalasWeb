@@ -83,7 +83,7 @@ function adicionaHorarioNaTabela(indice, horarioInicio, horarioFim, dia){
             '<input class="form-control" type="time" name="Horarios[' + indice + '].HorarioInicio" hidden readonly  value = "' + horarioInicio + '"/>' +
             '<input class="form-control" type="time" name="Horarios[' + indice + '].HorarioFim" hidden readonly  value = "' + horarioFim + '"/>' +
             '<input class="form-control" name="Horarios[' + indice + '].DiaSemana" hidden readonly value = "' + dia + '"/>' +
-            '<p class="form-control">' + horarioInicio + ' / ' + horarioFim  + ' - '+ dia +'</p>' + 
+            '<p class="text-overflow form-control">' + horarioInicio + ' / ' + horarioFim  + ' - '+ dia +'</p>' + 
         '</td>' +
         
         '<td>' +

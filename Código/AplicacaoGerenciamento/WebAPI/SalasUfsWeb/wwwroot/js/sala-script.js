@@ -72,7 +72,7 @@ function adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardw
         '<input class="form-control" name="HardwaresSala[' + indice + '].TipoHardwareId.Id" hidden value="' + tipoHardwareId + '" />' +
         '<input class="form-control" name="HardwaresSala[' + indice + '].MAC" hidden value="' + enderecoMac + '" />' +
         '<input class="form-control" name="HardwaresSala[' + indice + '].TipoHardwareId.Descricao" value="' + tipoHardwareTexto + '" hidden/>' +
-        '<p class="form-control">' + enderecoMac + ' | ' + tipoHardwareTexto + '</p>' +
+        '<p class="text-overflow form-control">' + enderecoMac + ' | ' + tipoHardwareTexto + '</p>' +
         '</td>' +
         '<td>' +
         '<a id="remove-novo-hardware" onclick="removeNovoHardware(\'' + idItem + '\')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +

@@ -17,7 +17,7 @@ function AdicionarHardware() {
         if (document.querySelector('.hardware-bloco')) {
             for (indice = 0; indice < hardwares.length; indice++) {
 
-                enderecoMac = hardwares[indice].childNodes[0].childNodes[0].value;
+                enderecoMac = hardwares[indice].childNodes.length > 2 ? hardwares[indice].childNodes[1].children[0].value : hardwares[indice].childNodes[0].childNodes[0].value;
                 novoHardware.push(adicionaHardwareNaTabela(indice + 1, enderecoMac));
             }
         }
@@ -38,7 +38,7 @@ function validacoesHardwareExistente(enderecoMac) {
         if (document.querySelector('.hardware-bloco')) {
             for (indice = 0; indice < hardwares.length; indice++) {
 
-                let MAC = hardwares[indice].childNodes[0].childNodes[0].value;
+                let MAC = hardwares[indice].childNodes.length > 2 ? hardwares[indice].childNodes[1].children[0].value : hardwares[indice].childNodes[0].childNodes[0].value;
 
                 if (MAC == enderecoMac) {
                     hardwareExistente = true;
@@ -62,15 +62,12 @@ function adicionaHardwareNaTabela(indice, enderecoMac) {
 
     let hardware =
         '<tr id="' + idItem + '" class="hardware-bloco">' +
-        '<td>' +
-        '<input class="form-control" name="Hardwares[' + indice +'].MAC" hidden value="' + enderecoMac + '" />' +
-        '<input class="form-control" name="Hardwares[' + indice +'].Id" hidden value="0" />'+
-        '<input class="form-control" name="Hardwares[' + indice +'].BlocoId" hidden value="0" />'+
-        '<input class="form-control" name="Hardwares[' + indice + '].TipoHardwareId" value="0" hidden />' +
-        '<p class="form-control">' + enderecoMac + ' / Controlador de Bloco </p>' + 
-        '<td>' +
-        '<a id="remove-novo-hardware" onclick="removeNovoHardware(\'' + idItem + '\')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +
-        '</td>' +
+            '<td>' +
+                '<input class="form-control" name="Hardwares[' + indice +'].MAC" hidden value="' + enderecoMac + '" />' +
+                '<p class="text-overflow form-control">' + enderecoMac + ' / ' + 'Controlador de Bloco ' +'</p>' + 
+            '<td>' +
+                '<a id="remove-novo-hardware" onclick="removeNovoHardware(\'' + idItem + '\')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +
+            '</td>' +
         '</tr>';
 
     return hardware;

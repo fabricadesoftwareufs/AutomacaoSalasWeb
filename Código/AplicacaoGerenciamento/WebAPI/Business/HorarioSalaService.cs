@@ -26,7 +26,8 @@ namespace Service
                     HorarioFim = hs.HorarioFim,
                     Situacao = hs.Situacao,
                     Objetivo = hs.Objetivo,
-                    UsuarioId = hs.Usuario
+                    UsuarioId = hs.Usuario,
+                    Planejamento = hs.Planejamento
 
                 }).ToList();
         public int Id { get; set; }
@@ -43,7 +44,8 @@ namespace Service
                     HorarioFim = hs.HorarioFim,
                     Situacao = hs.Situacao,
                     Objetivo = hs.Objetivo,
-                    UsuarioId = hs.Usuario
+                    UsuarioId = hs.Usuario,
+                    Planejamento = hs.Planejamento
                 }).FirstOrDefault();
 
         public List<HorarioSalaModel> GetByIdSala(int id)
@@ -58,7 +60,8 @@ namespace Service
                    HorarioFim = hs.HorarioFim,
                    Situacao = hs.Situacao,
                    Objetivo = hs.Objetivo,
-                   UsuarioId = hs.Usuario
+                   UsuarioId = hs.Usuario,
+                   Planejamento = hs.Planejamento
                }).ToList();
 
         public List<HorarioSalaModel> GetByIdUsuario(int idUsuario)
@@ -73,7 +76,8 @@ namespace Service
                 HorarioFim = hs.HorarioFim,
                 Situacao = hs.Situacao,
                 Objetivo = hs.Objetivo,
-                UsuarioId = hs.Usuario
+                UsuarioId = hs.Usuario,
+                Planejamento = hs.Planejamento
             }).ToList();
 
         public List<HorarioSalaModel> GetByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana)
@@ -88,7 +92,8 @@ namespace Service
                 HorarioFim = hs.HorarioFim,
                 Situacao = hs.Situacao,
                 Objetivo = hs.Objetivo,
-                UsuarioId = hs.Usuario
+                UsuarioId = hs.Usuario,
+                Planejamento = hs.Planejamento
             }).ToList();
 
         public List<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana)
@@ -104,7 +109,8 @@ namespace Service
                  HorarioFim = hs.HorarioFim,
                  Situacao = hs.Situacao,
                  Objetivo = hs.Objetivo,
-                 UsuarioId = hs.Usuario
+                 UsuarioId = hs.Usuario,
+                 Planejamento = hs.Planejamento
              }).ToList();
 
         public bool ConcelarReserva(int idReserva)
@@ -134,7 +140,8 @@ namespace Service
                    HorarioFim = hs.HorarioFim,
                    Situacao = hs.Situacao,
                    Objetivo = hs.Objetivo,
-                   UsuarioId = hs.Usuario
+                   UsuarioId = hs.Usuario,
+                   Planejamento = hs.Planejamento
                }).FirstOrDefault();
 
 
@@ -185,12 +192,36 @@ namespace Service
             return false;
         }
 
+        public bool RemoveByIdPlanejamento(int idPlanejamento)
+        {
+            var x = _context.Horariosala.Where(th => th.Planejamento == idPlanejamento).ToList();
+            if (x != null)
+            {
+                _context.RemoveRange(x);
+                return _context.SaveChanges() == 1 ? true : false;
+            }
+
+            return false;
+        }
+
         public bool Update(HorarioSalaModel entity)
         {
             var x = _context.Horariosala.Where(th => th.Id == entity.Id).FirstOrDefault();
             if (x != null)
             {
                 _context.Update(SetEntity(entity, x));
+                return _context.SaveChanges() == 1 ? true : false;
+            }
+
+            return false;
+        }
+        public bool UpdateColumnPlanejamentoForNull(int idPlanejamento)
+        {
+            var x = _context.Horariosala.Where(th => th.Planejamento == idPlanejamento).ToList();
+            if (x != null)
+            {
+                x.ForEach(r => r.Planejamento = null);
+                _context.UpdateRange(x);
                 return _context.SaveChanges() == 1 ? true : false;
             }
 
@@ -207,6 +238,7 @@ namespace Service
             entity.Situacao = model.Situacao;
             entity.Objetivo = model.Objetivo;
             entity.Usuario = model.UsuarioId;
+            entity.Planejamento = model.Planejamento;
 
 
             return entity;

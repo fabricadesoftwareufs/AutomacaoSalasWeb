@@ -139,13 +139,15 @@ CREATE TABLE IF NOT EXISTS `horariosala` (
   `Objetivo` varchar(500) NOT NULL,
   `Usuario` int unsigned NOT NULL,
   `Sala` int unsigned NOT NULL,
+  `Planejamento` int unsigned NULL DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `fk_HorarioSala_Usuario1_idx` (`Usuario`),
   KEY `fk_HorarioSala_Sala1_idx` (`Sala`),
+  KEY `fk_HorarioSala_Planejamento1_idx` (`Planejamento`),
   CONSTRAINT `fk_HorarioSala_Sala1` FOREIGN KEY (`Sala`) REFERENCES `sala` (`Id`),
-  CONSTRAINT `fk_HorarioSala_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+  CONSTRAINT `fk_HorarioSala_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`),
+  CONSTRAINT `fk_HorarioSala_Planejamento1` FOREIGN KEY (`Planejamento`) REFERENCES `Planejamento` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
 
 -- Copiando estrutura para tabela str_db.planejamento
 CREATE TABLE IF NOT EXISTS `planejamento` (

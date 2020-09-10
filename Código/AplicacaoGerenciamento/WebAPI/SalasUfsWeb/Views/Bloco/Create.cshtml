@@ -23,14 +23,15 @@
                                     { @class = "form-control" })
                                     <span asp-validation-for="OrganizacaoId" class="text-danger"></span>
                                 </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label asp-for="Titulo" class="control-label"></label>
                                     <input asp-for="Titulo" class="form-control" />
                                     <span asp-validation-for="Titulo" class="text-danger"></span>
                                 </div>
                             </div>
-
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <h3>Hardwares</h3>
                                 <div class="form align-element">
                                     <label asp-for="Hardwares" class="control-label">Mac</label>
@@ -48,7 +49,7 @@
                             <section class="content">
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="card">
                                                 <div class="card-header">
                                                     <h3 class="card-title">Hardwares Adicionados</h3>
@@ -67,10 +68,7 @@
                                                                     <tr id="novo-hardware-@i" class="hardware-bloco">
                                                                         <td>
                                                                             <input class="form-control" name="Hardwares[@i].MAC" hidden value="@Model.Hardwares[i].MAC" />
-                                                                            <input class="form-control" name="Hardwares[@i].Id" hidden value="0" />
-                                                                            <input class="form-control" name="Hardwares[@i].BlocoId" hidden value="0" />
-                                                                            <input class="form-control" name="Hardwares[@i].TipoHardwareId" value="0" hidden />
-                                                                            <p class="form-control"> @Model.Hardwares[i].MAC \ "Controlador de Bloco" </p>
+                                                                            <p class="text-overflow form-control"> @Model.Hardwares[i].MAC / Controlador de Bloco </p>
                                                                         </td>
                                                                         <td>
                                                                             <a id="remove-novo-hardware" onclick="removeNovoHardware('novo-hardware-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
