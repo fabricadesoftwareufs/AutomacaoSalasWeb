@@ -49,16 +49,14 @@ namespace Service
                 {
                     if (_salaParticular.GetByIdUsuarioAndIdSala(idUsuario, model.SalaId) == null)
                         throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente!");
-
-                    return Update(model);
                 }
                 else
                 {
                     if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, model.SalaId))
                         throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
-
-                    return Update(model);
                 }
+
+                return Update(model);
             }
             catch (Exception e)
             {
@@ -75,7 +73,7 @@ namespace Service
             }
             catch (Exception e)
             {
-                throw e;
+                throw new ServiceException("Houve um problema ao tentar fazer monitoramento da sala, por favor tente novamente em alguns minutos!");
             }
         }
 

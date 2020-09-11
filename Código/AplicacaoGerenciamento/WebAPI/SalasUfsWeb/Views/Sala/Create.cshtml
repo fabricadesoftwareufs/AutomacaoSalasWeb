@@ -18,7 +18,7 @@
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-7">
                                     <label class="control-label">Selecione a Organização</label>
                                     <select class="form-control" asp-for="OrganizacaoId" id="select-organizacao" onchange="loadBlocos()">
                                         @foreach (var item in ViewBag.Organizacoes)

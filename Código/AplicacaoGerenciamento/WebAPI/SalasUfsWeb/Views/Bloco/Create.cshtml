@@ -16,7 +16,7 @@
                         <div class="card-body">
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <div class="form-group" id="ListElements">
                                     <label asp-for="OrganizacaoId" class="control-label"></label>
                                     @Html.DropDownListFor(model => model.OrganizacaoId, ViewBag.OrgList as SelectList, new

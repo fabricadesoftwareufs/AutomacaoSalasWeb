@@ -99,7 +99,7 @@ namespace Service
         public List<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana)
          => _context.Horariosala
              .Where(hs => hs.Usuario == idUsuario && ((int)hs.Data.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper()) &&
-                    hs.Data >= DateTime.Now.Date && hs.Data <= DateTime.Now.AddDays(6) && !hs.Situacao.Equals("CANCELADA"))
+                    hs.Data >= DateTime.Now.Date && hs.Data <= DateTime.Now.AddDays(6) && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))
              .Select(hs => new HorarioSalaModel
              {
                  Id = hs.Id,
@@ -118,7 +118,7 @@ namespace Service
             try
             {
                 var reserva = GetById(idReserva);
-                reserva.Situacao = "CANCELADA";
+                reserva.Situacao = HorarioSalaModel.SITUACAO_CANCELADA;
 
                 return Update(reserva);
             }

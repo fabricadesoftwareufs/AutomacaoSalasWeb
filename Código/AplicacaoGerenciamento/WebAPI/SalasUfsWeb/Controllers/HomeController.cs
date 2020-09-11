@@ -61,10 +61,8 @@ namespace SalasUfsWeb.Controllers
         {
             try
             {
-                if (_horarioSalaService.ConcelarReserva(idReserva))
-                    TempData["mensagemSucesso"] = "Reserva cancelada com sucesso!";
-                else
-                    TempData["mensagemErro"] = "Houve um problema ao cancelar sua reserva, tente novamente em alguns minutOs!";
+                if (_horarioSalaService.ConcelarReserva(idReserva)) TempData["mensagemSucesso"] = "Reserva cancelada com sucesso!";
+                else TempData["mensagemErro"] = "Houve um problema ao cancelar sua reserva, tente novamente em alguns minutOs!";
             }
             catch (ServiceException se)
             {

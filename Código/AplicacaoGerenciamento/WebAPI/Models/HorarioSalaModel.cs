@@ -5,6 +5,11 @@ namespace Model
 {
     public class HorarioSalaModel
     {
+        public static string SITUACAO_APROVADA = "APROVADA";
+        public static string SITUACAO_CANCELADA = "CANCELADA";
+        public static string SITUACAO_REPROVADA = "REPROVADA";
+        public static string SITUACAO_PENDENTE = "PENDENTE";
+
         public HorarioSalaModel()
         {
             Planejamento = null;
