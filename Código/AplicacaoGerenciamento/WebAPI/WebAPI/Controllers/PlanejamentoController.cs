@@ -45,6 +45,6 @@ namespace WebAPI.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
+        public ActionResult Delete(int id, bool excluirReservas) => _service.Remove(id, excluirReservas) ? Ok(true) : Ok(false);
     }
 }

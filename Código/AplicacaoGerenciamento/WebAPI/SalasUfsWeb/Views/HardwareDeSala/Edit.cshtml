@@ -28,7 +28,7 @@
                                 </select>
                                 <span class="text-danger" asp-validation-for="Organizacao"></span>
                             </div>
-                            <div class="form-group col-md-5" id="ListElements">
+                            <div class="form-group col-md-4" id="ListElements">
                                 <label asp-for="Bloco" class="control-label"></label>
                                 <select class="form-control" asp-for="Bloco" id="select-bloco" onchange="loadSalas()">
                                     @foreach (var item in ViewBag.Blocos)
@@ -38,7 +38,7 @@
                                 </select>
                                 <span asp-validation-for="Bloco" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-4">
                                 <label asp-for="SalaId" class="control-label"></label>
                                 <select class="form-control" asp-for="SalaId" id="select-sala">
                                     @foreach (var item in ViewBag.Salas)
@@ -48,12 +48,12 @@
                                 </select>
                                 <span asp-validation-for="SalaId" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-4">
                                 <label asp-for="MAC" class="control-label"></label>
                                 <input asp-for="MAC" id="input-mac" class="form-control" />
                                 <span asp-validation-for="MAC" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-4">
                                 <label asp-for="TipoHardwareId" class="control-label"></label>
                                 @Html.DropDownListFor(model => model.TipoHardwareId, ViewBag.tipoHardware as SelectList, new
                                 { @class = "form-control" })

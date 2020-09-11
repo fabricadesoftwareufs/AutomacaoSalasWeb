@@ -64,80 +64,49 @@ namespace Service
                     UsuarioId = pl.Usuario,
                     SalaId = pl.Sala
                 }).ToList();
-
-        public bool InsertPlanejamentoWithListHorarios(PlanejamentoAuxModel entity)
+        public List<PlanejamentoModel> GetByIdOrganizacao(int idOrganizacao)
         {
-            using (var transcaction = _context.Database.BeginTransaction())
-            {
-                try
-                {
-                    if (entity.Horarios.Count == 0)
-                        throw new ServiceException("Adicione pelo menos um horário!");
+            var _blocoService = new BlocoService(_context);
+            var _salaService = new SalaService(_context);
 
-                    foreach (var horario in entity.Horarios)
-                    {
-                        if (TimeSpan.Compare(horario.HorarioFim, horario.HorarioInicio) != 1)
-                            throw new ServiceException("Os horários possuem inconsistências, corrija-os e tente novamente");
-                        else
-                        {
-                            var planejamentoInserido = Insert(new PlanejamentoModel
-                            {
-                                Id = entity.Planejamento.Id,
-                                Objetivo = entity.Planejamento.Objetivo,
-                                DataInicio = entity.Planejamento.DataInicio,
-                                DataFim = entity.Planejamento.DataFim,
-                                HorarioFim = horario.HorarioFim,
-                                HorarioInicio = horario.HorarioInicio,
-                                DiaSemana = horario.DiaSemana,
-                                UsuarioId = entity.Planejamento.UsuarioId,
-                                SalaId = entity.Planejamento.SalaId
-                            });
+            var query = (from pl in GetAll()
+                         join sl in _salaService.GetAll() on pl.SalaId equals sl.Id
+                         join bl in _blocoService.GetByIdOrganizacao(idOrganizacao) on sl.BlocoId equals bl.Id
+                         select new PlanejamentoModel
+                         {
+                             Id = pl.Id,
+                             DataFim = pl.DataFim,
+                             DataInicio = pl.DataInicio,
+                             DiaSemana = pl.DiaSemana,
+                             HorarioFim = pl.HorarioFim,
+                             HorarioInicio = pl.HorarioInicio,
+                             SalaId = pl.SalaId,
+                             UsuarioId = pl.UsuarioId
+                         }).ToList();
 
-                            InsertReservasPlanejamento(planejamentoInserido);
-                        }
-                    }
-
-                    transcaction.Commit();
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    transcaction.Rollback();
-                    throw e;
-                }
-            }
+            return query;
         }
 
-        private bool InsertReservasPlanejamento(PlanejamentoModel planejamento)
+        public bool InsertPlanejamentoWithListHorarios(PlanejamentoAuxModel model)
         {
             try
             {
-                var _horarioSalaService = new HorarioSalaService(_context);
+                ValidaListaHorariosPlanejamento(model.Horarios);
 
-                var dataCorrente = planejamento.DataInicio;
-                var addDays = 1;
-
-                while (dataCorrente >= planejamento.DataInicio && dataCorrente <= planejamento.DataFim)
+                foreach (var horario in model.Horarios)
                 {
-                    if (((int)dataCorrente.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(planejamento.DiaSemana))
+                    Insert(new PlanejamentoModel
                     {
-                        _horarioSalaService.Insert(
-                              new HorarioSalaModel
-                              {
-                                  HorarioFim = planejamento.HorarioFim,
-                                  HorarioInicio = planejamento.HorarioInicio,
-                                  SalaId = planejamento.SalaId,
-                                  UsuarioId = planejamento.UsuarioId,
-                                  Objetivo = planejamento.Objetivo,
-                                  Planejamento = planejamento.Id,
-                                  Situacao = "APROVADA",
-                                  Data = dataCorrente
-                              });
-
-                        addDays = 7;
-                    }
-
-                    dataCorrente = dataCorrente.AddDays(addDays);
+                        Id = model.Planejamento.Id,
+                        Objetivo = model.Planejamento.Objetivo,
+                        DataInicio = model.Planejamento.DataInicio,
+                        DataFim = model.Planejamento.DataFim,
+                        HorarioFim = horario.HorarioFim,
+                        HorarioInicio = horario.HorarioInicio,
+                        DiaSemana = horario.DiaSemana,
+                        UsuarioId = model.Planejamento.UsuarioId,
+                        SalaId = model.Planejamento.SalaId
+                    });
                 }
 
                 return true;
@@ -148,24 +117,31 @@ namespace Service
             }
         }
 
-        public PlanejamentoModel Insert(PlanejamentoModel planejamentoModel)
+        public bool Insert(PlanejamentoModel planejamentoModel)
         {
-            try
+            using (var transcaction = _context.Database.BeginTransaction())
             {
-                if (!(DateTime.Compare(planejamentoModel.DataFim, planejamentoModel.DataInicio) > 0) || TimeSpan.Compare(planejamentoModel.HorarioFim, planejamentoModel.HorarioInicio) != 1)
-                    throw new ServiceException("Sua Datas ou Horarios possuem inconsistências, corrija-os e tente novamente.");
+                try
+                {
+                    if (!(DateTime.Compare(planejamentoModel.DataFim, planejamentoModel.DataInicio) > 0) || TimeSpan.Compare(planejamentoModel.HorarioFim, planejamentoModel.HorarioInicio) != 1)
+                        throw new ServiceException("Sua Datas ou Horarios possuem inconsistências, corrija-os e tente novamente.");
 
-                var planejamentoInserido = new Planejamento();
-                _context.Add(SetEntity(planejamentoModel, planejamentoInserido));
-                var save = _context.SaveChanges() == 1 ? true : false;
+                    var planejamentoInserido = new Planejamento();
+                    _context.Add(SetEntity(planejamentoModel, planejamentoInserido));
+                    var save = _context.SaveChanges() == 1 ? true : false;
 
-                planejamentoModel.Id = planejamentoInserido.Id;
+                    planejamentoModel.Id = planejamentoInserido.Id;
 
-                return save ? planejamentoModel : null;
-            }
-            catch (Exception e)
-            {
-                throw e;
+                    InsertReservasPlanejamento(planejamentoModel);
+
+                    transcaction.Commit();
+                    return save;
+                }
+                catch (Exception e)
+                {
+                    transcaction.Rollback();
+                    throw e;
+                }
             }
         }
 
@@ -177,10 +153,8 @@ namespace Service
                 {
                     var _reservaContext = new HorarioSalaService(_context);
 
-                    if (excluiReservas)
-                        _reservaContext.RemoveByIdPlanejamento(id);
-                    else
-                        _reservaContext.UpdateColumnPlanejamentoForNull(id);
+                    if (excluiReservas) _reservaContext.RemoveByIdPlanejamento(id);
+                    else _reservaContext.UpdateColumnPlanejamentoForNull(id);
 
                     var x = _context.Planejamento.Where(th => th.Id == id).FirstOrDefault();
                     if (x != null)
@@ -208,7 +182,7 @@ namespace Service
                 try
                 {
                     if (!(DateTime.Compare(entity.DataFim, entity.DataInicio) > 0 && TimeSpan.Compare(entity.HorarioFim, entity.HorarioInicio) == 1))
-                        throw new ServiceException("Suas Datas/Horarios possuem inconsistências, corrija e tente novamente");
+                        throw new ServiceException("Suas Datas/Horarios possuem inconsistências, corrija-os e tente novamente");
 
                     _context.Update(SetEntity(entity, new Planejamento()));
                     var save = _context.SaveChanges() == 1 ? true : false;
@@ -222,22 +196,6 @@ namespace Service
                     throw e;
                 }
             }
-        }
-
-        private static Planejamento SetEntity(PlanejamentoModel model, Planejamento entity)
-        {
-            entity.Id = model.Id;
-            entity.DataInicio = model.DataInicio;
-            entity.DataFim = model.DataFim;
-            entity.HorarioInicio = model.HorarioInicio;
-            entity.HorarioFim = model.HorarioFim;
-            entity.DiaSemana = model.DiaSemana;
-            entity.Objetivo = model.Objetivo;
-            entity.Sala = model.SalaId;
-            entity.Usuario = model.UsuarioId;
-
-
-            return entity;
         }
 
         public List<PlanejamentoModel> GetByIdUsuario(int idUsuario)
@@ -255,30 +213,6 @@ namespace Service
                     UsuarioId = pl.Usuario,
                     SalaId = pl.Sala
                 }).ToList();
-
-
-        public List<PlanejamentoModel> GetByIdOrganizacao(int idOrganizacao)
-        {
-            var _blocoService = new BlocoService(_context);
-            var _salaService = new SalaService(_context);
-
-            var query = (from pl in GetAll()
-                         join sl in _salaService.GetAll() on pl.SalaId equals sl.Id
-                         join bl in _blocoService.GetByIdOrganizacao(idOrganizacao) on sl.BlocoId equals bl.Id
-                         select new PlanejamentoModel
-                         {
-                             Id = pl.Id,
-                             DataFim = pl.DataFim,
-                             DataInicio = pl.DataInicio,
-                             DiaSemana = pl.DiaSemana,
-                             HorarioFim = pl.HorarioFim,
-                             HorarioInicio = pl.HorarioInicio,
-                             SalaId = pl.SalaId,
-                             UsuarioId = pl.UsuarioId
-                         }).ToList();
-
-            return query;
-        }
 
         public bool RemoveByUsuario(int id)
         {
@@ -305,6 +239,78 @@ namespace Service
                     throw e;
 
                 }
+            }
+        }
+
+        private static Planejamento SetEntity(PlanejamentoModel model, Planejamento entity)
+        {
+            entity.Id = model.Id;
+            entity.DataInicio = model.DataInicio;
+            entity.DataFim = model.DataFim;
+            entity.HorarioInicio = model.HorarioInicio;
+            entity.HorarioFim = model.HorarioFim;
+            entity.DiaSemana = model.DiaSemana;
+            entity.Objetivo = model.Objetivo;
+            entity.Sala = model.SalaId;
+            entity.Usuario = model.UsuarioId;
+
+
+            return entity;
+        }
+
+        private void ValidaListaHorariosPlanejamento(List<HorarioPlanejamentoAuxModel> horarios)
+        {
+            try
+            {
+                if (horarios.Count == 0)
+                    throw new ServiceException("Adicione pelo menos um horário!");
+
+                foreach (var horario in horarios)
+                    if (TimeSpan.Compare(horario.HorarioFim, horario.HorarioInicio) != 1)
+                        throw new ServiceException("Os horários possuem inconsistências, corrija-os e tente novamente");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        private bool InsertReservasPlanejamento(PlanejamentoModel planejamento)
+        {
+            try
+            {
+                var _horarioSalaService = new HorarioSalaService(_context);
+                var dataCorrente = planejamento.DataInicio;
+                var addDays = 1;
+
+                while (dataCorrente >= planejamento.DataInicio && dataCorrente <= planejamento.DataFim)
+                {
+                    if (((int)dataCorrente.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(planejamento.DiaSemana))
+                    {
+                        _horarioSalaService.Insert(
+                              new HorarioSalaModel
+                              {
+                                  HorarioFim = planejamento.HorarioFim,
+                                  HorarioInicio = planejamento.HorarioInicio,
+                                  SalaId = planejamento.SalaId,
+                                  UsuarioId = planejamento.UsuarioId,
+                                  Objetivo = planejamento.Objetivo,
+                                  Planejamento = planejamento.Id,
+                                  Situacao = HorarioSalaModel.SITUACAO_APROVADA,
+                                  Data = dataCorrente
+                              });
+
+                        addDays = 7;
+                    }
+
+                    dataCorrente = dataCorrente.AddDays(addDays);
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
     }

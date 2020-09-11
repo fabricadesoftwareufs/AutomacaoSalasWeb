@@ -11,6 +11,8 @@ namespace Model.AuxModel
 
         public SalaParticularModel SalaParticular { get; set; }
         public List<ResponsavelAuxModel> Responsaveis { get; set; }
+
+        /* Atributos auxiliares */
         public int BlocoSalas { get; set; }
         public int Organizacao { get; set; }
     }

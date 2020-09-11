@@ -29,7 +29,7 @@
                                 </select>
                                 <span class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-4">
                                 <label asp-for="BlocoId" class="control-label"></label>
                                 <select class="form-control" asp-for="BlocoId" id="select-bloco">
                                     @foreach (var item in ViewBag.Blocos)
@@ -39,12 +39,12 @@
                                 </select>
                                 <span asp-validation-for="BlocoId" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-4">
                                 <label asp-for="MAC" class="control-label"></label>
                                 <input asp-for="MAC" id="input-mac" class="form-control" />
                                 <span asp-validation-for="MAC" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-4">
                                 <label asp-for="TipoHardwareId" class="control-label"></label>
                                 @Html.DropDownListFor(model => model.TipoHardwareId, ViewBag.tipoHardware as SelectList, new
                                 { @class = "form-control" })

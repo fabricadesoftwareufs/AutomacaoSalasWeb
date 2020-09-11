@@ -13,7 +13,7 @@ namespace Service.Interface
 
         List<PlanejamentoModel> GetByIdOrganizacao(int idOrganizacao);
         bool InsertPlanejamentoWithListHorarios(PlanejamentoAuxModel entity);
-        PlanejamentoModel Insert(PlanejamentoModel entity);
+        bool Insert(PlanejamentoModel entity);
         bool Remove(int id, bool excluirReservas);
         bool RemoveByUsuario(int id);
         bool Update(PlanejamentoModel entity);
