@@ -16,6 +16,14 @@
 CREATE DATABASE IF NOT EXISTS `str_db` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `str_db`;
 
+-- Copiando estrutura para tabela str_db.organizacao
+CREATE TABLE IF NOT EXISTS `organizacao` (
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Cnpj` varchar(15) NOT NULL,
+  `RazaoSocial` varchar(45) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=UTF8;
+
 
 -- Copiando estrutura para tabela str_db.bloco
 CREATE TABLE IF NOT EXISTS `bloco` (
@@ -167,11 +175,6 @@ CREATE TABLE IF NOT EXISTS `planejamento` (
   CONSTRAINT `fk_Planejamento_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Exportação de dados foi desmarcado.
-
-
--- Exportação de dados foi desmarcado.
-
 -- Copiando estrutura para tabela str_db.salaparticular
 CREATE TABLE IF NOT EXISTS `salaparticular` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -184,7 +187,39 @@ CREATE TABLE IF NOT EXISTS `salaparticular` (
   CONSTRAINT `fk_MinhaSala_Usuario1` FOREIGN KEY (`Usuario`) REFERENCES `usuario` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `equipamento` (
+  `id` INT(11) NOT NULL,
+  `Modelo` VARCHAR(200) NOT NULL,
+  `Marca` VARCHAR(100) NOT NULL,
+  `Descricao` VARCHAR(1000) NULL DEFAULT NULL,
+  `Sala` INT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_Equipamento_Sala1_idx` (`Sala`),
+  CONSTRAINT `fk_Equipamento_Sala1` FOREIGN KEY (`Sala`) REFERENCES `str_db`.`Sala` (`Id`)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `codigoInfravermelho` (
+  `id` INT(11) NOT NULL,
+  `Equipamento` INT(11) NOT NULL,
+  `Operacao` INT(11) NOT NULL,
+  `Codigo` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_CodigoInfravermelho_Equipamento1_idx` (`Equipamento` ASC) VISIBLE,
+  KEY `fk_CodigoInfravermelho_Operacao1_idx` (`Operacao` ASC) VISIBLE,
+  CONSTRAINT `fk_CodigoInfravermelho_Equipamento1` FOREIGN KEY (`Equipamento`) REFERENCES `str_db`.`Equipamento` (`id`),
+  CONSTRAINT `fk_CodigoInfravermelho_Operacao1` FOREIGN KEY (`Operacao`) REFERENCES `str_db`.`Operacao` (`id`)
+)ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `operacao` (
+  `id` INT(11) NOT NULL,
+  `Titulo` VARCHAR(50) NOT NULL,
+  `Descricao` VARCHAR(200) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+codigoinfravermelho
