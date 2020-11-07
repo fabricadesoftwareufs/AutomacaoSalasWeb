@@ -47,7 +47,7 @@ namespace Service
                                 throw new ServiceException("Já existe um dispositivos com o endereço MAC informado, corrija e tente novamente!");
 
                         foreach (var item in blocoModel.Hardwares)
-                            _hardwareDeBlocoService.Insert(new HardwareDeBlocoModel { MAC = item.MAC, BlocoId = blocoInserido.Id, TipoHardwareId = TipoHardwareModel.HARDWARE_DE_BLOCO }, idUsuario);
+                            _hardwareDeBlocoService.Insert(new HardwareDeBlocoModel { MAC = item.MAC, BlocoId = blocoInserido.Id, TipoHardwareId = TipoHardwareModel.CONTROLADOR_DE_BLOCO }, idUsuario);
 
                         transaction.Commit();
                         return true;

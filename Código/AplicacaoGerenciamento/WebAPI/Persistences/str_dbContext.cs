@@ -34,11 +34,12 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=1234;database=str_db");
-            }
+           /* *  
+            * if (!optionsBuilder.IsConfigured)
+            * {
+            *    optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=1234;database=str_db");
+            *}
+            * */
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -130,6 +131,11 @@ namespace Persistence
                     .IsUnicode(false);
 
                 entity.Property(e => e.Sala).HasColumnType("int(10) unsigned");
+
+                entity.Property(e => e.TipoEquipamento)
+                    .IsRequired()
+                    .HasColumnType("enum('CONDICIONADOR','LUZES')")
+                    .HasDefaultValueSql("_utf8mb4\\'CONDICIONADOR\\'");
 
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Equipamento)

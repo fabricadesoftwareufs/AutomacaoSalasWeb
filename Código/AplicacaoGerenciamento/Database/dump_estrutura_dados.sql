@@ -180,7 +180,7 @@ INSERT INTO `hardwaredesala` (`Id`, `MAC`, `Sala`, `TipoHardware`) VALUES
 	(1, '00:E0:4C:27:56:96', 1, 1),
 	(2, '00:E0:4C:5A:D1:DD', 1, 2),
 	(3, '00:E0:4C:50:B0:3E', 2, 1),
-	(4, '00:E0:4C:30:E3:52', 2, 2),
+	(4, '127.0.0.1', 2, 2),
 	(5, '00:E0:4C:66:82:0A', 3, 1),
 	(6, '00:E0:4C:59:A4:20', 3, 2),
 	(7, '00:E0:4C:15:F6:A0', 4, 1),
@@ -359,6 +359,7 @@ CREATE TABLE IF NOT EXISTS `equipamento` (
   `Marca` VARCHAR(100) NOT NULL,
   `Descricao` VARCHAR(1000) NULL DEFAULT NULL,
   `Sala` INT(10) UNSIGNED NOT NULL,
+  `TipoEquipamento` ENUM('CONDICIONADOR', 'LUZES') DEFAULT ('CONDICIONADOR') NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_Equipamento_Sala1_idx` (`Sala`),
   CONSTRAINT `fk_Equipamento_Sala1` FOREIGN KEY (`Sala`) REFERENCES `str_db`.`Sala` (`Id`)

@@ -131,5 +131,7 @@ namespace Service
             return entity;
         }
 
+        public List<HardwareDeSalaModel> GetByIdSalaAndTipoHardware(int idsala, int tipo)
+        => _context.Hardwaredesala.Where(h => h.Sala == idsala && h.TipoHardware == tipo).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware }).ToList();
     }
 }

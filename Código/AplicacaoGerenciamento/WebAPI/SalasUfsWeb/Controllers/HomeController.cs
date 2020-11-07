@@ -20,6 +20,7 @@ namespace SalasUfsWeb.Controllers
         private readonly IHorarioSalaService _horarioSalaService;
         private readonly IUsuarioService _usuarioService;
         private readonly IMonitoramentoService _monitoramentoService;
+        private readonly ICodigoInfravermelhoService _codigoInfravermelhoService;
 
 
         public HomeController(ISalaParticularService salaParticularService,
@@ -27,7 +28,8 @@ namespace SalasUfsWeb.Controllers
                               IBlocoService blocoService,
                               IUsuarioService usuarioService,
                               IMonitoramentoService monitoramentoService,
-                              IHorarioSalaService horarioSalaService)
+                              IHorarioSalaService horarioSalaService,
+                              ICodigoInfravermelhoService codigoInfravermelhoService)
         {
             _salaService = salaService;
             _salaParticularService = salaParticularService;
@@ -35,6 +37,7 @@ namespace SalasUfsWeb.Controllers
             _monitoramentoService = monitoramentoService;
             _usuarioService = usuarioService;
             _horarioSalaService = horarioSalaService;
+            _codigoInfravermelhoService = codigoInfravermelhoService;
         }
 
         public IActionResult Index()
