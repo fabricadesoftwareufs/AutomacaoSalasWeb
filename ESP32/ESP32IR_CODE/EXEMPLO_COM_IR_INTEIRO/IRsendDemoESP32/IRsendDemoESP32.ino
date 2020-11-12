@@ -37,7 +37,14 @@ const uint16_t kIrLed = 13;  // ESP8266 GPIO pin to use. Recommended: 4 (D2).
 IRsend irsend(kIrLed);  // Set the GPIO to be used to sending the message.
 
 // Example of data captured by IRrecvDumpV2.ino
-uint16_t rawData[87] = {2658, 2882, 4482, 62, 426450, 2432, 4422, 2876, 440886, 1324886, 438448, 434452, 432426, 458454, 432448, 436448, 4402, 442890, 2434, 4462, 2432, 4442, 876456, 4428, 4482, 2430, 448436, 440444, 438446, 880886, 438448, 878448, 434890, 436450, 434450, 436448, 438446, 8882, 2432, 4502, 872450, 22, 430454, 2};
+uint16_t rawData[63] = {2644, 890,  432, 454,  430, 454,  432, 892,  432, 894,  1318, 890,
+              432, 454,  430, 454,  430, 454,  430, 454,  430, 454,  430, 454, 
+              430, 454,  874, 452,  430, 454,  430, 894,  432, 456,  428, 480,  
+              404, 480,  872, 870,  898, 870,  454, 456,  872, 454,  428, 872,  
+              454, 456,  428, 456,  428, 456,  428, 456,  872, 456,  428, 872,  
+              454, 456,  428};
+
+
 
 void setup() {
   irsend.begin();
@@ -47,6 +54,6 @@ void setup() {
 
 void loop() {
   Serial.println("a rawData capture from IRrecvDumpV2");
-  irsend.sendRaw(rawData, 87, 38);  // Send a raw data capture at 38kHz.
+  irsend.sendRaw(rawData, 63, 38);  // Send a raw data capture at 38kHz.
   delay(1000);
 }
