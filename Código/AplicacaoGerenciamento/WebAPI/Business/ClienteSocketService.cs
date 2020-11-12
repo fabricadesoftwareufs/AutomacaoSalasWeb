@@ -7,7 +7,7 @@ namespace Service
     public class ClienteSocketService
     {
         private string Ip { get; set; }
-        private const int PORTA = 8080;
+        private const int PORTA = 8088;
         private const int NR_TENTATIVAS_CONEXAO = 5;
 
         public ClienteSocketService(string ip)

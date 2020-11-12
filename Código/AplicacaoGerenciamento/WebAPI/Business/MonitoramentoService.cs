@@ -90,7 +90,7 @@ namespace Service
             var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
             var _equipamentoServiceService = new EquipamentoService(_context);
             var _hardwareDeSalaService = new HardwareDeSalaService(_context);
-            bool comandoEnviadoComSucesso;
+            bool comandoEnviadoComSucesso = false;
 
             /* 
              * Verifica qual o equipamento foi 'monitorado' para ligar/desligar   
@@ -107,10 +107,10 @@ namespace Service
 
                 var mensagem = MontarMensagemComComandosIr("condicionador;", codigosInfravermelho);
 
-                var clienteSocket = new ClienteSocketService(hardwareDeSala.MAC);
+                var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
                 comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem);
             }
-            else 
+            else if(!(solicitacao.Luzes == modelDesatualizado.Luzes))
             {
                 int idOperacao = solicitacao.Luzes ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
                 var equipamento = _equipamentoServiceService.GetByIdSalaAndTipoEquipamento(solicitacao.SalaId, EquipamentoModel.TIPO_LUZES);
@@ -122,7 +122,7 @@ namespace Service
 
                 var mensagem = MontarMensagemComComandosIr("luzes;", codigosInfravermelho);
 
-                var clienteSocket = new ClienteSocketService(hardwareDeSala.MAC);
+                var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
                 comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem);
             }
 

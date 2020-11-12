@@ -34,12 +34,11 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           /* *  
-            * if (!optionsBuilder.IsConfigured)
-            * {
-            *    optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=1234;database=str_db");
-            *}
-            * */
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=1234;database=str_db");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -164,6 +163,11 @@ namespace Persistence
 
                 entity.Property(e => e.Bloco).HasColumnType("int(10) unsigned");
 
+                entity.Property(e => e.Ip)
+                    .IsRequired()
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Mac)
                     .IsRequired()
                     .HasColumnName("MAC")
@@ -196,6 +200,11 @@ namespace Persistence
                     .HasName("fk_HardwareDeSala_TipoHardware1_idx");
 
                 entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
+
+                entity.Property(e => e.Ip)
+                    .IsRequired()
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Mac)
                     .IsRequired()

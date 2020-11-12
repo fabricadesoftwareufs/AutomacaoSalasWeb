@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Persistence
 {
@@ -15,6 +16,7 @@ namespace Persistence
         public string Descricao { get; set; }
         public int Sala { get; set; }
         public string TipoEquipamento { get; set; }
+
         public Sala SalaNavigation { get; set; }
         public ICollection<Codigoinfravermelho> Codigoinfravermelho { get; set; }
     }
