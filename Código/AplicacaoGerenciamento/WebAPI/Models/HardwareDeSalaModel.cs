@@ -19,6 +19,7 @@ namespace Model
         [Display(Name = "Tipo de Hardware")]
         public int TipoHardwareId { get; set; }
 
+        public string Ip { get; set; }
         // Variaveis auxiliares
         public int Bloco { get; set; }
         public int Organizacao { get; set; }
