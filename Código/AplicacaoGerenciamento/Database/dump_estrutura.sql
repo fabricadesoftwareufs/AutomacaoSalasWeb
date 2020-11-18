@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `hardwaredebloco` (
   `MAC` varchar(45) NOT NULL,
   `Bloco` int unsigned NOT NULL,
   `TipoHardware` int unsigned NOT NULL,
+  `Ip` VARCHAR(15) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idHardwareDeBloco_UNIQUE` (`id`),
   KEY `fk_HardwareDeBloco_Bloco1_idx` (`Bloco`),
@@ -86,13 +87,13 @@ CREATE TABLE IF NOT EXISTS `hardwaredesala` (
   `MAC` varchar(45) NOT NULL,
   `Sala` int unsigned NOT NULL,
   `TipoHardware` int unsigned NOT NULL,
+  `Ip` VARCHAR(15) NOT NULL,
   PRIMARY KEY (`Id`),
   KEY `fk_Hardware_Sala1_idx` (`Sala`),
   KEY `fk_HardwareDeSala_TipoHardware1_idx` (`TipoHardware`),
   CONSTRAINT `fk_Hardware_Sala1` FOREIGN KEY (`Sala`) REFERENCES `sala` (`Id`),
   CONSTRAINT `fk_HardwareDeSala_TipoHardware1` FOREIGN KEY (`TipoHardware`) REFERENCES `tipohardware` (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
-
 -- Exportação de dados foi desmarcado.
 
 
