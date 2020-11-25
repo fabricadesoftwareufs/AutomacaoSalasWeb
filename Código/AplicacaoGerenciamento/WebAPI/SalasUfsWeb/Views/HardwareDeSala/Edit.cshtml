@@ -53,10 +53,15 @@
                                 <input asp-for="MAC" id="input-mac" class="form-control" />
                                 <span asp-validation-for="MAC" class="text-danger"></span>
                             </div>
+                            <div class="form-group col-md-4" id="div-input-ip" hidden>
+                                <label asp-for="Ip" class="control-label"></label>
+                                <input asp-for="Ip" id="input-ip" ip-mask class="form-control" placeholder="000.000.000.000" />
+                                <span asp-validation-for="Ip" class="text-danger"></span>
+                            </div>
                             <div class="form-group col-md-4">
                                 <label asp-for="TipoHardwareId" class="control-label"></label>
                                 @Html.DropDownListFor(model => model.TipoHardwareId, ViewBag.tipoHardware as SelectList, new
-                                { @class = "form-control" })
+                           { @class = "form-control", @onchange = "mostraInputIP()", @id = "select-tipo-hardware" })
                                 <span asp-validation-for="TipoHardwareId" class="text-danger"></span>
                             </div>
                         </div>
@@ -90,7 +95,22 @@ else if (TempData["mensagemErro"] != null)
         $(document).ready(function () {
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
+            mostraInputIP();
+
+            $('[ip-mask]').ipAddress();
         });
+
+        function mostraInputIP() {
+
+            let texto = $("#select-tipo-hardware option:selected").text();
+
+            if (texto == "CONTROLADOR DE SALA") {
+                document.getElementById('div-input-ip').hidden = false;
+            } else {
+                $('#input-ip').val = '';
+                document.getElementById('div-input-ip').hidden = true;
+            }
+        }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
@@ -98,6 +118,7 @@ else if (TempData["mensagemErro"] != null)
     <script src="~/js/custom.js"></script>
     <script src="~/js/load-itens-script.js"></script>
     <script src="~/plugins/inputmask/inputmask/jquery.mask.js"></script>
+    <script src="~/js/mask.ip-input.js"></script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

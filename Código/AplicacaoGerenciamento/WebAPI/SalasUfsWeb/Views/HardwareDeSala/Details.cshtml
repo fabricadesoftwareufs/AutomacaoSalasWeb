@@ -28,6 +28,15 @@
                                 <dd>
                                     <p class="form-control">@Html.DisplayFor(model => model.MAC)</p>
                                 </dd>
+                                @if (!string.IsNullOrEmpty(Model.Ip))
+                                {
+                                    <dt>
+                                        @Html.DisplayNameFor(model => model.Ip)
+                                    </dt>
+                                    <dd>
+                                        <p class="form-control">@Html.DisplayFor(model => model.Ip)</p>
+                                    </dd>
+                                }
                                 <dt>
                                     @Html.DisplayNameFor(model => model.SalaId.Titulo)
                                 </dt>

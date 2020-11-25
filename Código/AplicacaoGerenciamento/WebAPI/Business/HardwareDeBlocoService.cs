@@ -15,11 +15,11 @@ namespace Service
         {
             _context = context;
         }
-        public List<HardwareDeBlocoModel> GetAll() => _context.Hardwaredebloco.Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware, Ip = h.Ip }).ToList();
+        public List<HardwareDeBlocoModel> GetAll() => _context.Hardwaredebloco.Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware}).ToList();
 
-        public HardwareDeBlocoModel GetById(int id) => _context.Hardwaredebloco.Where(h => h.Id == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware, Ip = h.Ip }).FirstOrDefault();
+        public HardwareDeBlocoModel GetById(int id) => _context.Hardwaredebloco.Where(h => h.Id == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware}).FirstOrDefault();
 
-        public List<HardwareDeBlocoModel> GetByIdBloco(int id) => _context.Hardwaredebloco.Where(h => h.Bloco == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware,Ip = h.Ip}).ToList();
+        public List<HardwareDeBlocoModel> GetByIdBloco(int id) => _context.Hardwaredebloco.Where(h => h.Bloco == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware}).ToList();
         public List<HardwareDeBlocoModel> GetAllHardwaresBlacoByUsuarioOrganizacao(int idUsuario)
         {
             var _blocoService = new BlocoService(_context);
@@ -33,7 +33,6 @@ namespace Service
                              MAC = hr.MAC,
                              BlocoId = hr.BlocoId,
                              TipoHardwareId = hr.TipoHardwareId,
-                             Ip = hr.Ip
                          }).ToList();
 
             return query;
@@ -44,7 +43,7 @@ namespace Service
             var _usuarioOrganizacao = new UsuarioOrganizacaoService(_context);
             var _blocoService = new BlocoService(_context);
 
-            var hardware = _context.Hardwaredebloco.Where(h => h.Mac.Equals(mac)).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware, Ip = h.Ip }).FirstOrDefault();
+            var hardware = _context.Hardwaredebloco.Where(h => h.Mac.Equals(mac)).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware}).FirstOrDefault();
 
 
             if (hardware != null)
@@ -69,7 +68,7 @@ namespace Service
                     throw new ServiceException("Já existe outro hardware com esse endereço MAC!");
 
                 _context.Add(SetEntity(entity, new Hardwaredebloco()));
-                return _context.SaveChanges() == 1 ? true : false;
+                return _context.SaveChanges() == 1;
             }
             catch (Exception e)
             {
@@ -85,7 +84,7 @@ namespace Service
                 if (x != null)
                 {
                     _context.Remove(x);
-                    return _context.SaveChanges() == 1 ? true : false;
+                    return _context.SaveChanges() == 1;
                 }
             }
             catch (Exception e)
@@ -108,7 +107,7 @@ namespace Service
                 if (x != null)
                 {
                     _context.Update(SetEntity(entity, x));
-                    return _context.SaveChanges() == 1 ? true : false;
+                    return _context.SaveChanges() == 1;
                 }
             }
             catch (Exception e)
@@ -125,7 +124,6 @@ namespace Service
             entity.Mac = Methods.CleanString(model.MAC);
             entity.TipoHardware = model.TipoHardwareId;
             entity.Bloco = model.BlocoId;
-            entity.Ip = model.Ip;
 
             return entity;
         }

@@ -89,18 +89,18 @@ INSERT INTO `tipohardware` (`Id`, `Descricao`) VALUES
 
 -- Copiando dados para a tabela str_db.hardwaredebloco: ~11 rows (aproximadamente)
 /*!40000 ALTER TABLE `hardwaredebloco` DISABLE KEYS */;
-INSERT INTO `hardwaredebloco` (`id`, `MAC`,`Ip`, `Bloco`, `TipoHardware`) VALUES
-	(1, '00:E0:4C:1E:D9:14', '192.168.15.233',1, 3),
-	(2, '00:E0:4C:2F:2D:6C', '192.168.15.233',2, 3),
-	(3, '00:E0:4C:43:B4:48', '192.168.15.233',3, 3),
-	(4, '00:E0:4C:01:9E:76', '192.168.15.233',4, 3),
-	(5, '00:E0:4C:55:6C:99', '192.168.15.233',5, 3),
-	(6, '00:E0:4C:75:B8:15', '192.168.15.233',6, 3),
-	(7, '00:E0:4C:51:34:D1', '192.168.15.233',7, 3),
-	(8, '00:E0:4C:7D:84:19', '192.168.15.233', 8, 3),
-	(9, '00:E0:4C:50:86:F5', '192.168.15.233', 9, 3),
-	(10, '00:E0:4C:7B:F5:06', '192.168.15.233', 10, 3),
-	(11, '00:E0:4C:18:50:68', '192.168.15.233', 11, 3);
+INSERT INTO `hardwaredebloco` (`id`, `MAC`, `Bloco`, `TipoHardware`) VALUES
+	(1, '00:E0:4C:1E:D9:14',1, 3),
+	(2, '00:E0:4C:2F:2D:6C',2, 3),
+	(3, '00:E0:4C:43:B4:48',3, 3),
+	(4, '00:E0:4C:01:9E:76',4, 3),
+	(5, '00:E0:4C:55:6C:99',5, 3),
+	(6, '00:E0:4C:75:B8:15',6, 3),
+	(7, '00:E0:4C:51:34:D1',7, 3),
+	(8, '00:E0:4C:7D:84:19',8, 3),
+	(9, '00:E0:4C:50:86:F5',9, 3),
+	(10, '00:E0:4C:7B:F5:06',10, 3),
+	(11, '00:E0:4C:18:50:68',11, 3);
 /*!40000 ALTER TABLE `hardwaredebloco` ENABLE KEYS */;
 
 -- Copiando dados para a tabela str_db.hardwaredesala: ~39 rows (aproximadamente)
