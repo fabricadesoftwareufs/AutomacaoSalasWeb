@@ -36,6 +36,14 @@ namespace WebAPI.Controllers
             {
                 hora = DateTime.Now.ToString("dd/MM/yyyy");
             }
+            else if (id.ToUpper() == "GETDATENEXTSUNDAY")
+            {
+                hora = DateTime.Now.AddDays(7 - (int)DateTime.Now.DayOfWeek).ToString("dd/MM/yyyy");
+            }
+            else if (id.ToUpper() == "GETDATEPREVIOUSSUNDAY")
+            {
+                hora = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek).ToString("dd/MM/yyyy");
+            }
             else
             {
                 return BadRequest();
