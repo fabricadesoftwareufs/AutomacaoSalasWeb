@@ -15,6 +15,7 @@ namespace Service.Interface
         List<HorarioSalaModel> GetByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana);
         List<HorarioSalaModel> GetByIdUsuario(int idUsuario);
         List<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana);
+        List<HorarioSalaModel> GetReservasDaSemanaByIdSala(int idSala);
         bool VerificaSeEstaEmHorarioAula(int idUsuario, int idSala);
         bool UpdateColumnPlanejamentoForNull(int idPlanejamento);
         bool RemoveByIdPlanejamento(int idPlanejamento);

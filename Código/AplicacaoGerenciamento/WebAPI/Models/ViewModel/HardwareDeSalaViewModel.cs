@@ -12,6 +12,9 @@ namespace Model
         [Required]
         [Display(Name = "MAC")]
         public string MAC { get; set; }
+        [Required]
+        [Display(Name = "IP")]
+        public string Ip { get; set; }
 
         [Required]
         [Display(Name = "Sala")]
