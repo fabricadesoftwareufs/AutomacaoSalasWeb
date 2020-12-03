@@ -49,7 +49,7 @@ namespace SalasUfsWeb.Controllers
         {
             try
             {
-                if (!_monitoramentoService.MonitorarSala(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id,monitoramento))
+                if (!_monitoramentoService.MonitorarSala(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id, monitoramento))
                     TempData["mensagemErro"] = "Não foi possível atender a sua solicitacao, tente novamente!";
             }
             catch (ServiceException se)

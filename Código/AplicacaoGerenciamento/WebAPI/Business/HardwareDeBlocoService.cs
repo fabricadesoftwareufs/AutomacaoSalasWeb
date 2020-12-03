@@ -15,11 +15,11 @@ namespace Service
         {
             _context = context;
         }
-        public List<HardwareDeBlocoModel> GetAll() => _context.Hardwaredebloco.Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware}).ToList();
+        public List<HardwareDeBlocoModel> GetAll() => _context.Hardwaredebloco.Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).ToList();
 
-        public HardwareDeBlocoModel GetById(int id) => _context.Hardwaredebloco.Where(h => h.Id == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware}).FirstOrDefault();
+        public HardwareDeBlocoModel GetById(int id) => _context.Hardwaredebloco.Where(h => h.Id == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).FirstOrDefault();
 
-        public List<HardwareDeBlocoModel> GetByIdBloco(int id) => _context.Hardwaredebloco.Where(h => h.Bloco == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware}).ToList();
+        public List<HardwareDeBlocoModel> GetByIdBloco(int id) => _context.Hardwaredebloco.Where(h => h.Bloco == id).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).ToList();
         public List<HardwareDeBlocoModel> GetAllHardwaresBlacoByUsuarioOrganizacao(int idUsuario)
         {
             var _blocoService = new BlocoService(_context);
@@ -43,7 +43,7 @@ namespace Service
             var _usuarioOrganizacao = new UsuarioOrganizacaoService(_context);
             var _blocoService = new BlocoService(_context);
 
-            var hardware = _context.Hardwaredebloco.Where(h => h.Mac.Equals(mac)).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware}).FirstOrDefault();
+            var hardware = _context.Hardwaredebloco.Where(h => h.Mac.Equals(mac)).Select(h => new HardwareDeBlocoModel { Id = h.Id, MAC = h.Mac, BlocoId = h.Bloco, TipoHardwareId = h.TipoHardware }).FirstOrDefault();
 
 
             if (hardware != null)

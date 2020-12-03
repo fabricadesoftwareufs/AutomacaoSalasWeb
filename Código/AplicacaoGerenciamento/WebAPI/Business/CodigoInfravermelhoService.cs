@@ -1,10 +1,8 @@
 ﻿using Model;
 using Persistence;
 using Service.Interface;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Service
 {
@@ -27,7 +25,7 @@ namespace Service
                        IdOperacao = ir.Operacao,
                    }).FirstOrDefault();
 
-        public List<CodigoInfravermelhoModel> GetByIdOperacaoAndIdEquipamento(int idEquipamento, int idOperacao) 
+        public List<CodigoInfravermelhoModel> GetByIdOperacaoAndIdEquipamento(int idEquipamento, int idOperacao)
             => _context.Codigoinfravermelho
                    .Where(ir => ir.Equipamento == idEquipamento && ir.Operacao == idOperacao)
                    .Select(ir => new CodigoInfravermelhoModel
