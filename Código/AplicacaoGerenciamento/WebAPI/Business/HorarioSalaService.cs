@@ -150,6 +150,7 @@ namespace Service
             var date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time"));
             var horaAtual = new TimeSpan(date.TimeOfDay.Hours, date.TimeOfDay.Minutes, date.TimeOfDay.Seconds);
 
+            
             var query = _context.Horariosala
                         .Where(hs => hs.Sala == idSala && hs.Usuario == idUsuario && (horaAtual >= hs.HorarioInicio && horaAtual <= hs.HorarioFim) && date.Date == hs.Data)
                         .Select(hs => new HorarioSalaModel

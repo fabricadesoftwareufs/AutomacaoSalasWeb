@@ -86,7 +86,7 @@ namespace Service
 
         private bool EnviarComandosMonitoramento(MonitoramentoModel solicitacao)
         {
-            var modelDesatualizado = GetById(solicitacao.Id);
+            var modelDesatualizado = GetById(solicitacao.Id); 
             var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
             var _equipamentoServiceService = new EquipamentoService(_context);
             var _hardwareDeSalaService = new HardwareDeSalaService(_context);
@@ -106,7 +106,6 @@ namespace Service
                     throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
 
                 var mensagem = MontarMensagemComComandosIr("condicionador;", codigosInfravermelho);
-
                 var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
                 comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem);
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Service
 {
@@ -9,10 +10,11 @@ namespace Service
         private string Ip { get; set; }
         private const int PORTA = 8088;
         private const int NR_TENTATIVAS_CONEXAO = 5;
-
+        private TcpClient Client { get; set; }
         public ClienteSocketService(string ip)
         {
             Ip = ip;
+            Client = new TcpClient(Ip, PORTA);
         }
 
         public bool EnviarComando(string comando)
@@ -26,12 +28,10 @@ namespace Service
                 try
                 {
                     enviouComando = true;
-                    TcpClient client = new TcpClient(Ip, PORTA);
-
                     int byteCount = Encoding.ASCII.GetByteCount(comando + 1);
                     byte[] sendData = Encoding.ASCII.GetBytes(comando);
 
-                    NetworkStream stream = client.GetStream();
+                    NetworkStream stream = Client.GetStream();
                     stream.Write(sendData, 0, sendData.Length);
                     Console.WriteLine("Enviando dados para o servidor...");
 
@@ -40,9 +40,23 @@ namespace Service
                      * string response = sr.ReadLine();
                      * Console.WriteLine(response);
                      */
+                    byte[] myReadBuffer = new byte[1024];
+                    StringBuilder myCompleteMessage = new StringBuilder();
+                    int numberOfBytesRead = 0;
+
+                    do
+                    {
+                        numberOfBytesRead = stream.Read(myReadBuffer, 0, myReadBuffer.Length);
+
+                        myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
+
+                    }
+                    while (stream.DataAvailable);
+
+                    string resposta = myCompleteMessage.ToString();
 
                     stream.Close();
-                    client.Close();
+                    Client.Close();
                 }
                 catch (Exception)
                 {
