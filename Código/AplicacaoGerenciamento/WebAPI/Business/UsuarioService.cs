@@ -121,13 +121,13 @@ namespace Service
 
         public bool Remove(int id)
         {
-            
+
             var plan = new PlanejamentoService(_context);
             var particular = new SalaParticularService(_context);
             var horarios = new HorarioSalaService(_context);
             var usuarioOrg = new UsuarioOrganizacaoService(_context);
 
-               
+
             var x = _context.Usuario.Where(u => u.Id == id).FirstOrDefault();
             if (x != null)
             {
@@ -224,6 +224,6 @@ namespace Service
                     TipoUsuarioId = u.TipoUsuario
                 }).FirstOrDefault();
 
-        public List<UsuarioModel> GetAllByIdsOrganizacao(List<int> ids) => _context.Usuario.Where(u => ids.Contains(u.Id)).Select(u => new UsuarioModel { Id = u.Id, Cpf = u.Cpf, DataNascimento = (DateTime)u.DataNascimento, Nome = u.Nome, TipoUsuarioId = u.TipoUsuario, Senha = u.Senha  }).ToList();
+        public List<UsuarioModel> GetAllByIdsOrganizacao(List<int> ids) => _context.Usuario.Where(u => ids.Contains(u.Id)).Select(u => new UsuarioModel { Id = u.Id, Cpf = u.Cpf, DataNascimento = (DateTime)u.DataNascimento, Nome = u.Nome, TipoUsuarioId = u.TipoUsuario, Senha = u.Senha }).ToList();
     }
 }

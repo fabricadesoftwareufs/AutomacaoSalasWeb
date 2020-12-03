@@ -1,5 +1,4 @@
 ﻿using Model;
-using Model.AuxModel;
 using Persistence;
 using Service.Interface;
 using System;
@@ -58,7 +57,7 @@ namespace Service
                         throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
                 }
 
-                if(!EnviarComandosMonitoramento(model))
+                if (!EnviarComandosMonitoramento(model))
                     throw new ServiceException("Não foi possível concluir seu monitoramento pois não foi possível estabelecer conexão com a sala!");
 
                 return Update(model);
@@ -86,7 +85,7 @@ namespace Service
 
         private bool EnviarComandosMonitoramento(MonitoramentoModel solicitacao)
         {
-            var modelDesatualizado = GetById(solicitacao.Id); 
+            var modelDesatualizado = GetById(solicitacao.Id);
             var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
             var _equipamentoServiceService = new EquipamentoService(_context);
             var _hardwareDeSalaService = new HardwareDeSalaService(_context);
@@ -102,14 +101,14 @@ namespace Service
                 var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdEquipamento(equipamento.Id, idOperacao);
                 var hardwareDeSala = _hardwareDeSalaService.GetByIdSalaAndTipoHardware(solicitacao.SalaId, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
 
-                if(!codigosInfravermelho.Any())
+                if (!codigosInfravermelho.Any())
                     throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
 
                 var mensagem = MontarMensagemComComandosIr("condicionador;", codigosInfravermelho);
                 var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
                 comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem);
             }
-            else if(solicitacao.Luzes != modelDesatualizado.Luzes)
+            else if (solicitacao.Luzes != modelDesatualizado.Luzes)
             {
                 int idOperacao = solicitacao.Luzes ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
                 var equipamento = _equipamentoServiceService.GetByIdSalaAndTipoEquipamento(solicitacao.SalaId, EquipamentoModel.TIPO_LUZES);

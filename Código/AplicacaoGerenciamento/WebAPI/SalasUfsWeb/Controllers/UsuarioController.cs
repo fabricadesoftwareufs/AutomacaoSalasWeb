@@ -24,9 +24,9 @@ namespace SalasUfsWeb.Controllers
         private readonly IHorarioSalaService _horarioSalaService;
 
         public UsuarioController(
-                                    IUsuarioService usuarioService, 
-                                    ITipoUsuarioService tipoUsuarioService, 
-                                    IOrganizacaoService organizacaoService, 
+                                    IUsuarioService usuarioService,
+                                    ITipoUsuarioService tipoUsuarioService,
+                                    IOrganizacaoService organizacaoService,
                                     IUsuarioOrganizacaoService usuarioOrganizacaoService,
                                     IPlanejamentoService planejamentoService,
                                     IHorarioSalaService horarioSalaService
@@ -47,7 +47,7 @@ namespace SalasUfsWeb.Controllers
             var usuarios = _usuarioService.GetAllByIdsOrganizacao(orgsUsuario).GroupBy(u => u.Id).ToList();
             List<UsuarioAuxModel> lista = new List<UsuarioAuxModel>();
 
-            usuarios.ForEach(s => lista.Add(new UsuarioAuxModel { UsuarioModel = s.FirstOrDefault(), TipoUsuarioModel = _tipoUsuarioService.GetById(s.FirstOrDefault().TipoUsuarioId), OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.FirstOrDefault().Id)  })); 
+            usuarios.ForEach(s => lista.Add(new UsuarioAuxModel { UsuarioModel = s.FirstOrDefault(), TipoUsuarioModel = _tipoUsuarioService.GetById(s.FirstOrDefault().TipoUsuarioId), OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.FirstOrDefault().Id) }));
 
             return View(lista);
         }
@@ -56,7 +56,7 @@ namespace SalasUfsWeb.Controllers
         public ActionResult Details(int id)
         {
             var usuario = _usuarioService.GetById(id);
-            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = _tipoUsuarioService.GetById(usuario.TipoUsuarioId)};
+            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = _tipoUsuarioService.GetById(usuario.TipoUsuarioId) };
             return View(usuarioView);
         }
 
@@ -115,10 +115,10 @@ namespace SalasUfsWeb.Controllers
         public ActionResult Edit(int id)
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
-            
+
             var usuario = _usuarioService.GetById(id);
             var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = _tipoUsuarioService.GetById(usuario.TipoUsuarioId) };
-            
+
             return View(usuarioView);
         }
 
@@ -128,7 +128,7 @@ namespace SalasUfsWeb.Controllers
         public ActionResult Edit(int id, UsuarioViewModel usuarioView)
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
-          
+
             try
             {
                 if (ModelState.IsValid)
@@ -170,13 +170,13 @@ namespace SalasUfsWeb.Controllers
             {
                 TempData["mensagemErro"] = se.Message;
             }
-            
+
             return RedirectToAction(nameof(Index));
         }
 
         public bool HasPlanOrReserv(int idUsuario)
         {
-            var plan =  _planejamentoService.GetByIdUsuario(idUsuario);
+            var plan = _planejamentoService.GetByIdUsuario(idUsuario);
             if (plan != null)
                 return true;
             else

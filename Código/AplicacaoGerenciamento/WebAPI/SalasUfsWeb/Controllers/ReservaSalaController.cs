@@ -1,16 +1,16 @@
 
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Model.AuxModel;
 using Model.ViewModel;
 using Service;
 using Service.Interface;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
@@ -46,7 +46,7 @@ namespace SalasUfsWeb.Controllers
         {
             var reservas = _horarioSalaService.GetAll();
             List<ReservaAuxModel> reservaSalas = new List<ReservaAuxModel>();
-            reservas.ForEach(s => reservaSalas.Add(new ReservaAuxModel { HorarioSalaModel = s, UsuarioModel = _usuarioService.GetById(s.UsuarioId), SalaModel = _salaService.GetById(s.SalaId)}));
+            reservas.ForEach(s => reservaSalas.Add(new ReservaAuxModel { HorarioSalaModel = s, UsuarioModel = _usuarioService.GetById(s.UsuarioId), SalaModel = _salaService.GetById(s.SalaId) }));
             return View(reservaSalas);
         }
 
@@ -185,7 +185,7 @@ namespace SalasUfsWeb.Controllers
             ViewBag.usuarios = new SelectList(usuarios.Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
             ViewBag.salas = new SelectList(salas.Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
             ViewBag.blocos = new SelectList(blocos.Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-          
+
             try
             {
                 if (ModelState.IsValid)
