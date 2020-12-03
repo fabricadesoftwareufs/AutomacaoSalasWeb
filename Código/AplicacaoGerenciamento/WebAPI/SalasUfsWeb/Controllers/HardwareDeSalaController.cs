@@ -69,6 +69,9 @@ namespace SalasUfsWeb.Controllers
 
             try
             {
+                if (string.IsNullOrEmpty(hardware.Ip) && hardware.TipoHardwareId == TipoHardwareModel.CONTROLADOR_DE_SALA)
+                    ModelState.AddModelError("Ip", "Adicione um endereço IP");
+
                 if (ModelState.IsValid)
                 {
                     if (_hardwareService.Insert(hardware, idUsuario))
@@ -117,6 +120,13 @@ namespace SalasUfsWeb.Controllers
 
             try
             {
+                if (string.IsNullOrEmpty(hardware.Ip) && hardware.TipoHardwareId == TipoHardwareModel.CONTROLADOR_DE_SALA)
+                {
+                    ModelState.AddModelError("Ip", "Adicione um endereço IP");
+                    return View(hardware);
+                }
+
+
                 if (ModelState.IsValid)
                 {
                     if (_hardwareService.Update(hardware, idUsuario))
@@ -178,6 +188,7 @@ namespace SalasUfsWeb.Controllers
 
             h.Id = item.Id;
             h.MAC = item.MAC;
+            h.Ip = item.Ip;
             h.SalaId = _salaService.GetById(item.SalaId);
             h.TipoHardwareId = _tipoHardwareService.GetById(item.TipoHardwareId);
 

@@ -30,7 +30,7 @@ namespace Service
                     return true;
 
                 _context.Add(SetEntity(model));
-                return _context.SaveChanges() == 1 ? true : false;
+                return _context.SaveChanges() == 1;
             }
             catch (Exception e)
             {
@@ -75,7 +75,7 @@ namespace Service
             try
             {
                 _context.Update(SetEntity(model));
-                return _context.SaveChanges() == 1 ? true : false;
+                return _context.SaveChanges() == 1;
             }
             catch (Exception)
             {
@@ -90,12 +90,12 @@ namespace Service
             var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
             var _equipamentoServiceService = new EquipamentoService(_context);
             var _hardwareDeSalaService = new HardwareDeSalaService(_context);
-            bool comandoEnviadoComSucesso = false;
+            bool comandoEnviadoComSucesso = true;
 
             /* 
              * Verifica qual o equipamento foi 'monitorado' para ligar/desligar   
              */
-            if (!(solicitacao.ArCondicionado == modelDesatualizado.ArCondicionado))
+            if (solicitacao.ArCondicionado != modelDesatualizado.ArCondicionado)
             {
                 var idOperacao = solicitacao.ArCondicionado ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
                 var equipamento = _equipamentoServiceService.GetByIdSalaAndTipoEquipamento(solicitacao.SalaId, EquipamentoModel.TIPO_CONDICIONADOR);
@@ -109,7 +109,7 @@ namespace Service
                 var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
                 comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem);
             }
-            else if(!(solicitacao.Luzes == modelDesatualizado.Luzes))
+            else if(solicitacao.Luzes != modelDesatualizado.Luzes)
             {
                 int idOperacao = solicitacao.Luzes ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
                 var equipamento = _equipamentoServiceService.GetByIdSalaAndTipoEquipamento(solicitacao.SalaId, EquipamentoModel.TIPO_LUZES);
