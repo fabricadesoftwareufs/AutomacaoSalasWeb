@@ -1,6 +1,6 @@
 #include <WiFi.h>
-const char* ssid     = "VIVOFIBRA-5F70";
-const char* password = "F03C999054";
+const char* ssid     = "Net-Fathinha";
+const char* password = "alohomora0707";
 /* create a server and listen on port 8088 */
 WiFiServer server(8088);
 void setup()
@@ -30,14 +30,16 @@ void loop(){
       /* check client is connected */           
       while (client.connected()) {          
           if (client.available()) {
-              int len = client.read(data, 1024);
-              if(len < 1024){
-                  data[len] = '\0';  
-              }else {
-                  data[1024] = '\0';
-              }    
+//              int len = client.read(data, 1024);
+//              if(len < 1024){
+//                  data[len] = '\0';  
+//              }else {
+//                  data[1024] = '\0';
+//              }
+              String line = client.readStringUntil('\n');    
               Serial.print("client sent: ");            
-              Serial.println((char *)data); 
+              Serial.println(line); 
+              client.println("Opa");
           }
       } 
     }
