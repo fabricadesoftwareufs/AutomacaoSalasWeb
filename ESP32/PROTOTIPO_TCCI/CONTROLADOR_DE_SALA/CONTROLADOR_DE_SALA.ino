@@ -1,15 +1,54 @@
+#include <Arduino.h>
+#include <IRremoteESP8266.h>      
+#include <IRsend.h>
 #include <WiFi.h>
+#include <Vector.h>
+#include <Streaming.h>
 #include <HTTPClient.h>
 #include "ArduinoJson.h"
 #include "FS.h"
 #include "SPIFFS.h"
 using namespace std;
 
+/*
+ * Dados da rede para conectar o dispositivo
+ */
 const char* ssid     = "VIVOFIBRA-5F70";
 const char* password = "F03C999054";
+
+
+/*
+ * Caminho para gravacao dos dados em arquivo
+ */
 const char* path     = "/horariosSala.txt";
+
+
+/*
+ * Codigo da sala em que o ESP opera
+ */
 const int id_sala    = 2;
 
+/* 
+ * criando server ouvindo na porta 8088 
+ */
+WiFiServer server(8088);
+
+/* 
+ * IR 
+ * ESP8266 GPIO pin para usar. Recomendado: 4 (D2).
+ */
+const uint16_t kIrLed = 13;  
+
+
+/* 
+ * Seta o GPIO para enviar o código.
+ */
+IRsend irsend(kIrLed);  
+
+
+/*
+ * Estrutura usada para guardar dados da reserva da sala
+ */
 typedef struct Reserva {
   int id;
   const char * date;
@@ -21,6 +60,74 @@ typedef struct Reserva {
   int salaId;
   int planejamento; 
 };
+
+/*
+ * <descricao> Obtem nome do dispositivo ou os codigos IR neviados na requisicao do servidor  <descricao/>
+ * <parametros> data: codigos IR recebidos na requisicao do servidor <parametros/>
+ * <parametros> separator: caracter chave para realizar o 'split' <parametros/>
+ * <parametros> index: identificar que diz se quem chama quer receber o nome do dispositivo ou os codigos IR <parametros/>
+ * <retorno> string com nome do dispotivo recebido na requisicao ou os codigos IR <retorno/>
+ */
+String SplitGetIndex(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length()-1;
+
+  for(int i=0; i<=maxIndex && found<=index; i++){
+    if(data.charAt(i)==separator || i==maxIndex){
+        found++;
+        strIndex[0] = strIndex[1]+1;
+        strIndex[1] = (i == maxIndex) ? i+1 : i;
+    }
+  }
+
+  return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
+
+
+/*
+ * <descricao> Esse metodo retorna o codigo IR e por referencia atribui o nome do dispositivo <descricao/>
+ * <parametros> msg: codigos IR recebidos na requisicao do servidor <parametros/>
+ * <retorno> Lista de inteiros com codigos ir <retorno/>
+ */
+Vector<int> tratarCodigoIRrecebido(String msg)
+{
+  String nomeDispositivo = SplitGetIndex(msg, ';', 0);
+  String codigoString = SplitGetIndex(msg, ';', 1);
+  
+  // uso do vetor tem que declarar um valor max
+  int storage_array[200];
+  Vector<int> codigo;
+  codigo.setStorage(storage_array);
+  Serial.println(codigoString);
+  String temp = "";
+  for(int i = 0; i < codigoString.length(); i++){
+    if(codigoString.charAt(i)== ',' || i == codigoString.length()-1){
+      codigo.push_back(temp.toInt());
+      temp ="";
+    }
+    else {
+      if(codigoString.charAt(i) != ';' || codigoString.charAt(i) != ' ')
+        temp += codigoString.charAt(i);
+       
+    }
+  }
+  int k = 0;
+  uint16_t rawData[35];
+  Serial.println(codigo.size());
+  for (int el : codigo)
+  {
+       rawData[k] = (uint16_t)el;
+             Serial.println(el); 
+       k++;
+ }
+  irsend.sendRaw(rawData, codigo.size(), 38);  ///envio do comando ao equipamento    
+    delay(1000);
+    
+   return codigo;
+}
+
 
 /*
  * <descricao> Obtem as reservas para a data de hoje armazenadas no arquivo <descricao/>
@@ -64,6 +171,7 @@ vector<struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS &fs, String dataAt
     return listaObjetos; 
 }
 
+
 /*
  * <descricao> Realiza requisicao ao servidor para obter as reservas da semana para a sala deste dispositivo <descricao/>   
  */
@@ -92,6 +200,7 @@ void obterHorariosDaSemana() {
     http.end(); //Free the resources
   }  
 }
+
 
 /*
  * <descricao> Grava no cabeçalho do arquivo a data da requisica/gravacao <descricao/> 
@@ -187,6 +296,7 @@ struct Reserva converteJson(String objetoJson){
    
    return res;    
 }
+
 
 /*
  * <descricao> Conecta dispositivo na rede <descricao/>
@@ -311,34 +421,57 @@ String obterDataArquivo(fs::FS &fs){
   return dataAtual; 
 }
 
-void setup() {
-  
-  if(!SPIFFS.begin(true)){
-        Serial.println("SPIFFS Mount Failed");
-        return;
-  }
+void setup()
+{
+    if(!SPIFFS.begin(true))
+        Serial.println("SPIFFS falha ao montar objeto de manipulacao de arquivos");
+    
+    irsend.begin();
+    
+    Serial.begin(115200);
+    delay(4000);
 
-  Serial.begin(115200);
-  delay(4000);
+    /*
+     * Realiza conexao com a rede WIFI
+     */
+    conectarDispoitivoNaRede();
 
-  conectarDispoitivoNaRede();
-  verificarSeArquivoEstaAtualizado();
-
-
-  
+    /*
+     * Verifica se é necessário requisitar as reservas dessa semana ao servidor 
+     */
+    verificarSeArquivoEstaAtualizado();
+    
+    /* 
+     * inicia o server 
+     */
+    server.begin();
 }
- 
-void loop() {
 
-  lerArquivo(SPIFFS);
-  
-  vector<struct Reserva> reservasDoDia = carregarHorariosDeHojeDoArquivo(SPIFFS,obterDataServidor("GETDATE"));
+void loop()
+{
+    /* 
+     * ouvindo o cliente 
+     */
+    WiFiClient client = server.available(); 
+        
+    if (client) {                   
+      
+      Serial.println("Aplicação conectada");         
+      
+      /*
+       * Checando se o cleinte está conectando ao server
+       */           
+      while (client.connected()) {   
+               
+          if (client.available()) {
+              String equipamentoIR = client.readStringUntil('\n');    
+              Serial.print("cliente enviou: ");            
+              Serial.println(equipamentoIR); 
+              Vector<int> codigo = tratarCodigoIRrecebido(equipamentoIR);
+              delay(1000);
+              client.println("Resposta");        ///envia resposta para aplicação
 
-  Serial.print("horarios de hoje: ");
-  for(int i = 0; i < reservasDoDia.size(); i++){
-    Serial.print(reservasDoDia[i].id);
-    Serial.print(" ");
-    Serial.println(reservasDoDia[i].date);
-  }    
-  delay(10000);
+          }   
+      }
+    }
 }
