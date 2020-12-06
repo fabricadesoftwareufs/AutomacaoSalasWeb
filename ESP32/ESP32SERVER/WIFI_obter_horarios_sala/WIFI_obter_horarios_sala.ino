@@ -8,6 +8,7 @@ using namespace std;
 const char* ssid     = "VIVOFIBRA-5F70";
 const char* password = "F03C999054";
 const char* path     = "/horariosSala.txt";
+const char* pathLog  = "/logFuncionamento.txt";
 const int id_sala    = 2;
 
 typedef struct Reserva {
@@ -322,10 +323,7 @@ void setup() {
   delay(4000);
 
   conectarDispoitivoNaRede();
-  verificarSeArquivoEstaAtualizado();
-
-
-  
+  verificarSeArquivoEstaAtualizado();  
 }
  
 void loop() {

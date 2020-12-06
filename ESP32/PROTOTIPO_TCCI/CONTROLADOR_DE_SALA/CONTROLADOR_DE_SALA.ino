@@ -5,9 +5,16 @@
 #include <Vector.h>
 #include <Streaming.h>
 #include <HTTPClient.h>
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
+#include <BLE2902.h>
+#include <NTPClient.h> 
 #include "ArduinoJson.h"
 #include "FS.h"
 #include "SPIFFS.h"
+
+
 using namespace std;
 
 /*
@@ -18,9 +25,10 @@ const char* password = "F03C999054";
 
 
 /*
- * Caminho para gravacao dos dados em arquivo
+ * Caminhos para gravacao dos dados em arquivo
  */
-const char* path     = "/horariosSala.txt";
+const char* path                  = "/horariosSala.txt";
+const char* pathLogMonitoramento  = "/logMonitoramento.txt";
 
 
 /*
@@ -60,6 +68,312 @@ typedef struct Reserva {
   int salaId;
   int planejamento; 
 };
+
+typedef struct Monitoramento {
+  int id;
+  bool luzes;
+  bool arCondicionado;
+  int salaId;
+  bool salaParticular;
+};
+/*
+ * Guarda as reservas do dia atual
+ */
+vector<struct Reserva> reservasDeHoje;
+
+/* 
+ * Configurações de relógio on-line 
+ */
+WiFiUDP udp;
+NTPClient ntp(udp, "a.st1.ntp.br", -3 * 3600, 60000);//Cria um objeto "NTP" com as configurações.utilizada no Brasil
+String horaAtualSistema;
+
+
+/* 
+ * Variaveis para manipular bluetooth do dispositivo 
+ */
+BLEServer* pServer = NULL;
+BLECharacteristic* pCharacteristic = NULL;
+bool deviceConnected = false;
+bool oldDeviceConnected = false;
+bool receivedData = false;
+uint32_t value = 0;
+
+/* 
+ * Variavel para indicar se o ar deve ser ligado ou desligado 
+ */
+bool arLigado = false;
+bool luzesLigadas = false;
+bool temGente = false;
+
+/* 
+ * Variaveis que armazenam dados recebidos de outros dispositivos 
+ */
+std::string sensoriamento = "";
+std::string dadoSemEspaco = "";
+
+/*
+ * Chave de conexao para os escraves possam se conectar ao controlador.  
+ * gerar UUID em: https://www.uuidgenerator.net/
+ */
+#define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define LED 2
+#define RELE 13
+
+
+
+void ligarDispositivosGerenciaveis(){
+   String horaInicio, horaFim, logMonitoramento;
+
+   struct Reserva r; 
+   for(r : reservasDeHoje){
+     
+     horaInicio = r.horarioInicio;
+     horaFim = r.horarioFim;
+     
+     if (horaAtualSistema >= r.horarioInicio && horaAtualSistema < r.horarioFim && temGente) {      
+
+           if(!arLigado){
+              enviarComandosIr();
+
+              arLigado = true;
+              digitalWrite(LED, HIGH); 
+              
+              Serial.println("Ligando ar condicionado");
+              Serial.print("Hora: ");
+              Serial.println(horaAtualSistema);
+
+              logMonitoramento = "Ligando ar condicionado no horario: "+horaAtualSistema;
+              gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
+
+              enviarMonitoramento(luzesLigadas,arLigado);      
+           }
+
+           if(!luzesLigadas) { 
+            
+              /*
+               * Ligando luzes
+               */
+              luzesLigadas = true;
+              digitalWrite(RELE, LOW);
+              
+              logMonitoramento = "Ligando luzes no horario: "+horaAtualSistema;
+              gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
+
+              enviarMonitoramento(luzesLigadas,arLigado);      
+           } 
+     } 
+  }
+}
+
+void desligarDispositivosGerenciaveis(){
+   String horaInicio;
+   String horaFim;
+   String logMonitoramento;
+   bool naoEstaEmAula = true;
+
+   struct Reserva r;
+   for( r : reservasDeHoje){
+     
+     horaInicio = r.horarioInicio;
+     horaFim = r.horarioFim;
+     
+     if (horaAtualSistema >= r.horarioInicio && horaAtualSistema < r.horarioFim)
+      naoEstaEmAula = false;
+   }
+
+   if(naoEstaEmAula){ 
+       if(arLigado){
+           Serial.println("Desligando ar condicionado");
+           Serial.print("Hora: ");
+           Serial.println(horaAtualSistema);
+            
+           arLigado = false;
+           digitalWrite(LED, LOW);
+
+           logMonitoramento = "Desligando ar condicionado no horario: "+horaAtualSistema;
+           gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
+       }
+
+
+       if(luzesLigadas) {  
+         /*
+          * Desligando luzes
+          */
+         luzesLigadas = false; 
+         digitalWrite(RELE, HIGH);
+  
+         logMonitoramento = "Desligando luzes no horario: "+horaAtualSistema;
+         gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
+
+         enviarMonitoramento(luzesLigadas,arLigado);
+       }                      
+   }
+}
+
+class MyServerCallbacks: public BLEServerCallbacks {
+    void onConnect(BLEServer* pServer) {
+      deviceConnected = true;
+      BLEDevice::startAdvertising();
+    };
+
+    void onDisconnect(BLEServer* pServer) {
+      deviceConnected = false;
+    }
+};
+
+
+/* ----- classe usada para receber informações de outros dispositivos ----- */
+class MyCallbacks: public BLECharacteristicCallbacks {
+    void onWrite(BLECharacteristic *pCharacteristic) {
+      // Read the value of the characteristic.
+      sensoriamento = pCharacteristic->getValue();
+      receivedData = true;
+    }
+};
+
+
+void inicializarConfiguracoesBluetooth(){
+  
+  /* 
+   * Cria novo dispositivo BLE
+   */
+  BLEDevice::init("ESP32");
+
+  /* 
+   * Cria novo Servidor BLE
+   */
+  pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks());
+
+  /* 
+   * Criação dos Servicos BLE
+   */
+  BLEService *pService = pServer->createService(SERVICE_UUID);
+
+  /* 
+   * Criação das caracteristicas BLE
+   */
+  pCharacteristic = pService->createCharacteristic(
+                      CHARACTERISTIC_UUID,
+                      BLECharacteristic::PROPERTY_READ   |
+                      BLECharacteristic::PROPERTY_WRITE  |
+                      BLECharacteristic::PROPERTY_NOTIFY |
+                      BLECharacteristic::PROPERTY_INDICATE
+                    );
+
+                    
+  pCharacteristic->setCallbacks(new MyCallbacks());
+  
+  /* 
+   * Cria o BLE descriptor 
+   * https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
+   */
+  pCharacteristic->addDescriptor(new BLE2902());
+
+  /* 
+   *  Inicia o servico
+   */
+  pService->start();
+  
+  /* 
+   * Start advertising 
+   */
+  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+  pAdvertising->addServiceUUID(SERVICE_UUID);
+  pAdvertising->setScanResponse(false);
+  pAdvertising->setMinPreferred(0x0);  // set value to 0x00 to not advertise this parameter
+  BLEDevice::startAdvertising();
+  Serial.println("Esperando os clientes iniciarem uma conexao...");  
+}
+
+
+
+/*
+ * <descricao>  <descricao/>   
+ */
+bool enviarMonitoramento(bool luzes, bool condicionador) {
+  
+  bool atualizacaoMonitoramento = false;
+  struct Monitoramento monitoramento = obterMonitoramentoByIdSala();
+  if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
+ 
+    HTTPClient http;
+ 
+    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/monitoramento/"+id_sala); //Specify the URL
+
+    String id             = String(monitoramento.id);
+    String luzes          = String(luzes ? "true" : "false");
+    String arCondicionado = String(condicionador ? "true" : "false");
+    String salaId         = String(monitoramento.salaId);
+    String salaParticular = String(monitoramento.salaParticular ? "true" : "false");
+
+    String monitoramentoJson = "{ "; 
+           monitoramentoJson += "id:             " + id             + ", "; 
+           monitoramentoJson += "luzes:          " + luzes          + ", ";
+           monitoramentoJson += "arCondicionado: " + arCondicionado + ", ";
+           monitoramentoJson += "salaId:         " + salaId         + ", ";
+           monitoramentoJson += "salaParticular: " + salaParticular + ", ";
+           monitoramentoJson += " }";
+    
+    int httpResponseCode = http.PUT(monitoramentoJson);
+ 
+    if (httpResponseCode == 200){
+        atualizacaoMonitoramento = true;
+    } else
+        atualizacaoMonitoramento = false;
+ 
+    http.end(); //Free the resources
+  } 
+
+   return atualizacaoMonitoramento;
+}
+
+
+/*
+ * <descricao>  <descricao/>   
+ */
+struct Monitoramento obterMonitoramentoByIdSala() {
+
+  struct Monitoramento monitoramento;
+  if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
+ 
+    HTTPClient http;
+ 
+    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/monitoramento/"+id_sala); //Specify the URL
+    int httpCode = http.GET();
+ 
+    if (httpCode == 200) { //Check for the returning code
+      
+         String payload = http.getString();
+
+         StaticJsonBuffer<1024> JSONBuffer;              
+         JsonObject& object = JSONBuffer.parseObject(payload);
+
+         if(object.success()){
+             monitoramento.id = object["id"];
+             monitoramento.luzes = object["luzes"];
+             monitoramento.arCondicionado = object["arCondicionado"];
+             monitoramento.salaId = object["salaId"];
+             monitoramento.salaParticular = object["salaParticular"];
+         }
+   } else
+      Serial.println("Error on HTTP request");
+ 
+    http.end(); //Free the resources
+  } 
+
+   return monitoramento;
+}
+
+
+void enviarComandosIr() {
+  
+  
+}
+
+/*=======================================================================================*/
 
 /*
  * <descricao> Obtem nome do dispositivo ou os codigos IR neviados na requisicao do servidor  <descricao/>
@@ -192,7 +506,7 @@ void obterHorariosDaSemana() {
         // Excluindo arquivo com dados desatualizados
         excluirArquivo(SPIFFS);
         
-        // Percorrendo lista de onjetos jsone gravando no arquivo
+        // Percorrendo lista de onjetos json e gravando no arquivo
         percorreListaDeObjetos(payload);  
     } else
       Serial.println("Error on HTTP request");
@@ -212,7 +526,7 @@ void gravarDataAtualDaRequisicao() {
   if(dataRequisicao.length() == 0)
     dataRequisicao = "01/01/0001";
     
-  gravarHorariosEmArquivo(SPIFFS,dataRequisicao);
+  gravarLinhaEmArquivo(SPIFFS,dataRequisicao,path);
 }
 
 /*
@@ -260,7 +574,7 @@ void percorreListaDeObjetos(String payload) {
       
       if(payload[i] == '}'){
           Serial.println(objetoJson);
-          gravarHorariosEmArquivo(SPIFFS ,objetoJson);
+          gravarLinhaEmArquivo(SPIFFS,objetoJson,path);
           objetoJson = "";
           i++;
       }  
@@ -320,7 +634,7 @@ void conectarDispoitivoNaRede() {
  * <parametros> fs: utilizada para manipulacao do arquivo <parametros/>
  * <retorno> retorno true se o objeto foi gravado com suceso ou false caso contrario <retorno/>
  */
-bool gravarHorariosEmArquivo(fs::FS &fs, String objetoJson){
+bool gravarLinhaEmArquivo(fs::FS &fs, String objetoJson, const char* path){
     Serial.printf("Writing file: %s\n");
 
     objetoJson += '\n';
@@ -440,6 +754,27 @@ void setup()
      * Verifica se é necessário requisitar as reservas dessa semana ao servidor 
      */
     verificarSeArquivoEstaAtualizado();
+
+    /*
+     * Obtendo as reservas da sala atual para o dia de hoje 
+     */
+    reservasDeHoje = carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
+
+    /*
+     * Configurar ESP para trabalhar com protocolo Bluetooth
+     */
+    inicializarConfiguracoesBluetooth();
+
+    /*
+     * 
+     */
+    pinMode(LED, OUTPUT);
+
+    /*
+     * Inicia o protocolo de obtencao de horarios
+     */
+    ntp.begin();               
+    ntp.forceUpdate();         
     
     /* 
      * inicia o server 
@@ -449,6 +784,8 @@ void setup()
 
 void loop()
 {
+    lerArquivo(SPIFFS);
+    
     /* 
      * ouvindo o cliente 
      */
@@ -474,4 +811,6 @@ void loop()
           }   
       }
     }
+    
+   delay(1000);
 }
