@@ -14,6 +14,22 @@ namespace Service
             _context = context;
         }
 
+        public CodigoInfravermelhoModel GetByIdSala(int idSala)
+        {
+            var _equipamentoService = new EquipamentoService(_context);
+            var equipamentos = _equipamentoService.GetByIdSalaAndTipoEquipamento(idSala, EquipamentoModel.TIPO_CONDICIONADOR);
+
+            return _context.Codigoinfravermelho
+                 .Where(ir => ir.Equipamento == equipamentos.Id)
+                 .Select(ir => new CodigoInfravermelhoModel
+                 {
+                     Id = ir.Id,
+                     Codigo = ir.Codigo,
+                     IdEquipamento = ir.Equipamento,
+                     IdOperacao = ir.Operacao,
+                 }).FirstOrDefault();
+        }
+
         public CodigoInfravermelhoModel GetById(int id)
        => _context.Codigoinfravermelho
                    .Where(ir => ir.Id == id)

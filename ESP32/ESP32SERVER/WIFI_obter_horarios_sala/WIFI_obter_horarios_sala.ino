@@ -9,7 +9,7 @@ const char* ssid     = "VIVOFIBRA-5F70";
 const char* password = "F03C999054";
 const char* path     = "/horariosSala.txt";
 const char* pathLog  = "/logFuncionamento.txt";
-const int id_sala    = 2;
+const String id_sala = "2";
 
 typedef struct Reserva {
   int id;
@@ -74,7 +74,7 @@ void obterHorariosDaSemana() {
  
     HTTPClient http;
  
-    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/reservasala/reservasdasemana/"+id_sala); //Specify the URL
+    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/horariosala/ReservasDaSemana/"+id_sala); //Specify the URL
     int httpCode = http.GET();                                        //Make the request
  
     if (httpCode == 200) { //Check for the returning code
@@ -327,7 +327,10 @@ void setup() {
 }
  
 void loop() {
+  obterHorariosDaSemana();
 
+  Serial.println(obterDataServidor("GETDATE"));
+  
   lerArquivo(SPIFFS);
   
   vector<struct Reserva> reservasDoDia = carregarHorariosDeHojeDoArquivo(SPIFFS,obterDataServidor("GETDATE"));

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service.Interface;
 
@@ -31,7 +30,13 @@ namespace WebAPI.Controllers
 
         // PUT: api/HorarioSala/5
         [HttpPut]
-        public ActionResult Atualizar([FromBody] MonitoramentoModel monitoramento) => _service.Update(monitoramento) ? Ok(true) : Ok(false);
+        public ActionResult Atualizar([FromBody] MonitoramentoModel monitoramento)
+        {
+            if (_service.Update(monitoramento))
+                return Ok(true); 
+            else
+                return BadRequest();
+        }
 
         // DELETE api/<MonitoramentoController>/5
         [HttpDelete("{id}")]

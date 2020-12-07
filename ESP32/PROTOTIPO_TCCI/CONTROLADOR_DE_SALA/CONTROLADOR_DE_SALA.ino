@@ -34,7 +34,7 @@ const char* pathLogMonitoramento  = "/logMonitoramento.txt";
 /*
  * Codigo da sala em que o ESP opera
  */
-const int id_sala    = 2;
+const String id_sala    = "2";
 
 /* 
  * criando server ouvindo na porta 8088 
@@ -113,6 +113,12 @@ std::string sensoriamento = "";
 std::string dadoSemEspaco = "";
 
 /*
+ * 
+ */
+TaskHandle_t threadRecebeComandosDoServidor;
+
+
+/*
  * Chave de conexao para os escraves possam se conectar ao controlador.  
  * gerar UUID em: https://www.uuidgenerator.net/
  */
@@ -135,7 +141,7 @@ void ligarDispositivosGerenciaveis(){
      if (horaAtualSistema >= r.horarioInicio && horaAtualSistema < r.horarioFim && temGente) {      
 
            if(!arLigado){
-              enviarComandosIr();
+              //enviarComandosIr();
 
               arLigado = true;
               digitalWrite(LED, HIGH); 
@@ -368,9 +374,58 @@ struct Monitoramento obterMonitoramentoByIdSala() {
 }
 
 
-void enviarComandosIr() {
-  
-  
+uint16_t rawData[] obterComandosIrByIdSala() {
+
+  String corpoRequisicao = "";
+  if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
+ 
+    HTTPClient http;
+ 
+    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/infravermelho/CodigosPorEquipamentoSala/"+id_sala); //Specify the URL
+    int httpCode = http.GET();
+ 
+    if (httpCode == 200)
+         corpoRequisicao = http.getString();
+    else
+         Serial.println("Error on HTTP request");
+ 
+    http.end(); //Free the resources
+  } 
+
+  Vector<int> listaCodigos;
+  String codigos = String(object["codigo"]);
+  String codigo       = "";
+
+  StaticJsonBuffer<1024> JSONBuffer;              
+  JsonObject& object = JSONBuffer.parseObject(corpoRequisicao);
+
+  if(object.success()) {        
+      for(int i = 0; i < codigos.length(); i++){
+             if(codigos.charAt(i)== ',' || i == codigos.length()-1){
+                listaCodigos.push_back(temp.toInt());
+                codigo = "";
+             } else {
+                  if(codigos.charAt(i) != ' ')
+                      codigo += codigos.charAt(i);
+             }
+       }
+  }
+
+  int k = 0;
+  uint16_t rawData[listaCodigos.size()];
+  for (int cd : listaCodigos)
+  {
+       rawData[k] = (uint16_t)cd;
+       Serial.println(cd); 
+       k++;
+ }
+
+ return rawData;
+}
+
+void enviarComandosIr(uint16_t rawData[], int tamanho) { 
+ irsend.sendRaw(rawData, tamanho, 38);  ///envio do comando ao equipamento    
+ delay(1000);
 }
 
 /*=======================================================================================*/
@@ -428,7 +483,7 @@ Vector<int> tratarCodigoIRrecebido(String msg)
     }
   }
   int k = 0;
-  uint16_t rawData[35];
+  uint16_t rawData[codigo.size()];
   Serial.println(codigo.size());
   for (int el : codigo)
   {
@@ -436,10 +491,10 @@ Vector<int> tratarCodigoIRrecebido(String msg)
              Serial.println(el); 
        k++;
  }
-  irsend.sendRaw(rawData, codigo.size(), 38);  ///envio do comando ao equipamento    
-    delay(1000);
-    
-   return codigo;
+
+ enviarComandosIr(rawData,codigo.size()); 
+  
+ return codigo;
 }
 
 
@@ -495,14 +550,17 @@ void obterHorariosDaSemana() {
  
     HTTPClient http;
  
-    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/reservasala/reservasdasemana/"+id_sala); //Specify the URL
-    int httpCode = http.GET();                                        //Make the request
- 
+    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/horariosala/ReservasDaSemana/"+id_sala); //Specify the URL
+    int httpCode = http.GET();                                                                         //Make the request
+
+    Serial.println(String(httpCode));
+      
     if (httpCode == 200) { //Check for the returning code
 
         // Obtendo corpo da mensagem
         String payload = http.getString();
 
+         Serial.println(payload);
         // Excluindo arquivo com dados desatualizados
         excluirArquivo(SPIFFS);
         
@@ -616,9 +674,9 @@ struct Reserva converteJson(String objetoJson){
  * <descricao> Conecta dispositivo na rede <descricao/>
  */
 void conectarDispoitivoNaRede() {
-  
+
   WiFi.begin(ssid, password);
- 
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting to WiFi..");
@@ -703,8 +761,7 @@ void verificarSeArquivoEstaAtualizado(){
    * logo, se a data da gravacao do arquivo for maior que a data do ultimo domingo, quer dizer que o arquivo foi atualizado
    * ainda na semana corraente.
    */
-  if (dataUltimoDomingo >= dataArquivo) {
-     
+  if (dataUltimoDomingo > dataArquivo) {
      Serial.println("Arquivo desatualizado"); 
      obterHorariosDaSemana();
      
@@ -739,7 +796,7 @@ void setup()
 {
     if(!SPIFFS.begin(true))
         Serial.println("SPIFFS falha ao montar objeto de manipulacao de arquivos");
-    
+        
     irsend.begin();
     
     Serial.begin(115200);
@@ -779,12 +836,22 @@ void setup()
     /* 
      * inicia o server 
      */
+     
     server.begin();
+
+    /* 
+     * Inicia thread para ouvir comandos do servidor
+     */
+    //xTaskCreatePinnedToCore(recebeComandosDoServidor, "recebeComandosDoServidor", 1024, NULL, 1, NULL, 0);
+
+   
 }
 
-void loop()
-{
-    lerArquivo(SPIFFS);
+
+void recebeComandosDoServidor(void * pvParameters){
+  while(true){
+
+     Serial.println("Dentro do laco");  
     
     /* 
      * ouvindo o cliente 
@@ -812,5 +879,44 @@ void loop()
       }
     }
     
-   delay(1000);
+   delay(1000);  
+  }
+}
+
+void loop()
+{
+    lerArquivo(SPIFFS);
+    verificarSeArquivoEstaAtualizado();
+
+    Serial.print("horarios de hoje: ");
+    for(int i = 0; i < reservasDeHoje.size(); i++){
+      Serial.print(reservasDeHoje[i].id);
+      Serial.print(" ");
+      Serial.println(String(reservasDeHoje[i].date));
+    }    
+
+    if (deviceConnected && receivedData) {
+                        
+        dadoSemEspaco = sensoriamento.erase(sensoriamento.find_last_not_of(" \n\r\t") + 1);
+        
+        if (dadoSemEspaco.length() > 0)
+          gravarLinhaEmArquivo(SPIFFS,dadoSemEspaco.c_str(),pathLogMonitoramento);
+        
+        if (sensoriamento.compare("Tem gente!") == 0)
+          temGente = true;
+          
+        sensoriamento = "";
+        dadoSemEspaco = "";
+        receivedData = false;        
+    }
+    
+    horaAtualSistema = ntp.getFormattedTime();
+    Serial.println("Hora: ");
+    Serial.println(horaAtualSistema);
+    
+    ligarDispositivosGerenciaveis();
+    desligarDispositivosGerenciaveis();
+
+    temGente = false;
+    delay(5000);       
 }

@@ -35,6 +35,30 @@ namespace WebAPI.Controllers
             return Ok(horario);
         }
 
+        // GET: api/ReservaSala/5
+        [HttpGet]
+        [Route("ReservasDaSala/{idSala}")]
+        public ActionResult GetReservasDaSala(int idSala)
+        {
+            var horarios = _service.GetByIdSala(idSala);
+            if (horarios.Count == 0)
+                return NoContent();
+
+            return Ok(horarios);
+        }
+
+        // GET: api/ReservaSala/5
+        [HttpGet]
+        [Route("ReservasDaSemana/{idSala}")]
+        public ActionResult GetReservasDaSamana(int idSala)
+        {
+            var horarios = _service.GetReservasDaSemanaByIdSala(idSala);
+            if (horarios.Count == 0)
+                return NoContent();
+
+            return Ok(horarios);
+        }
+
         // POST: api/HorarioSala
         [HttpPost]
         public ActionResult Post([FromBody] HorarioSalaModel horarioSala) => _service.Insert(horarioSala) ? Ok(true) : Ok(false);

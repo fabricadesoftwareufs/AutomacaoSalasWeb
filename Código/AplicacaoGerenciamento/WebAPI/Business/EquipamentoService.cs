@@ -1,6 +1,7 @@
 ﻿using Model;
 using Persistence;
 using Service.Interface;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Service
@@ -26,5 +27,19 @@ namespace Service
                        Sala = eq.Sala,
                        TipoEquipamento = eq.TipoEquipamento
                    }).FirstOrDefault();
+
+
+        public List<EquipamentoModel> GetByIdSala(int idSala)
+       => _context.Equipamento
+                   .Where(eq => eq.Sala == idSala)
+                   .Select(eq => new EquipamentoModel
+                   {
+                       Id = eq.Id,
+                       Modelo = eq.Modelo,
+                       Marca = eq.Marca,
+                       Descricao = eq.Descricao,
+                       Sala = eq.Sala,
+                       TipoEquipamento = eq.TipoEquipamento
+                   }).ToList();
     }
 }
