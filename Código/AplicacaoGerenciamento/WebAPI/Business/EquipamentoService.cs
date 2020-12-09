@@ -15,6 +15,20 @@ namespace Service
             _context = context;
         }
 
+        public EquipamentoModel GetByIdEquipamento(int idEquipamento)
+           => _context.Equipamento
+                  .Where(eq => eq.Id == idEquipamento)
+                  .Select(eq => new EquipamentoModel
+                  {
+                      Id = eq.Id,
+                      Modelo = eq.Modelo,
+                      Marca = eq.Marca,
+                      Descricao = eq.Descricao,
+                      Sala = eq.Sala,
+                      TipoEquipamento = eq.TipoEquipamento
+                  }).FirstOrDefault();
+
+
         public EquipamentoModel GetByIdSalaAndTipoEquipamento(int idSala, string tipo)
        => _context.Equipamento
                    .Where(eq => eq.Sala == idSala && eq.TipoEquipamento.ToUpper().Equals(tipo.ToUpper()))

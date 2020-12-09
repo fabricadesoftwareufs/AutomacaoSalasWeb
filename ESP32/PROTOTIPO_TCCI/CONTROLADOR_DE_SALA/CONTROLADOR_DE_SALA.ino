@@ -34,7 +34,9 @@ const char* pathLogMonitoramento  = "/logMonitoramento.txt";
 /*
  * Codigo da sala em que o ESP opera
  */
-const String id_sala    = "2";
+const String id_sala              = "2";
+const String operacao_ligar       = "1";
+const String operacao_desligar    = "2";
 
 /* 
  * criando server ouvindo na porta 8088 
@@ -128,96 +130,9 @@ TaskHandle_t threadRecebeComandosDoServidor;
 #define RELE 13
 
 
-
-void ligarDispositivosGerenciaveis(){
-   String horaInicio, horaFim, logMonitoramento;
-
-   struct Reserva r; 
-   for(r : reservasDeHoje){
-     
-     horaInicio = r.horarioInicio;
-     horaFim = r.horarioFim;
-     
-     if (horaAtualSistema >= r.horarioInicio && horaAtualSistema < r.horarioFim && temGente) {      
-
-           if(!arLigado){
-              //enviarComandosIr();
-
-              arLigado = true;
-              digitalWrite(LED, HIGH); 
-              
-              Serial.println("Ligando ar condicionado");
-              Serial.print("Hora: ");
-              Serial.println(horaAtualSistema);
-
-              logMonitoramento = "Ligando ar condicionado no horario: "+horaAtualSistema;
-              gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
-
-              enviarMonitoramento(luzesLigadas,arLigado);      
-           }
-
-           if(!luzesLigadas) { 
-            
-              /*
-               * Ligando luzes
-               */
-              luzesLigadas = true;
-              digitalWrite(RELE, LOW);
-              
-              logMonitoramento = "Ligando luzes no horario: "+horaAtualSistema;
-              gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
-
-              enviarMonitoramento(luzesLigadas,arLigado);      
-           } 
-     } 
-  }
-}
-
-void desligarDispositivosGerenciaveis(){
-   String horaInicio;
-   String horaFim;
-   String logMonitoramento;
-   bool naoEstaEmAula = true;
-
-   struct Reserva r;
-   for( r : reservasDeHoje){
-     
-     horaInicio = r.horarioInicio;
-     horaFim = r.horarioFim;
-     
-     if (horaAtualSistema >= r.horarioInicio && horaAtualSistema < r.horarioFim)
-      naoEstaEmAula = false;
-   }
-
-   if(naoEstaEmAula){ 
-       if(arLigado){
-           Serial.println("Desligando ar condicionado");
-           Serial.print("Hora: ");
-           Serial.println(horaAtualSistema);
-            
-           arLigado = false;
-           digitalWrite(LED, LOW);
-
-           logMonitoramento = "Desligando ar condicionado no horario: "+horaAtualSistema;
-           gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
-       }
-
-
-       if(luzesLigadas) {  
-         /*
-          * Desligando luzes
-          */
-         luzesLigadas = false; 
-         digitalWrite(RELE, HIGH);
-  
-         logMonitoramento = "Desligando luzes no horario: "+horaAtualSistema;
-         gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
-
-         enviarMonitoramento(luzesLigadas,arLigado);
-       }                      
-   }
-}
-
+/*
+ * classe usada para receber conexoes com outros dispositivos
+ */
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
       deviceConnected = true;
@@ -230,7 +145,9 @@ class MyServerCallbacks: public BLEServerCallbacks {
 };
 
 
-/* ----- classe usada para receber informações de outros dispositivos ----- */
+/*
+ * classe usada para receber informações de outros dispositivos 
+ */
 class MyCallbacks: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
       // Read the value of the characteristic.
@@ -240,6 +157,9 @@ class MyCallbacks: public BLECharacteristicCallbacks {
 };
 
 
+/*
+ * 
+ */
 void inicializarConfiguracoesBluetooth(){
   
   /* 
@@ -295,6 +215,173 @@ void inicializarConfiguracoesBluetooth(){
 }
 
 
+/*
+ * 
+ */
+Vector<int> obterComandosIrByIdSalaAndOperacao(String operacao) {
+
+  String corpoRequisicao = "";
+  if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
+ 
+    HTTPClient http;
+ 
+    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/Infravermelho/CodigosPorSala/"+id_sala+"/"+operacao); //Specify the URL
+    int httpCode = http.GET();
+ 
+    if (httpCode == 200)
+         corpoRequisicao = http.getString();
+    else
+         Serial.println("Error on HTTP request");
+ 
+    http.end(); //Free the resources
+  } 
+
+  StaticJsonBuffer<1024> JSONBuffer;              
+  JsonObject& object = JSONBuffer.parseObject(corpoRequisicao);
+
+  Vector<int> listaCodigos;
+
+  if(object.success()){
+  
+    String codigos = object["codigo"];
+    String codigo       = "";
+  
+    for(int i = 0; i < codigos.length(); i++){
+           if(codigos.charAt(i)== ',' || i == codigos.length()-1){
+                 listaCodigos.push_back(codigo.toInt());
+                    codigo = "";
+           } else {
+                 if(codigos.charAt(i) != ' ')
+                     codigo += codigos.charAt(i);
+           }
+      }
+ }
+
+ return listaCodigos;
+}
+
+uint16_t* converteVectorParaUint16(Vector<int> listaCodigos){
+  int k = 0;
+  uint16_t rawData[listaCodigos.size()];
+  for (int cd : listaCodigos)
+  {
+       rawData[k] = (uint16_t)cd;
+       Serial.println(cd); 
+       k++;
+  } 
+
+  return rawData;   
+}
+
+/*
+ *   
+ */
+void ligarDispositivosGerenciaveis(){
+   String horaInicio, horaFim, logMonitoramento;
+
+   struct Reserva r; 
+   for(r : reservasDeHoje){
+     
+     horaInicio = r.horarioInicio;
+     horaFim = r.horarioFim;
+     
+     if (horaAtualSistema >= r.horarioInicio && horaAtualSistema < r.horarioFim && temGente) {      
+
+           if(!arLigado){
+              
+              Vector<int> listaCodigos  = obterComandosIrByIdSalaAndOperacao(operacao_ligar);
+              uint16_t* rawData = converteVectorParaUint16(listaCodigos);
+              
+              enviarComandosIr(rawData,listaCodigos.size());
+
+              enviarMonitoramento(luzesLigadas,arLigado);      
+
+              arLigado = true;
+              digitalWrite(LED, HIGH); 
+              
+              Serial.println("Ligando ar condicionado");
+              Serial.print("Hora: ");
+              Serial.println(horaAtualSistema);
+
+              logMonitoramento = "Ligando ar condicionado no horario: "+horaAtualSistema;
+              gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
+
+           }
+
+           if(!luzesLigadas) { 
+            
+              /*
+               * Ligando luzes
+               */
+              luzesLigadas = true;
+              digitalWrite(RELE, LOW);
+              
+              logMonitoramento = "Ligando luzes no horario: "+horaAtualSistema;
+              gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
+
+              enviarMonitoramento(luzesLigadas,arLigado);      
+           } 
+     } 
+  }
+}
+
+
+/*
+ * 
+ */
+void desligarDispositivosGerenciaveis(){
+   String horaInicio;
+   String horaFim;
+   String logMonitoramento;
+   bool naoEstaEmAula = true;
+
+   struct Reserva r;
+   for( r : reservasDeHoje){
+     
+     horaInicio = r.horarioInicio;
+     horaFim = r.horarioFim;
+     
+     if (horaAtualSistema >= r.horarioInicio && horaAtualSistema < r.horarioFim)
+      naoEstaEmAula = false;
+   }
+
+   if(naoEstaEmAula){ 
+       if(arLigado){
+
+           Vector<int> listaCodigos  = obterComandosIrByIdSalaAndOperacao(operacao_desligar);
+           uint16_t* rawData = converteVectorParaUint16(listaCodigos);
+              
+           enviarComandosIr(rawData,listaCodigos.size());
+
+           enviarMonitoramento(luzesLigadas,arLigado);
+           
+           Serial.println("Desligando ar condicionado");
+           Serial.print("Hora: ");
+           Serial.println(horaAtualSistema);
+            
+           arLigado = false;
+           digitalWrite(LED, LOW);
+
+           logMonitoramento = "Desligando ar condicionado no horario: "+horaAtualSistema;
+           gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
+       }
+
+
+       if(luzesLigadas) {  
+         /*
+          * Desligando luzes
+          */
+         luzesLigadas = false; 
+         digitalWrite(RELE, HIGH);
+
+         enviarMonitoramento(luzesLigadas,arLigado);
+  
+         logMonitoramento = "Desligando luzes no horario: "+horaAtualSistema;
+         gravarLinhaEmArquivo(SPIFFS,logMonitoramento,pathLogMonitoramento);
+
+       }                      
+   }
+}
 
 /*
  * <descricao>  <descricao/>   
@@ -373,62 +460,10 @@ struct Monitoramento obterMonitoramentoByIdSala() {
    return monitoramento;
 }
 
-
-uint16_t rawData[] obterComandosIrByIdSala() {
-
-  String corpoRequisicao = "";
-  if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
- 
-    HTTPClient http;
- 
-    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/infravermelho/CodigosPorEquipamentoSala/"+id_sala); //Specify the URL
-    int httpCode = http.GET();
- 
-    if (httpCode == 200)
-         corpoRequisicao = http.getString();
-    else
-         Serial.println("Error on HTTP request");
- 
-    http.end(); //Free the resources
-  } 
-
-  Vector<int> listaCodigos;
-  String codigos = String(object["codigo"]);
-  String codigo       = "";
-
-  StaticJsonBuffer<1024> JSONBuffer;              
-  JsonObject& object = JSONBuffer.parseObject(corpoRequisicao);
-
-  if(object.success()) {        
-      for(int i = 0; i < codigos.length(); i++){
-             if(codigos.charAt(i)== ',' || i == codigos.length()-1){
-                listaCodigos.push_back(temp.toInt());
-                codigo = "";
-             } else {
-                  if(codigos.charAt(i) != ' ')
-                      codigo += codigos.charAt(i);
-             }
-       }
-  }
-
-  int k = 0;
-  uint16_t rawData[listaCodigos.size()];
-  for (int cd : listaCodigos)
-  {
-       rawData[k] = (uint16_t)cd;
-       Serial.println(cd); 
-       k++;
- }
-
- return rawData;
-}
-
 void enviarComandosIr(uint16_t rawData[], int tamanho) { 
  irsend.sendRaw(rawData, tamanho, 38);  ///envio do comando ao equipamento    
  delay(1000);
 }
-
-/*=======================================================================================*/
 
 /*
  * <descricao> Obtem nome do dispositivo ou os codigos IR neviados na requisicao do servidor  <descricao/>
@@ -839,6 +874,13 @@ void setup()
      
     server.begin();
 
+    /*
+     * 
+     */
+    struct Monitoramento monitoramento = obterMonitoramentoByIdSala();
+    arLigado = monitoramento.arCondicionado;
+    luzesLigadas = monitoramento.luzes;
+
     /* 
      * Inicia thread para ouvir comandos do servidor
      */
@@ -871,6 +913,7 @@ void recebeComandosDoServidor(void * pvParameters){
               String equipamentoIR = client.readStringUntil('\n');    
               Serial.print("cliente enviou: ");            
               Serial.println(equipamentoIR); 
+              
               Vector<int> codigo = tratarCodigoIRrecebido(equipamentoIR);
               delay(1000);
               client.println("Resposta");        ///envia resposta para aplicação

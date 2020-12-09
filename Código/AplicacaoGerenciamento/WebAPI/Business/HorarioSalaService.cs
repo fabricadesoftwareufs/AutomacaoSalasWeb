@@ -106,8 +106,7 @@ namespace Service
 
             int nDia = (int)dataAtual.DayOfWeek;
 
-            if (nDia == 0) proximoDomingo = dataAtual;
-            else proximoDomingo = DateTime.Now.AddDays(7 - nDia).Date;
+            proximoDomingo = nDia == 0 ? dataAtual : DateTime.Now.AddDays(7 - nDia).Date;
 
             return _context.Horariosala
              .Where(hs => hs.Sala == idSala && hs.Data.Date >= dataAtual.Date && hs.Data.Date <= proximoDomingo.Date && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))

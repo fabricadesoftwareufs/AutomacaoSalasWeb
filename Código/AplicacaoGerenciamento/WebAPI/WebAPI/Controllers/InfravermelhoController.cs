@@ -15,12 +15,12 @@ namespace WebAPI.Controllers
             _service = service;
         }
 
-       /* // GET api/<InfravermelhoController>/5
+        // GET api/<InfravermelhoController>/5
         [HttpGet]
-        [Route("CodigosPorEquipamentoSala/{idSala}")]
-        public ActionResult Get(int idSala)
+        [Route("CodigosPorSala/{idSala}/{operacao}")]
+        public ActionResult Get(int idSala, int operacao)
         {
-            return Ok(_service.GetByIdSala(idSala));
-        }*/
+            return Ok(_service.GetByIdSalaAndIdOperacao(idSala, operacao));
+        }
     }
 }

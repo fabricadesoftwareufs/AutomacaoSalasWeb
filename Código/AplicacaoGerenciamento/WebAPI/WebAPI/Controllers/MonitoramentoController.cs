@@ -33,13 +33,13 @@ namespace WebAPI.Controllers
         public ActionResult Atualizar([FromBody] MonitoramentoModel monitoramento)
         {
             if (_service.Update(monitoramento))
-                return Ok(true); 
+                return Ok(true);
             else
                 return BadRequest();
         }
 
         // DELETE api/<MonitoramentoController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id){}
+        public void Delete(int id) { }
     }
 }
