@@ -16,11 +16,11 @@ namespace Service
             Client = new TcpClient(Ip, PORTA);
         }
 
-        public bool EnviarComando(string comando)
+        public string EnviarComando(string comando)
         {
             int tentativas = 0;
             bool enviouComando;
-
+            string resposta = null;
             do
             {
 
@@ -52,8 +52,8 @@ namespace Service
                     }
                     while (stream.DataAvailable);
 
-                    string resposta = myCompleteMessage.ToString();
-
+                    resposta = myCompleteMessage.ToString();
+                      
                     stream.Close();
                     Client.Close();
                 }
@@ -66,7 +66,7 @@ namespace Service
                 }
             } while (!enviouComando && tentativas < NR_TENTATIVAS_CONEXAO);
 
-            return enviouComando;
+            return resposta;
         }
     }
 }
