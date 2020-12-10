@@ -101,12 +101,13 @@ namespace Service
                 var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdEquipamento(equipamento.Id, idOperacao);
                 var hardwareDeSala = _hardwareDeSalaService.GetByIdSalaAndTipoHardware(solicitacao.SalaId, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
 
-                if (!codigosInfravermelho.Any())
+                if (codigosInfravermelho == null)
                     throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
 
-                var mensagem = MontarMensagemComComandosIr("condicionador;", codigosInfravermelho);
+                var mensagem = "condicionador;" + codigosInfravermelho.Codigo + ";";
+
                 var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null ? true : false;
+                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null;
             }
             else if (solicitacao.Luzes != modelDesatualizado.Luzes)
             {
@@ -115,24 +116,16 @@ namespace Service
                 var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdEquipamento(equipamento.Id, idOperacao);
                 var hardwareDeSala = _hardwareDeSalaService.GetByIdSalaAndTipoHardware(solicitacao.SalaId, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
 
-                if (!codigosInfravermelho.Any())
+                if (codigosInfravermelho == null)
                     throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
 
-                var mensagem = MontarMensagemComComandosIr("luzes;", codigosInfravermelho);
+                var mensagem = "luzes;" + codigosInfravermelho.Codigo + ";";
 
                 var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null ? true : false;
+                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null;
             }
 
             return comandoEnviadoComSucesso;
-        }
-
-        private string MontarMensagemComComandosIr(string cabecalho, List<CodigoInfravermelhoModel> codigosInfravermelho)
-        {
-            foreach (var s in codigosInfravermelho)
-                cabecalho += s.Codigo + ";";
-
-            return cabecalho;
         }
 
         private Monitoramento SetEntity(MonitoramentoModel model)

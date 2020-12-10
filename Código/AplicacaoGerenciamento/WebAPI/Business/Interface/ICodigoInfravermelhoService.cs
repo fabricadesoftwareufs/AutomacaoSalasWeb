@@ -1,13 +1,12 @@
 ﻿using Model;
-using System.Collections.Generic;
 
 namespace Service.Interface
 {
     public interface ICodigoInfravermelhoService
     {
+        CodigoInfravermelhoModel GetByIdSalaAndIdOperacao(int idSala, int operacao);
         CodigoInfravermelhoModel GetById(int id);
-
-        List<CodigoInfravermelhoModel> GetByIdOperacaoAndIdEquipamento(int idEquipamento, int idOperacao);
+        CodigoInfravermelhoModel GetByIdOperacaoAndIdEquipamento(int idEquipamento, int idOperacao);
 
     }
 }

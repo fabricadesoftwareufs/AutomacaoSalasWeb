@@ -75,6 +75,10 @@ namespace WebAPI
             services.AddScoped<IHorarioSalaService, HorarioSalaService>();
             services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
             services.AddScoped<IMonitoramentoService, MonitoramentoService>();
+            services.AddScoped<ICodigoInfravermelhoService, CodigoInfravermelhoService>();
+            services.AddScoped<IEquipamentoService, EquipamentoService>();
+
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

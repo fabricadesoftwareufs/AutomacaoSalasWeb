@@ -98,8 +98,15 @@ namespace Service
 
         public List<HorarioSalaModel> GetReservasDaSemanaByIdSala(int idSala)
         {
+            /*
+             * Pegando a data atual e a data do próximo domingo
+             */
             DateTime dataAtual = DateTime.Now;
-            DateTime proximoDomingo = DateTime.Now.AddDays(7 - (int)dataAtual.DayOfWeek).Date;
+            DateTime proximoDomingo;
+
+            int nDia = (int)dataAtual.DayOfWeek;
+
+            proximoDomingo = nDia == 0 ? dataAtual : DateTime.Now.AddDays(7 - nDia).Date;
 
             return _context.Horariosala
              .Where(hs => hs.Sala == idSala && hs.Data.Date >= dataAtual.Date && hs.Data.Date <= proximoDomingo.Date && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))

@@ -1,7 +1,6 @@
 ﻿using Model;
 using Persistence;
 using Service.Interface;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Service
@@ -12,6 +11,14 @@ namespace Service
         public CodigoInfravermelhoService(STR_DBContext context)
         {
             _context = context;
+        }
+
+        public CodigoInfravermelhoModel GetByIdSalaAndIdOperacao(int idSala, int operacao)
+        {
+            var _equipamentoService = new EquipamentoService(_context);
+            var equipamento = _equipamentoService.GetByIdSalaAndTipoEquipamento(idSala, EquipamentoModel.TIPO_CONDICIONADOR);
+
+            return GetByIdOperacaoAndIdEquipamento(equipamento.Id, operacao);
         }
 
         public CodigoInfravermelhoModel GetById(int id)
@@ -25,7 +32,7 @@ namespace Service
                        IdOperacao = ir.Operacao,
                    }).FirstOrDefault();
 
-        public List<CodigoInfravermelhoModel> GetByIdOperacaoAndIdEquipamento(int idEquipamento, int idOperacao)
+        public CodigoInfravermelhoModel GetByIdOperacaoAndIdEquipamento(int idEquipamento, int idOperacao)
             => _context.Codigoinfravermelho
                    .Where(ir => ir.Equipamento == idEquipamento && ir.Operacao == idOperacao)
                    .Select(ir => new CodigoInfravermelhoModel
@@ -34,6 +41,8 @@ namespace Service
                        Codigo = ir.Codigo,
                        IdEquipamento = ir.Equipamento,
                        IdOperacao = ir.Operacao,
-                   }).ToList();
+                   }).FirstOrDefault();
+
+
     }
 }
