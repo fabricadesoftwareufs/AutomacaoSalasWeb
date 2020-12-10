@@ -386,8 +386,6 @@ CREATE TABLE IF NOT EXISTS `codigoInfravermelho` (
 )ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 
 
-/*!40000 ALTER TABLE `CodigoInfravermelho` DISABLE KEYS */;
-INSERT INTO `codigoInfravermelho` (`Id`, `Equipamento`,`Operacao`,`Codigo`) VALUES 
 -- --------------------------------------------------------
 -- Servidor:                     127.0.0.1
 -- Versão do servidor:           8.0.22 - MySQL Community Server - GPL

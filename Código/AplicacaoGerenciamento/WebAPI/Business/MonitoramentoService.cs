@@ -105,8 +105,9 @@ namespace Service
                     throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
 
                 var mensagem = "condicionador;" + codigosInfravermelho.Codigo + ";";
+
                 var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null ? true : false;
+                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null;
             }
             else if (solicitacao.Luzes != modelDesatualizado.Luzes)
             {
@@ -121,7 +122,7 @@ namespace Service
                 var mensagem = "luzes;" + codigosInfravermelho.Codigo + ";";
 
                 var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null ? true : false;
+                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null;
             }
 
             return comandoEnviadoComSucesso;
