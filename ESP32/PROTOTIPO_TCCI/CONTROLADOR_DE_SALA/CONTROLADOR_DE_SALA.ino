@@ -32,9 +32,14 @@ const char* pathLogMonitoramento  = "/logMonitoramento.txt";
 
 
 /*
- * Codigo da sala em que o ESP opera
+ * Codigo da sala em que o ESP32 opera
  */
 const String id_sala              = "2";
+
+
+/*
+ * Codigo das operacoes que o ESP32 pode fazer
+ */
 const String operacao_ligar       = "1";
 const String operacao_desligar    = "2";
 
@@ -216,16 +221,18 @@ void inicializarConfiguracoesBluetooth(){
 
 
 /*
- * 
+ * <descricao> Obtem do servidor os codigos IR para ligar/desligar o arcondicionado <descricao/>
+ * <parametros> operacao: operacao que deve ser consultados os codigos IR (ligar/desligar) <parametros/>
+ * <retorno> lista de inteiros com os codigos IR solicitados <retorno/>
  */
-Vector<int> obterComandosIrByIdSalaAndOperacao(String operacao) {
+vector<int> obterComandosIrByIdSalaAndOperacao(String operacao) {
 
   String corpoRequisicao = "";
   if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
  
     HTTPClient http;
- 
-    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/Infravermelho/CodigosPorSala/"+id_sala+"/"+operacao); //Specify the URL
+    String url = "http://igorbruno22-001-site1.ctempurl.com/api/infravermelho/CodigosPorSala/" + id_sala + "/" + operacao;
+    http.begin(url); //Specify the URL
     int httpCode = http.GET();
  
     if (httpCode == 200)
@@ -235,46 +242,32 @@ Vector<int> obterComandosIrByIdSalaAndOperacao(String operacao) {
  
     http.end(); //Free the resources
   } 
-
   StaticJsonBuffer<1024> JSONBuffer;              
   JsonObject& object = JSONBuffer.parseObject(corpoRequisicao);
 
-  Vector<int> listaCodigos;
+  vector<int> listaCodigos;
 
-  if(object.success()){
-  
+  if(object.success()){    
     String codigos = object["codigo"];
-    String codigo       = "";
-  
+    String codigo  = "";
+    
     for(int i = 0; i < codigos.length(); i++){
            if(codigos.charAt(i)== ',' || i == codigos.length()-1){
                  listaCodigos.push_back(codigo.toInt());
-                    codigo = "";
+                 codigo = "";
            } else {
                  if(codigos.charAt(i) != ' ')
                      codigo += codigos.charAt(i);
            }
       }
  }
-
+ 
  return listaCodigos;
 }
 
-uint16_t* converteVectorParaUint16(Vector<int> listaCodigos){
-  int k = 0;
-  uint16_t rawData[listaCodigos.size()];
-  for (int cd : listaCodigos)
-  {
-       rawData[k] = (uint16_t)cd;
-       Serial.println(cd); 
-       k++;
-  } 
-
-  return rawData;   
-}
-
 /*
- *   
+ * <descricao> Verifica se é para ligar os dispostivos (luzes e ar) de acordo com as 
+ * infomacoes obtidas dos modulos de sensoriamento e dos dados das reservas da sala <descricao/>
  */
 void ligarDispositivosGerenciaveis(){
    String horaInicio, horaFim, logMonitoramento;
@@ -289,10 +282,8 @@ void ligarDispositivosGerenciaveis(){
 
            if(!arLigado){
               
-              Vector<int> listaCodigos  = obterComandosIrByIdSalaAndOperacao(operacao_ligar);
-              uint16_t* rawData = converteVectorParaUint16(listaCodigos);
-              
-              enviarComandosIr(rawData,listaCodigos.size());
+              vector<int> listaCodigos  = obterComandosIrByIdSalaAndOperacao(operacao_ligar);
+              enviarComandosIr(listaCodigos);
 
               enviarMonitoramento(luzesLigadas,arLigado);      
 
@@ -327,7 +318,8 @@ void ligarDispositivosGerenciaveis(){
 
 
 /*
- * 
+ * <descricao> Verifica se é para desligar os dispostivos (luzes e ar) de acordo com as 
+ * informacoes obtidas dos modulos de sensoriamento e dos dados das reservas da sala <descricao/>
  */
 void desligarDispositivosGerenciaveis(){
    String horaInicio;
@@ -348,10 +340,9 @@ void desligarDispositivosGerenciaveis(){
    if(naoEstaEmAula){ 
        if(arLigado){
 
-           Vector<int> listaCodigos  = obterComandosIrByIdSalaAndOperacao(operacao_desligar);
-           uint16_t* rawData = converteVectorParaUint16(listaCodigos);
-              
-           enviarComandosIr(rawData,listaCodigos.size());
+           vector<int> listaCodigos  = obterComandosIrByIdSalaAndOperacao(operacao_desligar);
+           enviarComandosIr(listaCodigos);
+
 
            enviarMonitoramento(luzesLigadas,arLigado);
            
@@ -384,34 +375,41 @@ void desligarDispositivosGerenciaveis(){
 }
 
 /*
- * <descricao>  <descricao/>   
+ * <descricao> Atualiza a tabela Monitoramento do banco de dados com as atualizacoes feitas nos equipamentos pelo ESP  <descricao/>
+ * <parametros> luzes: indica o ultimo estado das luzes (ligado/desligado) <parametros/>
+ * <parametros> condicionador: indica o ultimo estado do ar condicionado (ligado/desligado) <parametros/>
+ * <retorno> string com nome do dispotivo recebido na requisicao ou os codigos IR <retorno/>
  */
 bool enviarMonitoramento(bool luzes, bool condicionador) {
-  
+
+  Serial.println("entrei em enviar monitoramento");
   bool atualizacaoMonitoramento = false;
   struct Monitoramento monitoramento = obterMonitoramentoByIdSala();
   if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
  
     HTTPClient http;
- 
-    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/monitoramento/"+id_sala); //Specify the URL
-
+    
+    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/monitoramento"); //Specify the URL
+    http.addHeader("Content-Type","application/json");
+        
     String id             = String(monitoramento.id);
-    String luzes          = String(luzes ? "true" : "false");
+    String luzesLiagadas  = String(luzes ? "true" : "false");
     String arCondicionado = String(condicionador ? "true" : "false");
     String salaId         = String(monitoramento.salaId);
     String salaParticular = String(monitoramento.salaParticular ? "true" : "false");
 
-    String monitoramentoJson = "{ "; 
-           monitoramentoJson += "id:             " + id             + ", "; 
-           monitoramentoJson += "luzes:          " + luzes          + ", ";
+    String monitoramentoJson  = "{ "; 
+           monitoramentoJson += "id: "             + id             + ", "; 
+           monitoramentoJson += "luzes: "          + luzesLiagadas  + ", ";
            monitoramentoJson += "arCondicionado: " + arCondicionado + ", ";
-           monitoramentoJson += "salaId:         " + salaId         + ", ";
+           monitoramentoJson += "salaId: "         + salaId         + ", ";
            monitoramentoJson += "salaParticular: " + salaParticular + ", ";
-           monitoramentoJson += " }";
+           monitoramentoJson += " }";       
     
     int httpResponseCode = http.PUT(monitoramentoJson);
- 
+    
+    Serial.println(monitoramentoJson);
+          
     if (httpResponseCode == 200){
         atualizacaoMonitoramento = true;
     } else
@@ -425,7 +423,11 @@ bool enviarMonitoramento(bool luzes, bool condicionador) {
 
 
 /*
- * <descricao>  <descricao/>   
+ * <descricao> Obtem nome do dispositivo ou os codigos IR neviados na requisicao do servidor  <descricao/>
+ * <parametros> data: codigos IR recebidos na requisicao do servidor <parametros/>
+ * <parametros> separator: caracter chave para realizar o 'split' <parametros/>
+ * <parametros> index: identificar que diz se quem chama quer receber o nome do dispositivo ou os codigos IR <parametros/>
+ * <retorno> string com nome do dispotivo recebido na requisicao ou os codigos IR <retorno/>
  */
 struct Monitoramento obterMonitoramentoByIdSala() {
 
@@ -460,8 +462,19 @@ struct Monitoramento obterMonitoramentoByIdSala() {
    return monitoramento;
 }
 
-void enviarComandosIr(uint16_t rawData[], int tamanho) { 
- irsend.sendRaw(rawData, tamanho, 38);  ///envio do comando ao equipamento    
+void enviarComandosIr(vector<int> listaCodigos) { 
+ 
+ Serial.println("convertido");          
+ int k = 0;
+ uint16_t rawData[listaCodigos.size()];
+ for (int cd : listaCodigos)
+ {
+    rawData[k] = (uint16_t)cd;
+    Serial.println(cd);
+    k++;
+ } 
+ 
+ irsend.sendRaw(rawData, listaCodigos.size(), 38);  ///envio do comando ao equipamento    
  delay(1000);
 }
 
@@ -527,7 +540,8 @@ Vector<int> tratarCodigoIRrecebido(String msg)
        k++;
  }
 
- enviarComandosIr(rawData,codigo.size()); 
+ irsend.sendRaw(rawData, codigo.size(), 38);  ///envio do comando ao equipamento    
+ delay(1000); 
   
  return codigo;
 }
@@ -571,6 +585,8 @@ vector<struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS &fs, String dataAt
         }  
         nQuebraDeLinha++;
     }
+
+    file.close();
     
     return listaObjetos; 
 }
@@ -737,11 +753,14 @@ bool gravarLinhaEmArquivo(fs::FS &fs, String objetoJson, const char* path){
         Serial.println("Failed to open file for writing");
         return false;
     }
-    
+
+    bool retorno = false;
     if(file.print(objetoJson))
-        return true;
-    else
-        return false;
+        retorno = true;
+
+    file.close();
+
+    return retorno;
 }
 
 
@@ -761,6 +780,9 @@ void lerArquivo(fs::FS &fs){
     Serial.print("Read from file: ");
     while(file.available())
         Serial.println(file.readStringUntil('\n'));
+
+
+   file.close();     
 }
 
 /*
@@ -810,13 +832,14 @@ void verificarSeArquivoEstaAtualizado(){
  * <retorno> retorna uma string contendo a data de gravacao do arquivo <parametros/>
  */
 String obterDataArquivo(fs::FS &fs){
-  String dataAtual;
+  String dataAtual = "0001-01-01";
   Serial.printf("Reading file: %s\n", path);
 
   File file = fs.open(path);
   if(!file || file.isDirectory()){
-        Serial.println("Failed to open file for reading");
-        return "0001-01-01";
+       Serial.println("Failed to open file for reading");
+       file.close();
+       return dataAtual;
   }
 
   Serial.print("Read from file: ");
@@ -824,6 +847,8 @@ String obterDataArquivo(fs::FS &fs){
   dataAtual = file.readStringUntil('\n');
   Serial.println(dataAtual);
   
+  file.close();
+
   return dataAtual; 
 }
 
@@ -884,7 +909,14 @@ void setup()
     /* 
      * Inicia thread para ouvir comandos do servidor
      */
-    //xTaskCreatePinnedToCore(recebeComandosDoServidor, "recebeComandosDoServidor", 1024, NULL, 1, NULL, 0);
+    xTaskCreatePinnedToCore(
+                    recebeComandosDoServidor,   /* função que implementa a tarefa */
+                    "coreTaskZero", /* nome da tarefa */
+                    10000,      /* número de palavras a serem alocadas para uso com a pilha da tarefa */
+                    NULL,       /* parâmetro de entrada para a tarefa (pode ser NULL) */
+                    1,          /* prioridade da tarefa (0 a N) */
+                    NULL,       /* referência para a tarefa (pode ser NULL) */
+                    0);         /* Núcleo que executará a tarefa */
 
    
 }
@@ -892,8 +924,6 @@ void setup()
 
 void recebeComandosDoServidor(void * pvParameters){
   while(true){
-
-     Serial.println("Dentro do laco");  
     
     /* 
      * ouvindo o cliente 
@@ -929,14 +959,6 @@ void recebeComandosDoServidor(void * pvParameters){
 void loop()
 {
     lerArquivo(SPIFFS);
-    verificarSeArquivoEstaAtualizado();
-
-    Serial.print("horarios de hoje: ");
-    for(int i = 0; i < reservasDeHoje.size(); i++){
-      Serial.print(reservasDeHoje[i].id);
-      Serial.print(" ");
-      Serial.println(String(reservasDeHoje[i].date));
-    }    
 
     if (deviceConnected && receivedData) {
                         

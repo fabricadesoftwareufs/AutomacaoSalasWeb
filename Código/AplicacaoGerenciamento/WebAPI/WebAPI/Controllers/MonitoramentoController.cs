@@ -18,7 +18,8 @@ namespace WebAPI.Controllers
         }
 
         // GET: api/ReservaSala/5
-        [HttpGet("{id}")]
+        [HttpGet("{idSala}")]
+        [Route("ObterPorSala")]
         public ActionResult Get(int idSala)
         {
             var monitoramento = _service.GetByIdSala(idSala);
@@ -30,16 +31,7 @@ namespace WebAPI.Controllers
 
         // PUT: api/HorarioSala/5
         [HttpPut]
-        public ActionResult Atualizar([FromBody] MonitoramentoModel monitoramento)
-        {
-            if (_service.Update(monitoramento))
-                return Ok(true);
-            else
-                return BadRequest();
-        }
+        public ActionResult Atualizar([FromBody] MonitoramentoModel monitoramento) => _service.Update(monitoramento) ? Ok(true) : Ok(false);
 
-        // DELETE api/<MonitoramentoController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id) { }
     }
 }
