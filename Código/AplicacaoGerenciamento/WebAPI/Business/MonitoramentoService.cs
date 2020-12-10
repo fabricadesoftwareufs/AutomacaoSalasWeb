@@ -106,7 +106,7 @@ namespace Service
 
                 var mensagem = "condicionador;" + codigosInfravermelho.Codigo + ";";
                 var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem);
+                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null ? true : false;
             }
             else if (solicitacao.Luzes != modelDesatualizado.Luzes)
             {
@@ -121,7 +121,7 @@ namespace Service
                 var mensagem = "luzes;" + codigosInfravermelho.Codigo + ";";
 
                 var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem);
+                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null ? true : false;
             }
 
             return comandoEnviadoComSucesso;
