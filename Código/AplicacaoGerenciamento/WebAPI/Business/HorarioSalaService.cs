@@ -291,5 +291,24 @@ namespace Service
 
             return false;
         }
+
+        public bool SolicitaAtualizacaoHorarioESP(string ipSala, DateTime dataHorario)
+        {
+            //Se a reserva cadastrada for antes do próximo domingo, será solicitado ao esp32 
+            //para atualizar a base
+            DateTime dataAtual = DateTime.Now;
+            DateTime proximoDomingo;
+
+            int nDia = (int)dataAtual.DayOfWeek;
+
+            proximoDomingo = nDia == 0 ? dataAtual : DateTime.Now.AddDays(7 - nDia).Date;
+
+            if (dataHorario <= proximoDomingo)
+            {
+                var socketService = new ClienteSocketService(ipSala);
+                return socketService.EnviarComando("atualizarHorarios;") != null ? true : false;
+            }
+            return false;
+        }
     }
 }
