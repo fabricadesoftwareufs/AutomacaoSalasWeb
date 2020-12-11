@@ -93,8 +93,19 @@ vector<struct Reserva> reservasDeHoje;
  */
 WiFiUDP udp;
 NTPClient ntp(udp, "a.st1.ntp.br", -3 * 3600, 60000);//Cria um objeto "NTP" com as configurações.utilizada no Brasil
+
+/* 
+ * Guarda hora atual (horário de brasilia)
+ */
 String horaAtualSistema;
 
+
+/* 
+ * Horarios base para consultar reservas do dia em arquivo 
+ */
+String horaInicicioCarregarReservas  = "00:05:00";
+String horaFimCarregarReservas       = "00:10:00";
+bool foiCarregadoHoje = false;
 
 /* 
  * Variaveis para manipular bluetooth do dispositivo 
@@ -118,11 +129,6 @@ bool temGente = false;
  */
 std::string sensoriamento = "";
 std::string dadoSemEspaco = "";
-
-/*
- * 
- */
-TaskHandle_t threadRecebeComandosDoServidor;
 
 
 /*
@@ -555,7 +561,6 @@ Vector<int> tratarCodigoIRrecebido(String msg)
  */
 vector<struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS &fs, String dataAtual){
     Serial.printf("Carregando horarios do arquivo: %s\n", path);
-        
     vector<struct Reserva> listaObjetos;
 
     File file = fs.open(path);
@@ -564,7 +569,6 @@ vector<struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS &fs, String dataAt
           return listaObjetos;
     }
   
-    Serial.print("Read from file: ");
     int nQuebraDeLinha = 0; // a primeira linha do arquivo guarda a data de gravacao do arquivo, então as informacoes estão depois do primeiro '\n'
     String linha;
     String dataReserva;
@@ -585,8 +589,9 @@ vector<struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS &fs, String dataAt
         }  
         nQuebraDeLinha++;
     }
-
     file.close();
+
+    foiCarregadoHoje = true;
     
     return listaObjetos; 
 }
@@ -698,7 +703,7 @@ void percorreListaDeObjetos(String payload) {
 struct Reserva converteJson(String objetoJson){
    struct Reserva res;
 
-   Serial.println(objetoJson); 
+   //Serial.println(objetoJson); 
    
    StaticJsonBuffer<1024> JSONBuffer;              
    JsonObject& object = JSONBuffer.parseObject(objetoJson);
@@ -852,6 +857,24 @@ String obterDataArquivo(fs::FS &fs){
   return dataAtual; 
 }
 
+/*
+ * <descricao> Verifica se a hora atual está no intervalo de horas definido no sistema para 
+ * recarregar os horarios do dia atual para a memoria do ESP32 <descricao/>
+ */
+bool verificaHorarioDeCarregarReservas(){
+  if (horaAtualSistema >= horaInicicioCarregarReservas && horaAtualSistema <= horaFimCarregarReservas){
+       Serial.println(foiCarregadoHoje);
+       if(!foiCarregadoHoje){
+          Serial.println("Recarregando horarios do dia Atual");
+          reservasDeHoje = carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
+
+          if(!foiCarregadoHoje)
+            reservasDeHoje.clear();
+       }
+  } else 
+      foiCarregadoHoje = false; 
+}
+
 void setup()
 {
     if(!SPIFFS.begin(true))
@@ -900,7 +923,7 @@ void setup()
     server.begin();
 
     /*
-     * 
+     * Obtendo estado atual do monitoramento do banco de dados
      */
     struct Monitoramento monitoramento = obterMonitoramentoByIdSala();
     arLigado = monitoramento.arCondicionado;
@@ -958,7 +981,7 @@ void recebeComandosDoServidor(void * pvParameters){
 
 void loop()
 {
-    lerArquivo(SPIFFS);
+    //lerArquivo(SPIFFS);
 
     if (deviceConnected && receivedData) {
                         
@@ -978,10 +1001,25 @@ void loop()
     horaAtualSistema = ntp.getFormattedTime();
     Serial.println("Hora: ");
     Serial.println(horaAtualSistema);
-    
+
+    /*
+     * Monitoração continua do ambiente para verificar se é necessário ligar     
+     * os equipamentos de acordo com os horários e outras variaveis do ambiente
+     */
     ligarDispositivosGerenciaveis();
+
+    /*
+     * Monitoração continua do ambiente para verificar se é necessário desligar     
+     * os equipamentos de acordo com os horários e outras variaveis do ambiente
+     */
     desligarDispositivosGerenciaveis();
 
+    /*
+     * Verifica se chegou o horário de carregar as reservas do dia 
+     * que estao no arquivo para a memoria do ESP32
+     */
+    verificaHorarioDeCarregarReservas();
+    
     temGente = false;
     delay(5000);       
 }
