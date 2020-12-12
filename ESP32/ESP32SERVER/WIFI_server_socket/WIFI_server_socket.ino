@@ -1,5 +1,7 @@
 #include <WiFi.h>
-const char* ssid     = "Net-Fathinha";
+const char* ssid     = "Net.Fatinha";
+//const char* ssid     = "Net-Fathinha";
+
 const char* password = "alohomora0707";
 /* create a server and listen on port 8088 */
 WiFiServer server(8088);
