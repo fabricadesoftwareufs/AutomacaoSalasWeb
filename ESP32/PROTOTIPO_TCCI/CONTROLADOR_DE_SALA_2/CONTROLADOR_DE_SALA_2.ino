@@ -45,7 +45,7 @@ const String operacao_desligar = "2";
  */
 EnergyMonitor SCT013;
 
-int pinSCT = 13; //Pino analógico conectado ao SCT-013
+int pinSCT = 14; //Pino analógico conectado ao SCT-013
 
 int tensao = 127;
 int potencia;
