@@ -68,9 +68,9 @@ IRsend irsend(kIrLed);
 /*
  * Variáveis para controlar a periodicidade de quando verificar se os horários estão desatualizados
  */
- unsigned long anteriorMillis = 0;        // a ultima vez que foi verificado
+unsigned long anteriorMillis = 0; // a ultima vez que foi verificado
 
-const long intervalo = 86400000;           // intervalo de tempo para ser verificado (em Millis) (1 dia)
+const long intervalo = 86400000; // intervalo de tempo para ser verificado (em Millis) (1 dia)
 
 /*
  * Estrutura usada para guardar dados da reserva da sala
@@ -227,8 +227,8 @@ void inicializarConfiguracoesBluetooth() {
 /* 
  *  Assinatura do metódo
  */
- void obterHorariosDaSemana();
- 
+void obterHorariosDaSemana();
+
 /*
  * <descricao> Obtem do servidor os codigos IR para ligar/desligar o arcondicionado <descricao/>
  * <parametros> operacao: operacao que deve ser consultados os codigos IR (ligar/desligar) <parametros/>
@@ -556,8 +556,7 @@ Vector < int > tratarMsgRecebida(String & msg) {
 
   } else if (tipoDeMsg == luzes) { // caso o comando seja para ligar as luzes
 
-  }
-  else if (tipoDeMsg == atualizar) {
+  } else if (tipoDeMsg == atualizar) {
     obterHorariosDaSemana();
   }
   codigo.push_back(-1);
@@ -965,7 +964,7 @@ void recebeComandosDoServidor(void * pvParameters) {
             else
               client.println("AC-OFF");
           }
-        
+
         }
       }
     }
@@ -991,12 +990,12 @@ void loop() {
     dadoSemEspaco = "";
     receivedData = false;
   }
-  
-  unsigned long atualMillis = millis();                  // verificar se está no tempo de ver se os horários estão desatualizados
+
+  unsigned long atualMillis = millis(); // verificar se está no tempo de ver se os horários estão desatualizados
   if (atualMillis - anteriorMillis >= intervalo) {
     verificarSeArquivoEstaAtualizado();
-    anteriorMillis = atualMillis;                       // salvando quando foi verificado
-    
+    anteriorMillis = atualMillis; // salvando quando foi verificado
+
   }
   horaAtualSistema = ntp.getFormattedTime();
   Serial.println("Hora: ");
