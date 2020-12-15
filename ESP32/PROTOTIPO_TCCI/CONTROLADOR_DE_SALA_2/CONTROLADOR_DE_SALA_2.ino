@@ -70,7 +70,7 @@ IRsend irsend(kIrLed);
  */
 unsigned long anteriorMillis = 0; // a ultima vez que foi verificado
 
-const long intervalo = 86400000; // intervalo de tempo para ser verificado (em Millis) (1 dia)
+const long intervalo = 17280; // intervalo de tempo para ser verificado (em Millis) (1 dia)  86400000/5000 -> (para compensar o delay de 5000 é o delay de 5 seg no loop) 17280*5 = 1 dia - 86400000
 
 /*
  * Estrutura usada para guardar dados da reserva da sala
