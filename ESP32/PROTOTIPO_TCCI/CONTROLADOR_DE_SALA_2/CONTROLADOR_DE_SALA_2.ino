@@ -20,8 +20,8 @@ using namespace std;
 /*
  * Dados da rede para conectar o dispositivo
  */
-const char * ssid = "VIVOFIBRA-5F70";
-const char * password = "F03C999054";
+const char * ssid = "Net-Fathinha";
+const char * password = "alohomora0707";
 
 /*
  * Caminhos para gravacao dos dados em arquivo
@@ -956,10 +956,9 @@ void recebeComandosDoServidor(void * pvParameters) {
           double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
           potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea   
           Serial.println("ps : ");
-          Serial.println(codigo[0]);
           Serial.println(Irms);
           if (codigo[0] != -1) { // se algum código foi recebido
-            if (Irms > 1) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
+            if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
               client.println("AC-ON");
             else
               client.println("AC-OFF");
