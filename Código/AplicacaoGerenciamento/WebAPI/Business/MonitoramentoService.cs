@@ -104,10 +104,13 @@ namespace Service
                 if (codigosInfravermelho == null)
                     throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
 
-                var mensagem = "condicionador;" + codigosInfravermelho.Codigo + ";";
+                var mensagem = "CONDICIONADOR;" + codigosInfravermelho.Codigo + ";";
 
                 var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null;
+                var status = clienteSocket.EnviarComando(mensagem);
+                solicitacao.ArCondicionado =  status.Equals("AC-ON") ? true : false;
+                    
+                comandoEnviadoComSucesso = status != null;
             }
             else if (solicitacao.Luzes != modelDesatualizado.Luzes)
             {
