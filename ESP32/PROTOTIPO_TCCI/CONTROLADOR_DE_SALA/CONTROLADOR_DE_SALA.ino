@@ -83,6 +83,7 @@ typedef struct Monitoramento {
   int salaId;
   bool salaParticular;
 };
+
 /*
  * Guarda as reservas do dia atual
  */
@@ -861,7 +862,7 @@ String obterDataArquivo(fs::FS &fs){
  * <descricao> Verifica se a hora atual está no intervalo de horas definido no sistema para 
  * recarregar os horarios do dia atual para a memoria do ESP32 <descricao/>
  */
-bool verificaHorarioDeCarregarReservas(){
+void verificaHorarioDeCarregarReservas(){
   if (horaAtualSistema >= horaInicicioCarregarReservas && horaAtualSistema <= horaFimCarregarReservas){
        Serial.println(foiCarregadoHoje);
        if(!foiCarregadoHoje){
@@ -953,9 +954,7 @@ void recebeComandosDoServidor(void * pvParameters){
     WiFiClient client = server.available(); 
         
     if (client) {                   
-      
-      Serial.println("Aplicação conectada");         
-      
+            
       /*
        * Checando se o cleinte está conectando ao server
        */           

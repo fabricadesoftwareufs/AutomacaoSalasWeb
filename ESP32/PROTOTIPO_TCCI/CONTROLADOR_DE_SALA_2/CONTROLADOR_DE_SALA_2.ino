@@ -20,35 +20,36 @@ using namespace std;
 /*
  * Dados da rede para conectar o dispositivo
  */
-const char * ssid = "Net-Fathinha";
-const char * password = "alohomora0707";
+//const char * ssid      = "Net-Fathinha";
+//const char * password  = "alohomora0707";
+const char* ssid     = "VIVOFIBRA-5F70";
+const char* password = "F03C999054";
 
 /*
  * Caminhos para gravacao dos dados em arquivo
  */
-const char * path = "/horariosSala.txt";
+const char * path                 = "/horariosSala.txt";
 const char * pathLogMonitoramento = "/logMonitoramento.txt";
 
 /*
  * Codigo da sala em que o ESP32 opera
  */
-const String id_sala = "2";
+const String id_sala              = "2";
 
 /*
  * Codigo das operacoes que o ESP32 pode fazer
  */
-const String operacao_ligar = "1";
-const String operacao_desligar = "2";
+const String operacao_ligar       = "1";
+const String operacao_desligar    = "2";
 
 /* 
  *  Variáveis para o sensoriamento de corrente
  */
 EnergyMonitor SCT013;
-
-int pinSCT = 14; //Pino analógico conectado ao SCT-013
-
-int tensao = 127;
+int pinSCT  = 14; //Pino analógico conectado ao SCT-013
+int tensao  = 127;
 int potencia;
+
 /* 
  * criando server ouvindo na porta 8088 
  */
@@ -69,7 +70,6 @@ IRsend irsend(kIrLed);
  * Variáveis para controlar a periodicidade de quando verificar se os horários estão desatualizados
  */
 unsigned long anteriorMillis = 0; // a ultima vez que foi verificado
-
 const long intervalo = 17280; // intervalo de tempo para ser verificado (em Millis) (1 dia)  86400000/5000 -> (para compensar o delay de 5000 é o delay de 5 seg no loop) 17280*5 = 1 dia - 86400000
 
 /*
@@ -87,6 +87,9 @@ typedef struct Reserva {
   int planejamento;
 };
 
+/*
+ * Estrutura usada para guardar dados do monitoramento da sala
+ */
 typedef struct Monitoramento {
   int id;
   bool luzes;
@@ -94,17 +97,30 @@ typedef struct Monitoramento {
   int salaId;
   bool salaParticular;
 };
+
 /*
  * Guarda as reservas do dia atual
  */
-vector < struct Reserva > reservasDeHoje;
+vector <struct Reserva> reservasDeHoje;
 
 /* 
  * Configurações de relógio on-line 
  */
 WiFiUDP udp;
 NTPClient ntp(udp, "a.st1.ntp.br", -3 * 3600, 60000); //Cria um objeto "NTP" com as configurações.utilizada no Brasil
+
+/* 
+ * Guarda hora atual (horário de brasilia)
+ */
 String horaAtualSistema;
+
+
+/* 
+ * Horarios base para consultar reservas do dia em arquivo 
+ */
+String horaInicicioCarregarReservas  = "00:05:00";
+String horaFimCarregarReservas       = "00:10:00";
+bool foiCarregadoHoje = false;
 
 /* 
  * Variaveis para manipular bluetooth do dispositivo 
@@ -129,10 +145,6 @@ bool temGente = false;
 std::string sensoriamento = "";
 std::string dadoSemEspaco = "";
 
-/*
- * 
- */
-TaskHandle_t threadRecebeComandosDoServidor;
 
 /*
  * Chave de conexao para os escraves possam se conectar ao controlador.  
@@ -169,7 +181,7 @@ class MyCallbacks: public BLECharacteristicCallbacks {
 };
 
 /*
- * 
+ * Configura o dispositivo para receber conexoes bluetooth
  */
 void inicializarConfiguracoesBluetooth() {
 
@@ -224,17 +236,44 @@ void inicializarConfiguracoesBluetooth() {
   Serial.println("Esperando os clientes iniciarem uma conexao...");
 }
 
-/* 
- *  Assinatura do metódo
+/*
+ * <descricao> Realiza requisicao ao servidor para obter as reservas da semana para a sala deste dispositivo <descricao/>   
  */
-void obterHorariosDaSemana();
+void obterHorariosDaSemana() {
+
+  if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
+
+    HTTPClient http;
+
+    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/horariosala/ReservasDaSemana/" + id_sala); //Specify the URL
+    int httpCode = http.GET(); //Make the request
+
+    Serial.println(String(httpCode));
+
+    if (httpCode == 200) { //Check for the returning code
+
+      // Obtendo corpo da mensagem
+      String payload = http.getString();
+
+      Serial.println(payload);
+      // Excluindo arquivo com dados desatualizados
+      excluirArquivo(SPIFFS);
+
+      // Percorrendo lista de onjetos json e gravando no arquivo
+      percorreListaDeObjetos(payload);
+    } else
+      Serial.println("Error on HTTP request");
+
+    http.end(); //Free the resources
+  }
+}
 
 /*
  * <descricao> Obtem do servidor os codigos IR para ligar/desligar o arcondicionado <descricao/>
  * <parametros> operacao: operacao que deve ser consultados os codigos IR (ligar/desligar) <parametros/>
  * <retorno> lista de inteiros com os codigos IR solicitados <retorno/>
  */
-vector < int > obterComandosIrByIdSalaAndOperacao(String operacao) {
+vector <int> obterComandosIrByIdSalaAndOperacao(String operacao) {
 
   String corpoRequisicao = "";
   if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
@@ -398,19 +437,19 @@ bool enviarMonitoramento(bool luzes, bool condicionador) {
     http.begin("http://igorbruno22-001-site1.ctempurl.com/api/monitoramento"); //Specify the URL
     http.addHeader("Content-Type", "application/json");
 
-    String id = String(monitoramento.id);
-    String luzesLiagadas = String(luzes ? "true" : "false");
-    String arCondicionado = String(condicionador ? "true" : "false");
-    String salaId = String(monitoramento.salaId);
-    String salaParticular = String(monitoramento.salaParticular ? "true" : "false");
+    String id               = String(monitoramento.id);
+    String luzesLiagadas    = String(luzes ? "true" : "false");
+    String arCondicionado   = String(condicionador ? "true" : "false");
+    String salaId           = String(monitoramento.salaId);
+    String salaParticular   = String(monitoramento.salaParticular ? "true" : "false");
 
     String monitoramentoJson = "{ ";
-    monitoramentoJson += "id: " + id + ", ";
-    monitoramentoJson += "luzes: " + luzesLiagadas + ", ";
-    monitoramentoJson += "arCondicionado: " + arCondicionado + ", ";
-    monitoramentoJson += "salaId: " + salaId + ", ";
-    monitoramentoJson += "salaParticular: " + salaParticular + ", ";
-    monitoramentoJson += " }";
+          monitoramentoJson += "id: "               + id             + ", ";
+          monitoramentoJson += "luzes: "            + luzesLiagadas  + ", ";
+          monitoramentoJson += "arCondicionado: "   + arCondicionado + ", ";
+          monitoramentoJson += "salaId: "           + salaId         + ", ";
+          monitoramentoJson += "salaParticular: "   + salaParticular + ", ";
+          monitoramentoJson += " }";
 
     int httpResponseCode = http.PUT(monitoramentoJson);
 
@@ -428,11 +467,8 @@ bool enviarMonitoramento(bool luzes, bool condicionador) {
 }
 
 /*
- * <descricao> Obtem nome do dispositivo ou os codigos IR neviados na requisicao do servidor  <descricao/>
- * <parametros> data: codigos IR recebidos na requisicao do servidor <parametros/>
- * <parametros> separator: caracter chave para realizar o 'split' <parametros/>
- * <parametros> index: identificar que diz se quem chama quer receber o nome do dispositivo ou os codigos IR <parametros/>
- * <retorno> string com nome do dispotivo recebido na requisicao ou os codigos IR <retorno/>
+ * <descricao> Obtem o estado atual do monitoramento da sala  <descricao/>
+ * <retorno> Struct Monitoramento com os dados do monitoramento de acordo com o banco <retorno/>
  */
 struct Monitoramento obterMonitoramentoByIdSala() {
 
@@ -467,7 +503,7 @@ struct Monitoramento obterMonitoramentoByIdSala() {
   return monitoramento;
 }
 
-void enviarComandosIr(vector < int > listaCodigos) {
+void enviarComandosIr(vector <int> listaCodigos) {
 
   Serial.println("convertido");
   int k = 0;
@@ -514,7 +550,7 @@ String SplitGetIndex(String data, char separator, int index) {
  * <retorno> Lista de inteiros com codigos ir <retorno/>
  */
 
-Vector < int > tratarMsgRecebida(String & msg) {
+Vector <int> tratarMsgRecebida(String & msg) {
   //  Strings de comparação
   String condicionador = "CONDICIONADOR";
   String luzes = "LUZES";
@@ -569,10 +605,10 @@ Vector < int > tratarMsgRecebida(String & msg) {
  * <parametros> dataAtual: data do dia atual para carregar as reservas <parametros/>
  * <retorno> Lista com reservas do tipo struct Reserva <retorno/>
  */
-vector < struct Reserva > carregarHorariosDeHojeDoArquivo(fs::FS & fs, String dataAtual) {
+vector <struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS & fs, String dataAtual) {
   Serial.printf("Carregando horarios do arquivo: %s\n", path);
 
-  vector < struct Reserva > listaObjetos;
+  vector <struct Reserva> listaObjetos;
 
   File file = fs.open(path);
   if (!file || file.isDirectory()) {
@@ -580,7 +616,6 @@ vector < struct Reserva > carregarHorariosDeHojeDoArquivo(fs::FS & fs, String da
     return listaObjetos;
   }
 
-  Serial.print("Read from file: ");
   int nQuebraDeLinha = 0; // a primeira linha do arquivo guarda a data de gravacao do arquivo, então as informacoes estão depois do primeiro '\n'
   String linha;
   String dataReserva;
@@ -604,39 +639,9 @@ vector < struct Reserva > carregarHorariosDeHojeDoArquivo(fs::FS & fs, String da
 
   file.close();
 
+  foiCarregadoHoje = true;
+
   return listaObjetos;
-}
-
-/*
- * <descricao> Realiza requisicao ao servidor para obter as reservas da semana para a sala deste dispositivo <descricao/>   
- */
-void obterHorariosDaSemana() {
-
-  if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
-
-    HTTPClient http;
-
-    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/horariosala/ReservasDaSemana/" + id_sala); //Specify the URL
-    int httpCode = http.GET(); //Make the request
-
-    Serial.println(String(httpCode));
-
-    if (httpCode == 200) { //Check for the returning code
-
-      // Obtendo corpo da mensagem
-      String payload = http.getString();
-
-      Serial.println(payload);
-      // Excluindo arquivo com dados desatualizados
-      excluirArquivo(SPIFFS);
-
-      // Percorrendo lista de onjetos json e gravando no arquivo
-      percorreListaDeObjetos(payload);
-    } else
-      Serial.println("Error on HTTP request");
-
-    http.end(); //Free the resources
-  }
 }
 
 /*
@@ -755,8 +760,7 @@ void conectarDispoitivoNaRede() {
  * <parametros> fs: utilizada para manipulacao do arquivo <parametros/>
  * <retorno> retorno true se o objeto foi gravado com suceso ou false caso contrario <retorno/>
  */
-bool gravarLinhaEmArquivo(fs::FS & fs, String objetoJson,
-  const char * path) {
+bool gravarLinhaEmArquivo(fs::FS & fs, String objetoJson, const char * path) {
   Serial.printf("Writing file: %s\n");
 
   objetoJson += '\n';
@@ -862,6 +866,24 @@ String obterDataArquivo(fs::FS & fs) {
   return dataAtual;
 }
 
+/*
+ * <descricao> Verifica se a hora atual está no intervalo de horas definido no sistema para 
+ * recarregar os horarios do dia atual para a memoria do ESP32 <descricao/>
+ */
+void verificaHorarioDeCarregarReservas(){
+  if (horaAtualSistema >= horaInicicioCarregarReservas && horaAtualSistema <= horaFimCarregarReservas){
+       Serial.println(foiCarregadoHoje);
+       if(!foiCarregadoHoje){
+          Serial.println("Recarregando horarios do dia Atual");
+          reservasDeHoje = carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
+
+          if(!foiCarregadoHoje)
+            reservasDeHoje.clear();
+       }
+  } else 
+      foiCarregadoHoje = false; 
+}
+
 void setup() {
   if (!SPIFFS.begin(true))
     Serial.println("SPIFFS falha ao montar objeto de manipulacao de arquivos");
@@ -940,8 +962,6 @@ void recebeComandosDoServidor(void * pvParameters) {
 
     if (client) {
 
-      Serial.println("Aplicação conectada");
-
       /*
        * Checando se o cleinte está conectando ao server
        */
@@ -973,7 +993,6 @@ void recebeComandosDoServidor(void * pvParameters) {
 }
 
 void loop() {
-  lerArquivo(SPIFFS);
 
   if (deviceConnected && receivedData) {
 
@@ -996,12 +1015,27 @@ void loop() {
     anteriorMillis = atualMillis; // salvando quando foi verificado
 
   }
-  horaAtualSistema = ntp.getFormattedTime();
-  Serial.println("Hora: ");
-  Serial.println(horaAtualSistema);
+   horaAtualSistema = ntp.getFormattedTime();
+    Serial.println("Hora: ");
+    Serial.println(horaAtualSistema);
 
-  ligarDispositivosGerenciaveis();
+  /*
+   * Monitoração continua do ambiente para verificar se é necessário ligar     
+   * os equipamentos de acordo com os horários e outras variaveis do ambiente
+   */
+   ligarDispositivosGerenciaveis();
+
+  /*
+   * Monitoração continua do ambiente para verificar se é necessário desligar     
+   * os equipamentos de acordo com os horários e outras variaveis do ambiente
+   */
   desligarDispositivosGerenciaveis();
+
+  /*
+   * Verifica se chegou o horário de carregar as reservas do dia 
+   * que estao no arquivo para a memoria do ESP32
+   */
+  verificaHorarioDeCarregarReservas();
 
   temGente = false;
   delay(5000);
