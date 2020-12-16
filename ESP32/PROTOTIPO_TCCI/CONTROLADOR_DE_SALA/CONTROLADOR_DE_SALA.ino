@@ -932,14 +932,13 @@ void setup()
     /* 
      * Inicia thread para ouvir comandos do servidor
      */
-    xTaskCreatePinnedToCore(
-                    recebeComandosDoServidor,   /* função que implementa a tarefa */
-                    "coreTaskZero", /* nome da tarefa */
-                    10000,      /* número de palavras a serem alocadas para uso com a pilha da tarefa */
-                    NULL,       /* parâmetro de entrada para a tarefa (pode ser NULL) */
-                    1,          /* prioridade da tarefa (0 a N) */
-                    NULL,       /* referência para a tarefa (pode ser NULL) */
-                    0);         /* Núcleo que executará a tarefa */
+    xTaskCreatePinnedToCore(recebeComandosDoServidor,   /* função que implementa a tarefa */
+                            "coreTaskZero", /* nome da tarefa */
+                            10000,      /* número de palavras a serem alocadas para uso com a pilha da tarefa */
+                            NULL,       /* parâmetro de entrada para a tarefa (pode ser NULL) */
+                            1,          /* prioridade da tarefa (0 a N) */
+                            NULL,       /* referência para a tarefa (pode ser NULL) */
+                            0);         /* Núcleo que executará a tarefa */
 
    
 }
@@ -981,8 +980,6 @@ void recebeComandosDoServidor(void * pvParameters){
 
 void loop()
 {
-    //lerArquivo(SPIFFS);
-
     if (deviceConnected && receivedData) {
                         
         dadoSemEspaco = sensoriamento.erase(sensoriamento.find_last_not_of(" \n\r\t") + 1);
