@@ -65,7 +65,8 @@ namespace Service
             }
             catch (Exception e)
             {
-                throw e;
+                Console.WriteLine(e.Message);
+                throw new ServiceException("Não foi possível concluir seu monitoramento pois houve uma falha na solicitação!");
             }
         }
 
@@ -106,11 +107,26 @@ namespace Service
 
                 var mensagem = "CONDICIONADOR;" + codigosInfravermelho.Codigo + ";";
 
-                var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                var status = clienteSocket.EnviarComando(mensagem);
-                solicitacao.ArCondicionado =  status.Equals("AC-ON") ? true : false;
-                    
-                comandoEnviadoComSucesso = status != null;
+                try
+                {
+                    var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
+                    if (clienteSocket.Client.Connected)
+                    {
+                        var status = clienteSocket.EnviarComando(mensagem);
+                        solicitacao.ArCondicionado = status.Equals("AC-ON") ? true : false;
+                        comandoEnviadoComSucesso = status != null;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Não foi possível estabelecer conexão");
+                        throw new ServiceException("Não foi possível estabelecer conexão");
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    return false;
+                }
             }
             else if (solicitacao.Luzes != modelDesatualizado.Luzes)
             {
@@ -124,8 +140,27 @@ namespace Service
 
                 var mensagem = "luzes;" + codigosInfravermelho.Codigo + ";";
 
-                var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                comandoEnviadoComSucesso = clienteSocket.EnviarComando(mensagem) != null;
+                try
+                {
+                    var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
+                    if (clienteSocket.Client.Connected)
+                    {
+
+                        var status = clienteSocket.EnviarComando(mensagem);
+                        solicitacao.Luzes = status.Equals("L-ON") ? true : false;
+                        comandoEnviadoComSucesso = status != null;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Não foi possível estabelecer conexão");
+                        throw new ServiceException("Não foi possível estabelecer conexão");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    return false;
+                }
             }
 
             return comandoEnviadoComSucesso;
