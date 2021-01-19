@@ -7,7 +7,7 @@
 
     if (claimsIdentity != null)
     {
-        nome = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Name).Select(s => s.Value).FirstOrDefault();
+        nome = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.NameIdentifier).Select(s => s.Value).FirstOrDefault();
         role = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault();
     }
 }
