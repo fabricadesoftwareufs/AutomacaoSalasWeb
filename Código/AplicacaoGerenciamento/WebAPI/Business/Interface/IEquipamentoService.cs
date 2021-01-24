@@ -8,5 +8,6 @@ namespace Service.Interface
         EquipamentoModel GetByIdEquipamento(int idEquipamento);
         EquipamentoModel GetByIdSalaAndTipoEquipamento(int idSala, string tipo);
         List<EquipamentoModel> GetByIdSala(int idSala);
+        List<EquipamentoModel> GetAll();
     }
 }

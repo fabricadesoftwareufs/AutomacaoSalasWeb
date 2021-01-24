@@ -55,5 +55,7 @@ namespace Service
                        Sala = eq.Sala,
                        TipoEquipamento = eq.TipoEquipamento
                    }).ToList();
+
+        public List<EquipamentoModel> GetAll() => _context.Equipamento.Select(e => new EquipamentoModel {Id = e.Id, Modelo = e.Modelo, Descricao = e.Descricao, TipoEquipamento = e.TipoEquipamento, Marca = e.Marca, Sala = e.Sala }).ToList();
     }
 }

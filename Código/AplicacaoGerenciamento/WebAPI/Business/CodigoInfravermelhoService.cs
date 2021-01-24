@@ -1,6 +1,7 @@
 ﻿using Model;
 using Persistence;
 using Service.Interface;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Service
@@ -43,6 +44,16 @@ namespace Service
                        IdOperacao = ir.Operacao,
                    }).FirstOrDefault();
 
+        public List<CodigoInfravermelhoModel> getAllByEquipamento(int idEquipamento)
+        => _context.Codigoinfravermelho
+        .Where(cs => cs.Equipamento == idEquipamento)
+        .Select(cs => new CodigoInfravermelhoModel
+        {
+            Id = cs.Id,
+            IdEquipamento = cs.Equipamento,
+            Codigo = cs.Codigo,
+            IdOperacao = cs.Operacao
+        }).ToList();
 
     }
 }
