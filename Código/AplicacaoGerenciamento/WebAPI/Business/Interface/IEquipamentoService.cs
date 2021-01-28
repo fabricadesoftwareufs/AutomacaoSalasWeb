@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.ViewModel;
 using System.Collections.Generic;
 
 namespace Service.Interface
@@ -9,5 +10,6 @@ namespace Service.Interface
         EquipamentoModel GetByIdSalaAndTipoEquipamento(int idSala, string tipo);
         List<EquipamentoModel> GetByIdSala(int idSala);
         List<EquipamentoModel> GetAll();
+        bool Insert(EquipamentoViewModel entity);
     }
 }

@@ -51,6 +51,9 @@ namespace SalasUfsWeb
             services.AddScoped<IHardwareDeBlocoService, HardwareDeBlocoService>();
             services.AddScoped<ITipoHardwareService, TipoHardwareService>();
             services.AddScoped<IHardwareDeSalaService, HardwareDeSalaService>();
+            services.AddScoped<ICodigoInfravermelhoService, CodigoInfravermelhoService>();
+            services.AddScoped<IOperacaoCodigoService, OperacaoCodigoService>();
+            services.AddScoped<IEquipamentoService, EquipamentoService>();
             services.AddScoped<ISalaParticularService, SalaParticularService>();
             services.AddScoped<IUsuarioOrganizacaoService, UsuarioOrganizacaoService>();
             services.AddScoped<IHorarioSalaService, HorarioSalaService>();

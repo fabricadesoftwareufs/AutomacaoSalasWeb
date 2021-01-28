@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Model;
 using Model.ViewModel;
+using Service;
 using Service.Interface;
 
 namespace SalasUfsWeb.Controllers
@@ -14,16 +18,30 @@ namespace SalasUfsWeb.Controllers
         private readonly IEquipamentoService _equipamentoService;
         private readonly ICodigoInfravermelhoService _codigoInfravermelhoService;
         private readonly ISalaService _salaService;
-
+        private readonly IOperacaoCodigoService _operacaoService;
+        private readonly IUsuarioService _usuarioService;
+        private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
+        private readonly IBlocoService _blocoService;
+        private readonly IOrganizacaoService _organizacaoService;
         public EquipamentoController(
                                         IEquipamentoService equipamentoService,
                                         ICodigoInfravermelhoService codigoInfravermelhoService,
-                                        ISalaService salaService
+                                        ISalaService salaService,
+                                        IOperacaoCodigoService operacaoService,
+                                        IUsuarioService usuarioService,
+                                        IUsuarioOrganizacaoService usuarioOrganizacaoService,
+                                        IBlocoService blocoService,
+                                        IOrganizacaoService organizacaoService
                                     )
         {
             _equipamentoService = equipamentoService;
             _codigoInfravermelhoService = codigoInfravermelhoService;
             _salaService = salaService;
+            _operacaoService = operacaoService;
+            _usuarioService = usuarioService;
+            _usuarioOrganizacaoService = usuarioOrganizacaoService;
+            _blocoService = blocoService;
+            _organizacaoService = organizacaoService;
         }
 
         // GET: EquipamentoController
@@ -45,23 +63,53 @@ namespace SalasUfsWeb.Controllers
         // GET: EquipamentoController/Create
         public ActionResult Create()
         {
+            string[] tiposEquipamento = { EquipamentoModel.TIPO_CONDICIONADOR, EquipamentoModel.TIPO_LUZES };
+
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
+            var operacoes = _operacaoService.GetAll().ToList();
+            ViewBag.Operacoes = operacoes;
+            ViewBag.Organizacoes = organizacoes;
+            ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
+            ViewBag.Salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
+            ViewBag.Blocos = blocos;
+            ViewBag.Tipos = tiposEquipamento;
             return View();
         }
 
         // POST: EquipamentoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(EquipamentoViewModel equipamentoViewModel)
         {
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
+            var operacoes = _operacaoService.GetAll().ToList();
+            ViewBag.Operacoes = operacoes;
+            ViewBag.Organizacoes = organizacoes;
+            ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
+            ViewBag.Salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
+            ViewBag.Blocos = blocos;
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                  
+                    if (_equipamentoService.Insert(equipamentoViewModel))
+                    {
+                        TempData["mensagemSucesso"] = "Equipamento cadastrado com sucesso!";
+                        return View();
+                    }
+                    else TempData["mensagemErro"] = "Houve um problema ao inserir novo equipamento, tente novamente em alguns minutos.";
+                }
             }
-            catch
+            catch (ServiceException se)
             {
-                return View();
+                TempData["mensagemErro"] = se.Message;
             }
-        }
+
+            return View(equipamentoViewModel);
+}
 
         // GET: EquipamentoController/Edit/5
         public ActionResult Edit(int id)

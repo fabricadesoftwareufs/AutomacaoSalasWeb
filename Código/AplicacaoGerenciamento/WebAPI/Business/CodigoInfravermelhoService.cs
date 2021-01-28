@@ -44,7 +44,7 @@ namespace Service
                        IdOperacao = ir.Operacao,
                    }).FirstOrDefault();
 
-        public List<CodigoInfravermelhoModel> getAllByEquipamento(int idEquipamento)
+        public List<CodigoInfravermelhoModel> GetAllByEquipamento(int idEquipamento)
         => _context.Codigoinfravermelho
         .Where(cs => cs.Equipamento == idEquipamento)
         .Select(cs => new CodigoInfravermelhoModel
@@ -54,6 +54,16 @@ namespace Service
             Codigo = cs.Codigo,
             IdOperacao = cs.Operacao
         }).ToList();
+
+        public bool AddAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels)
+        {
+            List<Codigoinfravermelho> codigos = new List<Codigoinfravermelho>();
+            codigoInfravermelhoModels.ForEach(c => codigos.Add(new Codigoinfravermelho { Codigo = c.Codigo, Operacao = c.IdOperacao, Equipamento = c.IdEquipamento }));
+
+            _context.AddRange(codigos);
+            return _context.SaveChanges() == 1;
+        }
+
 
     }
 }

@@ -1,0 +1,166 @@
+﻿@model Model.ViewModel.EquipamentoViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Cadastrar Novo Equipamento</h2>
+                    </div>
+                    <form asp-action="Create" id="form" name="form">
+                        <div class="card-body">
+                            <div class="form-group col-md-4">
+                                <label asp-for="SalaModel.Titulo" class="control-label"></label>
+                                <input asp-for="SalaModel.Titulo" class="form-control" />
+                                <span asp-validation-for="SalaModel.Titulo" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label asp-for="EquipamentoModel.Modelo" class="control-label"></label>
+                                <input asp-for="EquipamentoModel.Modelo" class="form-control" />
+                                <span asp-validation-for="EquipamentoModel.Modelo" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label asp-for="EquipamentoModel.Marca" class="control-label"></label>
+                                <input asp-for="EquipamentoModel.Marca" class="form-control" />
+                                <span asp-validation-for="EquipamentoModel.Marca" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label asp-for="EquipamentoModel.Descricao" class="control-label"></label>
+                                <input asp-for="EquipamentoModel.Descricao" class="form-control" />
+                                <span asp-validation-for="EquipamentoModel.Descricao" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group col-md-7">
+                                <label class="control-label">Selecione a Organização</label>
+                                <select class="form-control" asp-for="OrganizacaoModel" id="select-organizacao" onchange="loadBlocosAndUsuarios()">
+                                    @foreach (var item in ViewBag.Organizacoes)
+                                    {
+                                        <option value="@item.Id"> @item.Cnpj | @item.RazaoSocial </option>
+                                    }
+                                </select>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="ocupation col-md-5">
+                                <div class="form-group" id="ListElements">
+                                    <label asp-for="BlocoModel" class="control-label">Selecione o Bloco</label>
+                                    <select class="form-control" asp-for="BlocoModel" onchange="loadSalas()" id="select-bloco">
+                                        @foreach (var item in ViewBag.Blocos)
+                                        {
+                                            <option value="@item.Id"> @item.Id | @item.Titulo </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="BlocoModel" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="EquipamentoModel.Sala" class="control-label"></label>
+                                    <select class="form-control" asp-for="EquipamentoModel.Sala" id="select-sala">
+                                        @foreach (var item in ViewBag.Salas)
+                                        {
+                                            <option value="@item.Id"> @item.Id | @item.Titulo </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="EquipamentoModel.Sala" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-7">
+                                    <label asp-for="EquipamentoModel.TipoEquipamento" class="control-label"></label>
+                                    <select class="form-control" asp-for="EquipamentoModel.TipoEquipamento" id="select-organizacao">
+                                        @foreach (var item in ViewBag.Tipos)
+                                        {
+                                            <option value="@item"> @item</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="EquipamentoModel.TipoEquipamento" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="ocupation col-md-5">
+                                <div class="form-group align-element">
+                                    <label title="Código" class="control-label">O equipamento é infravermelho?</label>
+                                    <input type="checkbox" name="checkbox" id="checkbox" value="checkbox" />
+                                </div>
+                            </div>
+                            <div class="ocupation col-md-10">
+                                <div id="ccodigo" class="form-group align-element">
+                                    <label title="Codigo" class="control-label">Código</label>
+                                    <textarea id="codigo" class="form-control" type="text" name="codigo"></textarea>
+                                </div>
+
+                                <div id="coperacao" class="form-group align-element">
+                                    <label name="Operacao" class="control-label">Operação</label>
+                                    <select name="operacao" id="operacao">
+                                        @foreach (var item in ViewBag.Operacoes)
+                                        {
+                                            <option value="@item.Id"> @item.Titulo </option>
+                                        }
+                                    </select>
+                                    <span name="operacao" class="text-danger"></span>
+                                </div>
+
+
+                                <div id="cbotao" class="form-group align-element">
+                                    <a id="add-novo-horario" onclick="AdicionarNovoCodigo()" class="btn btn-primary text-white"><i class="nav-icon fa fa-plus"></i> </a>
+                                </div>
+
+                            </div>
+
+                            <section id="codigos" class="content">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">Códigos Adicionados</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="container-codigo">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <div class="card-footer">
+                                <div class="col-md-4">
+                                    <input type="submit" id="btn-create-codigo" value="Salvar" class="btn btn-success" /> |
+                                    <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
+@section Scripts {
+
+    <script src="~/js/load-itens-script.js"></script>
+    <script src="~/js/equipamento-script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

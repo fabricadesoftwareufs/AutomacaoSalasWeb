@@ -1,6 +1,9 @@
-﻿using Model;
+﻿using Microsoft.EntityFrameworkCore;
+using Model;
+using Model.ViewModel;
 using Persistence;
 using Service.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -57,5 +60,47 @@ namespace Service
                    }).ToList();
 
         public List<EquipamentoModel> GetAll() => _context.Equipamento.Select(e => new EquipamentoModel {Id = e.Id, Modelo = e.Modelo, Descricao = e.Descricao, TipoEquipamento = e.TipoEquipamento, Marca = e.Marca, Sala = e.Sala }).ToList();
+
+        public bool Insert(EquipamentoViewModel entity)
+        {
+            try
+            {
+                ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
+
+                var equip = SetEntity(entity.EquipamentoModel);
+                _context.Add(equip);
+                int inserted = _context.SaveChanges();
+                _context.Entry(equip).GetDatabaseValues();
+
+                var codigosEntity = new List<CodigoInfravermelhoModel>();
+                if (inserted == 1)
+                {
+                    entity.Codigos.ForEach(c => codigosEntity.Add(new CodigoInfravermelhoModel { Codigo = c.Codigo, IdEquipamento = equip.Id, IdOperacao = c.IdOperacao }));
+                    codigoInfravermelhoService.AddAll(codigosEntity);
+                }
+                return Convert.ToBoolean(inserted);
+
+
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
+        }
+
+        private static Equipamento SetEntity(EquipamentoModel model)
+        {
+            Equipamento entity = new Equipamento {
+                Id = model.Id,
+                Descricao  = model.Descricao,
+                Marca = model.Marca,
+                Modelo = model.Modelo,
+                TipoEquipamento = model.TipoEquipamento,
+                Sala = model.Sala
+            };
+            return entity;
+        }
     }
 }
