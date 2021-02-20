@@ -63,7 +63,7 @@
 											"top": 55,
 											"width": 887,
 											"height": 13,
-											"text": "AutomacaoSalas - Sofware"
+											"text": "SalasUfs - Sofware"
 										},
 										{
 											"_type": "LabelView",
@@ -7893,7 +7893,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFElm6BOFNpegQ="
 					},
-					"name": "AutomacaoSalas - Sofware"
+					"name": "SalasUfs - Sofware"
 				},
 				{
 					"_type": "UMLActor",
@@ -8671,7 +8671,7 @@
 											"top": 71,
 											"width": 687,
 											"height": 13,
-											"text": "AutomacaoSalas - Hardware"
+											"text": "SalasUfs - Hardware"
 										},
 										{
 											"_type": "LabelView",
@@ -15485,7 +15485,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFElm6BOFNpegQ="
 					},
-					"name": "AutomacaoSalas - Hardware"
+					"name": "SalasUfs - Hardware"
 				},
 				{
 					"_type": "UMLActor",
