@@ -5,7 +5,7 @@ decode_results results;                     // declarando os resultados
  
 void setup()
 {
-  Serial.begin(9600);                       // Monitor velocidade 9600 bps
+  Serial.begin(115200);                       // Monitor velocidade 9600 bps
   irrecv.enableIRIn();                      // Inicializa a recepção de códigos
 }
  

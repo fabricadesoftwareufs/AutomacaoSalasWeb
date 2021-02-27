@@ -17,7 +17,7 @@ namespace Service
         {
             var _equipamentoService = new EquipamentoService(_context);
             var equipamento = _equipamentoService.GetByIdSalaAndTipoEquipamento(idSala, EquipamentoModel.TIPO_CONDICIONADOR);
-            
+
             return GetByIdOperacaoAndIdEquipamento(equipamento.Id, operacao);
         }
 

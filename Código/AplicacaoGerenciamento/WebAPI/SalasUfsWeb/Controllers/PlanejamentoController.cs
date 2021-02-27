@@ -163,7 +163,7 @@ namespace SalasUfsWeb.Controllers
 
             var planejamentos = new List<PlanejamentoViewModel>();
 
-            orgs.ForEach(e => 
+            orgs.ForEach(e =>
                     _planejamentoService.GetByIdOrganizacao(e.OrganizacaoId).ForEach(p =>
                          planejamentos.Add(Cast(p))
                 )

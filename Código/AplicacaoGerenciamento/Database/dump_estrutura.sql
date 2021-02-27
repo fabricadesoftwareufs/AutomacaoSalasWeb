@@ -202,9 +202,9 @@ CREATE TABLE IF NOT EXISTS `codigoInfravermelho` (
   `id` INT(11) NOT NULL,
   `Equipamento` INT(11) NOT NULL,
   `Operacao` INT(11) NOT NULL,
-  `Codigo` VARCHAR(50) NOT NULL,
+  `Codigo` TEXT(65535) NOT NULL COLLATE 'utf8_unicode_ci',
   PRIMARY KEY (`id`),
-  KEY `fk_CodigoInfravermelho_Equipamento1_idx` (`Equipamento` ASC) VISIBLE,
+  KEY `fk_CodigoInfravermelho_Equipamento1_idx`,
   KEY `fk_CodigoInfravermelho_Operacao1_idx` (`Operacao` ASC) VISIBLE,
   CONSTRAINT `fk_CodigoInfravermelho_Equipamento1` FOREIGN KEY (`Equipamento`) REFERENCES `str_db`.`Equipamento` (`id`),
   CONSTRAINT `fk_CodigoInfravermelho_Operacao1` FOREIGN KEY (`Operacao`) REFERENCES `str_db`.`Operacao` (`id`)

@@ -5,7 +5,7 @@ namespace Model.AuxModel
     public class UsuarioAuxModel
     {
         public UsuarioModel UsuarioModel { get; set; }
-        public TipoUsuarioModel TipoUsuarioModel { get; set;  }
+        public TipoUsuarioModel TipoUsuarioModel { get; set; }
         public List<OrganizacaoModel> OrganizacaoModels;
     }
 }
