@@ -14,12 +14,12 @@ namespace Service
         {
             Ip = ip;
             Client = new TcpClient();
-
+            Client.ConnectAsync(Ip, PORTA).Wait(10000);
         }
 
         public string EnviarComando(string comando)
         {
-            if (!Client.ConnectAsync(Ip, PORTA).Wait(10000))
+            if (Client.Connected)
             {
                 int tentativas = 0;
                 bool enviouComando;
@@ -73,7 +73,8 @@ namespace Service
             }
             else
             {
-                return null;
+                Console.WriteLine("Não foi possível estabelecer conexão");
+                throw new ServiceException("Não foi possível estabelecer conexão");
             }
         }
     }
