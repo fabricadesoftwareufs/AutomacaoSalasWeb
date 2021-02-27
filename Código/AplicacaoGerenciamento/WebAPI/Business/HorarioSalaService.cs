@@ -96,6 +96,35 @@ namespace Service
                 Planejamento = hs.Planejamento
             }).ToList();
 
+        public List<HorarioSalaModel> GetReservasDaSemanaByIdSala(int idSala)
+        {
+            /*
+             * Pegando a data atual e a data do próximo domingo
+             */
+            DateTime dataAtual = DateTime.Now;
+            DateTime proximoDomingo;
+
+            int nDia = (int)dataAtual.DayOfWeek;
+ 
+            if (nDia == 0) proximoDomingo = dataAtual;
+            else proximoDomingo = DateTime.Now.AddDays(7 - nDia).Date;
+
+            return _context.Horariosala
+             .Where(hs => hs.Sala == idSala && hs.Data.Date >= dataAtual.Date && hs.Data.Date <= proximoDomingo.Date && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))
+             .Select(hs => new HorarioSalaModel
+             {
+                 Id = hs.Id,
+                 Data = hs.Data,
+                 SalaId = hs.Sala,
+                 HorarioInicio = hs.HorarioInicio,
+                 HorarioFim = hs.HorarioFim,
+                 Situacao = hs.Situacao,
+                 Objetivo = hs.Objetivo,
+                 UsuarioId = hs.Usuario,
+                 Planejamento = hs.Planejamento
+             }).ToList();
+        }
+
         public List<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana)
          => _context.Horariosala
              .Where(hs => hs.Usuario == idUsuario && ((int)hs.Data.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper()) &&
@@ -157,7 +186,7 @@ namespace Service
                             Id = hs.Id,
                         }).FirstOrDefault();
 
-            return query == null ? false : true;
+            return query == null;
         }
 
 
@@ -172,7 +201,7 @@ namespace Service
                     throw new ServiceException("Os horários possuem inconsistências, corrija-os e tente novamente!");
 
                 _context.Add(SetEntity(entity, new Horariosala()));
-                return _context.SaveChanges() == 1 ? true : false;
+                return _context.SaveChanges() == 1;
             }
             catch (Exception e)
             {
@@ -186,7 +215,7 @@ namespace Service
             if (x != null)
             {
                 _context.Remove(x);
-                return _context.SaveChanges() == 1 ? true : false;
+                return _context.SaveChanges() == 1;
             }
 
             return false;
@@ -200,7 +229,7 @@ namespace Service
                 if (x != null)
                 {
                     _context.RemoveRange(x);
-                    return _context.SaveChanges() == 1 ? true : false;
+                    return _context.SaveChanges() == 1;
                 }
             }
             catch (Exception e)
@@ -217,7 +246,7 @@ namespace Service
             if (x != null)
             {
                 _context.Update(SetEntity(entity, x));
-                return _context.SaveChanges() == 1 ? true : false;
+                return _context.SaveChanges() == 1;
             }
 
             return false;
@@ -231,7 +260,7 @@ namespace Service
                 {
                     x.ForEach(r => r.Planejamento = null);
                     _context.UpdateRange(x);
-                    return _context.SaveChanges() == 1 ? true : false;
+                    return _context.SaveChanges() == 1;
                 }
             }
             catch (Exception e)
@@ -264,7 +293,7 @@ namespace Service
             if (x != null)
             {
                 _context.RemoveRange(x);
-                return _context.SaveChanges() == 1 ? true : false;
+                return _context.SaveChanges() == 1;
             }
 
             return false;

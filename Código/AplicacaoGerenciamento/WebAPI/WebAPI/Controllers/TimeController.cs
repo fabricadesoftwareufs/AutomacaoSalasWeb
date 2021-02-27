@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
             }
             else if (id.ToUpper() == "GETDATETIME")
             {
-                hora = DateTime.Now.ToString("HH:mm:ss;dd/MM/yyyy");
+                hora = DateTime.Now.ToString("HH:mm:ss;yyyy-MM-dd");
             }
 
             else if (id.ToUpper() == "GETTIME")
@@ -34,7 +34,15 @@ namespace WebAPI.Controllers
             }
             else if (id.ToUpper() == "GETDATE")
             {
-                hora = DateTime.Now.ToString("dd/MM/yyyy");
+                hora = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            else if (id.ToUpper() == "GETDATENEXTSUNDAY")
+            {
+                hora = DateTime.Now.AddDays(7 - (int)DateTime.Now.DayOfWeek).ToString("yyyy-MM-dd");
+            }
+            else if (id.ToUpper() == "GETDATEPREVIOUSSUNDAY")
+            {
+                hora = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek).ToString("yyyy-MM-dd");
             }
             else
             {

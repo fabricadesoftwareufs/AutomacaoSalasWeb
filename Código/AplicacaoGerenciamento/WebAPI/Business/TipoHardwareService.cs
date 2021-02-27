@@ -21,7 +21,7 @@ namespace Service
         public bool Insert(TipoHardwareModel entity)
         {
             _context.Add(SetEntity(entity, new Tipohardware()));
-            return _context.SaveChanges() == 1 ? true : false;
+            return _context.SaveChanges() == 1;
         }
 
         public bool Remove(int id)

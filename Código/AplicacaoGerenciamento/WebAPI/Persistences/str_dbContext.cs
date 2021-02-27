@@ -42,7 +42,7 @@ namespace Persistence
         {
             modelBuilder.Entity<Bloco>(entity =>
             {
-                entity.ToTable("bloco", "str_db");
+                entity.ToTable("bloco", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Organizacao)
                     .HasName("fk_Bloco_Organizacao1_idx");
@@ -65,7 +65,7 @@ namespace Persistence
 
             modelBuilder.Entity<Codigoinfravermelho>(entity =>
             {
-                entity.ToTable("codigoinfravermelho", "str_db");
+                entity.ToTable("codigoinfravermelho", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Equipamento)
                     .HasName("fk_CodigoInfravermelho_Equipamento1_idx");
@@ -102,7 +102,7 @@ namespace Persistence
 
             modelBuilder.Entity<Equipamento>(entity =>
             {
-                entity.ToTable("equipamento", "str_db");
+                entity.ToTable("equipamento", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Sala)
                     .HasName("fk_Equipamento_Sala1_idx");
@@ -142,7 +142,7 @@ namespace Persistence
 
             modelBuilder.Entity<Hardwaredebloco>(entity =>
             {
-                entity.ToTable("hardwaredebloco", "str_db");
+                entity.ToTable("hardwaredebloco", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Bloco)
                     .HasName("fk_HardwareDeBloco_Bloco1_idx");
@@ -183,7 +183,7 @@ namespace Persistence
 
             modelBuilder.Entity<Hardwaredesala>(entity =>
             {
-                entity.ToTable("hardwaredesala", "str_db");
+                entity.ToTable("hardwaredesala", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Sala)
                     .HasName("fk_Hardware_Sala1_idx");
@@ -222,7 +222,7 @@ namespace Persistence
 
             modelBuilder.Entity<Horariosala>(entity =>
             {
-                entity.ToTable("horariosala", "str_db");
+                entity.ToTable("horariosala", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Planejamento)
                     .HasName("fk_HorarioSala_Planejamento1_idx");
@@ -271,7 +271,7 @@ namespace Persistence
 
             modelBuilder.Entity<Monitoramento>(entity =>
             {
-                entity.ToTable("monitoramento", "str_db");
+                entity.ToTable("monitoramento", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Sala)
                     .HasName("fk_Sala_Id");
@@ -295,7 +295,7 @@ namespace Persistence
 
             modelBuilder.Entity<Operacao>(entity =>
             {
-                entity.ToTable("operacao", "str_db");
+                entity.ToTable("operacao", "db_a6c40a_tcc");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -314,7 +314,7 @@ namespace Persistence
 
             modelBuilder.Entity<Organizacao>(entity =>
             {
-                entity.ToTable("organizacao", "str_db");
+                entity.ToTable("organizacao", "db_a6c40a_tcc");
 
                 entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
 
@@ -331,7 +331,7 @@ namespace Persistence
 
             modelBuilder.Entity<Planejamento>(entity =>
             {
-                entity.ToTable("planejamento", "str_db");
+                entity.ToTable("planejamento", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Sala)
                     .HasName("fk_Planejamento_Sala1_idx");
@@ -375,7 +375,7 @@ namespace Persistence
 
             modelBuilder.Entity<Sala>(entity =>
             {
-                entity.ToTable("sala", "str_db");
+                entity.ToTable("sala", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Bloco)
                     .HasName("fk_Sala_Bloco1_idx");
@@ -398,7 +398,7 @@ namespace Persistence
 
             modelBuilder.Entity<Salaparticular>(entity =>
             {
-                entity.ToTable("salaparticular", "str_db");
+                entity.ToTable("salaparticular", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Sala)
                     .HasName("fk_MinhaSala_Sala1_idx");
@@ -429,7 +429,7 @@ namespace Persistence
 
             modelBuilder.Entity<Tipohardware>(entity =>
             {
-                entity.ToTable("tipohardware", "str_db");
+                entity.ToTable("tipohardware", "db_a6c40a_tcc");
 
                 entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
 
@@ -441,7 +441,7 @@ namespace Persistence
 
             modelBuilder.Entity<Tipousuario>(entity =>
             {
-                entity.ToTable("tipousuario", "str_db");
+                entity.ToTable("tipousuario", "db_a6c40a_tcc");
 
                 entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
 
@@ -453,7 +453,7 @@ namespace Persistence
 
             modelBuilder.Entity<Usuario>(entity =>
             {
-                entity.ToTable("usuario", "str_db");
+                entity.ToTable("usuario", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Cpf)
                     .HasName("Cpf_UNIQUE")
@@ -494,7 +494,7 @@ namespace Persistence
             {
                 entity.HasKey(e => new { e.Id, e.Organizacao, e.Usuario });
 
-                entity.ToTable("usuarioorganizacao", "str_db");
+                entity.ToTable("usuarioorganizacao", "db_a6c40a_tcc");
 
                 entity.HasIndex(e => e.Organizacao)
                     .HasName("fk_Organizacao_has_Usuario_Organizacao1_idx");
