@@ -252,8 +252,9 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 INSERT INTO `usuario` (`Id`, `Cpf`, `Nome`, `DataNascimento`, `Senha`, `TipoUsuario`) VALUES
 	(1, '42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2),
 	(2, '57377766387', 'Rafael Kevin Teixeira', '1996-07-22', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2),
-	(3, '07852892590', 'Igor bruno dos santos nascimento', '1996-07-22', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2);
-/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
+	(3, '07852892590', 'Igor bruno dos santos nascimento', '1996-07-22', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2),
+	(4, '07334824571', 'Abraao Alves', '1998-06-06', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2);
+//*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.usuarioorganizacao
 CREATE TABLE IF NOT EXISTS `usuarioorganizacao` (
@@ -272,6 +273,7 @@ CREATE TABLE IF NOT EXISTS `usuarioorganizacao` (
 INSERT INTO `usuarioorganizacao` (`Id`, `Organizacao`, `Usuario`) VALUES
 	(1, 1, 1),
 	(3, 1, 3),
+	(4, 1, 4),
 	(2, 1, 2);
 /*!40000 ALTER TABLE `usuarioorganizacao` ENABLE KEYS */;
 
@@ -355,7 +357,7 @@ INSERT INTO `salaparticular` (`Id`, `Usuario`,`Sala`) VALUES
 /*!40000 ALTER TABLE `salaparticular` ENABLE KEYS */;
 
 CREATE TABLE IF NOT EXISTS `equipamento` (
-  `id` INT(11) NOT NULL,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `Modelo` VARCHAR(200) NOT NULL,
   `Marca` VARCHAR(100) NOT NULL,
   `Descricao` VARCHAR(1000) NULL DEFAULT NULL,
@@ -374,7 +376,7 @@ INSERT INTO `equipamento` (`Id`, `Modelo`,`Marca`,`Descricao`,`Sala`) VALUES
 /*!40000 ALTER TABLE `salaparticular` ENABLE KEYS */;
 
 CREATE TABLE IF NOT EXISTS `codigoInfravermelho` (
-  `id` INT(11) NOT NULL,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `Equipamento` INT(11) NOT NULL,
   `Operacao` INT(11) NOT NULL,
   `Codigo` TEXT(65535) NOT NULL COLLATE 'utf8_unicode_ci',
@@ -415,7 +417,7 @@ INSERT INTO `codigoinfravermelho` (`id`, `Equipamento`, `Operacao`, `Codigo`) VA
 
 
 CREATE TABLE IF NOT EXISTS `operacao` (
-  `id` INT(11) NOT NULL,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `Titulo` VARCHAR(50) NOT NULL,
   `Descricao` VARCHAR(200) NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
@@ -432,3 +434,4 @@ INSERT INTO `operacao` (`Id`, `Titulo`,`Descricao`) VALUES
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+usuarioorganizacao
