@@ -564,15 +564,16 @@ String SplitGetIndex(String data, char separator, int index) {
  * <retorno> Lista de inteiros com codigos ir <retorno/>
  */
 
-Vector <int> tratarMsgRecebida(String & msg) {
+int tratarMsgRecebida(String msg) {
   //  Strings de comparação
   String condicionador = "CONDICIONADOR";
   String luzes = "LUZES";
   String atualizar = "atualizarHorarios";
   String tipoDeMsg = SplitGetIndex(msg, ';', 0);
+  int retorno = 0;
 
   int storage_array[200]; // uso do vetor tem que declarar um valor max
-  Vector < int > codigo;
+  Vector <int> codigo;
   codigo.setStorage(storage_array);
 
   if (tipoDeMsg == condicionador) { // se a msg for um comando para enviar para um equipamento de ar
@@ -601,22 +602,37 @@ Vector <int> tratarMsgRecebida(String & msg) {
     irsend.sendRaw(rawData, codigo.size(), 38); // envia comando IR para o equipamento    
     delay(1000);
 
-    msg = codigoString; // atribuição do tipo do dispostivo por referencia para a variável msg 
-    codigo.push_back(-1);
-    return codigo;
+    double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
+    potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea  
+    if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
+       arLigado = true;
+    else
+       arLigado = false;       
 
+    enviarMonitoramento(luzesLigadas, arLigado);
+        
+    String logMonitoramento = arLigado ? "Ligando luzes no horario: " + horaAtualSistema :  "Desligando luzes no horario: " + horaAtualSistema;
+    gravarLinhaEmArquivo(SPIFFS, logMonitoramento, pathLogMonitoramento); 
+    
+    retorno = -1;    
+    
   } else if (tipoDeMsg == luzes) { // caso o comando seja para ligar as luzes
+    
     String operacaoLigarDesligar = SplitGetIndex(msg, ';', 1);
     if(operacaoLigarDesligar == "True;")
       ligarLuzes();
     else
       desligarLuzes();  
-    codigo.push_back(-2);
+    
+    retorno = -2;
+    
   } else if (tipoDeMsg == atualizar) {
     obterHorariosDaSemana();
+
+    retorno = -3;
   }
 
-  return codigo;
+  return retorno;
 }
 
 /*
@@ -974,7 +990,6 @@ void setup() {
     1, /* prioridade da tarefa (0 a N) */
     NULL, /* referência para a tarefa (pode ser NULL) */
     0); /* Núcleo que executará a tarefa */
-
 }
 
 void recebeComandosDoServidor(void * pvParameters) {
@@ -996,25 +1011,31 @@ void recebeComandosDoServidor(void * pvParameters) {
           String && msg = client.readStringUntil('\n');
           Serial.print("cliente enviou: ");
           Serial.println(msg);
-          Vector < int > codigo = tratarMsgRecebida(msg);
+          int tipoMensagem = tratarMsgRecebida(msg);
           delay(1000);
           double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
           potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea   
           Serial.println("ps : ");
           Serial.println(Irms);
-          if (codigo[0] == -1) { // se algum código foi recebido
-            if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
-              client.println("AC-ON");
-            else
-              client.println("AC-OFF"); 
-          }else if(codigo[0] == -2){
-            if (luzesLigadas)              
-              client.println("L-ON");
-            else
-              client.println("L-OFF");
-          }
-
+          
+           if (tipoMensagem == (-1)) { // se algum código foi recebido
+                    
+                if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
+                    client.println("AC-ON");
+                else
+                    client.println("AC-OFF");
+                    
+            } else if(tipoMensagem == (-2)) {
+                    
+               if (luzesLigadas)              
+                   client.println("L-ON");
+               else
+                   client.println("L-OFF");
+                  
+           }  
         }
+        
+        delay(100);
       }
     }
 
@@ -1023,7 +1044,6 @@ void recebeComandosDoServidor(void * pvParameters) {
 }
 
 void loop() {
-
   if (deviceConnected && receivedData) {
 
     dadoSemEspaco = sensoriamento.erase(sensoriamento.find_last_not_of(" \n\r\t") + 1);

@@ -14,8 +14,18 @@ namespace Service
         {
             Ip = ip;
             Client = new TcpClient();
+        }
+
+        public void AbrirConexao()
+        {
             Client.ConnectAsync(Ip, PORTA).Wait(10000);
         }
+
+        public void FecharConexao() 
+        {
+            Client.Close();
+        } 
+
 
         public string EnviarComando(string comando)
         {
@@ -58,14 +68,14 @@ namespace Service
                         resposta = myCompleteMessage.ToString();
 
                         stream.Close();
-                        Client.Close();
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
                         tentativas++;
                         enviouComando = false;
                         Console.WriteLine("Conexão falhhou, tentando novamente...");
                         Console.WriteLine("Tentativa nr: " + tentativas);
+                        Console.WriteLine(e);
                     }
                 } while (!enviouComando && tentativas < NR_TENTATIVAS_CONEXAO);
 

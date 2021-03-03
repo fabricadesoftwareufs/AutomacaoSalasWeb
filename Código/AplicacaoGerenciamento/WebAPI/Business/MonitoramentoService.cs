@@ -109,7 +109,11 @@ namespace Service
                 try
                 {
                     var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
+                    
+                    clienteSocket.AbrirConexao();
                     var status = clienteSocket.EnviarComando(mensagem);
+                    clienteSocket.FecharConexao();
+
                     solicitacao.ArCondicionado = status.Equals("AC-ON");
                     comandoEnviadoComSucesso = status != null;
                 }
@@ -128,8 +132,11 @@ namespace Service
                 try
                 {
                     var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-  
+
+                    clienteSocket.AbrirConexao();
                     var status = clienteSocket.EnviarComando(mensagem);
+                    clienteSocket.FecharConexao();
+
                     solicitacao.Luzes = status.Equals("L-ON");
                     comandoEnviadoComSucesso = status != null;
 
