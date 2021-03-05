@@ -83,7 +83,6 @@ namespace Service
             }
         }
 
-
         private bool EnviarComandosMonitoramento(MonitoramentoModel solicitacao)
         {
             var modelDesatualizado = GetById(solicitacao.Id);
@@ -110,19 +109,15 @@ namespace Service
                 try
                 {
                     var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                    if (clienteSocket.Client.Connected)
-                    {
-                        var status = clienteSocket.EnviarComando(mensagem);
-                        solicitacao.ArCondicionado = status.Equals("AC-ON") ? true : false;
-                        comandoEnviadoComSucesso = status != null;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Não foi possível estabelecer conexão");
-                        throw new ServiceException("Não foi possível estabelecer conexão");
-                    }
+                    
+                    clienteSocket.AbrirConexao();
+                    var status = clienteSocket.EnviarComando(mensagem);
+                    clienteSocket.FecharConexao();
+
+                    solicitacao.ArCondicionado = status.Equals("AC-ON");
+                    comandoEnviadoComSucesso = status != null;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                     return false;
@@ -130,31 +125,21 @@ namespace Service
             }
             else if (solicitacao.Luzes != modelDesatualizado.Luzes)
             {
-                int idOperacao = solicitacao.Luzes ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
-                var equipamento = _equipamentoServiceService.GetByIdSalaAndTipoEquipamento(solicitacao.SalaId, EquipamentoModel.TIPO_LUZES);
-                var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdEquipamento(equipamento.Id, idOperacao);
                 var hardwareDeSala = _hardwareDeSalaService.GetByIdSalaAndTipoHardware(solicitacao.SalaId, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
 
-                if (codigosInfravermelho == null)
-                    throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
-
-                var mensagem = "luzes;" + codigosInfravermelho.Codigo + ";";
+                var mensagem = "LUZES;" + solicitacao.Luzes + ";";
 
                 try
                 {
                     var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                    if (clienteSocket.Client.Connected)
-                    {
 
-                        var status = clienteSocket.EnviarComando(mensagem);
-                        solicitacao.Luzes = status.Equals("L-ON") ? true : false;
-                        comandoEnviadoComSucesso = status != null;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Não foi possível estabelecer conexão");
-                        throw new ServiceException("Não foi possível estabelecer conexão");
-                    }
+                    clienteSocket.AbrirConexao();
+                    var status = clienteSocket.EnviarComando(mensagem);
+                    clienteSocket.FecharConexao();
+
+                    solicitacao.Luzes = status.Equals("L-ON");
+                    comandoEnviadoComSucesso = status != null;
+
                 }
                 catch (Exception e)
                 {

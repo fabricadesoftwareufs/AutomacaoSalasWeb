@@ -33,5 +33,8 @@ namespace WebAPI.Controllers
         [HttpPut]
         public ActionResult Atualizar([FromBody] MonitoramentoModel monitoramento) => _service.Update(monitoramento) ? Ok(true) : Ok(false);
 
+        // DELETE api/<MonitoramentoController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id){}
     }
 }

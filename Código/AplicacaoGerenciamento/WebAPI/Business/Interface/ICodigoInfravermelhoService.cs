@@ -7,6 +7,5 @@ namespace Service.Interface
         CodigoInfravermelhoModel GetByIdSalaAndIdOperacao(int idSala, int operacao);
         CodigoInfravermelhoModel GetById(int id);
         CodigoInfravermelhoModel GetByIdOperacaoAndIdEquipamento(int idEquipamento, int idOperacao);
-
     }
 }
