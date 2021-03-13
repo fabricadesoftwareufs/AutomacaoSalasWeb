@@ -186,7 +186,7 @@ namespace Service
                             Id = hs.Id,
                         }).FirstOrDefault();
 
-            return query == null;
+            return query != null;
         }
 
 
