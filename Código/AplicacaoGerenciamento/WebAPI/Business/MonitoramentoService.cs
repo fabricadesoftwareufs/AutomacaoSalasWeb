@@ -44,30 +44,21 @@ namespace Service
             var _horarioSalaService = new HorarioSalaService(_context);
             var _salaParticular = new SalaParticularService(_context);
 
-            try
+            if (model.SalaParticular)
             {
-                if (model.SalaParticular)
-                {
-                    if (_salaParticular.GetByIdUsuarioAndIdSala(idUsuario, model.SalaId) == null)
-                        throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
-                }
-                else
-                {
-                    if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, model.SalaId))
-                        throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
-                }
-
-                if (!EnviarComandosMonitoramento(model))
-                    throw new ServiceException("Não foi possível concluir seu monitoramento pois não foi possível estabelecer conexão com a sala!");
-
-                return Update(model);
-
+                if (_salaParticular.GetByIdUsuarioAndIdSala(idUsuario, model.SalaId) == null)
+                    throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e.Message);
-                throw new ServiceException("Não foi possível concluir seu monitoramento pois houve uma falha na solicitação!");
+                if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, model.SalaId))
+                    throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
             }
+
+            if (!EnviarComandosMonitoramento(model))
+                throw new ServiceException("Não foi possível concluir seu monitoramento pois não foi possível estabelecer conexão com a sala!");
+
+            return Update(model);
         }
 
         public bool Update(MonitoramentoModel model)
@@ -109,7 +100,7 @@ namespace Service
                 try
                 {
                     var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
-                    
+
                     clienteSocket.AbrirConexao();
                     var status = clienteSocket.EnviarComando(mensagem);
                     clienteSocket.FecharConexao();

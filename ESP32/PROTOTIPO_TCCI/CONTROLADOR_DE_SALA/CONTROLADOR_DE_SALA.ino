@@ -55,6 +55,11 @@ int potencia;
  */
 WiFiServer server(8088);
 
+/*
+ * Guarda a aconexão com um cliente
+ */
+WiFiClient client;
+
 /* 
  * IR 
  * ESP8266 GPIO pin para usar. Recomendado: 4 (D2).
@@ -406,6 +411,9 @@ void desligarDispositivosGerenciaveis() {
   }
 }
 
+/*
+ * <descricao> Executa o comando de ligar luzes e envia o status do monitoramento pra o servidor além de gravar a operação em log <descricao/>
+ */
 void ligarLuzes(){
   /*
    * Ligando luzes
@@ -421,6 +429,9 @@ void ligarLuzes(){
   gravarLinhaEmArquivo(SPIFFS, logMonitoramento, pathLogMonitoramento);
 }
 
+/*
+ * <descricao> Executa o comando de desligar luzes e envia o status do monitoramento pra o servidor além de gravar a operação em log <descricao/>
+ */
 void desligarLuzes(){
   /*
    * Desligando luzes
@@ -517,6 +528,11 @@ struct Monitoramento obterMonitoramentoByIdSala() {
   return monitoramento;
 }
 
+
+/*
+ * <descricao> Executa a operação de envia de comandos IR para o ar-condicionado <descricao/>
+ * <parametros> listaCodigos: armazena os codigos infravermelho a serem enviados <parametros/>
+ */
 void enviarComandosIr(vector <int> listaCodigos) {
 
   Serial.println("convertido");
@@ -563,7 +579,6 @@ String SplitGetIndex(String data, char separator, int index) {
  * <parametros> msg: codigos IR recebidos na requisicao do servidor <parametros/>
  * <retorno> Lista de inteiros com codigos ir <retorno/>
  */
-
 int tratarMsgRecebida(String msg) {
   //  Strings de comparação
   String condicionador = "CONDICIONADOR";
@@ -920,6 +935,57 @@ void verificaHorarioDeCarregarReservas(){
       foiCarregadoHoje = false; 
 }
 
+
+
+/*
+ * <descricao> Ouve requisicoes do cliente conecta via socket <descricao/>
+ */
+void recebeComandosDoServidor() {
+    
+    /* 
+     * ouvindo o cliente 
+     */
+     client = server.available();
+
+    if (client) {
+
+      /*
+       * Checando se o cleinte está conectando ao server
+       */
+      while (client.connected()) {
+
+        if (client.available()) {
+          String && msg = client.readStringUntil('\n');
+          Serial.print("cliente enviou: ");
+          Serial.println(msg);
+          int tipoMensagem = tratarMsgRecebida(msg);
+          delay(1000);
+          double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
+          potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea   
+          Serial.println("ps : ");
+          Serial.println(Irms);
+          
+           if (tipoMensagem == (-1)) { // se algum código foi recebido
+                    
+                if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
+                    client.println("AC-ON");
+                else
+                    client.println("AC-OFF");
+                    
+            } else if(tipoMensagem == (-2)) {
+                    
+               if (luzesLigadas)              
+                   client.println("L-ON");
+               else
+                   client.println("L-OFF");
+                  
+           }  
+        }  
+        delay(100);
+      }
+    }
+}
+
 void setup() {
   if (!SPIFFS.begin(true))
     Serial.println("SPIFFS falha ao montar objeto de manipulacao de arquivos");
@@ -978,69 +1044,6 @@ void setup() {
   struct Monitoramento monitoramento = obterMonitoramentoByIdSala();
   arLigado = monitoramento.arCondicionado;
   luzesLigadas = monitoramento.luzes;
-
-  /* 
-   * Inicia thread para ouvir comandos do servidor
-   */
-  xTaskCreatePinnedToCore(
-    recebeComandosDoServidor, /* função que implementa a tarefa */
-    "coreTaskZero", /* nome da tarefa */
-    10000, /* número de palavras a serem alocadas para uso com a pilha da tarefa */
-    NULL, /* parâmetro de entrada para a tarefa (pode ser NULL) */
-    1, /* prioridade da tarefa (0 a N) */
-    NULL, /* referência para a tarefa (pode ser NULL) */
-    0); /* Núcleo que executará a tarefa */
-}
-
-void recebeComandosDoServidor(void * pvParameters) {
-  while (true) {
-
-    /* 
-     * ouvindo o cliente 
-     */
-    WiFiClient client = server.available();
-
-    if (client) {
-
-      /*
-       * Checando se o cleinte está conectando ao server
-       */
-      while (client.connected()) {
-
-        if (client.available()) {
-          String && msg = client.readStringUntil('\n');
-          Serial.print("cliente enviou: ");
-          Serial.println(msg);
-          int tipoMensagem = tratarMsgRecebida(msg);
-          delay(1000);
-          double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
-          potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea   
-          Serial.println("ps : ");
-          Serial.println(Irms);
-          
-           if (tipoMensagem == (-1)) { // se algum código foi recebido
-                    
-                if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
-                    client.println("AC-ON");
-                else
-                    client.println("AC-OFF");
-                    
-            } else if(tipoMensagem == (-2)) {
-                    
-               if (luzesLigadas)              
-                   client.println("L-ON");
-               else
-                   client.println("L-OFF");
-                  
-           }  
-        }
-        
-        delay(100);
-      }
-    }
-
-    delay(1000);
-  }
 }
 
 void loop() {
@@ -1070,6 +1073,11 @@ void loop() {
    Serial.println("Hora: ");
    Serial.println(horaAtualSistema);
 
+  /*
+   * Socket ouvindo requisicoes do servidor 
+   */
+  recebeComandosDoServidor();
+  
   /*
    * Monitoração continua do ambiente para verificar se é necessário ligar     
    * os equipamentos de acordo com os horários e outras variaveis do ambiente
