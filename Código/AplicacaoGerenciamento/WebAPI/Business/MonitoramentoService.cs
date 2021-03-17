@@ -37,20 +37,17 @@ namespace Service
             }
         }
 
-
-
         public bool MonitorarSala(int idUsuario, MonitoramentoModel model)
         {
-            var _horarioSalaService = new HorarioSalaService(_context);
-            var _salaParticular = new SalaParticularService(_context);
-
             if (model.SalaParticular)
             {
+                var _salaParticular = new SalaParticularService(_context);
                 if (_salaParticular.GetByIdUsuarioAndIdSala(idUsuario, model.SalaId) == null)
                     throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
             }
             else
             {
+                var _horarioSalaService = new HorarioSalaService(_context);
                 if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, model.SalaId))
                     throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
             }
@@ -76,10 +73,8 @@ namespace Service
 
         private bool EnviarComandosMonitoramento(MonitoramentoModel solicitacao)
         {
-            var modelDesatualizado = GetById(solicitacao.Id);
-            var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
-            var _equipamentoServiceService = new EquipamentoService(_context);
             var _hardwareDeSalaService = new HardwareDeSalaService(_context);
+            var modelDesatualizado = GetById(solicitacao.Id);
             bool comandoEnviadoComSucesso = true;
 
             /* 
@@ -87,6 +82,8 @@ namespace Service
              */
             if (solicitacao.ArCondicionado != modelDesatualizado.ArCondicionado)
             {
+                var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
+                var _equipamentoServiceService = new EquipamentoService(_context);
                 var idOperacao = solicitacao.ArCondicionado ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
                 var equipamento = _equipamentoServiceService.GetByIdSalaAndTipoEquipamento(solicitacao.SalaId, EquipamentoModel.TIPO_CONDICIONADOR);
                 var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdEquipamento(equipamento.Id, idOperacao);
@@ -105,7 +102,7 @@ namespace Service
                     var status = clienteSocket.EnviarComando(mensagem);
                     clienteSocket.FecharConexao();
 
-                    solicitacao.ArCondicionado = status.Equals("AC-ON");
+                    solicitacao.ArCondicionado = status.Contains("AC-ON");
                     comandoEnviadoComSucesso = status != null;
                 }
                 catch (Exception e)
@@ -128,7 +125,7 @@ namespace Service
                     var status = clienteSocket.EnviarComando(mensagem);
                     clienteSocket.FecharConexao();
 
-                    solicitacao.Luzes = status.Equals("L-ON");
+                    solicitacao.Luzes = status.Contains("L-ON");
                     comandoEnviadoComSucesso = status != null;
 
                 }

@@ -252,14 +252,13 @@ void obterHorariosDaSemana() {
     http.begin("http://italabs-002-site2.ctempurl.com/api/horariosala/ReservasDaSemana/" + id_sala); //Specify the URL
     int httpCode = http.GET(); //Make the request
 
-    Serial.println(String(httpCode));
+    //Serial.println(String(httpCode));
 
     if (httpCode == 200) { //Check for the returning code
 
       // Obtendo corpo da mensagem
       String payload = http.getString();
 
-      Serial.println(payload);
       // Excluindo arquivo com dados desatualizados
       excluirArquivo(SPIFFS);
 
@@ -356,7 +355,7 @@ void ligarDispositivosGerenciaveis() {
         /*
          * Ligando luzes
          */
-         ligarLuzes();
+         ligarLuzes(true);
       }
     }
   }
@@ -405,7 +404,7 @@ void desligarDispositivosGerenciaveis() {
       /*
        * Desligando luzes
        */
-      desligarLuzes();
+      desligarLuzes(true);
 
     }
   }
@@ -414,16 +413,17 @@ void desligarDispositivosGerenciaveis() {
 /*
  * <descricao> Executa o comando de ligar luzes e envia o status do monitoramento pra o servidor além de gravar a operação em log <descricao/>
  */
-void ligarLuzes(){
+void ligarLuzes(bool enviarDadosMonitoramento){
   /*
    * Ligando luzes
    */
-  Serial.printf("LIGANDO");
+  Serial.println("LIGANDO");
 
   luzesLigadas = true;
   digitalWrite(RELE, HIGH);
-  
-  enviarMonitoramento(luzesLigadas, arLigado);
+
+  if(enviarDadosMonitoramento)
+    enviarMonitoramento(luzesLigadas, arLigado);
   
   String logMonitoramento = "Ligando luzes no horario: " + horaAtualSistema;
   gravarLinhaEmArquivo(SPIFFS, logMonitoramento, pathLogMonitoramento);
@@ -432,16 +432,17 @@ void ligarLuzes(){
 /*
  * <descricao> Executa o comando de desligar luzes e envia o status do monitoramento pra o servidor além de gravar a operação em log <descricao/>
  */
-void desligarLuzes(){
+void desligarLuzes(bool enviarDadosMonitoramento){
   /*
    * Desligando luzes
    */
-  Serial.printf("DESLIGANDO");
+  Serial.println("DESLIGANDO");
 
   luzesLigadas = false;
   digitalWrite(RELE, LOW);
 
-  enviarMonitoramento(luzesLigadas, arLigado);
+  if(enviarDadosMonitoramento)
+    enviarMonitoramento(luzesLigadas, arLigado);
 
   String logMonitoramento = "Desligando luzes no horario: " + horaAtualSistema;
   gravarLinhaEmArquivo(SPIFFS, logMonitoramento, pathLogMonitoramento);
@@ -455,7 +456,6 @@ void desligarLuzes(){
  */
 bool enviarMonitoramento(bool luzes, bool condicionador) {
 
-  Serial.println("entrei em enviar monitoramento");
   bool atualizacaoMonitoramento = false;
   struct Monitoramento monitoramento = obterMonitoramentoByIdSala();
   if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
@@ -479,7 +479,7 @@ bool enviarMonitoramento(bool luzes, bool condicionador) {
 
     int httpResponseCode = http.PUT(monitoramentoJson);
 
-    Serial.println(monitoramentoJson);
+    //Serial.println(monitoramentoJson);
 
     if (httpResponseCode == 200) {
       atualizacaoMonitoramento = true;
@@ -610,7 +610,7 @@ int tratarMsgRecebida(String msg) {
     uint16_t rawData[codigo.size()];
     for (int el: codigo) {
       rawData[k] = (uint16_t) el;
-      Serial.println(el);
+      //Serial.println(el);
       k++;
     }
 
@@ -635,9 +635,9 @@ int tratarMsgRecebida(String msg) {
     
     String operacaoLigarDesligar = SplitGetIndex(msg, ';', 1);
     if(operacaoLigarDesligar == "True;")
-      ligarLuzes();
+      ligarLuzes(false);
     else
-      desligarLuzes();  
+      desligarLuzes(false);  
     
     retorno = -2;
     
@@ -962,10 +962,9 @@ void recebeComandosDoServidor() {
           delay(1000);
           double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
           potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea   
-          Serial.println("ps : ");
-          Serial.println(Irms);
-          
-           if (tipoMensagem == (-1)) { // se algum código foi recebido
+          //Serial.println("ps : ");
+          //Serial.println(Irms);
+          if (tipoMensagem == (-1)) { // se algum código foi recebido
                     
                 if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
                     client.println("AC-ON");
@@ -1082,13 +1081,13 @@ void loop() {
    * Monitoração continua do ambiente para verificar se é necessário ligar     
    * os equipamentos de acordo com os horários e outras variaveis do ambiente
    */
-   //ligarDispositivosGerenciaveis();
+   ligarDispositivosGerenciaveis();
     
   /*
    * Monitoração continua do ambiente para verificar se é necessário desligar     
    * os equipamentos de acordo com os horários e outras variaveis do ambiente
    */
-   //desligarDispositivosGerenciaveis();
+   desligarDispositivosGerenciaveis();
 
   /*
    * Verifica se chegou o horário de carregar as reservas do dia 
