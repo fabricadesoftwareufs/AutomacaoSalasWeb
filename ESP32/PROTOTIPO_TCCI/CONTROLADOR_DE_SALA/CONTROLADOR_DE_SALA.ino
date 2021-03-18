@@ -18,7 +18,7 @@
 using namespace std;
 
 /*
- * Dados da rede para conectar o dispositivo
+ * Dados da rede para conectar o dispositivot
  */
 //const char * ssid      = "Net-Fathinha";
 //const char * password  = "alohomora0707";
@@ -583,17 +583,17 @@ int tratarMsgRecebida(String msg) {
   //  Strings de comparação
   String condicionador = "CONDICIONADOR";
   String luzes = "LUZES";
-  String atualizar = "atualizarHorarios";
+  String atualizar = "atualizarHorarios;";
+  
   String tipoDeMsg = SplitGetIndex(msg, ';', 0);
   int retorno = 0;
-
+  
   int storage_array[200]; // uso do vetor tem que declarar um valor max
   Vector <int> codigo;
   codigo.setStorage(storage_array);
-
+  
   if (tipoDeMsg == condicionador) { // se a msg for um comando para enviar para um equipamento de ar
     String codigoString = SplitGetIndex(msg, ';', 1);
-
     String temp = "";
     for (int i = 0; i < codigoString.length(); i++) {
       if (codigoString.charAt(i) == ',' || i == codigoString.length() - 1) {
@@ -610,7 +610,6 @@ int tratarMsgRecebida(String msg) {
     uint16_t rawData[codigo.size()];
     for (int el: codigo) {
       rawData[k] = (uint16_t) el;
-      //Serial.println(el);
       k++;
     }
 
@@ -619,10 +618,10 @@ int tratarMsgRecebida(String msg) {
 
     double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
     potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea  
-    if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
-       arLigado = true;
+    if (arLigado) //(Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
+       arLigado = false;
     else
-       arLigado = false;       
+       arLigado = true;       
 
     enviarMonitoramento(luzesLigadas, arLigado);
         
@@ -966,19 +965,21 @@ void recebeComandosDoServidor() {
           //Serial.println(Irms);
           if (tipoMensagem == (-1)) { // se algum código foi recebido
                     
-                if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
-                    client.println("AC-ON");
-                else
-                    client.println("AC-OFF");
+               if (arLigado) //(Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
+                   client.println("AC-ON");
+               else
+                   client.println("AC-OFF");
                     
-            } else if(tipoMensagem == (-2)) {
+          } else if(tipoMensagem == (-2)) {
                     
                if (luzesLigadas)              
                    client.println("L-ON");
                else
                    client.println("L-OFF");
-                  
-           }  
+                   
+          }  else if(tipoMensagem == (-3)) {
+                client.println("OK");
+          }
         }  
         delay(100);
       }

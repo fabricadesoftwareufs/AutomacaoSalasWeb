@@ -313,7 +313,11 @@ namespace Service
             if (dataHorario <= proximoDomingo)
             {
                 var socketService = new ClienteSocketService(ipSala);
-                return socketService.EnviarComando("atualizarHorarios;") != null;
+                socketService.AbrirConexao();
+                bool resultado = socketService.EnviarComando("atualizarHorarios;") != null;
+                socketService.FecharConexao();
+
+                return resultado;
             }
             return false;
         }
