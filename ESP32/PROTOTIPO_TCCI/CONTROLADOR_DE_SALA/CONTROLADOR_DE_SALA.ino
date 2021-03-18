@@ -619,9 +619,9 @@ int tratarMsgRecebida(String msg) {
     double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
     potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea  
     if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
-       arLigado = false;
+       arLigado = true;
     else
-       arLigado = true;       
+       arLigado = false;       
 
     enviarMonitoramento(luzesLigadas, arLigado);
         
