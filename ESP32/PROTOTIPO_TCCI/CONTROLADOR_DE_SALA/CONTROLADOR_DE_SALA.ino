@@ -82,11 +82,11 @@ const long intervalo = 17280; // intervalo de tempo para ser verificado (em Mill
  */
 typedef struct Reserva {
   int id;
-  const char * date;
-  const char * horarioInicio;
-  const char * horarioFim;
-  const char * situacao;
-  const char * objetivo;
+  String  date;
+  String  horarioInicio;
+  String  horarioFim;
+  String  situacao;
+  String  objetivo;
   int usuarioId;
   int salaId;
   int planejamento;
@@ -328,7 +328,7 @@ void ligarDispositivosGerenciaveis() {
 
     horaInicio = r.horarioInicio;
     horaFim = r.horarioFim;
-
+    
     if (horaAtualSistema >= r.horarioInicio && horaAtualSistema < r.horarioFim && temGente) {
 
       if (!arLigado) {
@@ -642,6 +642,7 @@ int tratarMsgRecebida(String msg) {
     
   } else if (tipoDeMsg == atualizar) {
     obterHorariosDaSemana();
+    carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
 
     retorno = -3;
   }
@@ -655,16 +656,16 @@ int tratarMsgRecebida(String msg) {
  * <parametros> dataAtual: data do dia atual para carregar as reservas <parametros/>
  * <retorno> Lista com reservas do tipo struct Reserva <retorno/>
  */
-vector <struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS & fs, String dataAtual) {
+bool carregarHorariosDeHojeDoArquivo(fs::FS & fs, String dataAtual) {
   Serial.printf("Carregando horarios do arquivo: %s\n", path);
 
-  vector <struct Reserva> listaObjetos;
-
   File file = fs.open(path);
-  if (!file || file.isDirectory()) {
+  if (!file || file.isDirectory()){
     Serial.println("Failed to open file for reading");
-    return listaObjetos;
+    return false;
   }
+  
+  reservasDeHoje.clear();
 
   int nQuebraDeLinha = 0; // a primeira linha do arquivo guarda a data de gravacao do arquivo, então as informacoes estão depois do primeiro '\n'
   String linha;
@@ -680,7 +681,7 @@ vector <struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS & fs, String data
       dataReserva = r.date;
 
       if (dataReserva.substring(0, 10) == dataAtual)
-        listaObjetos.push_back(r);
+        reservasDeHoje.push_back(r);
 
       dataReserva = "";
     }
@@ -691,7 +692,7 @@ vector <struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS & fs, String data
 
   foiCarregadoHoje = true;
 
-  return listaObjetos;
+  return foiCarregadoHoje;
 }
 
 /*
@@ -775,14 +776,14 @@ struct Reserva converteJson(String objetoJson) {
   if (object.success()) {
 
     res.id = object["id"];
-    res.date = object["data"];
-    res.horarioInicio = object["horarioInicio"];
-    res.horarioFim = object["horarioFim"];
-    res.situacao = object["situacao"];
-    res.objetivo = object["objetivo"];
     res.usuarioId = object["usuarioId"];
     res.salaId = object["salaId"];
     res.planejamento = object["planejamento"];
+    res.date = object["data"].as<String>();
+    res.horarioInicio = object["horarioInicio"].as<String>();
+    res.horarioFim = object["horarioFim"].as<String>();
+    res.situacao = object["situacao"].as<String>();
+    res.objetivo = object["objetivo"].as<String>();
 
   }
 
@@ -925,7 +926,7 @@ void verificaHorarioDeCarregarReservas(){
        Serial.println(foiCarregadoHoje);
        if(!foiCarregadoHoje){
           Serial.println("Recarregando horarios do dia Atual");
-          reservasDeHoje = carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
+          carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
 
           if(!foiCarregadoHoje)
             reservasDeHoje.clear();
@@ -1009,7 +1010,7 @@ void setup() {
   /*
    * Obtendo as reservas da sala atual para o dia de hoje 
    */
-  reservasDeHoje = carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
+  carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
 
   /*
    * Configurar ESP para trabalhar com protocolo Bluetooth
