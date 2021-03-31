@@ -104,9 +104,9 @@ namespace Service
             DateTime dataAtual = DateTime.Now;
             DateTime proximoDomingo;
 
-            int nDia = (int)dataAtual.DayOfWeek;
-
-            proximoDomingo = nDia == 0 ? dataAtual : DateTime.Now.AddDays(7 - nDia).Date;
+            int nDia = (int)dataAtual.DayOfWeek; 
+            if (nDia == 0) proximoDomingo = dataAtual;
+            else proximoDomingo = DateTime.Now.AddDays(7 - nDia).Date;
 
             return _context.Horariosala
              .Where(hs => hs.Sala == idSala && hs.Data.Date >= dataAtual.Date && hs.Data.Date <= proximoDomingo.Date && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))
@@ -186,7 +186,7 @@ namespace Service
                             Id = hs.Id,
                         }).FirstOrDefault();
 
-            return query == null;
+            return query != null;
         }
 
 
@@ -313,7 +313,11 @@ namespace Service
             if (dataHorario <= proximoDomingo)
             {
                 var socketService = new ClienteSocketService(ipSala);
-                return socketService.EnviarComando("atualizarHorarios;") != null ? true : false;
+                socketService.AbrirConexao();
+                bool resultado = socketService.EnviarComando("atualizarHorarios;") != null;
+                socketService.FecharConexao();
+
+                return resultado;
             }
             return false;
         }

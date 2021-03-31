@@ -18,7 +18,7 @@
 using namespace std;
 
 /*
- * Dados da rede para conectar o dispositivo
+ * Dados da rede para conectar o dispositivot
  */
 //const char * ssid      = "Net-Fathinha";
 //const char * password  = "alohomora0707";
@@ -55,6 +55,11 @@ int potencia;
  */
 WiFiServer server(8088);
 
+/*
+ * Guarda a aconexão com um cliente
+ */
+WiFiClient client;
+
 /* 
  * IR 
  * ESP8266 GPIO pin para usar. Recomendado: 4 (D2).
@@ -77,11 +82,11 @@ const long intervalo = 17280; // intervalo de tempo para ser verificado (em Mill
  */
 typedef struct Reserva {
   int id;
-  const char * date;
-  const char * horarioInicio;
-  const char * horarioFim;
-  const char * situacao;
-  const char * objetivo;
+  String  date;
+  String  horarioInicio;
+  String  horarioFim;
+  String  situacao;
+  String  objetivo;
   int usuarioId;
   int salaId;
   int planejamento;
@@ -95,7 +100,6 @@ typedef struct Monitoramento {
   bool luzes;
   bool arCondicionado;
   int salaId;
-  bool salaParticular;
 };
 
 /*
@@ -153,7 +157,7 @@ std::string dadoSemEspaco = "";
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define LED 2
-#define RELE 13
+#define RELE 23
 
 /*
  * classe usada para receber conexoes com outros dispositivos
@@ -245,17 +249,16 @@ void obterHorariosDaSemana() {
 
     HTTPClient http;
 
-    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/horariosala/ReservasDaSemana/" + id_sala); //Specify the URL
+    http.begin("http://italabs-002-site2.ctempurl.com/api/horariosala/ReservasDaSemana/" + id_sala); //Specify the URL
     int httpCode = http.GET(); //Make the request
 
-    Serial.println(String(httpCode));
+    //Serial.println(String(httpCode));
 
     if (httpCode == 200) { //Check for the returning code
 
       // Obtendo corpo da mensagem
       String payload = http.getString();
 
-      Serial.println(payload);
       // Excluindo arquivo com dados desatualizados
       excluirArquivo(SPIFFS);
 
@@ -279,7 +282,7 @@ vector <int> obterComandosIrByIdSalaAndOperacao(String operacao) {
   if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
 
     HTTPClient http;
-    String url = "http://igorbruno22-001-site1.ctempurl.com/api/infravermelho/CodigosPorSala/" + id_sala + "/" + operacao;
+    String url = "http://italabs-002-site2.ctempurl.com/api/infravermelho/CodigosPorSala/" + id_sala + "/" + operacao;
     http.begin(url); //Specify the URL
     int httpCode = http.GET();
 
@@ -325,7 +328,7 @@ void ligarDispositivosGerenciaveis() {
 
     horaInicio = r.horarioInicio;
     horaFim = r.horarioFim;
-
+    
     if (horaAtualSistema >= r.horarioInicio && horaAtualSistema < r.horarioFim && temGente) {
 
       if (!arLigado) {
@@ -352,13 +355,7 @@ void ligarDispositivosGerenciaveis() {
         /*
          * Ligando luzes
          */
-        luzesLigadas = true;
-        digitalWrite(RELE, LOW);
-
-        logMonitoramento = "Ligando luzes no horario: " + horaAtualSistema;
-        gravarLinhaEmArquivo(SPIFFS, logMonitoramento, pathLogMonitoramento);
-
-        enviarMonitoramento(luzesLigadas, arLigado);
+         ligarLuzes(true);
       }
     }
   }
@@ -407,16 +404,48 @@ void desligarDispositivosGerenciaveis() {
       /*
        * Desligando luzes
        */
-      luzesLigadas = false;
-      digitalWrite(RELE, HIGH);
-
-      enviarMonitoramento(luzesLigadas, arLigado);
-
-      logMonitoramento = "Desligando luzes no horario: " + horaAtualSistema;
-      gravarLinhaEmArquivo(SPIFFS, logMonitoramento, pathLogMonitoramento);
+      desligarLuzes(true);
 
     }
   }
+}
+
+/*
+ * <descricao> Executa o comando de ligar luzes e envia o status do monitoramento pra o servidor além de gravar a operação em log <descricao/>
+ */
+void ligarLuzes(bool enviarDadosMonitoramento){
+  /*
+   * Ligando luzes
+   */
+  Serial.println("LIGANDO");
+
+  luzesLigadas = true;
+  digitalWrite(RELE, HIGH);
+
+  if(enviarDadosMonitoramento)
+    enviarMonitoramento(luzesLigadas, arLigado);
+  
+  String logMonitoramento = "Ligando luzes no horario: " + horaAtualSistema;
+  gravarLinhaEmArquivo(SPIFFS, logMonitoramento, pathLogMonitoramento);
+}
+
+/*
+ * <descricao> Executa o comando de desligar luzes e envia o status do monitoramento pra o servidor além de gravar a operação em log <descricao/>
+ */
+void desligarLuzes(bool enviarDadosMonitoramento){
+  /*
+   * Desligando luzes
+   */
+  Serial.println("DESLIGANDO");
+
+  luzesLigadas = false;
+  digitalWrite(RELE, LOW);
+
+  if(enviarDadosMonitoramento)
+    enviarMonitoramento(luzesLigadas, arLigado);
+
+  String logMonitoramento = "Desligando luzes no horario: " + horaAtualSistema;
+  gravarLinhaEmArquivo(SPIFFS, logMonitoramento, pathLogMonitoramento);
 }
 
 /*
@@ -427,33 +456,30 @@ void desligarDispositivosGerenciaveis() {
  */
 bool enviarMonitoramento(bool luzes, bool condicionador) {
 
-  Serial.println("entrei em enviar monitoramento");
   bool atualizacaoMonitoramento = false;
   struct Monitoramento monitoramento = obterMonitoramentoByIdSala();
   if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
 
     HTTPClient http;
 
-    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/monitoramento"); //Specify the URL
+    http.begin("http://italabs-002-site2.ctempurl.com/api/monitoramento"); //Specify the URL
     http.addHeader("Content-Type", "application/json");
 
     String id               = String(monitoramento.id);
     String luzesLiagadas    = String(luzes ? "true" : "false");
     String arCondicionado   = String(condicionador ? "true" : "false");
     String salaId           = String(monitoramento.salaId);
-    String salaParticular   = String(monitoramento.salaParticular ? "true" : "false");
 
     String monitoramentoJson = "{ ";
-          monitoramentoJson += "id: "               + id             + ", ";
-          monitoramentoJson += "luzes: "            + luzesLiagadas  + ", ";
-          monitoramentoJson += "arCondicionado: "   + arCondicionado + ", ";
-          monitoramentoJson += "salaId: "           + salaId         + ", ";
-          monitoramentoJson += "salaParticular: "   + salaParticular + ", ";
+          monitoramentoJson += "\"id\": "               + id             + ", ";
+          monitoramentoJson += "\"luzes\": "            + luzesLiagadas  + ", ";
+          monitoramentoJson += "\"arCondicionado\": "   + arCondicionado + ", ";
+          monitoramentoJson += "\"salaId\": "           + salaId         + ", ";
           monitoramentoJson += " }";
 
     int httpResponseCode = http.PUT(monitoramentoJson);
 
-    Serial.println(monitoramentoJson);
+    //Serial.println(monitoramentoJson);
 
     if (httpResponseCode == 200) {
       atualizacaoMonitoramento = true;
@@ -477,7 +503,7 @@ struct Monitoramento obterMonitoramentoByIdSala() {
 
     HTTPClient http;
 
-    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/monitoramento/" + id_sala); //Specify the URL
+    http.begin("http://italabs-002-site2.ctempurl.com/api/monitoramento/" + id_sala); //Specify the URL
     int httpCode = http.GET();
 
     if (httpCode == 200) { //Check for the returning code
@@ -492,7 +518,6 @@ struct Monitoramento obterMonitoramentoByIdSala() {
         monitoramento.luzes = object["luzes"];
         monitoramento.arCondicionado = object["arCondicionado"];
         monitoramento.salaId = object["salaId"];
-        monitoramento.salaParticular = object["salaParticular"];
       }
     } else
       Serial.println("Error on HTTP request");
@@ -503,6 +528,11 @@ struct Monitoramento obterMonitoramentoByIdSala() {
   return monitoramento;
 }
 
+
+/*
+ * <descricao> Executa a operação de envia de comandos IR para o ar-condicionado <descricao/>
+ * <parametros> listaCodigos: armazena os codigos infravermelho a serem enviados <parametros/>
+ */
 void enviarComandosIr(vector <int> listaCodigos) {
 
   Serial.println("convertido");
@@ -549,21 +579,21 @@ String SplitGetIndex(String data, char separator, int index) {
  * <parametros> msg: codigos IR recebidos na requisicao do servidor <parametros/>
  * <retorno> Lista de inteiros com codigos ir <retorno/>
  */
-
-Vector <int> tratarMsgRecebida(String & msg) {
+int tratarMsgRecebida(String msg) {
   //  Strings de comparação
   String condicionador = "CONDICIONADOR";
   String luzes = "LUZES";
-  String atualizar = "atualizarHorarios";
+  String atualizar = "atualizarHorarios;";
+  
   String tipoDeMsg = SplitGetIndex(msg, ';', 0);
-
+  int retorno = 0;
+  
   int storage_array[200]; // uso do vetor tem que declarar um valor max
-  Vector < int > codigo;
+  Vector <int> codigo;
   codigo.setStorage(storage_array);
-
+  
   if (tipoDeMsg == condicionador) { // se a msg for um comando para enviar para um equipamento de ar
     String codigoString = SplitGetIndex(msg, ';', 1);
-
     String temp = "";
     for (int i = 0; i < codigoString.length(); i++) {
       if (codigoString.charAt(i) == ',' || i == codigoString.length() - 1) {
@@ -580,23 +610,44 @@ Vector <int> tratarMsgRecebida(String & msg) {
     uint16_t rawData[codigo.size()];
     for (int el: codigo) {
       rawData[k] = (uint16_t) el;
-      Serial.println(el);
       k++;
     }
 
     irsend.sendRaw(rawData, codigo.size(), 38); // envia comando IR para o equipamento    
     delay(1000);
 
-    msg = codigoString; // atribuição do tipo do dispostivo por referencia para a variável msg 
-    return codigo;
+    double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
+    potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea  
+    if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
+       arLigado = true;
+    else
+       arLigado = false;       
 
+    enviarMonitoramento(luzesLigadas, arLigado);
+        
+    String logMonitoramento = arLigado ? "Ligando luzes no horario: " + horaAtualSistema :  "Desligando luzes no horario: " + horaAtualSistema;
+    gravarLinhaEmArquivo(SPIFFS, logMonitoramento, pathLogMonitoramento); 
+    
+    retorno = -1;    
+    
   } else if (tipoDeMsg == luzes) { // caso o comando seja para ligar as luzes
-
+    
+    String operacaoLigarDesligar = SplitGetIndex(msg, ';', 1);
+    if(operacaoLigarDesligar == "True;")
+      ligarLuzes(false);
+    else
+      desligarLuzes(false);  
+    
+    retorno = -2;
+    
   } else if (tipoDeMsg == atualizar) {
     obterHorariosDaSemana();
+    carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
+
+    retorno = -3;
   }
-  codigo.push_back(-1);
-  return codigo;
+
+  return retorno;
 }
 
 /*
@@ -605,16 +656,16 @@ Vector <int> tratarMsgRecebida(String & msg) {
  * <parametros> dataAtual: data do dia atual para carregar as reservas <parametros/>
  * <retorno> Lista com reservas do tipo struct Reserva <retorno/>
  */
-vector <struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS & fs, String dataAtual) {
+bool carregarHorariosDeHojeDoArquivo(fs::FS & fs, String dataAtual) {
   Serial.printf("Carregando horarios do arquivo: %s\n", path);
 
-  vector <struct Reserva> listaObjetos;
-
   File file = fs.open(path);
-  if (!file || file.isDirectory()) {
+  if (!file || file.isDirectory()){
     Serial.println("Failed to open file for reading");
-    return listaObjetos;
+    return false;
   }
+  
+  reservasDeHoje.clear();
 
   int nQuebraDeLinha = 0; // a primeira linha do arquivo guarda a data de gravacao do arquivo, então as informacoes estão depois do primeiro '\n'
   String linha;
@@ -630,7 +681,7 @@ vector <struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS & fs, String data
       dataReserva = r.date;
 
       if (dataReserva.substring(0, 10) == dataAtual)
-        listaObjetos.push_back(r);
+        reservasDeHoje.push_back(r);
 
       dataReserva = "";
     }
@@ -641,7 +692,7 @@ vector <struct Reserva> carregarHorariosDeHojeDoArquivo(fs::FS & fs, String data
 
   foiCarregadoHoje = true;
 
-  return listaObjetos;
+  return foiCarregadoHoje;
 }
 
 /*
@@ -667,7 +718,7 @@ String obterDataServidor(String identificador) {
 
     HTTPClient http;
 
-    http.begin("http://igorbruno22-001-site1.ctempurl.com/api/Time/" + identificador); //Specify the URL
+    http.begin("http://italabs-002-site2.ctempurl.com/api/Time/" + identificador); //Specify the URL
     int httpCode = http.GET(); //Make the request
 
     if (httpCode == 200) {
@@ -725,14 +776,14 @@ struct Reserva converteJson(String objetoJson) {
   if (object.success()) {
 
     res.id = object["id"];
-    res.date = object["data"];
-    res.horarioInicio = object["horarioInicio"];
-    res.horarioFim = object["horarioFim"];
-    res.situacao = object["situacao"];
-    res.objetivo = object["objetivo"];
     res.usuarioId = object["usuarioId"];
     res.salaId = object["salaId"];
     res.planejamento = object["planejamento"];
+    res.date = object["data"].as<String>();
+    res.horarioInicio = object["horarioInicio"].as<String>();
+    res.horarioFim = object["horarioFim"].as<String>();
+    res.situacao = object["situacao"].as<String>();
+    res.objetivo = object["objetivo"].as<String>();
 
   }
 
@@ -875,13 +926,65 @@ void verificaHorarioDeCarregarReservas(){
        Serial.println(foiCarregadoHoje);
        if(!foiCarregadoHoje){
           Serial.println("Recarregando horarios do dia Atual");
-          reservasDeHoje = carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
+          carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
 
           if(!foiCarregadoHoje)
             reservasDeHoje.clear();
        }
   } else 
       foiCarregadoHoje = false; 
+}
+
+
+
+/*
+ * <descricao> Ouve requisicoes do cliente conecta via socket <descricao/>
+ */
+void recebeComandosDoServidor() {
+    
+    /* 
+     * ouvindo o cliente 
+     */
+     client = server.available();
+
+    if (client) {
+
+      /*
+       * Checando se o cleinte está conectando ao server
+       */
+      while (client.connected()) {
+
+        if (client.available()) {
+          String && msg = client.readStringUntil('\n');
+          Serial.print("cliente enviou: ");
+          Serial.println(msg);
+          int tipoMensagem = tratarMsgRecebida(msg);
+          delay(1000);
+          double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
+          potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea   
+          //Serial.println("ps : ");
+          //Serial.println(Irms);
+          if (tipoMensagem == (-1)) { // se algum código foi recebido
+                    
+               if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
+                   client.println("AC-ON");
+               else
+                   client.println("AC-OFF");
+                    
+          } else if(tipoMensagem == (-2)) {
+                    
+               if (luzesLigadas)              
+                   client.println("L-ON");
+               else
+                   client.println("L-OFF");
+                   
+          }  else if(tipoMensagem == (-3)) {
+                client.println("OK");
+          }
+        }  
+        delay(100);
+      }
+    }
 }
 
 void setup() {
@@ -907,7 +1010,7 @@ void setup() {
   /*
    * Obtendo as reservas da sala atual para o dia de hoje 
    */
-  reservasDeHoje = carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
+  carregarHorariosDeHojeDoArquivo(SPIFFS, obterDataServidor("GETDATE"));
 
   /*
    * Configurar ESP para trabalhar com protocolo Bluetooth
@@ -918,6 +1021,11 @@ void setup() {
    * 
    */
   pinMode(LED, OUTPUT);
+
+   /*
+   * 
+   */
+  pinMode(RELE, OUTPUT);
 
   /*
    * Inicia o protocolo de obtencao de horarios
@@ -937,63 +1045,9 @@ void setup() {
   struct Monitoramento monitoramento = obterMonitoramentoByIdSala();
   arLigado = monitoramento.arCondicionado;
   luzesLigadas = monitoramento.luzes;
-
-  /* 
-   * Inicia thread para ouvir comandos do servidor
-   */
-  xTaskCreatePinnedToCore(
-    recebeComandosDoServidor, /* função que implementa a tarefa */
-    "coreTaskZero", /* nome da tarefa */
-    10000, /* número de palavras a serem alocadas para uso com a pilha da tarefa */
-    NULL, /* parâmetro de entrada para a tarefa (pode ser NULL) */
-    1, /* prioridade da tarefa (0 a N) */
-    NULL, /* referência para a tarefa (pode ser NULL) */
-    0); /* Núcleo que executará a tarefa */
-
-}
-
-void recebeComandosDoServidor(void * pvParameters) {
-  while (true) {
-
-    /* 
-     * ouvindo o cliente 
-     */
-    WiFiClient client = server.available();
-
-    if (client) {
-
-      /*
-       * Checando se o cleinte está conectando ao server
-       */
-      while (client.connected()) {
-
-        if (client.available()) {
-          String && msg = client.readStringUntil('\n');
-          Serial.print("cliente enviou: ");
-          Serial.println(msg);
-          Vector < int > codigo = tratarMsgRecebida(msg);
-          delay(1000);
-          double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
-          potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea   
-          Serial.println("ps : ");
-          Serial.println(Irms);
-          if (codigo[0] != -1) { // se algum código foi recebido
-            if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
-              client.println("AC-ON");
-            else
-              client.println("AC-OFF");
-          }
-
-        }
-      }
-    }
-
-    delay(1000);
-  }
 }
 
 void loop() {
-
   if (deviceConnected && receivedData) {
 
     dadoSemEspaco = sensoriamento.erase(sensoriamento.find_last_not_of(" \n\r\t") + 1);
@@ -1015,21 +1069,27 @@ void loop() {
     anteriorMillis = atualMillis; // salvando quando foi verificado
 
   }
+  
    horaAtualSistema = ntp.getFormattedTime();
-    Serial.println("Hora: ");
-    Serial.println(horaAtualSistema);
+   Serial.println("Hora: ");
+   Serial.println(horaAtualSistema);
 
+  /*
+   * Socket ouvindo requisicoes do servidor 
+   */
+  recebeComandosDoServidor();
+  
   /*
    * Monitoração continua do ambiente para verificar se é necessário ligar     
    * os equipamentos de acordo com os horários e outras variaveis do ambiente
    */
    ligarDispositivosGerenciaveis();
-
+    
   /*
    * Monitoração continua do ambiente para verificar se é necessário desligar     
    * os equipamentos de acordo com os horários e outras variaveis do ambiente
    */
-  desligarDispositivosGerenciaveis();
+   desligarDispositivosGerenciaveis();
 
   /*
    * Verifica se chegou o horário de carregar as reservas do dia 

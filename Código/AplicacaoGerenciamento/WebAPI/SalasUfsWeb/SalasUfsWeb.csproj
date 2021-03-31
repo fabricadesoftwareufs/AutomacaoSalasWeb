@@ -55,5 +55,7 @@
     <ProjectReference Include="..\Persistences\Persistence.csproj" />
     <ProjectReference Include="..\Utils\Utils.csproj" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
  
 </Project>
