@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Model;
+﻿using Model;
 using Model.ViewModel;
 using Persistence;
 using Service.Interface;
@@ -59,7 +58,7 @@ namespace Service
                        TipoEquipamento = eq.TipoEquipamento
                    }).ToList();
 
-        public List<EquipamentoModel> GetAll() => _context.Equipamento.Select(e => new EquipamentoModel {Id = e.Id, Modelo = e.Modelo, Descricao = e.Descricao, TipoEquipamento = e.TipoEquipamento, Marca = e.Marca, Sala = e.Sala }).ToList();
+        public List<EquipamentoModel> GetAll() => _context.Equipamento.Select(e => new EquipamentoModel { Id = e.Id, Modelo = e.Modelo, Descricao = e.Descricao, TipoEquipamento = e.TipoEquipamento, Marca = e.Marca, Sala = e.Sala }).ToList();
 
         public bool Insert(EquipamentoViewModel entity)
         {
@@ -68,7 +67,7 @@ namespace Service
                 ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
 
                 var equip = SetEntity(entity.EquipamentoModel);
-                
+
                 _context.Add(equip);
                 int inserted = _context.SaveChanges();
                 _context.Entry(equip).Reload();
@@ -121,9 +120,10 @@ namespace Service
 
         private static Equipamento SetEntity(EquipamentoModel model)
         {
-            Equipamento entity = new Equipamento {
+            Equipamento entity = new Equipamento
+            {
                 Id = model.Id,
-                Descricao  = model.Descricao,
+                Descricao = model.Descricao,
                 Marca = model.Marca,
                 Modelo = model.Modelo,
                 TipoEquipamento = model.TipoEquipamento,
@@ -141,7 +141,7 @@ namespace Service
                     var equipamento = _context.Equipamento.Where(e => e.Id == id).FirstOrDefault();
                     var codigoService = new CodigoInfravermelhoService(_context);
                     var codigos = codigoService.GetAllByEquipamento(id);
-                    if(codigos != null)
+                    if (codigos != null)
                         codigoService.RemoveAll(codigos);
                     if (equipamento != null)
                     {

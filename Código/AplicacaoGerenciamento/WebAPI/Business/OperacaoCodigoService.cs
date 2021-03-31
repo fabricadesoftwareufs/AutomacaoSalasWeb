@@ -13,9 +13,9 @@ namespace Service
         {
             _context = context;
         }
-        public List<OperacaoModel> GetAll() 
+        public List<OperacaoModel> GetAll()
             => _context.Operacao.Select(o => new OperacaoModel { Id = o.Id, Descricao = o.Descricao, Titulo = o.Titulo }).ToList();
-        public OperacaoModel GetById(int id) 
-            => _context.Operacao.Where(s => s.Id == id).Select(o => new OperacaoModel { Id = o.Id, Descricao = o.Descricao, Titulo = o.Titulo}).FirstOrDefault();
+        public OperacaoModel GetById(int id)
+            => _context.Operacao.Where(s => s.Id == id).Select(o => new OperacaoModel { Id = o.Id, Descricao = o.Descricao, Titulo = o.Titulo }).FirstOrDefault();
     }
 }

@@ -104,7 +104,7 @@ namespace Service
             DateTime dataAtual = DateTime.Now;
             DateTime proximoDomingo;
 
-            int nDia = (int)dataAtual.DayOfWeek; 
+            int nDia = (int)dataAtual.DayOfWeek;
             if (nDia == 0) proximoDomingo = dataAtual;
             else proximoDomingo = DateTime.Now.AddDays(7 - nDia).Date;
 

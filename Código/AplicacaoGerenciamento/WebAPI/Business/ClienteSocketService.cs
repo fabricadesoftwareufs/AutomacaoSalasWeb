@@ -21,10 +21,10 @@ namespace Service
             Client.ConnectAsync(Ip, PORTA).Wait(10000);
         }
 
-        public void FecharConexao() 
+        public void FecharConexao()
         {
             Client.Close();
-        } 
+        }
 
 
         public string EnviarComando(string comando)

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Model;
 using Model.ViewModel;
 using Service;
 using Service.Interface;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
@@ -59,15 +56,15 @@ namespace SalasUfsWeb.Controllers
         {
             var equipamentoModel = _equipamentoService.GetByIdEquipamento(id);
             var codigos = _codigoInfravermelhoService.GetAllByEquipamento(equipamentoModel.Id);
-            var equipamentoViewModel = new EquipamentoViewModel 
-            { 
-                EquipamentoModel = equipamentoModel, 
-                SalaModel = _salaService.GetById(equipamentoModel.Sala) 
+            var equipamentoViewModel = new EquipamentoViewModel
+            {
+                EquipamentoModel = equipamentoModel,
+                SalaModel = _salaService.GetById(equipamentoModel.Sala)
             };
 
 
-            equipamentoViewModel.BlocoModel = _blocoService.GetById(equipamentoViewModel.SalaModel.BlocoId);            
-            List <CodigoInfravermelhoViewModel> codigosView = new List<CodigoInfravermelhoViewModel>();
+            equipamentoViewModel.BlocoModel = _blocoService.GetById(equipamentoViewModel.SalaModel.BlocoId);
+            List<CodigoInfravermelhoViewModel> codigosView = new List<CodigoInfravermelhoViewModel>();
             codigos.ForEach(c => codigosView.Add(new CodigoInfravermelhoViewModel { Codigo = c.Codigo, Id = c.Id, IdEquipamento = c.IdEquipamento, IdOperacao = c.IdOperacao, Operacao = _operacaoService.GetById(c.IdOperacao).Titulo }));
             equipamentoViewModel.Codigos = codigosView;
 
@@ -112,7 +109,7 @@ namespace SalasUfsWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                  
+
                     if (_equipamentoService.Insert(equipamentoViewModel))
                     {
                         TempData["mensagemSucesso"] = "Equipamento cadastrado com sucesso!";
@@ -127,7 +124,7 @@ namespace SalasUfsWeb.Controllers
             }
 
             return View(equipamentoViewModel);
-}
+        }
 
         // GET: EquipamentoController/Edit/5
         public ActionResult Edit(int id)

@@ -8,7 +8,6 @@ using Model.AuxModel;
 using Model.ViewModel;
 using Service;
 using Service.Interface;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -42,7 +41,7 @@ namespace SalasUfsWeb.Controllers
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
             _organizacaoService = organizacaoService;
             _horarioSalaService = horarioSalaService;
-            _hardwareDeSalaService = hardwareDeSalaService; 
+            _hardwareDeSalaService = hardwareDeSalaService;
         }
 
         // GET: ReservaSalaController

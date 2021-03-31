@@ -35,6 +35,6 @@ namespace WebAPI.Controllers
 
         // DELETE api/<MonitoramentoController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id){}
+        public void Delete(int id) { }
     }
 }
