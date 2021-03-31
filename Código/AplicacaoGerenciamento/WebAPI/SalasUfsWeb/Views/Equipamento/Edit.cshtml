@@ -1,7 +1,8 @@
 ﻿@model Model.ViewModel.EquipamentoViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
+    var check = "checked";
 }
 
 <section class="content">
@@ -10,7 +11,7 @@
             <div class="col-md-12">
                 <div class="card card-secondary">
                     <div class="card-header">
-                        <h2 class="card-title">Cadastrar Novo Equipamento</h2>
+                        <h2 class="card-title">Editar Equipamento</h2>
                     </div>
                     <form asp-action="Create" id="form" name="form">
                         <div class="card-body">
@@ -81,7 +82,7 @@
                             <div class="ocupation col-md-5">
                                 <div class="form-group align-element">
                                     <label title="Código" class="control-label">O equipamento é infravermelho?</label>
-                                    <input type="checkbox" name="checkbox" id="checkbox" value="checkbox" />
+                                    <input type="checkbox" name="checkbox" id="checkbox" value="checkbox" @if (Model.Codigos != null) { @check } />
                                 </div>
                             </div>
                             <div class="ocupation col-md-10">
@@ -123,6 +124,27 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody id="container-codigo">
+                                                            @if (Model.Codigos != null)
+                                                            {
+                                                                @for (var i = 0; i < Model.Codigos.Count; i++)
+                                                                {
+                                                                    <tr id="novo-codigo-@i" class="equipamento-codigo">
+                                                                        <td>
+                                                                            <input class="form-control" type="text" name="Codigos[@i].Codigo" hidden readonly value="@Model.Codigos[i].Codigo" />
+                                                                            <input class="form-control" type="text" name="Codigos[@i].IdOperacao" hidden readonly value="@Model.Codigos[i].IdOperacao" />
+                                                                            <input class="form-control" type="text" name="Codigos[@i].Operacao" hidden readonly value="@Model.Codigos[i].Operacao" />
+
+                                                                            <div class="card text-white bg-info mb-3" style="max-width: 18rem;"><div class="card-header">@Model.Codigos[i].Operacao </div><div class="card-body"><p class="card-text"> @Model.Codigos[i].Codigo </p></div></div>
+
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <a id="remove-novo-horario" onclick="RemoveNovoCodigo('novo-codigo-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+
                                                         </tbody>
                                                     </table>
                                                 </div>

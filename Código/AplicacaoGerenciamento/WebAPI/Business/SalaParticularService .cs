@@ -10,8 +10,8 @@ namespace Service
 {
     public class SalaParticularService : ISalaParticularService
     {
-        private readonly STR_DBContext _context;
-        public SalaParticularService(STR_DBContext context)
+        private readonly str_dbContext _context;
+        public SalaParticularService(str_dbContext context)
         {
             _context = context;
         }

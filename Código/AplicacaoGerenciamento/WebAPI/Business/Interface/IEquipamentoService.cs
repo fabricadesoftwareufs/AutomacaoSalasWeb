@@ -11,5 +11,7 @@ namespace Service.Interface
         List<EquipamentoModel> GetByIdSala(int idSala);
         List<EquipamentoModel> GetAll();
         bool Insert(EquipamentoViewModel entity);
+        bool Update(EquipamentoViewModel entity);
+        bool Remove(int id);
     }
 }

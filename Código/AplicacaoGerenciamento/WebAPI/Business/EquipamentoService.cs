@@ -11,9 +11,9 @@ namespace Service
 {
     public class EquipamentoService : IEquipamentoService
     {
-        private readonly STR_DBContext _context;
+        private readonly str_dbContext _context;
 
-        public EquipamentoService(STR_DBContext context)
+        public EquipamentoService(str_dbContext context)
         {
             _context = context;
         }
@@ -68,10 +68,11 @@ namespace Service
                 ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
 
                 var equip = SetEntity(entity.EquipamentoModel);
+                
                 _context.Add(equip);
                 int inserted = _context.SaveChanges();
-                _context.Entry(equip).GetDatabaseValues();
-
+                _context.Entry(equip).Reload();
+                int id = equip.Id;
                 var codigosEntity = new List<CodigoInfravermelhoModel>();
                 if (inserted == 1)
                 {
@@ -79,6 +80,34 @@ namespace Service
                     codigoInfravermelhoService.AddAll(codigosEntity);
                 }
                 return Convert.ToBoolean(inserted);
+
+
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
+        }
+
+        public bool Update(EquipamentoViewModel entity)
+        {
+            try
+            {
+                ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
+
+                var equip = SetEntity(entity.EquipamentoModel);
+
+                _context.Update(equip);
+                int updated = _context.SaveChanges();
+                var codigosEntity = new List<CodigoInfravermelhoModel>();
+                if (updated == 1)
+                {
+                    entity.Codigos.ForEach(c => codigosEntity.Add(new CodigoInfravermelhoModel { Codigo = c.Codigo, IdEquipamento = equip.Id, IdOperacao = c.IdOperacao }));
+                    codigoInfravermelhoService.UpdateAll(codigosEntity);
+                }
+                return Convert.ToBoolean(updated);
 
 
             }
@@ -101,6 +130,38 @@ namespace Service
                 Sala = model.Sala
             };
             return entity;
+        }
+
+        public bool Remove(int id)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var equipamento = _context.Equipamento.Where(e => e.Id == id).FirstOrDefault();
+                    var codigoService = new CodigoInfravermelhoService(_context);
+                    var codigos = codigoService.GetAllByEquipamento(id);
+                    if(codigos != null)
+                        codigoService.RemoveAll(codigos);
+                    if (equipamento != null)
+                    {
+                        _context.Equipamento.Remove(equipamento);
+                        var save = _context.SaveChanges() == 1 ? true : false;
+                        transaction.Commit();
+                        return save;
+                    }
+                    else
+                    {
+                        throw new ServiceException("Algo deu errado, tente novamente em alguns minutos.");
+                    }
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e;
+
+                }
+            }
         }
     }
 }

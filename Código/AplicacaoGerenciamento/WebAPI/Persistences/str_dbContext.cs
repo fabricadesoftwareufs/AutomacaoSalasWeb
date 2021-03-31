@@ -1,14 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Persistence
 {
-    public partial class STR_DBContext : DbContext
+    public partial class str_dbContext : DbContext
     {
-        public STR_DBContext()
+        public str_dbContext()
         {
         }
 
-        public STR_DBContext(DbContextOptions<STR_DBContext> options)
+        public str_dbContext(DbContextOptions<str_dbContext> options)
             : base(options)
         {
         }
@@ -32,10 +34,11 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            /*if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=1234;database=str_db");
-            }*/
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,9 +50,9 @@ namespace Persistence
                 entity.HasIndex(e => e.Organizacao)
                     .HasName("fk_Bloco_Organizacao1_idx");
 
-                entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnType("int unsigned");
 
-                entity.Property(e => e.Organizacao).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Organizacao).HasColumnType("int unsigned");
 
                 entity.Property(e => e.Titulo)
                     .IsRequired()
@@ -73,19 +76,11 @@ namespace Persistence
                 entity.HasIndex(e => e.Operacao)
                     .HasName("fk_CodigoInfravermelho_Operacao1_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Codigo)
                     .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Equipamento).HasColumnType("int(11)");
-
-                entity.Property(e => e.Operacao).HasColumnType("int(11)");
+                    .HasColumnType("mediumtext");
 
                 entity.HasOne(d => d.EquipamentoNavigation)
                     .WithMany(p => p.Codigoinfravermelho)
@@ -107,10 +102,7 @@ namespace Persistence
                 entity.HasIndex(e => e.Sala)
                     .HasName("fk_Equipamento_Sala1_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Descricao)
                     .HasMaxLength(1000)
@@ -126,10 +118,9 @@ namespace Persistence
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Sala).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Sala).HasColumnType("int unsigned");
 
                 entity.Property(e => e.TipoEquipamento)
-                    .IsRequired()
                     .HasColumnType("enum('CONDICIONADOR','LUZES')")
                     .HasDefaultValueSql("_utf8mb4\\'CONDICIONADOR\\'");
 
@@ -154,11 +145,9 @@ namespace Persistence
                 entity.HasIndex(e => e.TipoHardware)
                     .HasName("fk_HardwareDeBloco_TipoHardware1_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Bloco).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Bloco).HasColumnType("int unsigned");
 
                 entity.Property(e => e.Mac)
                     .IsRequired()
@@ -166,7 +155,7 @@ namespace Persistence
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.TipoHardware).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.TipoHardware).HasColumnType("int unsigned");
 
                 entity.HasOne(d => d.BlocoNavigation)
                     .WithMany(p => p.Hardwaredebloco)
@@ -191,7 +180,7 @@ namespace Persistence
                 entity.HasIndex(e => e.TipoHardware)
                     .HasName("fk_HardwareDeSala_TipoHardware1_idx");
 
-                entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnType("int unsigned");
 
                 entity.Property(e => e.Ip)
                     .HasMaxLength(15)
@@ -203,9 +192,9 @@ namespace Persistence
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Sala).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Sala).HasColumnType("int unsigned");
 
-                entity.Property(e => e.TipoHardware).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.TipoHardware).HasColumnType("int unsigned");
 
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Hardwaredesala)
@@ -233,23 +222,23 @@ namespace Persistence
                 entity.HasIndex(e => e.Usuario)
                     .HasName("fk_HorarioSala_Usuario1_idx");
 
-                entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnType("int unsigned");
 
                 entity.Property(e => e.Objetivo)
                     .IsRequired()
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Planejamento).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Planejamento).HasColumnType("int unsigned");
 
-                entity.Property(e => e.Sala).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Sala).HasColumnType("int unsigned");
 
                 entity.Property(e => e.Situacao)
                     .IsRequired()
                     .HasColumnType("enum('PENDENTE','APROVADA','REPROVADA','CANCELADA')")
                     .HasDefaultValueSql("APROVADA");
 
-                entity.Property(e => e.Usuario).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Usuario).HasColumnType("int unsigned");
 
                 entity.HasOne(d => d.PlanejamentoNavigation)
                     .WithMany(p => p.Horariosala)
@@ -276,15 +265,9 @@ namespace Persistence
                 entity.HasIndex(e => e.Sala)
                     .HasName("fk_Sala_Id");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.ArCondicionado).HasColumnType("tinyint(4)");
-
-                entity.Property(e => e.Luzes).HasColumnType("tinyint(4)");
-
-                entity.Property(e => e.Sala).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Sala).HasColumnType("int unsigned");
 
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Monitoramento)
@@ -297,10 +280,7 @@ namespace Persistence
             {
                 entity.ToTable("operacao", "str_db");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Descricao)
                     .HasMaxLength(200)
@@ -316,7 +296,7 @@ namespace Persistence
             {
                 entity.ToTable("organizacao", "str_db");
 
-                entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnType("int unsigned");
 
                 entity.Property(e => e.Cnpj)
                     .IsRequired()
@@ -341,7 +321,7 @@ namespace Persistence
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
+                    .HasColumnType("int unsigned");
 
                 entity.Property(e => e.DataFim).HasColumnType("date");
 
@@ -356,9 +336,9 @@ namespace Persistence
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Sala).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Sala).HasColumnType("int unsigned");
 
-                entity.Property(e => e.Usuario).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Usuario).HasColumnType("int unsigned");
 
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Planejamento)
@@ -380,9 +360,9 @@ namespace Persistence
                 entity.HasIndex(e => e.Bloco)
                     .HasName("fk_Sala_Bloco1_idx");
 
-                entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnType("int unsigned");
 
-                entity.Property(e => e.Bloco).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Bloco).HasColumnType("int unsigned");
 
                 entity.Property(e => e.Titulo)
                     .IsRequired()
@@ -408,11 +388,11 @@ namespace Persistence
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
+                    .HasColumnType("int unsigned");
 
-                entity.Property(e => e.Sala).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Sala).HasColumnType("int unsigned");
 
-                entity.Property(e => e.Usuario).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Usuario).HasColumnType("int unsigned");
 
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Salaparticular)
@@ -431,7 +411,7 @@ namespace Persistence
             {
                 entity.ToTable("tipohardware", "str_db");
 
-                entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnType("int unsigned");
 
                 entity.Property(e => e.Descricao)
                     .IsRequired()
@@ -443,7 +423,7 @@ namespace Persistence
             {
                 entity.ToTable("tipousuario", "str_db");
 
-                entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnType("int unsigned");
 
                 entity.Property(e => e.Descricao)
                     .IsRequired()
@@ -462,7 +442,7 @@ namespace Persistence
                 entity.HasIndex(e => e.TipoUsuario)
                     .HasName("fk_Usuario_TipoUsuario1_idx");
 
-                entity.Property(e => e.Id).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnType("int unsigned");
 
                 entity.Property(e => e.Cpf)
                     .IsRequired()
@@ -481,7 +461,7 @@ namespace Persistence
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.TipoUsuario).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.TipoUsuario).HasColumnType("int unsigned");
 
                 entity.HasOne(d => d.TipoUsuarioNavigation)
                     .WithMany(p => p.Usuario)
@@ -492,8 +472,6 @@ namespace Persistence
 
             modelBuilder.Entity<Usuarioorganizacao>(entity =>
             {
-                entity.HasKey(e => new { e.Id, e.Organizacao, e.Usuario });
-
                 entity.ToTable("usuarioorganizacao", "str_db");
 
                 entity.HasIndex(e => e.Organizacao)
@@ -502,13 +480,11 @@ namespace Persistence
                 entity.HasIndex(e => e.Usuario)
                     .HasName("fk_Organizacao_has_Usuario_Usuario1_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(10) unsigned")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.Id).HasColumnType("int unsigned");
 
-                entity.Property(e => e.Organizacao).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Organizacao).HasColumnType("int unsigned");
 
-                entity.Property(e => e.Usuario).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Usuario).HasColumnType("int unsigned");
 
                 entity.HasOne(d => d.OrganizacaoNavigation)
                     .WithMany(p => p.Usuarioorganizacao)

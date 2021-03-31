@@ -10,8 +10,8 @@ namespace Service
 {
     public class HorarioSalaService : IHorarioSalaService
     {
-        private readonly STR_DBContext _context;
-        public HorarioSalaService(STR_DBContext context)
+        private readonly str_dbContext _context;
+        public HorarioSalaService(str_dbContext context)
         {
             _context = context;
         }

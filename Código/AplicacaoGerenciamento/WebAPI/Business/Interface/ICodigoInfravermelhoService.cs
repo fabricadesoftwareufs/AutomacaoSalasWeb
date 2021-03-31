@@ -10,5 +10,8 @@ namespace Service.Interface
         CodigoInfravermelhoModel GetByIdOperacaoAndIdEquipamento(int idEquipamento, int idOperacao);
         List<CodigoInfravermelhoModel> GetAllByEquipamento(int idEquipamento);
         bool AddAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels);
+        bool UpdateAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels);
+        bool RemoveAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels);
+
     }
 }

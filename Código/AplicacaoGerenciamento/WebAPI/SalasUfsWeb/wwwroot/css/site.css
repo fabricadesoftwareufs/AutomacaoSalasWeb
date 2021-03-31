@@ -73,3 +73,6 @@ body {
     text-overflow: clip;
 }
 
+.no-height {
+    height: unset !important;
+}

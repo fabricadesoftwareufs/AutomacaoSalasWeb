@@ -7,6 +7,12 @@
     $('#coperacao').hide();
     $('#cbotao').hide();
 
+    if ($('#checkbox').prop('checked')) {
+        $('#codigos').fadeIn();
+        $('#ccodigo').fadeIn();
+        $('#coperacao').fadeIn();
+        $('#cbotao').fadeIn();
+    }; 
     $('#checkbox').on('click', function () {
         if ($(this).prop('checked')) {
             $('#codigos').fadeIn();
