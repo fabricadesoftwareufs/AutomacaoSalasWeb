@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.16" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Models\Model.csproj" />
     <ProjectReference Include="..\Persistences\Persistence.csproj" />
     <ProjectReference Include="..\Utils\Utils.csproj" />
