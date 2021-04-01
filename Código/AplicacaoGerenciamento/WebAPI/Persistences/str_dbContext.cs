@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Persistence
 {
@@ -32,7 +34,7 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
+           
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -115,6 +117,7 @@ namespace Persistence
                 entity.Property(e => e.Sala).HasColumnType("int unsigned");
 
                 entity.Property(e => e.TipoEquipamento)
+                    .IsRequired()
                     .HasColumnType("enum('CONDICIONADOR','LUZES')")
                     .HasDefaultValueSql("_utf8mb4\\'CONDICIONADOR\\'");
 

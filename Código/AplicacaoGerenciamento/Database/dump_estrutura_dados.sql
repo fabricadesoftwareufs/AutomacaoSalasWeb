@@ -64,7 +64,7 @@ INSERT INTO `bloco` (`Id`, `Organizacao`, `Titulo`) VALUES
 
 -- Copiando estrutura para tabela str_db.sala
 CREATE TABLE IF NOT EXISTS `sala` (
-  `Id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
   `Titulo` varchar(100) NOT NULL,
   `Bloco` int unsigned NOT NULL,
   PRIMARY KEY (`Id`),
@@ -252,8 +252,8 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 INSERT INTO `usuario` (`Id`, `Cpf`, `Nome`, `DataNascimento`, `Senha`, `TipoUsuario`) VALUES
 	(1, '42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2),
 	(2, '57377766387', 'Rafael Kevin Teixeira', '1996-07-22', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2),
-	(3, '07852892590', 'Igor bruno dos santos nascimento', '1996-07-22', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2);
-   (4, '07334824571', 'Abraao Alves', '1998-06-06', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 1);
+	(3, '07852892590', 'Igor bruno dos santos nascimento', '1996-07-22', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2),
+	(4, '07334824571', 'Abraao Alves', '1998-06-06', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 1);
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela str_db.usuarioorganizacao
@@ -273,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `usuarioorganizacao` (
 INSERT INTO `usuarioorganizacao` (`Id`, `Organizacao`, `Usuario`) VALUES
 	(1, 1, 1),
 	(3, 1, 3),
-	(2, 1, 2);
+	(2, 1, 2),
 	(4, 1, 4);
 /*!40000 ALTER TABLE `usuarioorganizacao` ENABLE KEYS */;
 
@@ -362,14 +362,14 @@ CREATE TABLE IF NOT EXISTS `equipamento` (
   `Marca` VARCHAR(100) NOT NULL,
   `Descricao` VARCHAR(1000) NULL DEFAULT NULL,
   `Sala` INT(10) UNSIGNED NOT NULL,
-  `TipoEquipamento` ENUM('CONDICIONADOR', 'LUZES') DEFAULT ('CONDICIONADOR'),
+  `TipoEquipamento` ENUM('CONDICIONADOR', 'LUZES') DEFAULT ('CONDICIONADOR') NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_Equipamento_Sala1_idx` (`Sala`),
-  CONSTRAINT `fk_Equipamento_Sala1` FOREIGN KEY (`Sala`) REFERENCES `sala` (`Id`)
-) ENGINE = InnoDB DEFAULT CHARACTER SET = UTF8 AUTO_INCREMENT=4;
+  CONSTRAINT `fk_Equipamento_Sala1` FOREIGN KEY (`Sala`) REFERENCES `str_db`.`Sala` (`Id`)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 
 /*!40000 ALTER TABLE `salaparticular` DISABLE KEYS */;
-INSERT INTO `equipamento` (`id`, `Modelo`,`Marca`,`Descricao`,`Sala`) VALUES 
+INSERT INTO `equipamento` (`Id`, `Modelo`,`Marca`,`Descricao`,`Sala`) VALUES 
 				(1,"SAMSUNG","220TT","Condicionador SAMSUNG 110V classe de consumo E",1),
 				(2,"ELGIN","SGV330","Condicionador ELGIN 110V classe de consumo G",2),
 				(3,"LG","EXTENDER","Condicionador LG 110V classe de consumo G",3);
@@ -385,7 +385,7 @@ CREATE TABLE IF NOT EXISTS `codigoInfravermelho` (
   KEY `fk_CodigoInfravermelho_Operacao1_idx` (`Operacao` ASC) VISIBLE,
   CONSTRAINT `fk_CodigoInfravermelho_Equipamento1` FOREIGN KEY (`Equipamento`) REFERENCES `str_db`.`Equipamento` (`id`),
   CONSTRAINT `fk_CodigoInfravermelho_Operacao1` FOREIGN KEY (`Operacao`) REFERENCES `str_db`.`Operacao` (`id`)
-)ENGINE = InnoDB DEFAULT CHARACTER SET = UTF8 AUTO_INCREMENT=4;
+)ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 
 
 -- --------------------------------------------------------
@@ -422,7 +422,7 @@ CREATE TABLE IF NOT EXISTS `operacao` (
   `Descricao` VARCHAR(200) NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = UTF8 AUTO_INCREMENT=3;
+DEFAULT CHARACTER SET = UTF8;
 
 /*!40000 ALTER TABLE `Operacao` DISABLE KEYS */;
 INSERT INTO `operacao` (`Id`, `Titulo`,`Descricao`) VALUES 
