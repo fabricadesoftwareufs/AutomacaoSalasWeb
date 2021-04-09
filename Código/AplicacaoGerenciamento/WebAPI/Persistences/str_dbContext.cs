@@ -76,8 +76,6 @@ namespace Persistence
                 entity.HasIndex(e => e.Operacao)
                     .HasName("fk_CodigoInfravermelho_Operacao1_idx");
 
-                entity.Property(e => e.Id).HasColumnName("id");
-
                 entity.Property(e => e.Codigo)
                     .IsRequired()
                     .HasColumnType("mediumtext");
@@ -102,8 +100,6 @@ namespace Persistence
                 entity.HasIndex(e => e.Sala)
                     .HasName("fk_Equipamento_Sala1_idx");
 
-                entity.Property(e => e.Id).HasColumnName("id");
-
                 entity.Property(e => e.Descricao)
                     .HasMaxLength(1000)
                     .IsUnicode(false);
@@ -123,7 +119,7 @@ namespace Persistence
                 entity.Property(e => e.TipoEquipamento)
                     .IsRequired()
                     .HasColumnType("enum('CONDICIONADOR','LUZES')")
-                    .HasDefaultValueSql("_utf8mb4\\'CONDICIONADOR\\'");
+                    .HasDefaultValueSql("CONDICIONADOR");
 
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Equipamento)
@@ -264,9 +260,11 @@ namespace Persistence
                 entity.ToTable("monitoramento", "str_db");
 
                 entity.HasIndex(e => e.Sala)
-                    .HasName("fk_Sala_Id");
+                    .HasName("fk_Monitoramento_Sala2_idx");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.ArCondicionado).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.Luzes).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.Sala).HasColumnType("int unsigned");
 
@@ -274,14 +272,12 @@ namespace Persistence
                     .WithMany(p => p.Monitoramento)
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_Sala_Id");
+                    .HasConstraintName("fk_Monitoramento_Sala2");
             });
 
             modelBuilder.Entity<Operacao>(entity =>
             {
                 entity.ToTable("operacao", "str_db");
-
-                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Descricao)
                     .HasMaxLength(200)
