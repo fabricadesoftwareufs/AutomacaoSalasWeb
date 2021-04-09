@@ -9,7 +9,5 @@ namespace Persistence
         public byte Luzes { get; set; }
         public byte ArCondicionado { get; set; }
         public int Sala { get; set; }
-
-        public Sala SalaNavigation { get; set; }
     }
 }
