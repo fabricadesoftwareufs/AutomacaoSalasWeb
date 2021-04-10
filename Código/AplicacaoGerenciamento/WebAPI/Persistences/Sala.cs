@@ -10,6 +10,7 @@ namespace Persistence
             Equipamento = new HashSet<Equipamento>();
             Hardwaredesala = new HashSet<Hardwaredesala>();
             Horariosala = new HashSet<Horariosala>();
+            Monitoramento = new HashSet<Monitoramento>();
             Planejamento = new HashSet<Planejamento>();
             Salaparticular = new HashSet<Salaparticular>();
         }
@@ -22,6 +23,7 @@ namespace Persistence
         public ICollection<Equipamento> Equipamento { get; set; }
         public ICollection<Hardwaredesala> Hardwaredesala { get; set; }
         public ICollection<Horariosala> Horariosala { get; set; }
+        public ICollection<Monitoramento> Monitoramento { get; set; }
         public ICollection<Planejamento> Planejamento { get; set; }
         public ICollection<Salaparticular> Salaparticular { get; set; }
     }

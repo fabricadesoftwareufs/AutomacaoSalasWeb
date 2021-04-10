@@ -34,11 +34,7 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=1234;database=str_db");
-            }
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -306,22 +302,28 @@ namespace Persistence
             {
                 entity.ToTable("monitoramento", "str_db");
 
-                entity.HasIndex(e => e.Id)
-                    .HasName("id_UNIQUE")
-                    .IsUnique();
-
                 entity.HasIndex(e => e.Sala)
-                    .HasName("fk_Monitoramento_Sala1_idx");
+                    .HasName("fk_Monitoramento_Sala2_idx");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.ArCondicionado).HasColumnName("arCondicionado");
+                entity.Property(e => e.ArCondicionado)
+                    .HasColumnName("arCondicionado")
+                    .HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.Luzes).HasColumnName("luzes");
+                entity.Property(e => e.Luzes)
+                    .HasColumnName("luzes")
+                    .HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.Sala)
                     .HasColumnName("sala")
                     .HasColumnType("int unsigned");
+
+                entity.HasOne(d => d.SalaNavigation)
+                    .WithMany(p => p.Monitoramento)
+                    .HasForeignKey(d => d.Sala)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_Monitoramento_Sala2");
             });
 
             modelBuilder.Entity<Operacao>(entity =>
