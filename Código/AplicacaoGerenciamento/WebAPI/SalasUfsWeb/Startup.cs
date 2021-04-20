@@ -41,7 +41,7 @@ namespace SalasUfsWeb
                     options.AccessDeniedPath = "/Login/AcessoNegado";
                 });
 
-            services.AddDbContext<STR_DBContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
+            services.AddDbContext<str_dbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
 
             services.AddScoped<IOrganizacaoService, OrganizacaoService>();
             services.AddScoped<IBlocoService, BlocoService>();
@@ -51,6 +51,9 @@ namespace SalasUfsWeb
             services.AddScoped<IHardwareDeBlocoService, HardwareDeBlocoService>();
             services.AddScoped<ITipoHardwareService, TipoHardwareService>();
             services.AddScoped<IHardwareDeSalaService, HardwareDeSalaService>();
+            services.AddScoped<ICodigoInfravermelhoService, CodigoInfravermelhoService>();
+            services.AddScoped<IOperacaoCodigoService, OperacaoCodigoService>();
+            services.AddScoped<IEquipamentoService, EquipamentoService>();
             services.AddScoped<ISalaParticularService, SalaParticularService>();
             services.AddScoped<IUsuarioOrganizacaoService, UsuarioOrganizacaoService>();
             services.AddScoped<IHorarioSalaService, HorarioSalaService>();

@@ -9,8 +9,8 @@ namespace Service
 {
     public class BlocoService : IBlocoService
     {
-        private readonly STR_DBContext _context;
-        public BlocoService(STR_DBContext context)
+        private readonly str_dbContext _context;
+        public BlocoService(str_dbContext context)
         {
             _context = context;
         }

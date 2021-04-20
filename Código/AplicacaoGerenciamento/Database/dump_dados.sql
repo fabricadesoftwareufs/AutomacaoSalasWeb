@@ -160,7 +160,8 @@ INSERT INTO `tipousuario` (`Id`, `Descricao`) VALUES
 INSERT INTO `usuario` (`Id`, `Cpf`, `Nome`, `DataNascimento`, `Senha`, `TipoUsuario`) VALUES
 	(1, '42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2),
 	(2, '57377766387', 'Rafael Kevin Teixeira', '1996-07-22', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2),
-	(3, '07852892590', 'Igor bruno dos santos nascimento', '1996-07-22', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2);
+	(3, '07852892590', 'Igor bruno dos santos nascimento', '1996-07-22', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2),
+	(4, '07334824571', 'Abraao Alves', '1998-06-06', '4796D7022C26F2B5A32B71D5CE1584F885020831D7E47331EC05EDB4FFEBFC59', 2);
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 
 -- Copiando dados para a tabela str_db.usuarioorganizacao: ~0 rows (aproximadamente)
@@ -168,6 +169,7 @@ INSERT INTO `usuario` (`Id`, `Cpf`, `Nome`, `DataNascimento`, `Senha`, `TipoUsua
 INSERT INTO `usuarioorganizacao` (`Id`, `Organizacao`, `Usuario`) VALUES
 	(1, 1, 1),
 	(3, 1, 3),
+	(4, 1, 4),
 	(2, 1, 2);
 	
 /*!40000 ALTER TABLE `usuarioorganizacao` ENABLE KEYS */;

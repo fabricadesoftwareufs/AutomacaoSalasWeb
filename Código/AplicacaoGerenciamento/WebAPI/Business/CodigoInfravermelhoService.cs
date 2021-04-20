@@ -1,14 +1,15 @@
 ﻿using Model;
 using Persistence;
 using Service.Interface;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Service
 {
     public class CodigoInfravermelhoService : ICodigoInfravermelhoService
     {
-        private readonly STR_DBContext _context;
-        public CodigoInfravermelhoService(STR_DBContext context)
+        private readonly str_dbContext _context;
+        public CodigoInfravermelhoService(str_dbContext context)
         {
             _context = context;
         }
@@ -43,6 +44,49 @@ namespace Service
                        IdOperacao = ir.Operacao,
                    }).FirstOrDefault();
 
+        public List<CodigoInfravermelhoModel> GetAllByEquipamento(int idEquipamento)
+        => _context.Codigoinfravermelho
+        .Where(cs => cs.Equipamento == idEquipamento)
+        .Select(cs => new CodigoInfravermelhoModel
+        {
+            Id = cs.Id,
+            IdEquipamento = cs.Equipamento,
+            Codigo = cs.Codigo,
+            IdOperacao = cs.Operacao
+        }).ToList();
 
+        public bool AddAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels)
+        {
+            List<Codigoinfravermelho> codigos = new List<Codigoinfravermelho>();
+            codigoInfravermelhoModels.ForEach(c => codigos.Add(SetEntity(c)));
+
+            _context.AddRange(codigos);
+            return _context.SaveChanges() == 1;
+        }
+
+        public bool UpdateAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels)
+        {
+            List<Codigoinfravermelho> codigos = new List<Codigoinfravermelho>();
+            codigoInfravermelhoModels.ForEach(c => codigos.Add(SetEntity(c)));
+
+            _context.UpdateRange(codigos);
+            return _context.SaveChanges() == 1;
+        }
+
+        public bool RemoveAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels)
+        {
+            var codigos = new List<Codigoinfravermelho>();
+            codigoInfravermelhoModels.ForEach(c => codigos.Add(SetEntity(c)));
+            _context.RemoveRange(codigos);
+            return _context.SaveChanges() == 1;
+        }
+        private static Codigoinfravermelho SetEntity(CodigoInfravermelhoModel codigo)
+        => new Codigoinfravermelho
+        {
+            Id = codigo.Id,
+            Codigo = codigo.Codigo,
+            Equipamento = codigo.IdEquipamento,
+            Operacao = codigo.IdOperacao
+        };
     }
 }

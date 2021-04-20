@@ -9,8 +9,8 @@ namespace Service
 {
     public class MonitoramentoService : IMonitoramentoService
     {
-        private readonly STR_DBContext _context;
-        public MonitoramentoService(STR_DBContext context)
+        private readonly str_dbContext _context;
+        public MonitoramentoService(str_dbContext context)
         {
             _context = context;
         }

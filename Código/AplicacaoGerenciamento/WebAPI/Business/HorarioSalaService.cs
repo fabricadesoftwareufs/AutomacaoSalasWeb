@@ -10,8 +10,8 @@ namespace Service
 {
     public class HorarioSalaService : IHorarioSalaService
     {
-        private readonly STR_DBContext _context;
-        public HorarioSalaService(STR_DBContext context)
+        private readonly str_dbContext _context;
+        public HorarioSalaService(str_dbContext context)
         {
             _context = context;
         }
@@ -104,7 +104,7 @@ namespace Service
             DateTime dataAtual = DateTime.Now;
             DateTime proximoDomingo;
 
-            int nDia = (int)dataAtual.DayOfWeek; 
+            int nDia = (int)dataAtual.DayOfWeek;
             if (nDia == 0) proximoDomingo = dataAtual;
             else proximoDomingo = DateTime.Now.AddDays(7 - nDia).Date;
 
