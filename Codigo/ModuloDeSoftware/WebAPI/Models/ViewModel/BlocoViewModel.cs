@@ -8,7 +8,6 @@ namespace Model.ViewModel
 
         public BlocoViewModel()
         {
-            Hardwares = new List<HardwareDeBlocoModel>();
         }
 
         [Display(Name = "Código")]
@@ -17,7 +16,5 @@ namespace Model.ViewModel
         public string Titulo { get; set; }
         [Display(Name = "Organização")]
         public OrganizacaoModel OrganizacaoId { get; set; }
-        [Display(Name = "Hardwares")]
-        public List<HardwareDeBlocoModel> Hardwares { get; set; }
     }
 }
