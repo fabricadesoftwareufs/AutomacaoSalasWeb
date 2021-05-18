@@ -6,27 +6,36 @@
     $('#ccodigo').hide();
     $('#coperacao').hide();
     $('#cbotao').hide();
+    $('#coperacao').removeClass('d-inline-block');
 
-    if ($('#checkbox').prop('checked')) {
+    if ($('#tipo').val() === 'CONDICIONADOR') {
         $('#codigos').fadeIn();
         $('#ccodigo').fadeIn();
         $('#coperacao').fadeIn();
         $('#cbotao').fadeIn();
+        $('#coperacao').addClass('d-inline-block');
     }; 
-    $('#checkbox').on('click', function () {
-        if ($(this).prop('checked')) {
+
+    $("#tipo").change(function () {
+        if ($('#tipo').val() === 'CONDICIONADOR') {
+            console.log('aaa');
             $('#codigos').fadeIn();
             $('#ccodigo').fadeIn();
             $('#coperacao').fadeIn();
             $('#cbotao').fadeIn();
-        }
-        else {
+            $('#coperacao').addClass('d-inline-block');
+
+        } else {
+            console.log('fff');
             $('#codigos').hide();
             $('#ccodigo').hide();
             $('#coperacao').hide();
             $('#cbotao').hide();
+            $('#coperacao').removeClass('d-inline-block');
+
         }
-    });
+    })
+
 
 });
 
