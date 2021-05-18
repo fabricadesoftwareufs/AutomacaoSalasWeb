@@ -9,7 +9,6 @@ namespace Model
 
         public BlocoModel()
         {
-            Hardwares = new List<HardwareAuxModel>();
         }
 
         [Required(ErrorMessage = "Campo obrigatório")]
@@ -22,7 +21,5 @@ namespace Model
         [Display(Name = "Título")]
         [StringLength(100, ErrorMessage = "Máximo são 100 caracteres")]
         public string Titulo { get; set; }
-        public List<HardwareAuxModel> Hardwares { get; set; }
-
     }
 }

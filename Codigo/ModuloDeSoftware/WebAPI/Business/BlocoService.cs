@@ -35,31 +35,6 @@ namespace Service
                 throw e;
             }
 
-            if (blocoModel.Hardwares.Count > 0)
-            {
-                var _hardwareDeBlocoService = new HardwareDeBlocoService(_context);
-                using (var transaction = _context.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        foreach (var item in blocoModel.Hardwares)
-                            if (_hardwareDeBlocoService.GetByMAC(item.MAC, idUsuario) != null)
-                                throw new ServiceException("Já existe um dispositivos com o endereço MAC informado, corrija e tente novamente!");
-
-                        foreach (var item in blocoModel.Hardwares)
-                            _hardwareDeBlocoService.Insert(new HardwareDeBlocoModel { MAC = item.MAC, BlocoId = blocoInserido.Id, TipoHardwareId = TipoHardwareModel.CONTROLADOR_DE_BLOCO }, idUsuario);
-
-                        transaction.Commit();
-                        return true;
-                    }
-                    catch (Exception e)
-                    {
-                        transaction.Rollback();
-                        throw e;
-                    }
-                }
-            }
-
             return true;
         }
         public BlocoModel Insert(BlocoModel blocoModel)
@@ -84,17 +59,16 @@ namespace Service
 
         public bool Remove(int id)
         {
-            var _hardwareDeBlocoService = new HardwareDeBlocoService(_context);
             var _salaService = new SalaService(_context);
             try
             {
-                if (_salaService.GetByIdBloco(id).Count == 0 && _hardwareDeBlocoService.GetByIdBloco(id).Count == 0)
+                if (_salaService.GetByIdBloco(id).Count == 0)
                 {
                     var x = _context.Bloco.Where(b => b.Id == id).FirstOrDefault();
                     if (x != null)
                     {
                         _context.Remove(x);
-                        return _context.SaveChanges() == 1 ? true : false;
+                        return _context.SaveChanges() == 1;
                     }
                 }
                 else throw new ServiceException("Esse Bloco não pode ser removido pois possui hardwares e salas associados a ele!");
