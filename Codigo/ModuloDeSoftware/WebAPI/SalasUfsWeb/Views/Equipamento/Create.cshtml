@@ -69,19 +69,13 @@
 
                                 <div class="form-group col-md-7">
                                     <label asp-for="EquipamentoModel.TipoEquipamento" class="control-label"></label>
-                                    <select class="form-control" asp-for="EquipamentoModel.TipoEquipamento" id="select-organizacao">
+                                    <select id="tipo" class="form-control" asp-for="EquipamentoModel.TipoEquipamento">
                                         @foreach (var item in ViewBag.Tipos)
                                         {
                                             <option value="@item"> @item</option>
                                         }
                                     </select>
                                     <span asp-validation-for="EquipamentoModel.TipoEquipamento" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="ocupation col-md-5">
-                                <div class="form-group align-element">
-                                    <label title="Código" class="control-label">O equipamento é infravermelho?</label>
-                                    <input type="checkbox" name="checkbox" id="checkbox" value="checkbox" />
                                 </div>
                             </div>
                             <div class="ocupation col-md-10">
@@ -163,7 +157,7 @@ else if (TempData["mensagemErro"] != null)
                 document.getElementById("mensagem-retorno").click();
         });
     </script>
-
+    <script src="~/js/equipamento-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
