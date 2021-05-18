@@ -67,7 +67,6 @@ namespace WebAPI
             services.AddScoped<ISalaService, SalaService>();
             services.AddScoped<IPlanejamentoService, PlanejamentoService>();
             services.AddScoped<IUsuarioService, UsuarioService>();
-            services.AddScoped<IHardwareDeBlocoService, HardwareDeBlocoService>();
             services.AddScoped<ITipoHardwareService, TipoHardwareService>();
             services.AddScoped<IHardwareDeSalaService, HardwareDeSalaService>();
             services.AddScoped<ISalaParticularService, SalaParticularService>();
