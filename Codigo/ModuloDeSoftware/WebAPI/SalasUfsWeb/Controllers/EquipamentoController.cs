@@ -20,6 +20,7 @@ namespace SalasUfsWeb.Controllers
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
         private readonly IBlocoService _blocoService;
         private readonly IOrganizacaoService _organizacaoService;
+        private readonly IHardwareDeSalaService _hardwareDeSalaService;
         public EquipamentoController(
                                         IEquipamentoService equipamentoService,
                                         ICodigoInfravermelhoService codigoInfravermelhoService,
@@ -28,7 +29,9 @@ namespace SalasUfsWeb.Controllers
                                         IUsuarioService usuarioService,
                                         IUsuarioOrganizacaoService usuarioOrganizacaoService,
                                         IBlocoService blocoService,
-                                        IOrganizacaoService organizacaoService
+                                        IOrganizacaoService organizacaoService,
+                                        IHardwareDeSalaService hardwareDeSalaService
+
                                     )
         {
             _equipamentoService = equipamentoService;
@@ -39,6 +42,7 @@ namespace SalasUfsWeb.Controllers
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
             _blocoService = blocoService;
             _organizacaoService = organizacaoService;
+            _hardwareDeSalaService = hardwareDeSalaService;
         }
 
         // GET: EquipamentoController
@@ -78,12 +82,15 @@ namespace SalasUfsWeb.Controllers
 
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
+            var salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
+            var hardwares = _hardwareDeSalaService.GetAtuadorByIdSala(salas.FirstOrDefault().Id);
             var operacoes = _operacaoService.GetAll().ToList();
             ViewBag.Operacoes = operacoes;
             ViewBag.Organizacoes = organizacoes;
             ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
-            ViewBag.Salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
             ViewBag.Blocos = blocos;
+            ViewBag.Salas = salas;
+            ViewBag.Hardwares = hardwares;
             ViewBag.Tipos = tiposEquipamento;
             return View();
         }
@@ -97,12 +104,15 @@ namespace SalasUfsWeb.Controllers
 
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
+            var salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
+            var hardwares = _hardwareDeSalaService.GetAtuadorByIdSala(salas.FirstOrDefault().Id);
             var operacoes = _operacaoService.GetAll().ToList();
             ViewBag.Operacoes = operacoes;
             ViewBag.Organizacoes = organizacoes;
             ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
-            ViewBag.Salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
+            ViewBag.Salas = salas;
             ViewBag.Blocos = blocos;
+            ViewBag.Hardwares = hardwares;
             ViewBag.Tipos = tiposEquipamento;
 
             try

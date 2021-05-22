@@ -136,5 +136,19 @@ namespace Service
 
         public List<HardwareDeSalaModel> GetByIdSalaAndTipoHardware(int idsala, int tipo)
         => _context.Hardwaredesala.Where(h => h.Sala == idsala && h.TipoHardware == tipo).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip }).ToList();
+
+        // TIPO 1 MODULO ATUADOR
+        public List<HardwareDeSalaModel> GetAtuadorByIdSala(int id)
+            => _context.Hardwaredesala.Where(h => h.Sala == id && h.TipoHardware == 1).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip }).ToList();
+   
+        /// <summary>
+        /// Remove da lista os atuadores que estão sendo usados em outros equipamentos, pois só pode haver um atuador vinculo a um equipamento
+        /// </summary>
+        /// <param name="hardwares">Lista de Todos os hardwares de uma sala especifica</param>
+        private List<Hardwaredesala> RemoveHardwaresInUse(List<Hardwaredesala> hardwares)
+        {
+
+            return null;
+        }    
     }
 }
