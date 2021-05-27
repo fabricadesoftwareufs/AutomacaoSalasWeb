@@ -140,7 +140,7 @@ namespace Service
         // TIPO 1 MODULO ATUADOR
         public List<HardwareDeSalaModel> GetAtuadorByIdSala(int id)
             => _context.Hardwaredesala.Where(h => h.Sala == id && h.TipoHardware == 1).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip }).ToList();
-   
+
         /// <summary>
         /// Remove da lista os atuadores que estão sendo usados em outros equipamentos, pois só pode haver um atuador vinculo a um equipamento
         /// </summary>

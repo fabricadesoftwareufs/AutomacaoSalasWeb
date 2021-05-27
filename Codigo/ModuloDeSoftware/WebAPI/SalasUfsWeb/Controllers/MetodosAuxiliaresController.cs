@@ -53,6 +53,6 @@ namespace SalasUfsWeb.Controllers
         {
             return _salaService.GetByIdBloco(idBloco);
         }
-        
+
     }
 }

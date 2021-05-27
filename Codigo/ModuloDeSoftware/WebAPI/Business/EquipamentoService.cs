@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Model;
+﻿using Model;
 using Model.ViewModel;
 using Persistence;
 using Service.Interface;
@@ -59,7 +58,7 @@ namespace Service
                        Descricao = eq.Descricao,
                        Sala = eq.Sala,
                        TipoEquipamento = eq.TipoEquipamento,
-                       HardwareDeSala = (int) eq.HardwareDeSala
+                       HardwareDeSala = (int)eq.HardwareDeSala
                    }).ToList();
 
         public List<EquipamentoModel> GetAll() => _context.Equipamento.Select(e => new EquipamentoModel { Id = e.Id, Modelo = e.Modelo, Descricao = e.Descricao, TipoEquipamento = e.TipoEquipamento, Marca = e.Marca, Sala = e.Sala, HardwareDeSala = e.HardwareDeSala != null ? (int)e.HardwareDeSala : 0 }).ToList();
