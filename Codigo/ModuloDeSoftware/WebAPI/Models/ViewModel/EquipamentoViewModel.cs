@@ -11,5 +11,6 @@ namespace Model.ViewModel
         public SalaModel SalaModel { set; get; }
         public BlocoModel BlocoModel { set; get; }
         public OrganizacaoModel OrganizacaoModel { set; get; }
+        public HardwareDeSalaModel HardwareDeSalaModel { set; get; }
     }
 }

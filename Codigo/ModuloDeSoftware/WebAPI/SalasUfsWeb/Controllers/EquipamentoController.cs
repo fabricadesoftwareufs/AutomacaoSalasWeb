@@ -50,7 +50,7 @@ namespace SalasUfsWeb.Controllers
         {
             var equipamentosModel = _equipamentoService.GetAll();
             List<EquipamentoViewModel> equipamentos = new List<EquipamentoViewModel>();
-            equipamentosModel.ForEach(e => equipamentos.Add(new EquipamentoViewModel { EquipamentoModel = e, SalaModel = _salaService.GetById(e.Sala) }));
+            equipamentosModel.ForEach(e => equipamentos.Add(new EquipamentoViewModel { EquipamentoModel = e, SalaModel = _salaService.GetById(e.Sala), HardwareDeSalaModel = _hardwareDeSalaService.GetById(e.HardwareDeSala) }));
 
             return View(equipamentos);
         }
@@ -83,7 +83,7 @@ namespace SalasUfsWeb.Controllers
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
-            var hardwares = _hardwareDeSalaService.GetAtuadorByIdSala(salas.FirstOrDefault().Id);
+            var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();
             var operacoes = _operacaoService.GetAll().ToList();
             ViewBag.Operacoes = operacoes;
             ViewBag.Organizacoes = organizacoes;
@@ -105,7 +105,7 @@ namespace SalasUfsWeb.Controllers
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
-            var hardwares = _hardwareDeSalaService.GetAtuadorByIdSala(salas.FirstOrDefault().Id);
+            var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();
             var operacoes = _operacaoService.GetAll().ToList();
             ViewBag.Operacoes = operacoes;
             ViewBag.Organizacoes = organizacoes;
@@ -154,7 +154,8 @@ namespace SalasUfsWeb.Controllers
                 SalaModel = _salaService.GetById(equipamento.Sala),
                 BlocoModel = bloco,
                 OrganizacaoModel = _organizacaoService.GetById(bloco.OrganizacaoId),
-                Codigos = codigosView
+                Codigos = codigosView,
+                HardwareDeSalaModel = _hardwareDeSalaService.GetById(equipamento.HardwareDeSala)
             };
 
             string[] tiposEquipamento = { EquipamentoModel.TIPO_CONDICIONADOR, EquipamentoModel.TIPO_LUZES };
@@ -162,12 +163,16 @@ namespace SalasUfsWeb.Controllers
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var operacoes = _operacaoService.GetAll().ToList();
+            var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();
+
             ViewBag.Operacoes = operacoes;
             ViewBag.Organizacoes = organizacoes;
             ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             ViewBag.Salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
             ViewBag.Blocos = blocos;
             ViewBag.Tipos = tiposEquipamento;
+            ViewBag.Hardwares = hardwares;
+
             return View(equipamentoViewModel);
         }
 
@@ -181,12 +186,14 @@ namespace SalasUfsWeb.Controllers
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var operacoes = _operacaoService.GetAll().ToList();
+            var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();
             ViewBag.Operacoes = operacoes;
             ViewBag.Organizacoes = organizacoes;
             ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             ViewBag.Salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
             ViewBag.Blocos = blocos;
             ViewBag.Tipos = tiposEquipamento;
+            ViewBag.Hardwares = hardwares;
 
             try
             {

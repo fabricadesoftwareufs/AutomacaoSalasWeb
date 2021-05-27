@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using Microsoft.EntityFrameworkCore;
+using Model;
 using Model.ViewModel;
 using Persistence;
 using Service.Interface;
@@ -27,7 +28,8 @@ namespace Service
                       Marca = eq.Marca,
                       Descricao = eq.Descricao,
                       Sala = eq.Sala,
-                      TipoEquipamento = eq.TipoEquipamento
+                      TipoEquipamento = eq.TipoEquipamento,
+                      HardwareDeSala = (int)eq.HardwareDeSala
                   }).FirstOrDefault();
 
 
@@ -41,7 +43,8 @@ namespace Service
                        Marca = eq.Marca,
                        Descricao = eq.Descricao,
                        Sala = eq.Sala,
-                       TipoEquipamento = eq.TipoEquipamento
+                       TipoEquipamento = eq.TipoEquipamento,
+                       HardwareDeSala = (int)eq.HardwareDeSala
                    }).FirstOrDefault();
 
 
@@ -55,10 +58,11 @@ namespace Service
                        Marca = eq.Marca,
                        Descricao = eq.Descricao,
                        Sala = eq.Sala,
-                       TipoEquipamento = eq.TipoEquipamento
+                       TipoEquipamento = eq.TipoEquipamento,
+                       HardwareDeSala = (int) eq.HardwareDeSala
                    }).ToList();
 
-        public List<EquipamentoModel> GetAll() => _context.Equipamento.Select(e => new EquipamentoModel { Id = e.Id, Modelo = e.Modelo, Descricao = e.Descricao, TipoEquipamento = e.TipoEquipamento, Marca = e.Marca, Sala = e.Sala }).ToList();
+        public List<EquipamentoModel> GetAll() => _context.Equipamento.Select(e => new EquipamentoModel { Id = e.Id, Modelo = e.Modelo, Descricao = e.Descricao, TipoEquipamento = e.TipoEquipamento, Marca = e.Marca, Sala = e.Sala, HardwareDeSala = e.HardwareDeSala != null ? (int)e.HardwareDeSala : 0 }).ToList();
 
         public bool Insert(EquipamentoViewModel entity)
         {
@@ -97,8 +101,7 @@ namespace Service
                 ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
 
                 var equip = SetEntity(entity.EquipamentoModel);
-
-                _context.Update(equip);
+                _context.Equipamento.Update(equip);
                 int updated = _context.SaveChanges();
                 var codigosEntity = new List<CodigoInfravermelhoModel>();
                 if (updated == 1)
@@ -127,7 +130,8 @@ namespace Service
                 Marca = model.Marca,
                 Modelo = model.Modelo,
                 TipoEquipamento = model.TipoEquipamento,
-                Sala = model.Sala
+                Sala = model.Sala,
+                HardwareDeSala = model.HardwareDeSala,
             };
             return entity;
         }

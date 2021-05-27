@@ -16,7 +16,6 @@ namespace SalasUfsWeb.Controllers
         private readonly IBlocoService _blocoService;
         private readonly IOrganizacaoService _organizacaoService;
 
-
         public MetodosAuxiliaresController(ISalaService salaService,
                                            IUsuarioService usuarioService,
                                            IUsuarioOrganizacaoService usuarioOrganizacaoService,
@@ -54,5 +53,6 @@ namespace SalasUfsWeb.Controllers
         {
             return _salaService.GetByIdBloco(idBloco);
         }
+        
     }
 }

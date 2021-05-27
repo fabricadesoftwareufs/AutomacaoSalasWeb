@@ -57,3 +57,20 @@ function loadSalas() {
         }
     });
 }
+
+//function loadHardwares() {
+//    let selectSalas = document.getElementById('select-hardwares');
+//    let url = "/MetodosAuxiliares/GetAtuadorNotUsed";
+//    let blocoId = $('#select-sala').val();
+
+//    $.get(url, { idBloco: blocoId }, function (data) {
+//        selectSalas.innerHTML = "";
+//        for (let i = 0; i < data.length; i++) {
+//            let option = document.createElement("option");
+//            option.text = data[i].id + " | " + data[i].titulo;
+//            option.value = data[i].id;
+
+//            selectSalas.add(option);
+//        }
+//    });
+//}

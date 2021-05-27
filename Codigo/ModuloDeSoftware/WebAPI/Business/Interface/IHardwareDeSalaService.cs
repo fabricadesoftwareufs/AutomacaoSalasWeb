@@ -10,6 +10,8 @@ namespace Service.Interface
         HardwareDeSalaModel GetById(int id);
         List<HardwareDeSalaModel> GetByIdSala(int id);
         List<HardwareDeSalaModel> GetAtuadorByIdSala(int id);
+        List<HardwareDeSalaModel> GetAllAtuador();
+        List<HardwareDeSalaModel> GetAtuadorNotUsed();
         List<HardwareDeSalaModel> GetByIdSalaAndTipoHardware(int id, int tipo);
         HardwareDeSalaModel GetByMAC(string mac, int idUsuario);
         bool Insert(HardwareDeSalaModel entity, int idUsuario);
