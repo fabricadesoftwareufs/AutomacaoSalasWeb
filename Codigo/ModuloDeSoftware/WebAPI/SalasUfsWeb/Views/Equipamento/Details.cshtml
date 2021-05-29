@@ -57,6 +57,12 @@
                                 <dd>
                                     <p class="form-control"> @Html.DisplayFor(model => model.SalaModel.Titulo)</p>
                                 </dd>
+                                <dt>
+                                   Atuador Associado @Html.DisplayNameFor(model => model.HardwareDeSalaModel.MAC)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.HardwareDeSalaModel.MAC)</p>
+                                </dd>
                                 @if (Model.Codigos != null)
                                 {
                                     <dt>

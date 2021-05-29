@@ -136,5 +136,51 @@ namespace Service
 
         public List<HardwareDeSalaModel> GetByIdSalaAndTipoHardware(int idsala, int tipo)
         => _context.Hardwaredesala.Where(h => h.Sala == idsala && h.TipoHardware == tipo).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip }).ToList();
+
+        // TIPO 1 MODULO ATUADOR
+        public List<HardwareDeSalaModel> GetAtuadorByIdSala(int id)
+            => _context.Hardwaredesala.Where(h => h.Sala == id && h.TipoHardware == 1).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip }).ToList();
+
+        /// <summary>
+        /// Remove da lista os atuadores que estão sendo usados em outros equipamentos, pois só pode haver um atuador vinculo a um equipamento
+        /// </summary>
+        /// <param name="hardwares">Lista de Todos os hardwares de uma sala especifica</param>
+        private List<HardwareDeSalaModel> RemoveHardwaresInUse(List<HardwareDeSalaModel> hardwares)
+        {
+            var equipamentos = _context.Equipamento.Where(e => e.HardwareDeSala != null).Select(e => new EquipamentoModel
+            {
+                Id = e.Id,
+                Descricao = e.Descricao,
+                Marca = e.Marca,
+                TipoEquipamento = e.TipoEquipamento,
+                Modelo = e.Modelo,
+                Sala = e.Sala,
+                HardwareDeSala = (int)e.HardwareDeSala
+            }).ToList();
+
+            if (equipamentos == null)
+                return new List<HardwareDeSalaModel>();
+
+            var hardwaresNotInUse = hardwares.Where(h => equipamentos.All(e => e.HardwareDeSala != h.Id)).Select(hd => new HardwareDeSalaModel
+            {
+                Id = hd.Id,
+                MAC = hd.MAC,
+                Ip = hd.Ip,
+                SalaId = hd.SalaId,
+                TipoHardwareId = hd.SalaId
+            }).ToList();
+
+            return hardwaresNotInUse;
+        }
+
+        public List<HardwareDeSalaModel> GetAtuadorNotUsed()
+        {
+            var hardwares = GetAllAtuador();
+            var hardwaresNotInUse = RemoveHardwaresInUse(hardwares);
+            return hardwaresNotInUse;
+        }
+
+        public List<HardwareDeSalaModel> GetAllAtuador()
+            => _context.Hardwaredesala.Where(h => h.TipoHardware == 1).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip }).ToList();
     }
 }

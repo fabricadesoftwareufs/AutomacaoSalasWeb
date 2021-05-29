@@ -12,5 +12,7 @@ namespace Model
         public string Descricao { get; set; }
         public int Sala { get; set; }
         public string TipoEquipamento { get; set; }
+        public int HardwareDeSala { get; set; }
+
     }
 }
