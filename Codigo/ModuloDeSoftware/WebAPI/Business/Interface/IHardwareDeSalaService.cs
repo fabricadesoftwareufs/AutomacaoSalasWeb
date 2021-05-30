@@ -11,6 +11,9 @@ namespace Service.Interface
         List<HardwareDeSalaModel> GetByIdSala(int id);
         List<HardwareDeSalaModel> GetByIdSalaAndTipoHardware(int id, int tipo);
         HardwareDeSalaModel GetByMAC(string mac, int idUsuario);
+
+        HardwareDeSalaModel GetByIp(string ip, int idUsuario);
+
         bool Insert(HardwareDeSalaModel entity, int idUsuario);
         bool Remove(int id);
         bool Update(HardwareDeSalaModel entity, int idUsuario);

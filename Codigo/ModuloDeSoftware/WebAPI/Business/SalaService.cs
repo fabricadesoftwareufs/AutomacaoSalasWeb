@@ -25,43 +25,41 @@ namespace Service
 
         public bool InsertSalaWithHardwares(SalaAuxModel sala, int idUsuario)
         {
-
-            var salaInserida = new SalaModel();
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                salaInserida = Insert(new SalaModel { Id = sala.Sala.Id, Titulo = sala.Sala.Titulo, BlocoId = sala.Sala.BlocoId });
-                if (salaInserida == null)
-                    throw new ServiceException("Houve um problema ao cadastrar sala, tente novamente em alguns minutos!");
-
-                var _monitoramentoService = new MonitoramentoService(_context);
-                _monitoramentoService.Insert(new MonitoramentoModel { Luzes = false, ArCondicionado = false, SalaId = salaInserida.Id });
-
-            }
-            catch (Exception e) { throw e; }
-
-            if (sala.HardwaresSala.Count > 0)
-            {
-                var _hardwareDeSalaService = new HardwareDeSalaService(_context);
-                using (var transaction = _context.Database.BeginTransaction())
+                try
                 {
-                    try
+                    var salaInserida = Insert(new SalaModel { Id = sala.Sala.Id, Titulo = sala.Sala.Titulo, BlocoId = sala.Sala.BlocoId });
+                    if (salaInserida == null)
+                        throw new ServiceException("Houve um problema ao cadastrar sala, tente novamente em alguns minutos!");
+
+                    var _monitoramentoService = new MonitoramentoService(_context);
+                    _monitoramentoService.Insert(new MonitoramentoModel { Luzes = false, ArCondicionado = false, SalaId = salaInserida.Id });
+
+                    if (sala.HardwaresSala.Count > 0)
                     {
+                        var _hardwareDeSalaService = new HardwareDeSalaService(_context);
+
                         foreach (var item in sala.HardwaresSala)
                         {
                             if (_hardwareDeSalaService.GetByMAC(item.MAC, idUsuario) != null)
-                                throw new ServiceException("Já existe um dispositivos com o endereço MAC informado, corrija e tente novamente!");
+                                throw new ServiceException("Já existe um dispositivos com o endereço MAC " + item.MAC + " informado, corrija e tente novamente!");
 
-                            _hardwareDeSalaService.Insert(new HardwareDeSalaModel { MAC = item.MAC, SalaId = salaInserida.Id, TipoHardwareId = item.TipoHardwareId.Id }, idUsuario);
+                            if (item.TipoHardwareId.Id == TipoHardwareModel.CONTROLADOR_DE_SALA && _hardwareDeSalaService.GetByIp(item.Ip, idUsuario) != null)
+                                throw new ServiceException("Já existe um dispositivos com o endereço IP  " + item.Ip + "  informado, corrija e tente novamente!");
+
+                            _hardwareDeSalaService.Insert(new HardwareDeSalaModel { MAC = item.MAC, SalaId = salaInserida.Id, TipoHardwareId = item.TipoHardwareId.Id, Ip = item.Ip }, idUsuario);
                         }
 
                         transaction.Commit();
                         return true;
+
                     }
-                    catch (Exception e)
-                    {
-                        transaction.Rollback();
-                        throw e;
-                    }
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
 
@@ -86,7 +84,7 @@ namespace Service
                 }
                 else return null;
             }
-            catch (Exception e) { throw e; }
+            catch (Exception) { throw; }
         }
 
         public bool Remove(int id)
@@ -106,7 +104,7 @@ namespace Service
                     if (x != null)
                     {
                         _context.Remove(x);
-                        return _context.SaveChanges() == 1 ? true : false;
+                        return _context.SaveChanges() == 1;
                     }
                 }
                 else throw new ServiceException("Essa sala nao pode ser removida pois existem outros registros associados a ela!");

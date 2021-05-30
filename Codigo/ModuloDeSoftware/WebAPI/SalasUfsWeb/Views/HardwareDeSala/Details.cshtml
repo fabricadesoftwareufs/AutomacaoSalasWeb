@@ -1,5 +1,7 @@
 ﻿@model Model.HardwareDeSalaViewModel
 
+@using Model
+
 @{
     ViewData["Title"] = "Details";
 }
@@ -49,6 +51,28 @@
                                 <dd>
                                     <p class="form-control">@Html.DisplayFor(model => model.TipoHardwareId.Descricao)</p>
                                 </dd>
+                                <dt>
+
+                                </dt>
+
+                                @if (Model.TipoHardwareId.Id == TipoHardwareModel.CONTROLADOR_DE_SALA)
+                                {
+                                    <dt>
+                                        Situação
+                                    </dt>
+                                    @if (string.IsNullOrEmpty(Model.Uuid))
+                                    {
+                                        <dd>
+                                            <p class="form-control">Não Autenticado</p>
+                                        </dd>
+                                    }
+                                    else
+                                    {
+                                        <dd>
+                                            <p class="form-control">Autenticado</p>
+                                        </dd>
+                                    }
+                                }
                             </dl>
                         </div>
                     </div>

@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<Model.HardwareDeSalaViewModel>
 
+@using Model
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -37,6 +39,9 @@
                                     <th>
                                         @Html.DisplayNameFor(model => model.TipoHardwareId.Descricao)
                                     </th>
+                                    <th>
+                                        Situação
+                                    </th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -50,12 +55,32 @@
                                         <td>
                                             @Html.DisplayFor(modelItem => item.MAC)
                                         </td>
-                                        <th>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.SalaId.Titulo)
-                                        </th>
-                                        <th>
+                                        </td>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.TipoHardwareId.Descricao)
-                                        </th>
+                                        </td>
+
+                                        <td>
+
+                                            @if (item.TipoHardwareId.Id == TipoHardwareModel.CONTROLADOR_DE_SALA)
+                                            {
+
+                                                @if (string.IsNullOrEmpty(item.Uuid))
+                                                {
+                                                    <text>Não Autenticado</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>Autenticado</text>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <text> -- </text>
+                                            }
+                                        </td>
                                         <td>
                                             <a href="@Url.Action("Details", "HardwareDeSala", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
                                             <a href="@Url.Action("Edit", "HardwareDeSala", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>

@@ -8,13 +8,14 @@ function AdicionarHardware() {
 
     let enderecoMac = $('#input-mac').val();
     let tipoHardwareId = $('#select-tipo-hardware').val();
-    let tipoHardwareTexto = $('#select-tipo-hardware option:selected').text().split("-")[1];
+    let tipoHardwareTexto = $('#select-tipo-hardware option:selected').text();
+    let enderecoIp = $('#input-ip').val();
     let indice = 0;
 
-    if (!validacoesHardwareExistente(enderecoMac)) {
+    if (!validacoesHardwareExistente(enderecoMac, enderecoIp, tipoHardwareId)) {
         document.getElementById("mensagem-erro-hardwares").hidden = true;
         var novoHardware = new Array();
-        novoHardware.push(adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardwareTexto));
+        novoHardware.push(adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardwareTexto, tipoHardwareId == 2 ? enderecoIp : ""));
 
         let hardwares = document.getElementsByClassName('hardware-sala');
         if (document.querySelector('.hardware-sala')) {
@@ -23,8 +24,9 @@ function AdicionarHardware() {
                 enderecoMac = hardwares[indice].childNodes[0].childNodes[1].value;
                 tipoHardwareId = hardwares[indice].childNodes[0].childNodes[0].value;
                 tipoHardwareTexto = hardwares[indice].childNodes[0].childNodes[2].value;
+                enderecoIp = hardwares[indice].childNodes[0].childNodes[3].value;
 
-                novoHardware.push(adicionaHardwareNaTabela(indice + 1, enderecoMac, tipoHardwareId, tipoHardwareTexto));
+                novoHardware.push(adicionaHardwareNaTabela(indice + 1, enderecoMac, tipoHardwareId, tipoHardwareTexto, tipoHardwareId == 2 ? enderecoIp : ""));
             }
         }
 
@@ -35,27 +37,41 @@ function AdicionarHardware() {
     }
 }
 
-function validacoesHardwareExistente(enderecoMac) {
+function validacoesHardwareExistente(enderecoMac, enderecoIp, tipoHardwareId) {
 
     let hardwareExistente = false;
 
-    if (enderecoMac.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').length == 12) {
-        let hardwares = document.getElementsByClassName('hardware-sala');
-        if (document.querySelector('.hardware-sala')) {
-            for (indice = 0; indice < hardwares.length; indice++) {
+    if (tipoHardwareId != 2 || (enderecoIp != undefined && enderecoIp.length > 0)) {
 
-                let MAC = hardwares[indice].childNodes[0].childNodes[1].value;
+        if (enderecoMac.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').length == 12) {
+            let hardwares = document.getElementsByClassName('hardware-sala');
+            if (document.querySelector('.hardware-sala')) {
+                for (indice = 0; indice < hardwares.length; indice++) {
 
-                if (MAC == enderecoMac) {
-                    hardwareExistente = true;
-                    document.getElementById("mensagem-erro-hardwares").innerText = "Um hardware com esse endereço MAC já foi adicionado!";
-                    document.getElementById("mensagem-erro-hardwares").hidden = false;
+                    let MAC = hardwares[indice].childNodes[0].childNodes[1].value;
+                    let ip = hardwares[indice].childNodes[0].childNodes[3].value;
+
+                    if (MAC == enderecoMac) {
+                        hardwareExistente = true;
+                        document.getElementById("mensagem-erro-hardwares").innerText = "Um hardware com esse endereço MAC já foi adicionado!";
+                        document.getElementById("mensagem-erro-hardwares").hidden = false;
+                    }
+
+                    if (ip == enderecoIp && tipoHardwareId == 2) {
+                        hardwareExistente = true;
+                        document.getElementById("mensagem-erro-hardwares").innerText = "Um hardware com esse endereço IP já foi adicionado!";
+                        document.getElementById("mensagem-erro-hardwares").hidden = false;
+                    }
                 }
             }
+        } else {
+            hardwareExistente = true;
+            document.getElementById("mensagem-erro-hardwares").innerText = "Preencha o MAC corretamente antes de adicionar um hardware!";
+            document.getElementById("mensagem-erro-hardwares").hidden = false;
         }
     } else {
         hardwareExistente = true;
-        document.getElementById("mensagem-erro-hardwares").innerText = "Preencha o campo MAC antes de adicionar um hardware!";
+        document.getElementById("mensagem-erro-hardwares").innerText = "Preencha o campo IP corretamente antes de adicionar um hardware!";
         document.getElementById("mensagem-erro-hardwares").hidden = false;
     }
 
@@ -63,7 +79,7 @@ function validacoesHardwareExistente(enderecoMac) {
 
 }
 
-function adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardwareTexto) {
+function adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardwareTexto, enderecoIp) {
     let idItem = 'novo-hardware-' + indice;
 
     let hardware =
@@ -72,7 +88,8 @@ function adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardw
         '<input class="form-control" name="HardwaresSala[' + indice + '].TipoHardwareId.Id" hidden value="' + tipoHardwareId + '" />' +
         '<input class="form-control" name="HardwaresSala[' + indice + '].MAC" hidden value="' + enderecoMac + '" />' +
         '<input class="form-control" name="HardwaresSala[' + indice + '].TipoHardwareId.Descricao" value="' + tipoHardwareTexto + '" hidden/>' +
-        '<p class="text-overflow form-control">' + enderecoMac + ' | ' + tipoHardwareTexto + '</p>' +
+        '<input class="form-control" name="HardwaresSala[' + indice + '].Ip" value="' + enderecoIp + '" hidden />' +
+        '<p class="text-overflow form-control">' + enderecoMac + ' | ' + (enderecoIp.length > 0 ? enderecoIp + ' | ' : '')  + tipoHardwareTexto + '</p>' +
         '</td>' +
         '<td>' +
         '<a id="remove-novo-hardware" onclick="removeNovoHardware(\'' + idItem + '\')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>' +
@@ -94,7 +111,8 @@ function removeNovoHardware(idItem) {
         novosHardwares.push(adicionaHardwareNaTabela(indice,
             hardwares[indice].childNodes[0].childNodes[1].value,
             hardwares[indice].childNodes[0].childNodes[0].value,
-            hardwares[indice].childNodes[0].childNodes[2].value));
+            hardwares[indice].childNodes[0].childNodes[2].value,
+            hardwares[indice].childNodes[0].childNodes[3].value));
 
     document.getElementById('container-hardwares').innerHTML = "";
     for (var indice = 0; indice < novosHardwares.length; indice++)
