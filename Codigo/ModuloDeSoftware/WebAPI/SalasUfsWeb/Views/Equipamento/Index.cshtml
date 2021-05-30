@@ -41,9 +41,12 @@
                                         @Html.DisplayNameFor(model => model.FirstOrDefault().SalaModel.Titulo)
                                     </th>
                                     <th>
+                                        Atuador Associado
+                                    </th>
+                                    <th>
                                         @Html.DisplayNameFor(model => model.FirstOrDefault().EquipamentoModel.TipoEquipamento)
                                     </th>
-                                    <th></th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,6 +67,17 @@
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.SalaModel.Titulo)
+                                    </td>
+                                    <td>
+                                        @if (@item.HardwareDeSalaModel != null)
+                                        {
+
+                                            @Html.DisplayFor(modelItem => item.HardwareDeSalaModel.MAC)
+                                        }
+                                        else
+                                        {
+                                            <b>Nenhum Associado</b>
+                                        }
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.EquipamentoModel.TipoEquipamento)
@@ -88,6 +102,17 @@
                                                         <h5>Marca</h5><p>@item.EquipamentoModel.Marca</p>
                                                         <h5>Modelo</h5> <p>@item.EquipamentoModel.Modelo</p>
                                                         <h5>Descrição</h5> <p>@item.EquipamentoModel.Descricao</p>
+                                                        <h5>Atuador Associado</h5>
+                                                        <p>
+                                                            @if (@item.HardwareDeSalaModel != null)
+                                                            {
+                                                                @item.HardwareDeSalaModel.MAC
+                                                            }
+                                                            else
+                                                            {
+                                                                <b>Nenhum Associado</b>
+                                                            }
+                                                        </p>
                                                     </div>
 
                                                     @using (Html.BeginForm("Delete", "Equipamento", new { id = item.EquipamentoModel.Id }, FormMethod.Post))
