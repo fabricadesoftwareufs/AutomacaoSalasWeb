@@ -139,7 +139,6 @@ namespace Service
                 if (entity.TipoHardwareId == TipoHardwareModel.CONTROLADOR_DE_SALA)
                 {
                     hardware = GetByIp(entity.Ip, idUsuario);
-
                     if (hardware != null && hardware.Id != entity.Id)
                         throw new ServiceException("Já existe um dispositivo com esse endereço IP");
                 }

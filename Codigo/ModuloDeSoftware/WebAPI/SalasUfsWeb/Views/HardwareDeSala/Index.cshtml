@@ -42,7 +42,6 @@
                                     <th>
                                         Situação
                                     </th>
-                                    <th></th>
 
                                     <th>Ações</th>
                                 </tr>
@@ -65,22 +64,13 @@
                                         </td>
 
                                         <td>
-
-                                            @if (item.TipoHardwareId.Id == TipoHardwareModel.CONTROLADOR_DE_SALA)
+                                            @if (string.IsNullOrEmpty(item.Uuid))
                                             {
-
-                                                @if (string.IsNullOrEmpty(item.Uuid))
-                                                {
-                                                    <text>Não Autenticado</text>
-                                                }
-                                                else
-                                                {
-                                                    <text>Autenticado</text>
-                                                }
+                                                <text>Não Autenticado</text>
                                             }
                                             else
                                             {
-                                                <text> -- </text>
+                                                <text>Autenticado</text>
                                             }
                                         </td>
                                         <td>
