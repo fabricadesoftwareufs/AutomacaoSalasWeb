@@ -7,6 +7,14 @@ namespace WebAPI.Controllers
     [ApiController]
     public class TimeController : ControllerBase
     {
+        private const string GETMILLIS = "GETMILLIS";
+        private const string GETDATETIME = "GETDATETIME";
+        private const string GETTIME = "GETTIME";
+        private const string GETDATE = "GETDATE";
+        private const string GETDATENEXTSUNDAY = "GETDATENEXTSUNDAY";
+        private const string GETDATEPREVIOUSSUNDAY = "GETDATEPREVIOUSSUNDAY";
+
+
         //api/Utils
         [HttpGet]
         public ActionResult Get()
@@ -18,31 +26,33 @@ namespace WebAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult Get(String id)
         {
-            String hora = "";
-            if (id.ToUpper() == "GETMILLIS")
+            String hora;
+            id = id.Trim().ToUpper();
+
+            if (id.Equals(GETMILLIS))
             {
                 hora = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
             }
-            else if (id.ToUpper() == "GETDATETIME")
+            else if (id.Equals(GETDATETIME))
             {
-                hora = DateTime.Now.ToString("HH:mm:ss;yyyy-MM-dd");
+                hora = GetHorarioBrasilia().ToString("HH:mm:ss;yyyy-MM-dd");
             }
 
-            else if (id.ToUpper() == "GETTIME")
+            else if (id.Equals(GETTIME))
             {
-                hora = DateTime.Now.ToString("HH:mm:ss");
+                hora = GetHorarioBrasilia().ToString("HH:mm:ss");
             }
-            else if (id.ToUpper() == "GETDATE")
+            else if (id.Equals(GETDATE))
             {
-                hora = DateTime.Now.ToString("yyyy-MM-dd");
+                hora = GetHorarioBrasilia().ToString("yyyy-MM-dd");
             }
-            else if (id.ToUpper() == "GETDATENEXTSUNDAY")
+            else if (id.Equals(GETDATENEXTSUNDAY))
             {
-                hora = DateTime.Now.AddDays(7 - (int)DateTime.Now.DayOfWeek).ToString("yyyy-MM-dd");
+                hora = GetHorarioBrasilia().AddDays(7 - (int)DateTime.Now.DayOfWeek).ToString("yyyy-MM-dd");
             }
-            else if (id.ToUpper() == "GETDATEPREVIOUSSUNDAY")
+            else if (id.Equals(GETDATEPREVIOUSSUNDAY))
             {
-                hora = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek).ToString("yyyy-MM-dd");
+                hora = GetHorarioBrasilia().AddDays(-(int)DateTime.Now.DayOfWeek).ToString("yyyy-MM-dd");
             }
             else
             {
@@ -51,5 +61,8 @@ namespace WebAPI.Controllers
 
             return Ok(hora);
         }
+
+        private DateTime GetHorarioBrasilia() => TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time"));
+
     }
 }
