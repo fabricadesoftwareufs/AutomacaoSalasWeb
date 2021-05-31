@@ -1,5 +1,7 @@
 ﻿@model Model.AuxModel.SalaAuxModel
 
+@using Model  
+
 @{
     ViewData["Title"] = "Create";
 }
@@ -54,14 +56,20 @@
                                 </div>
                                 <div class="form-group align-element">
                                     <label class="control-label">Tipo de Hardware</label>
-                                    <select class="form-control" id="select-tipo-hardware">
+                                    <select class="form-control" onchange="mostraInputIP()" id="select-tipo-hardware">
                                         @foreach (var item in ViewBag.TipoHardware)
                                         {
-                                            <option value="@item.Id"> @item.Id - @item.Descricao</option>
+                                            <option value="@item.Id">@item.Descricao</option>
                                         }
                                     </select>
                                     <span class="text-danger"></span>
                                 </div>
+
+                                <div class="form-group align-element" id="div-input-ip" hidden>
+                                    <label class="control-label">Ip</label>
+                                    <input id="input-ip" ip-mask class="form-control" placeholder="000.000.000.000" />
+                                </div>
+
                                 <div class="form-group align-element">
                                     <a id="add-novo-horario" onclick="AdicionarHardware()" class="btn btn-primary text-white"><i class="nav-icon fa fa-plus"></i> </a>
                                 </div>
@@ -71,7 +79,7 @@
                             <section class="content">
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-5">
                                             <div class="card">
                                                 <div class="card-header">
                                                     <h3 class="card-title">Hardwares Adicionados</h3>
@@ -92,7 +100,10 @@
                                                                             <input class="form-control" name="HardwaresSala[@i].TipoHardwareId.Id" hidden value="@Model.HardwaresSala[i].TipoHardwareId.Id" />
                                                                             <input class="form-control" name="HardwaresSala[@i].MAC" hidden value="@Model.HardwaresSala[i].MAC" />
                                                                             <input class="form-control" name="HardwaresSala[@i].TipoHardwareId.Descricao" value="@Model.HardwaresSala[i].TipoHardwareId.Descricao" hidden />
-                                                                            <p class="text-overflow form-control"> @Model.HardwaresSala[i].MAC | @Model.HardwaresSala[i].TipoHardwareId.Descricao </p>
+                                                                            <input class="form-control" name="HardwaresSala[@i].Ip" value="@Model.HardwaresSala[i].Ip" hidden />
+                                                                            <p class="text-overflow form-control"> @Model.HardwaresSala[i].MAC | 
+                                                                                @if (Model.HardwaresSala[i].TipoHardwareId.Id == TipoHardwareModel.CONTROLADOR_DE_SALA) { <text>  @Model.HardwaresSala[i].Ip | </text>} 
+                                                                                @Model.HardwaresSala[i].TipoHardwareId.Descricao </p>
                                                                         </td>
                                                                         <td>
                                                                             <a id="remove-novo-hardware" onclick="removeNovoHardware('novo-hardware-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
@@ -138,13 +149,29 @@ else if (TempData["mensagemErro"] != null)
         $(document).ready(function () {
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
+
+            $('[ip-mask]').ipAddress();
         });
+
+        function mostraInputIP() {
+
+            let texto = $("#select-tipo-hardware option:selected").text();
+
+            if (texto == "CONTROLADOR DE SALA") {
+                document.getElementById('div-input-ip').hidden = false;
+            } else {
+                $('#input-ip').val = '';
+                document.getElementById('div-input-ip').hidden = true;
+            }
+        }
+
     </script>
 
     <script src="~/js/load-itens-script.js"></script>
     <script src="~/js/sala-script.js"></script>
     <script src="~/js/custom.js"></script>
     <script src="~/plugins/inputmask/inputmask/jquery.mask.js"></script>
+    <script src="~/js/mask.ip-input.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

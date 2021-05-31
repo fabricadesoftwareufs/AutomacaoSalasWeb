@@ -18,6 +18,8 @@ namespace Model
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Tipo de Hardware")]
         public int TipoHardwareId { get; set; }
+        [Display(Name = "Uuid")]
+        public string Uuid { get; set; }
 
         public string Ip { get; set; }
         // Variaveis auxiliares

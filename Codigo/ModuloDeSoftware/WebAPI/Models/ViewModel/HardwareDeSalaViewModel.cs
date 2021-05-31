@@ -12,7 +12,6 @@ namespace Model
         [Required]
         [Display(Name = "MAC")]
         public string MAC { get; set; }
-        [Required]
         [Display(Name = "IP")]
         public string Ip { get; set; }
 
@@ -23,5 +22,8 @@ namespace Model
         [Required]
         [Display(Name = "Tipo de Hardware")]
         public TipoHardwareModel TipoHardwareId { get; set; }
+
+        [Display(Name = "Uuid")]
+        public string Uuid { get; set; }
     }
 }
