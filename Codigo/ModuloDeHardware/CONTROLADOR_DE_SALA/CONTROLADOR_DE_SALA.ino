@@ -594,6 +594,7 @@ int tratarMsgRecebida(String msg) {
   
   if (tipoDeMsg == condicionador) { // se a msg for um comando para enviar para um equipamento de ar
     String codigoString = SplitGetIndex(msg, ';', 1);
+	
     String temp = "";
     for (int i = 0; i < codigoString.length(); i++) {
       if (codigoString.charAt(i) == ',' || i == codigoString.length() - 1) {
@@ -632,13 +633,29 @@ int tratarMsgRecebida(String msg) {
     
   } else if (tipoDeMsg == luzes) { // caso o comando seja para ligar as luzes
     
-    String operacaoLigarDesligar = SplitGetIndex(msg, ';', 1);
-    if(operacaoLigarDesligar == "True;")
-      ligarLuzes(false);
-    else
-      desligarLuzes(false);  
-    
-    retorno = -2;
+		String operacao = SplitGetIndex(msg, ';', 1);
+        String logMonitoramento = "Ligando luzes no horario: " + horaAtualSistema;
+
+        if(operacao == "true"){
+         /*
+          * Ligando luzes
+          */
+          luzesLigadas = true;
+          digitalWrite(RELE, LOW);
+
+          logMonitoramento = "Ligando luzes no horario: " + horaAtualSistema;
+        } else {
+         /*
+          * Desligando luzes
+          */
+          luzesLigadas = false;
+          digitalWrite(RELE, HIGH);
+
+          logMonitoramento = "Desligando luzes no horario: " + horaAtualSistema;
+        }
+
+        gravarLinhaEmArquivo(SPIFFS, logMonitoramento, pathLogMonitoramento);
+        enviarMonitoramento(luzesLigadas, arLigado);  
     
   } else if (tipoDeMsg == atualizar) {
     obterHorariosDaSemana();
@@ -804,6 +821,8 @@ void conectarDispoitivoNaRede() {
 
   Serial.println("WiFi conectado e o ip é: ");
   Serial.println(WiFi.localIP());
+  
+  delay(5000);
 }
 
 /*
