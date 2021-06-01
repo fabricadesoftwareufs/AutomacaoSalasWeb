@@ -633,29 +633,13 @@ int tratarMsgRecebida(String msg) {
     
   } else if (tipoDeMsg == luzes) { // caso o comando seja para ligar as luzes
     
-		String operacao = SplitGetIndex(msg, ';', 1);
-        String logMonitoramento = "Ligando luzes no horario: " + horaAtualSistema;
+		String operacaoLigarDesligar = SplitGetIndex(msg, ';', 1);
+    if(operacaoLigarDesligar == "True;")
+      ligarLuzes(false);
+    else
+      desligarLuzes(false);  
 
-        if(operacao == "true"){
-         /*
-          * Ligando luzes
-          */
-          luzesLigadas = true;
-          digitalWrite(RELE, LOW);
-
-          logMonitoramento = "Ligando luzes no horario: " + horaAtualSistema;
-        } else {
-         /*
-          * Desligando luzes
-          */
-          luzesLigadas = false;
-          digitalWrite(RELE, HIGH);
-
-          logMonitoramento = "Desligando luzes no horario: " + horaAtualSistema;
-        }
-
-        gravarLinhaEmArquivo(SPIFFS, logMonitoramento, pathLogMonitoramento);
-        enviarMonitoramento(luzesLigadas, arLigado);  
+    retorno = -2;  
     
   } else if (tipoDeMsg == atualizar) {
     obterHorariosDaSemana();
