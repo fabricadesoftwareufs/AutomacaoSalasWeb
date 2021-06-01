@@ -594,6 +594,7 @@ int tratarMsgRecebida(String msg) {
   
   if (tipoDeMsg == condicionador) { // se a msg for um comando para enviar para um equipamento de ar
     String codigoString = SplitGetIndex(msg, ';', 1);
+	
     String temp = "";
     for (int i = 0; i < codigoString.length(); i++) {
       if (codigoString.charAt(i) == ',' || i == codigoString.length() - 1) {
@@ -632,13 +633,13 @@ int tratarMsgRecebida(String msg) {
     
   } else if (tipoDeMsg == luzes) { // caso o comando seja para ligar as luzes
     
-    String operacaoLigarDesligar = SplitGetIndex(msg, ';', 1);
+		String operacaoLigarDesligar = SplitGetIndex(msg, ';', 1);
     if(operacaoLigarDesligar == "True;")
       ligarLuzes(false);
     else
       desligarLuzes(false);  
-    
-    retorno = -2;
+
+    retorno = -2;  
     
   } else if (tipoDeMsg == atualizar) {
     obterHorariosDaSemana();
@@ -804,6 +805,8 @@ void conectarDispoitivoNaRede() {
 
   Serial.println("WiFi conectado e o ip é: ");
   Serial.println(WiFi.localIP());
+  
+  delay(5000);
 }
 
 /*
@@ -940,50 +943,53 @@ void verificaHorarioDeCarregarReservas(){
 /*
  * <descricao> Ouve requisicoes do cliente conecta via socket <descricao/>
  */
-void recebeComandosDoServidor() {
-    
-    /* 
-     * ouvindo o cliente 
-     */
-     client = server.available();
-
-    if (client) {
-
-      /*
-       * Checando se o cleinte está conectando ao server
+void recebeComandosDoServidor(void *arg) {
+  
+    while(true){
+      /* 
+       * ouvindo o cliente 
        */
-      while (client.connected()) {
-
-        if (client.available()) {
-          String && msg = client.readStringUntil('\n');
-          Serial.print("cliente enviou: ");
-          Serial.println(msg);
-          int tipoMensagem = tratarMsgRecebida(msg);
-          delay(1000);
-          double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
-          potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea   
-          //Serial.println("ps : ");
-          //Serial.println(Irms);
-          if (tipoMensagem == (-1)) { // se algum código foi recebido
-                    
-               if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
-                   client.println("AC-ON");
-               else
-                   client.println("AC-OFF");
-                    
-          } else if(tipoMensagem == (-2)) {
-                    
-               if (luzesLigadas)              
-                   client.println("L-ON");
-               else
-                   client.println("L-OFF");
-                   
-          }  else if(tipoMensagem == (-3)) {
-                client.println("OK");
-          }
-        }  
-        delay(100);
+       client = server.available();
+  
+      if (client) {
+  
+        /*
+         * Checando se o cleinte está conectando ao server
+         */
+        while (client.connected()) {
+  
+          if (client.available()) {
+            String && msg = client.readStringUntil('\n');
+            Serial.print("cliente enviou: ");
+            Serial.println(msg);
+            int tipoMensagem = tratarMsgRecebida(msg);
+            delay(1000);
+            double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente
+            potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea   
+            //Serial.println("ps : ");
+            //Serial.println(Irms);
+            if (tipoMensagem == (-1)) { // se algum código foi recebido
+                      
+                 if (Irms > 2) // se a corrente for maior que (valor de Ampere considerado ligado, é enviado a resposta para aplicação que o sensor está ligado
+                     client.println("AC-ON");
+                 else
+                     client.println("AC-OFF");
+                      
+            } else if(tipoMensagem == (-2)) {
+                      
+                 if (luzesLigadas)              
+                     client.println("L-ON");
+                 else
+                     client.println("L-OFF");
+                     
+            }  else if(tipoMensagem == (-3)) {
+                  client.println("OK");
+            }
+          }  
+          delay(100);
+        }
       }
+      delay(500);
     }
 }
 
@@ -1045,6 +1051,14 @@ void setup() {
   struct Monitoramento monitoramento = obterMonitoramentoByIdSala();
   arLigado = monitoramento.arCondicionado;
   luzesLigadas = monitoramento.luzes;
+
+  xTaskCreatePinnedToCore(recebeComandosDoServidor, 
+                        "recebeComandosDoServidor", 
+                        10000, 
+                        NULL, 
+                        8, 
+                        NULL, 
+                        tskNO_AFFINITY);
 }
 
 void loop() {
@@ -1073,11 +1087,6 @@ void loop() {
    horaAtualSistema = ntp.getFormattedTime();
    Serial.println("Hora: ");
    Serial.println(horaAtualSistema);
-
-  /*
-   * Socket ouvindo requisicoes do servidor 
-   */
-  recebeComandosDoServidor();
   
   /*
    * Monitoração continua do ambiente para verificar se é necessário ligar     
