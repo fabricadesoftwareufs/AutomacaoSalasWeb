@@ -14,7 +14,7 @@ namespace WebAPI.Controllers
         {
             _service = service;
         }
-        // GET: api/Hardware
+        // GET: api/Planejamento
         [HttpGet]
         public ActionResult Get()
         {
@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        // GET: api/Hardware/5
+        // GET: api/Planejamento/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
@@ -50,7 +50,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        // POST: api/Hardware
+        // POST: api/Planejamento
         [HttpPost]
         public ActionResult Post([FromBody] PlanejamentoModel planejamentoModel)
         {
@@ -68,7 +68,7 @@ namespace WebAPI.Controllers
 
         }
 
-        // PUT: api/Hardware/5
+        // PUT: api/Planejamento/5
         [HttpPut("{id}")]
         public ActionResult Put(int id, [FromBody] PlanejamentoModel planejamentoModel)
         {

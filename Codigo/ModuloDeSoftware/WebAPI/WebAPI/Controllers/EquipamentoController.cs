@@ -16,7 +16,7 @@ namespace WebAPI.Controllers
             _service = service;
         }
 
-        // GET: api/Hardware/5
+        // GET: api/Equipamento/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
 
         }
 
-        // GET: api/Hardware/5
+        // GET: api/Equipamento/5
         [HttpGet("equipamentosSala/{id}")]
         public ActionResult GetEquipamentosSala(int id)
         {
@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
            
         }
 
-        // GET: api/Hardware/5
+        // GET: api/Equipamento/5
         [HttpGet("sala/{id}/tipoEquipamento/{tipo}")]
         public ActionResult GetTipoEquipamentoSala(int id, string tipo)
         {
@@ -73,7 +73,7 @@ namespace WebAPI.Controllers
 
         }
 
-        // POST: api/Hardware
+        // POST: api/Equipamento
         [HttpPost]
         public ActionResult Post([FromBody] EquipamentoViewModel salaParticularModel)
         {
@@ -90,7 +90,7 @@ namespace WebAPI.Controllers
             return BadRequest(ModelState);
         }
 
-        // PUT: api/Hardware/5
+        // PUT: api/Equipamento/5
         [HttpPut("{id}")]
         public ActionResult Put(int id, [FromBody] EquipamentoViewModel salaParticularModel)
         {

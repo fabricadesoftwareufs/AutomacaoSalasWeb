@@ -18,7 +18,7 @@ namespace WebAPI.Controllers
             _service = service;
         }
 
-        // GET: api/ReservaSala/5
+        // GET: api/Monitoramento/5
         [HttpGet("{idSala}")]
         [Route("ObterPorSala")]
         public ActionResult Get(int idSala)
@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
            
         }
 
-        // PUT: api/HorarioSala/5
+        // PUT: api/Monitoramento/5
         [HttpPut]
         public ActionResult Atualizar([FromBody] MonitoramentoModel monitoramento)
         {
