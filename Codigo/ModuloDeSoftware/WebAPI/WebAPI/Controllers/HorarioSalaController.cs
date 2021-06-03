@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service;
 using Service.Interface;
 
 namespace WebAPI.Controllers
@@ -17,22 +18,38 @@ namespace WebAPI.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            var horarios = _service.GetAll();
-            if (horarios.Count == 0)
-                return NoContent();
+            try
+            {
+                var horarios = _service.GetAll();
+                if (horarios.Count == 0)
+                    return NoContent();
 
-            return Ok(horarios);
+                return Ok(horarios);
+
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         // GET: api/HorarioSala/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var horario = _service.GetById(id);
-            if (horario == null)
-                return NoContent();
+            try
+            {
+                var horario = _service.GetById(id);
+                if (horario == null)
+                    return NotFound("Reserva não encontrada na base de dados");
 
-            return Ok(horario);
+                return Ok(horario);
+
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         // GET: api/ReservaSala/5
@@ -40,11 +57,19 @@ namespace WebAPI.Controllers
         [Route("ReservasDaSala/{idSala}")]
         public ActionResult GetReservasDaSala(int idSala)
         {
-            var horarios = _service.GetByIdSala(idSala);
-            if (horarios.Count == 0)
-                return NoContent();
+            try
+            {
+                var horarios = _service.GetByIdSala(idSala);
+                if (horarios.Count == 0)
+                    return NoContent();
 
-            return Ok(horarios);
+                return Ok(horarios);
+
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         // GET: api/ReservaSala/5
@@ -52,23 +77,74 @@ namespace WebAPI.Controllers
         [Route("ReservasDaSemana/{idSala}")]
         public ActionResult GetReservasDaSamana(int idSala)
         {
-            var horarios = _service.GetReservasDaSemanaByIdSala(idSala);
-            if (horarios.Count == 0)
-                return NoContent();
+            try
+            {
+                var horarios = _service.GetReservasDaSemanaByIdSala(idSala);
+                if (horarios.Count == 0)
+                    return NoContent();
 
-            return Ok(horarios);
+                return Ok(horarios);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         // POST: api/HorarioSala
         [HttpPost]
-        public ActionResult Post([FromBody] HorarioSalaModel horarioSala) => _service.Insert(horarioSala) ? Ok(true) : Ok(false);
+        public ActionResult Post([FromBody] HorarioSalaModel horarioSala)
+        {
+
+            try
+            {
+                if (ModelState.IsValid && _service.Insert(horarioSala))
+                    return Ok();
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+            return BadRequest(ModelState);
+        }
+
 
         // PUT: api/HorarioSala/5
         [HttpPut("{id}")]
-        public ActionResult Put([FromBody] HorarioSalaModel horarioSala) => _service.Update(horarioSala) ? Ok(true) : Ok(false);
+        public ActionResult Put([FromBody] HorarioSalaModel horarioSala)
+        {
+            try
+            {
+                if (ModelState.IsValid && _service.Update(horarioSala))
+                    return Ok();
+
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+            return BadRequest(ModelState);
+        }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                if ( _service.Remove(id))
+                    return Ok();
+
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+            return BadRequest();
+
+        }
     }
 }

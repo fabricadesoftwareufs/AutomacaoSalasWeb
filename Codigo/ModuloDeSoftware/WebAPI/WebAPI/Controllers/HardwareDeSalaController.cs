@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service;
 using Service.Interface;
 
 namespace WebAPI.Controllers
@@ -30,21 +31,71 @@ namespace WebAPI.Controllers
         {
             var hardware = _service.GetById(id);
             if (hardware == null)
-                return NoContent();
+                return NotFound("Hardware não encontrado na base de dados");
 
             return Ok(hardware);
         }
 
         // POST: api/Hardware
         [HttpPost]
-        public ActionResult Post([FromBody] HardwareDeSalaModel hardwareModel, int idUser) => _service.Insert(hardwareModel, idUser) ? Ok(true) : Ok(false);
+        public ActionResult Post([FromBody] HardwareDeSalaModel hardwareModel, int idUser)
+        {
+
+            try
+            {
+                if (string.IsNullOrEmpty(hardwareModel.Ip) && hardwareModel.TipoHardwareId == TipoHardwareModel.CONTROLADOR_DE_SALA)
+                    ModelState.AddModelError("Ip", "Adicione um endereço IP");
+
+                if (ModelState.IsValid && _service.Insert(hardwareModel,idUser))
+                    return Ok();
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+            return BadRequest(ModelState);
+        }
+
+
 
         // PUT: api/Hardware/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] HardwareDeSalaModel hardwareModel, int idUser) => _service.Update(hardwareModel, idUser) ? Ok(true) : Ok(false);
+        public ActionResult Put(int id, [FromBody] HardwareDeSalaModel hardwareModel, int idUser)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(hardwareModel.Ip) && hardwareModel.TipoHardwareId == TipoHardwareModel.CONTROLADOR_DE_SALA)
+                    ModelState.AddModelError("Ip", "Adicione um endereço IP");
+
+                if (ModelState.IsValid && _service.Update(hardwareModel, idUser))
+                    return Ok();
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+            return BadRequest(hardwareModel);
+        }
+
+
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
+        public ActionResult Delete(int id) 
+        {
+            try
+            {
+                if (_service.Remove(id))
+                    return Ok();
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+            return BadRequest();
+        }
     }
 }
