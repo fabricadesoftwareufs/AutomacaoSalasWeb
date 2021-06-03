@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Model;
+using Model.ViewModel;
 using Service;
 using Service.Interface;
 
@@ -7,29 +8,12 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SalaParticularController : ControllerBase
+    public class EquipamentoController : ControllerBase
     {
-        private readonly ISalaParticularService _service;
-        public SalaParticularController(SalaParticularService service)
+        private readonly IEquipamentoService _service;
+        public EquipamentoController(IEquipamentoService service)
         {
             _service = service;
-        }
-        // GET: api/Hardware
-        [HttpGet]
-        public ActionResult Get()
-        {
-            try
-            {
-                var salasParticular = _service.GetAll();
-                if (salasParticular.Count == 0)
-                    return NoContent();
-
-                return Ok(salasParticular);
-            }
-            catch (ServiceException e)
-            {
-                return StatusCode(500, e.Message);
-            }  
         }
 
         // GET: api/Hardware/5
@@ -38,11 +22,30 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var salaParticular = _service.GetById(id);
-                if (salaParticular == null)
-                    return NotFound("Sala exclusiva não encontrada na base de dados.");
+                var equipamentosSala = _service.GetByIdEquipamento(id);
+                if (equipamentosSala == null)
+                    return NotFound("Equipamento não encontrado na base dedados.");
 
-                return Ok(salaParticular);
+                return Ok(equipamentosSala);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+        }
+
+        // GET: api/Hardware/5
+        [HttpGet("equipamentosSala/{id}")]
+        public ActionResult GetEquipamentosSala(int id)
+        {
+            try
+            {
+                var equipamentosSala = _service.GetByIdSala(id);
+                if (equipamentosSala.Count == 0)
+                    return NoContent();
+
+                return Ok(equipamentosSala);
             }
             catch (ServiceException e)
             {
@@ -51,9 +54,28 @@ namespace WebAPI.Controllers
            
         }
 
+        // GET: api/Hardware/5
+        [HttpGet("sala/{id}/tipoEquipamento/{tipo}")]
+        public ActionResult GetTipoEquipamentoSala(int id, string tipo)
+        {
+            try
+            {
+                var equipamentosSala = _service.GetByIdSalaAndTipoEquipamento(id,tipo);
+                if (equipamentosSala == null)
+                    return NoContent();
+
+                return Ok(equipamentosSala);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+        }
+
         // POST: api/Hardware
         [HttpPost]
-        public ActionResult Post([FromBody] SalaParticularModel salaParticularModel)
+        public ActionResult Post([FromBody] EquipamentoViewModel salaParticularModel)
         {
             try
             {
@@ -70,7 +92,7 @@ namespace WebAPI.Controllers
 
         // PUT: api/Hardware/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] SalaParticularModel salaParticularModel)
+        public ActionResult Put(int id, [FromBody] EquipamentoViewModel salaParticularModel)
         {
             try
             {

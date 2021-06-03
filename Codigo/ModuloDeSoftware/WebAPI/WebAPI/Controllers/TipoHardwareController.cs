@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service;
 using Service.Interface;
 
 namespace WebAPI.Controllers
@@ -18,34 +19,36 @@ namespace WebAPI.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            var tipoHard = _service.GetAll();
-            if (tipoHard.Count == 0)
-                return NoContent();
+            try
+            {
+                var tipoHard = _service.GetAll();
+                if (tipoHard.Count == 0)
+                    return NoContent();
 
-            return Ok(tipoHard);
+                return Ok(tipoHard);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         // GET api/TipoHardware/6
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var tipo = _service.GetById(id);
-            if (tipo == null)
-                return NoContent();
+            try
+            {
+                var tipo = _service.GetById(id);
+                if (tipo == null)
+                    return NotFound("Tipo de Hardware não encontrado na base de dados.");
 
-            return Ok(tipo);
+                return Ok(tipo);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
-
-        // POST api/TipoHardware
-        [HttpPost]
-        public ActionResult Post([FromBody] TipoHardwareModel tipoHardware) => _service.Insert(tipoHardware) ? Ok(true) : Ok(false);
-
-        // PUT api/TipoHardware/5
-        [HttpPut("{id}")]
-        public ActionResult Put([FromBody] TipoHardwareModel tipoHardware) => _service.Update(tipoHardware) ? Ok(true) : Ok(false);
-
-        // DELETE api/TipoHardware/5
-        [HttpDelete("{id}")]
-        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
     }
 }

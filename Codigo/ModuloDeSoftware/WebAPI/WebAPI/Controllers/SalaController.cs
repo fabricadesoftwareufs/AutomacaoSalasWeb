@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service;
 using Service.Interface;
 
 namespace WebAPI.Controllers
@@ -17,11 +18,19 @@ namespace WebAPI.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            var salas = _service.GetAll();
-            if (salas.Count == 0)
-                return NoContent();
+            try
+            {
+                var salas = _service.GetAll();
+                if (salas.Count == 0)
+                    return NoContent();
 
-            return Ok(salas);
+                return Ok(salas);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+           
         }
 
         // GET: api/Sala/5
@@ -29,23 +38,77 @@ namespace WebAPI.Controllers
 
         public ActionResult Get(int id)
         {
-            var sala = _service.GetById(id);
-            if (sala == null)
-                return NoContent();
+            try
+            {
+                var sala = _service.GetById(id);
+                if (sala == null)
+                    return NotFound("Sala não encontrada na base de dados.");
 
-            return Ok(sala);
+                return Ok(sala);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+           
         }
 
         // POST: api/Sala
         [HttpPost]
-        public ActionResult Post([FromBody] SalaModel salaModel) => _service.Insert(salaModel) != null ? Ok(true) : Ok(false);
+        public ActionResult Post([FromBody] SalaModel salaModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    SalaModel sala = _service.Insert(salaModel);
+                    if (sala != null)
+                        return Ok();
+                }
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+            return BadRequest(ModelState);
+        }
 
         // PUT: api/Sala/5
         [HttpPut("{id}")]
-        public ActionResult Put([FromBody] SalaModel salaModel) => _service.Update(salaModel) ? Ok(true) : Ok(false);
+        public ActionResult Put([FromBody] SalaModel salaModel)
+        {
+            try
+            {
+                if (ModelState.IsValid && _service.Update(salaModel)) 
+                        return Ok();
+                
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+            return BadRequest(ModelState);
+
+        }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                if (_service.Remove(id))
+                    return Ok();
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
+            return BadRequest();
+
+        }
     }
 }
