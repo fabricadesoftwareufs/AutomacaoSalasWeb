@@ -7,14 +7,15 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TipoUsuarioController : ControllerBase
+    public class OperacaoController : ControllerBase
     {
-        private readonly ITipoUsuarioService _service;
-        public TipoUsuarioController(ITipoUsuarioService service)
+        private readonly IOperacaoCodigoService _service;
+        public OperacaoController(IOperacaoCodigoService service)
         {
             _service = service;
         }
-        // GET: api/TipoUsuario
+
+        // GET: api/Operacao
         [HttpGet]
         public ActionResult Get()
         {
@@ -33,7 +34,7 @@ namespace WebAPI.Controllers
            
         }
 
-        // GET: api/TipoUsuario/5
+        // GET: api/Operacao/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
@@ -41,7 +42,7 @@ namespace WebAPI.Controllers
             {
                 var tipo = _service.GetById(id);
                 if (tipo == null)
-                    return NotFound("Tipo de Usuário não encontrado na base de dados.");
+                    return NotFound("Operacao não encontrado na base de dados.");
 
                 return Ok(tipo);
             }

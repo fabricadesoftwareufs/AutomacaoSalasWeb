@@ -14,38 +14,92 @@ namespace WebAPI.Controllers
         {
             _service = service;
         }
-        // GET: api/Hardware
+        // GET: api/SalaParticular
         [HttpGet]
         public ActionResult Get()
         {
-            var salasParticular = _service.GetAll();
-            if (salasParticular.Count == 0)
-                return NoContent();
+            try
+            {
+                var salasParticular = _service.GetAll();
+                if (salasParticular.Count == 0)
+                    return NoContent();
 
-            return Ok(salasParticular);
+                return Ok(salasParticular);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }  
         }
 
-        // GET: api/Hardware/5
+        // GET: api/SalaParticular/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var salaParticular = _service.GetById(id);
-            if (salaParticular == null)
-                return NoContent();
+            try
+            {
+                var salaParticular = _service.GetById(id);
+                if (salaParticular == null)
+                    return NotFound("Sala exclusiva não encontrada na base de dados.");
 
-            return Ok(salaParticular);
+                return Ok(salaParticular);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+           
         }
 
-        // POST: api/Hardware
+        // POST: api/SalaParticular
         [HttpPost]
-        public ActionResult Post([FromBody] SalaParticularModel salaParticularModel) => _service.Insert(salaParticularModel) ? Ok(true) : Ok(false);
+        public ActionResult Post([FromBody] SalaParticularModel salaParticularModel)
+        {
+            try
+            {
+                if (_service.Insert(salaParticularModel))
+                        return Ok();  
 
-        // PUT: api/Hardware/5
+                 return BadRequest();
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        // PUT: api/SalaParticular/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] SalaParticularModel salaParticularModel) => _service.Update(salaParticularModel) ? Ok(true) : Ok(false);
+        public ActionResult Put(int id, [FromBody] SalaParticularModel salaParticularModel)
+        {
+            try
+            {
+                if (ModelState.IsValid && _service.Update(salaParticularModel))
+                    return Ok();
+
+                return BadRequest();
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }        
+        }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                if (_service.Remove(id))
+                    return Ok();
+
+                return BadRequest();
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

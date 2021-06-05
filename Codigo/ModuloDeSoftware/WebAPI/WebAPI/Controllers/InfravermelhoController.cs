@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Model;
+using Service;
 using Service.Interface;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -20,7 +21,41 @@ namespace WebAPI.Controllers
         [Route("CodigosPorSala/{idSala}/{operacao}")]
         public ActionResult Get(int idSala, int operacao)
         {
-            return Ok(_service.GetByIdSalaAndIdOperacao(idSala, operacao));
+
+            try
+            {
+                CodigoInfravermelhoModel codigos = _service.GetByIdSalaAndIdOperacao(idSala, operacao);
+                if (codigos == null)
+                    return NoContent();
+
+                return Ok(codigos);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+            
+        }
+
+
+        // GET api/<InfravermelhoController>/5
+        [HttpGet("{idEquipamento}")]
+        public ActionResult Get(int idEquipamento)
+        {
+
+            try
+            {
+                var codigos = _service.GetAllByEquipamento(idEquipamento);
+                if (codigos == null)
+                    return NoContent();
+
+                return Ok(codigos);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
         }
     }
 }
