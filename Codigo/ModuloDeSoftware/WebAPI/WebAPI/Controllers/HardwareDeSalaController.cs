@@ -46,15 +46,15 @@ namespace WebAPI.Controllers
                 if (string.IsNullOrEmpty(hardwareModel.Ip) && hardwareModel.TipoHardwareId == TipoHardwareModel.CONTROLADOR_DE_SALA)
                     ModelState.AddModelError("Ip", "Adicione um endereço IP");
 
-                if (ModelState.IsValid && _service.Insert(hardwareModel,idUser))
+                if (_service.Insert(hardwareModel, idUser))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(ModelState);
         }
 
 
@@ -68,34 +68,34 @@ namespace WebAPI.Controllers
                 if (string.IsNullOrEmpty(hardwareModel.Ip) && hardwareModel.TipoHardwareId == TipoHardwareModel.CONTROLADOR_DE_SALA)
                     ModelState.AddModelError("Ip", "Adicione um endereço IP");
 
-                if (ModelState.IsValid && _service.Update(hardwareModel, idUser))
+                if (_service.Update(hardwareModel, idUser))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(hardwareModel);
         }
 
 
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id) 
+        public ActionResult Delete(int id)
         {
             try
             {
                 if (_service.Remove(id))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest();
         }
     }
 }

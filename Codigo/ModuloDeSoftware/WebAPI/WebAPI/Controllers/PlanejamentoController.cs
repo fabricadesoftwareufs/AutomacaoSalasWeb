@@ -56,16 +56,15 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (ModelState.IsValid && _service.Insert(planejamentoModel))
+                if (_service.Insert(planejamentoModel))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(ModelState);
-
         }
 
         // PUT: api/Planejamento/5
@@ -74,15 +73,15 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (ModelState.IsValid && _service.Update(planejamentoModel))
+                if (_service.Update(planejamentoModel))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(ModelState);
         }
 
         // DELETE: api/ApiWithActions/5
@@ -93,13 +92,13 @@ namespace WebAPI.Controllers
             {
                 if (_service.Remove(id, excluirReservas))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest();
         }
     }
 }

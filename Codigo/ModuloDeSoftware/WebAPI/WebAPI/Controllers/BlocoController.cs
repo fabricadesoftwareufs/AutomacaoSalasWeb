@@ -44,19 +44,16 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    var resultado = _service.Insert(blocoModel);
-                    if (resultado != null)
-                        return Ok(resultado.Id);
-                }
+                var bloco = _service.Insert(blocoModel);
+                if (bloco != null)
+                    return Ok(bloco.Id);
+
+                return BadRequest();
             }
-            catch(ServiceException e)
+            catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(ModelState);
         }
 
         // PUT: api/Bloco/5
@@ -65,15 +62,16 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (ModelState.IsValid && _service.Update(blocoModel))
+                if (_service.Update(blocoModel))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
 
-            return BadRequest(ModelState);
         }
 
         // DELETE: api/ApiWithActions/5
@@ -84,13 +82,13 @@ namespace WebAPI.Controllers
             {
                 if (_service.Remove(id))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest();
         }
     }
 }

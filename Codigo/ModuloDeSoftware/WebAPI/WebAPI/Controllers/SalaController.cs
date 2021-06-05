@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
             {
                 return StatusCode(500, e.Message);
             }
-           
+
         }
 
         // GET: api/Sala/5
@@ -50,7 +50,7 @@ namespace WebAPI.Controllers
             {
                 return StatusCode(500, e.Message);
             }
-           
+
         }
 
         // POST: api/Sala
@@ -59,19 +59,16 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    SalaModel sala = _service.Insert(salaModel);
-                    if (sala != null)
-                        return Ok();
-                }
+                var sala = _service.Insert(salaModel);
+                if (sala != null)
+                    return Ok(sala.Id);
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(ModelState);
         }
 
         // PUT: api/Sala/5
@@ -80,17 +77,15 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (ModelState.IsValid && _service.Update(salaModel)) 
-                        return Ok();
-                
+                if (_service.Update(salaModel))
+                    return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(ModelState);
-
         }
 
         // DELETE: api/ApiWithActions/5
@@ -101,14 +96,14 @@ namespace WebAPI.Controllers
             {
                 if (_service.Remove(id))
                     return Ok();
+
+                return BadRequest();
+
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest();
-
         }
     }
 }

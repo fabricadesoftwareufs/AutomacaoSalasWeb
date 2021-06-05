@@ -35,25 +35,24 @@ namespace WebAPI.Controllers
             {
                 return StatusCode(500, e.Message);
             }
-           
+
         }
 
         // PUT: api/Monitoramento/5
         [HttpPut]
         public ActionResult Atualizar([FromBody] MonitoramentoModel monitoramento)
         {
-
             try
             {
-                if (ModelState.IsValid && _service.Update(monitoramento))
+                if (_service.Update(monitoramento))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(ModelState);
         }
     }
 }

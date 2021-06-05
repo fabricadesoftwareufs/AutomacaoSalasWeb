@@ -56,16 +56,15 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (ModelState.IsValid && _service.Insert(organizacao))
+                if (_service.Insert(organizacao))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(ModelState);
-
         }
 
         // PUT: api/Organizacao/5
@@ -77,14 +76,13 @@ namespace WebAPI.Controllers
             {
                 if (ModelState.IsValid && _service.Update(organizacao))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(ModelState);
-
         }
 
         // DELETE: api/ApiWithActions/5
@@ -95,13 +93,13 @@ namespace WebAPI.Controllers
             {
                 if (_service.Remove(id))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest();
         }
     }
 }

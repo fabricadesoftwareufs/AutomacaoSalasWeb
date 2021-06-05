@@ -51,7 +51,7 @@ namespace WebAPI.Controllers
             {
                 return StatusCode(500, e.Message);
             }
-           
+
         }
 
         // GET: api/Equipamento/5
@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var equipamentosSala = _service.GetByIdSalaAndTipoEquipamento(id,tipo);
+                var equipamentosSala = _service.GetByIdSalaAndTipoEquipamento(id, tipo);
                 if (equipamentosSala == null)
                     return NoContent();
 
@@ -75,19 +75,19 @@ namespace WebAPI.Controllers
 
         // POST: api/Equipamento
         [HttpPost]
-        public ActionResult Post([FromBody] EquipamentoViewModel salaParticularModel)
+        public ActionResult Post([FromBody] EquipamentoViewModel equipamentoModel)
         {
             try
             {
-                if (ModelState.IsValid && _service.Insert(salaParticularModel))
-                        return Ok();  
+                if (_service.Insert(equipamentoModel))
+                    return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(ModelState);
         }
 
         // PUT: api/Equipamento/5
@@ -96,15 +96,15 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (ModelState.IsValid && _service.Update(salaParticularModel))
+                if (_service.Update(salaParticularModel))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest(ModelState);        
         }
 
         // DELETE: api/ApiWithActions/5
@@ -115,13 +115,13 @@ namespace WebAPI.Controllers
             {
                 if (_service.Remove(id))
                     return Ok();
+
+                return BadRequest();
             }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);
             }
-
-            return BadRequest();
         }
     }
 }
