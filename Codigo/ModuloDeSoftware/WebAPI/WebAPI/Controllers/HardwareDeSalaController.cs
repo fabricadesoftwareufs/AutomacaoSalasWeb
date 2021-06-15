@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service;
 using Service.Interface;
+using Utils;
 
 namespace WebAPI.Controllers
 {
@@ -46,5 +48,26 @@ namespace WebAPI.Controllers
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
+
+        [HttpPost("{mac}")]
+        public ActionResult Register([FromBody] string mac)
+        {
+            try
+            {
+                var hardware = _service.GetByMAC(mac);
+
+                if (hardware == null)
+                    return BadRequest(hardware);
+                string newUUID = Methods.GenerateUUID();
+
+                hardware.Uuid = newUUID;
+                
+                return _service.Update(hardware) ? Ok(hardware) : StatusCode(500, "Não foi possível registrar o hardware!");
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

@@ -14,11 +14,15 @@ namespace Service.Interface
         List<HardwareDeSalaModel> GetAtuadorNotUsed();
         List<HardwareDeSalaModel> GetByIdSalaAndTipoHardware(int id, int tipo);
         HardwareDeSalaModel GetByMAC(string mac, int idUsuario);
+        HardwareDeSalaModel GetByMAC(string mac);
 
         HardwareDeSalaModel GetByIp(string ip, int idUsuario);
+        HardwareDeSalaModel GetByIp(string ip);
 
         bool Insert(HardwareDeSalaModel entity, int idUsuario);
         bool Remove(int id);
         bool Update(HardwareDeSalaModel entity, int idUsuario);
+        bool Update(HardwareDeSalaModel entity);
+
     }
 }

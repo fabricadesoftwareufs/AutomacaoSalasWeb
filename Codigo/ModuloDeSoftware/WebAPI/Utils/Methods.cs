@@ -60,11 +60,11 @@ namespace Utils
             digito += resto.ToString();
             return cpf.EndsWith(digito);
         }
-    }
 
-    public static string GenerateUUID()
-    {
-        Guid uuid = Guid.NewGuid();
-        return uuid.ToString();
+        public static string GenerateUUID()
+        {
+            Guid uuid = Guid.NewGuid();
+            return uuid.ToString();
+        }
     }
 }
