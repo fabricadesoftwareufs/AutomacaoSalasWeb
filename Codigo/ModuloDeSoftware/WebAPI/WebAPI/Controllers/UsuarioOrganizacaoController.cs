@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Model;
+using Service;
 using Service.Interface;
 
 namespace WebAPI.Controllers
@@ -13,38 +14,95 @@ namespace WebAPI.Controllers
         {
             _service = service;
         }
+
         // GET: api/UsuarioOrganizacao
         [HttpGet]
         public ActionResult Get()
         {
-            var usuariosOrganizacao = _service.GetAll();
-            if (usuariosOrganizacao.Count == 0)
-                return NoContent();
+            try
+            {
+                var usuariosOrganizacao = _service.GetAll();
+                if (usuariosOrganizacao.Count == 0)
+                    return NoContent();
 
-            return Ok(usuariosOrganizacao);
+                return Ok(usuariosOrganizacao);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+          
         }
 
         // GET: api/UsuarioOrganizacao/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var usuarioOrganizacao = _service.GetById(id);
-            if (usuarioOrganizacao == null)
-                return NoContent();
+            try
+            {
+                var usuarioOrganizacao = _service.GetById(id);
+                if (usuarioOrganizacao == null)
+                    return NoContent();
 
-            return Ok(usuarioOrganizacao);
+                return Ok(usuarioOrganizacao);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+          
         }
 
         // POST: api/UsuarioOrganizacao
         [HttpPost]
-        public ActionResult Post([FromBody] UsuarioOrganizacaoModel usuarioOrganizacao) => _service.Insert(usuarioOrganizacao) ? Ok(true) : Ok(false);
+        public ActionResult Post([FromBody] UsuarioOrganizacaoModel usuarioOrganizacao)
+        {
+
+            try
+            {
+                if (_service.Insert(usuarioOrganizacao))
+                    return Ok();
+
+                return BadRequest();
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
         // PUT: api/UsuarioOrganizacao/5
         [HttpPut("{id}")]
-        public ActionResult Put([FromBody] UsuarioOrganizacaoModel usuarioOrganizacao) => _service.Update(usuarioOrganizacao) ? Ok(true) : Ok(false);
+        public ActionResult Put([FromBody] UsuarioOrganizacaoModel usuarioOrganizacao)
+        {
+            try
+            {
+                if (_service.Update(usuarioOrganizacao))
+                    return Ok();
+
+                return BadRequest();
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                if (_service.Remove(id))
+                    return Ok();
+
+                return BadRequest();
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

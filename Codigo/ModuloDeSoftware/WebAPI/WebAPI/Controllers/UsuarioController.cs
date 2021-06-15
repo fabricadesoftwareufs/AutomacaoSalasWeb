@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.ViewModel;
+using Service;
 using Service.Interface;
 
 namespace WebAPI.Controllers
@@ -10,42 +11,51 @@ namespace WebAPI.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioService _service;
-        public UsuarioController(IUsuarioService service)
+        private readonly IOrganizacaoService _organizacaoService;
+
+        public UsuarioController(IUsuarioService service, IOrganizacaoService organizacaoService)
         {
             _service = service;
+            _organizacaoService = organizacaoService;
+
         }
+
         // GET: api/Usuario
         [HttpGet]
         public ActionResult Get()
         {
-            var usuarios = _service.GetAll();
-            if (usuarios.Count == 0)
-                return NoContent();
+            try
+            {
+                var usuarios = _service.GetAll();
+                if (usuarios.Count == 0)
+                    return NoContent();
 
-            return Ok(usuarios);
+                return Ok(usuarios);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+           
         }
 
         // GET: api/Usuario/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var usuario = _service.GetById(id);
-            if (usuario == null)
-                return NoContent();
+            try
+            {
+                var usuario = _service.GetById(id);
+                if (usuario == null)
+                    return NotFound("Usuário não encontrado na base de dados.");
 
-            return Ok(usuario);
+                return Ok(usuario);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+           
         }
-
-        // POST: api/Usuario
-        [HttpPost]
-        public ActionResult Post([FromBody] UsuarioViewModel usuario) => _service.Insert(usuario) != null ? Ok(true) : Ok(false);
-
-        // PUT: api/Usuario/5
-        [HttpPut("{id}")]
-        public ActionResult Put([FromBody] UsuarioModel usuario) => _service.Update(usuario) ? Ok(true) : Ok(false);
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public ActionResult Delete(int id) => _service.Remove(id) ? Ok(true) : Ok(false);
     }
 }
