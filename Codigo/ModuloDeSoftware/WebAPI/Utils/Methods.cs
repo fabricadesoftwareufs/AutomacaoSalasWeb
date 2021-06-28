@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Utils
 {
@@ -58,6 +59,12 @@ namespace Utils
 
             digito += resto.ToString();
             return cpf.EndsWith(digito);
+        }
+
+        public static string GenerateUUID()
+        {
+            Guid uuid = Guid.NewGuid();
+            return uuid.ToString();
         }
     }
 }
