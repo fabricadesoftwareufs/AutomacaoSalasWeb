@@ -155,6 +155,7 @@ namespace SalasUfsWeb.Controllers
                 BlocoModel = bloco,
                 OrganizacaoModel = _organizacaoService.GetById(bloco.OrganizacaoId),
                 Codigos = codigosView,
+
                 HardwareDeSalaModel = _hardwareDeSalaService.GetById(equipamento.HardwareDeSala.Value)
             };
 

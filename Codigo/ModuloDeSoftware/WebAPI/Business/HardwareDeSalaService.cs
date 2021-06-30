@@ -40,14 +40,21 @@ namespace Service
         public HardwareDeSalaModel GetById(int id) => _context.Hardwaredesala.Where(h => h.Id == id).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid }).FirstOrDefault();
 
         public List<HardwareDeSalaModel> GetByIdSala(int id) => _context.Hardwaredesala.Where(h => h.Sala == id).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid }).ToList();
-       
+
+        public HardwareDeSalaModel GetByMAC(string mac)
+        {
+            var hardware = _context.Hardwaredesala.Where(h => h.Mac.Equals(mac)).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid }).FirstOrDefault();
+
+            return hardware != null ? hardware : null;
+        }
+
         public HardwareDeSalaModel GetByMAC(string mac, int idUsuario)
         {
             var _usuarioOrganizacao = new UsuarioOrganizacaoService(_context);
             var _blocoService = new BlocoService(_context);
             var _salaService = new SalaService(_context);
 
-            var hardware = _context.Hardwaredesala.Where(h => h.Mac == mac).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid }).FirstOrDefault();
+            var hardware = _context.Hardwaredesala.Where(h => h.Mac.ToUpper().Equals(mac.ToUpper())).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid }).FirstOrDefault();
 
             if (hardware != null)
             {
@@ -83,7 +90,16 @@ namespace Service
             return null;
         }
 
+        public HardwareDeSalaModel GetByIp(string ip)
+        {
+            var _usuarioOrganizacao = new UsuarioOrganizacaoService(_context);
+            var _blocoService = new BlocoService(_context);
+            var _salaService = new SalaService(_context);
 
+            var hardware = _context.Hardwaredesala.Where(h => h.Ip == ip).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid }).FirstOrDefault();
+
+            return hardware != null ? hardware : null;
+        }
 
         public bool Insert(HardwareDeSalaModel entity, int idUsuario)
         {
@@ -218,5 +234,36 @@ namespace Service
 
         public List<HardwareDeSalaModel> GetAllAtuador()
             => _context.Hardwaredesala.Where(h => h.TipoHardware == 1).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip }).ToList();
+
+        public bool Update(HardwareDeSalaModel entity)
+        {
+            try
+            {
+                var hardware = GetByMAC(entity.MAC);
+
+                if (hardware != null && hardware.Id != entity.Id)
+                    throw new ServiceException("Já existe um dispositivo com esse endereço MAC");
+
+                if (entity.TipoHardwareId == TipoHardwareModel.CONTROLADOR_DE_SALA)
+                {
+                    hardware = GetByIp(entity.Ip);
+                    if (hardware != null && hardware.Id != entity.Id)
+                        throw new ServiceException("Já existe um dispositivo com esse endereço IP");
+                }
+
+                var x = _context.Hardwaredesala.Where(tu => tu.Id == entity.Id).FirstOrDefault();
+                if (x != null)
+                {
+                    _context.Update(SetEntity(entity, x));
+                    return _context.SaveChanges() == 1;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return false;
+        }
     }
 }
