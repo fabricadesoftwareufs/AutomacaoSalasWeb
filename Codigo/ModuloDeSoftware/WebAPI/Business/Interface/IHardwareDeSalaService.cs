@@ -8,6 +8,7 @@ namespace Service.Interface
         List<HardwareDeSalaModel> GetAll();
         List<HardwareDeSalaModel> GetAllHardwaresSalaByUsuarioOrganizacao(int idUsuario);
         HardwareDeSalaModel GetById(int id);
+        HardwareDeSalaModel GetByIdAndType(int id, int tipo);
         List<HardwareDeSalaModel> GetByIdSala(int id);
         List<HardwareDeSalaModel> GetAtuadorByIdSala(int id);
         List<HardwareDeSalaModel> GetAllAtuador();
@@ -18,6 +19,8 @@ namespace Service.Interface
 
         HardwareDeSalaModel GetByIp(string ip, int idUsuario);
         HardwareDeSalaModel GetByIp(string ip);
+
+        HardwareDeSalaModel GetByUuid(string uuid);
 
         bool Insert(HardwareDeSalaModel entity, int idUsuario);
         bool Remove(int id);

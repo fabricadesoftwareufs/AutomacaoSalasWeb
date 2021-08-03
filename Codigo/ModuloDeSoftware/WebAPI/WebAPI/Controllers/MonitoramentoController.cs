@@ -27,13 +27,27 @@ namespace WebAPI.Controllers
             {
                 var monitoramento = _service.GetByIdSala(idSala);
                 if (monitoramento == null)
-                    return NoContent();
+                    return StatusCode(204, new
+                    {
+                        result = "null",
+                        httpCode = 204,
+                        message = "Nenhum sala encontrada!"
+                    });
 
-                return Ok(monitoramento);
+                return Ok(new {
+                        result = monitoramento,
+                        httpCode = 200,
+                        message = "Nenhum sala encontrada!"
+                    });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new
+                {
+                    result = "null",
+                    httpCode = 500,
+                    message = e.Message
+                });
             }
 
         }
@@ -45,7 +59,11 @@ namespace WebAPI.Controllers
             try
             {
                 if (_service.Update(monitoramento))
-                    return Ok();
+                    return Ok(new {
+                        result = monitoramento,
+                        httpCode = 204,
+                        message = "Nenhum sala encontrada!"
+                    }); );
 
                 return BadRequest();
             }

@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Utils
 {
     public class Methods
     {
+        public const string TOKEN_PADRAO = "594ac3eb82b5080393ad5c426f61c1ed5ac53f90e1abebc15316888cf1c8f5fe"; 
+
         /// <summary>
         /// Recebe uma string e retorna a mesma sem caracteres especiais.
         /// </summary>
@@ -65,6 +69,34 @@ namespace Utils
         {
             Guid uuid = Guid.NewGuid();
             return uuid.ToString();
+        }
+
+        public static string RandomStr(int length)
+        {
+            const string src = "abcdefghijklmnopqrstuvwxyz0123456789";
+            var strRand = new StringBuilder();
+            Random RNG = new Random();
+            for (var i = 0; i < length; i++)
+            {
+                var c = src[RNG.Next(0, src.Length)];
+                strRand.Append(c);
+            }
+            return strRand.ToString();
+        }
+
+        public static string HashSHA256(string baseStr)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(baseStr));
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
         }
     }
 }

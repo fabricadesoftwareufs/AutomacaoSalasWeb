@@ -24,9 +24,20 @@ namespace WebAPI.Controllers
             {
                 var equipamentosSala = _service.GetByIdEquipamento(id);
                 if (equipamentosSala == null)
-                    return NotFound("Equipamento não encontrado na base dedados.");
+                    return NotFound(new
+                    {
+                        result = "null",
+                        httpCode = 204,
+                        message = "Equipamento não encontrado na base de dados."
+                    });
 
-                return Ok(equipamentosSala);
+                return Ok(new
+                {
+                    result = equipamentosSala,
+                    httpCode = 200,
+                    message = "Equipamento obtido com sucesso!"
+                });
+
             }
             catch (ServiceException e)
             {

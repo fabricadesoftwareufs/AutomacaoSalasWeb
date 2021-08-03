@@ -60,10 +60,13 @@ INSERT INTO `monitoramento` (`id`, `luzes`, `arCondicionado`,`sala`) VALUES
 	
 -- Copiando dados para a tabela str_db.tipohardware: ~3 rows (aproximadamente)
 INSERT INTO `tipohardware` (`id`, `descricao`) VALUES
-	(1, 'MODULO ATUADOR'),
-	(2, 'CONTROLADOR DE SALA'),
-	(3, 'MODULO DE SENSORIAMENTO');
+	(3, 'MODULO DE DISPOSITIVO'),
+	(1, 'CONTROLADOR DE SALA'),
+	(2, 'MODULO DE SENSORIAMENTO');
 		
+        -- (1, 'MODULO DE DISPOSITIVO'),
+	-- (2, 'CONTROLADOR DE SALA'),
+	-- (3, 'MODULO DE SENSORIAMENTO');
 	
 	-- Copiando dados para a tabela str_db.hardwaredesala: ~39 rows (aproximadamente)
 INSERT INTO `hardwaredesala` (`id`, `mac`,`ip`, `sala`, `tipoHardware`,`uuid`) VALUES

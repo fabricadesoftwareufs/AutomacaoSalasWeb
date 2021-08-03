@@ -4,6 +4,13 @@ namespace Model
 {
     public class HardwareDeSalaModel
     {
+        public enum TIPO : int
+        {
+            CONTROLADOR_SALA = 1,
+            MODULO_SENSOR = 2,
+            MODULO_DISPOSITIVO = 3
+        }
+
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Código")]
         public int Id { get; set; }
@@ -22,6 +29,7 @@ namespace Model
         public string Uuid { get; set; }
 
         public string Ip { get; set; }
+        public string Token { get; set; }
         // Variaveis auxiliares
         public int Bloco { get; set; }
         public int Organizacao { get; set; }
