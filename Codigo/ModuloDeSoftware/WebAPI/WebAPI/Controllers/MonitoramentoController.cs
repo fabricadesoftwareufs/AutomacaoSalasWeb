@@ -31,13 +31,13 @@ namespace WebAPI.Controllers
                     {
                         result = "null",
                         httpCode = 204,
-                        message = "Nenhum sala encontrada!"
+                        message = "Nenhum Monitoramento encontrado!"
                     });
 
                 return Ok(new {
                         result = monitoramento,
                         httpCode = 200,
-                        message = "Nenhum sala encontrada!"
+                        message = "Nenhum Monitoramento encontrado!"
                     });
             }
             catch (ServiceException e)
@@ -61,11 +61,16 @@ namespace WebAPI.Controllers
                 if (_service.Update(monitoramento))
                     return Ok(new {
                         result = monitoramento,
-                        httpCode = 204,
-                        message = "Nenhum sala encontrada!"
-                    }); );
+                        httpCode = 200,
+                        message = "Nenhum Monitoramento encontrado!"
+                    }); 
 
-                return BadRequest();
+                return BadRequest(new
+                {
+                    result = monitoramento,
+                    httpCode = 400,
+                    message = "Houve um problema ao atualizar monitoramento!"
+                });
             }
             catch (ServiceException e)
             {

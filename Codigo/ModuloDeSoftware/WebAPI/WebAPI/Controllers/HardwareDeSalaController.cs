@@ -3,6 +3,7 @@ using Model;
 using Model.AuxModel;
 using Service;
 using Service.Interface;
+using System;
 using System.Net;
 using Utils;
 
@@ -220,17 +221,17 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var hardware = _service.GetByIdAndType(registerHardware.Id, registerHardware.TipoHardwareId);
+                var hardware = (registerHardware.Id > 0) && (registerHardware.TipoHardwareId > 0) ? _service.GetByIdAndType(registerHardware.Id, registerHardware.TipoHardwareId) : null;
 
                 if (hardware == null)
-                    StatusCode(400, new
+                   return StatusCode(400, new
                     {
                         result = "null",
                         httpCode = 400,
                         message = "Não há hardware cadastrado para essa requisição!"
                     });
 
-                else if (!registerHardware.Token.Equals(hardware.Token) && (string.IsNullOrEmpty(hardware.Token) || !registerHardware.Token.Equals(Methods.TOKEN_PADRAO)))
+                else if ((registerHardware!.Token != null && hardware!.Token != null) && (!registerHardware.Token.Equals(hardware.Token) || !registerHardware.Token.Equals(Methods.TOKEN_PADRAO)))
                     return StatusCode((int)HttpStatusCode.Unauthorized, new
                     {
                         result = "null",
@@ -250,7 +251,7 @@ namespace WebAPI.Controllers
                 string newUUID = Methods.GenerateUUID();
 
                 hardware.Uuid = newUUID;
-
+                hardware.Token = Methods.HashSHA256(Methods.RandomStr(12));
 
                 return _service.Update(hardware) ? 
                     Ok(new { result = hardware,
@@ -275,7 +276,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        // GET: api/Hardware/5
+        // GET: Master by UUID of slave
         [HttpGet("slave/{uuid}/get-master")]
         public ActionResult GetMaster([FromRoute] string uuid, [FromQuery] string token)
         {
@@ -288,7 +289,7 @@ namespace WebAPI.Controllers
                     message = "Hardware sensor não foi encontrado na base de dados",
                 });
           
-            else if (!token.Equals(hardware.Token) && (string.IsNullOrEmpty(hardware.Token) || !token.Equals(Methods.TOKEN_PADRAO)))
+            else if (string.IsNullOrEmpty(token) && !token.Equals(hardware.Token) && (string.IsNullOrEmpty(hardware.Token) || !token.Equals(Methods.TOKEN_PADRAO)))
                 return StatusCode((int)HttpStatusCode.Unauthorized, new
                 {
                     result = "null",
@@ -348,6 +349,61 @@ namespace WebAPI.Controllers
                 }
             }
              
+        }
+
+        // GET: api/Hardware/5
+        [HttpGet("master/{uuid}/get-sensors")]
+        public ActionResult GetSensors([FromRoute] string uuid, [FromQuery] string token)
+        {
+            var hardware = _service.GetByUuid(uuid);
+            if (hardware == null)
+                return NotFound(new
+                {
+                    result = "null",
+                    httpCode = 404,
+                    message = "Hardware master não foi encontrado na base de dados",
+                });
+
+            else if (!token.Equals(hardware.Token) && (string.IsNullOrEmpty(hardware.Token) || !token.Equals(Methods.TOKEN_PADRAO)))
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    result = "null",
+                    httpCode = 401,
+                    message = "O token é inválido!"
+                });
+
+            else if (hardware.Uuid == null)
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    result = "null",
+                    httpCode = 401,
+                    message = "Hardware master não está registrado!"
+                });
+
+            else
+            {
+                var listHardwareControlador = _service.GetByIdSalaAndTipoHardware(hardware.SalaId, (int)HardwareDeSalaModel.TIPO.MODULO_SENSOR);
+                if (listHardwareControlador.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        result = new { sensors = listHardwareControlador },
+                        httpCode = 200,
+                        message = "Os sensores (slaves) do Controlador de Sala (master) foram obtidos com sucesso!"
+                    });
+       
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        result = "null",
+                        httpCode = 400,
+                        message = "Erro crasso. Os sensores para esse master não foram encontrados!"
+                    });
+                }
+            }
+
         }
     }
 }

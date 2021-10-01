@@ -10,7 +10,7 @@ namespace Model.AuxModel
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }
         [JsonProperty(PropertyName = "token")]
-        public string Token { get; set; }
+        public string? Token { get; set; }
         [JsonProperty(PropertyName = "tipo_hardware_id")]
         public int TipoHardwareId { get; set; }
     }

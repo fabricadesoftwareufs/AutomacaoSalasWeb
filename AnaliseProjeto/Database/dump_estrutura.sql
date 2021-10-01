@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `hardwaredesala` (
   `tipoHardware` int unsigned NOT NULL,
   `ip` VARCHAR(15) NULL,
   `uuid` VARCHAR(75) NULL,
+  `token` VARCHAR(200) NULL,
   PRIMARY KEY (`Id`),
   KEY `fk_Hardware_Sala1_idx` (`sala`),
   KEY `fk_HardwareDeSala_TipoHardware1_idx` (`tipoHardware`),
@@ -186,9 +187,3 @@ CREATE TABLE IF NOT EXISTS `codigoInfravermelho` (
   CONSTRAINT `fk_CodigoInfravermelho_Equipamento1` FOREIGN KEY (`equipamento`) REFERENCES `str_db`.`equipamento` (`id`),
   CONSTRAINT `fk_CodigoInfravermelho_Operacao1` FOREIGN KEY (`operacao`) REFERENCES `str_db`.`operacao` (`id`)
 )ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
-
-
-
-
-
-

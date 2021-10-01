@@ -1,4 +1,5 @@
 ﻿using Model;
+using Newtonsoft.Json;
 using Persistence;
 using Service.Interface;
 using System;
@@ -92,8 +93,12 @@ namespace Service
                 if (codigosInfravermelho == null)
                     throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
 
-                var mensagem = "CONDICIONADOR;" + codigosInfravermelho.Codigo + ";";
-
+                var mensagem = JsonConvert.SerializeObject(
+                    new
+                    {
+                        type = "CONDICIONADOR",
+                        code = codigosInfravermelho.Codigo
+                    });
                 try
                 {
                     var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
@@ -115,7 +120,12 @@ namespace Service
             {
                 var hardwareDeSala = _hardwareDeSalaService.GetByIdSalaAndTipoHardware(solicitacao.SalaId, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
 
-                var mensagem = "LUZES;" + solicitacao.Luzes + ";";
+                var mensagem = JsonConvert.SerializeObject(
+                    new
+                    {
+                        type = "LUZES",
+                        code = solicitacao.Luzes
+                    });
 
                 try
                 {

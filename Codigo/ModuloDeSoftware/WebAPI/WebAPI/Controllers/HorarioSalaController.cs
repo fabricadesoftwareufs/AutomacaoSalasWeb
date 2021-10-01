@@ -2,6 +2,8 @@
 using Model;
 using Service;
 using Service.Interface;
+using System.Net;
+using Utils;
 
 namespace WebAPI.Controllers
 {
@@ -10,9 +12,11 @@ namespace WebAPI.Controllers
     public class HorarioSalaController : ControllerBase
     {
         private readonly IHorarioSalaService _service;
-        public HorarioSalaController(IHorarioSalaService service)
+        private readonly IHardwareDeSalaService _hardwareService;
+        public HorarioSalaController(IHorarioSalaService service, IHardwareDeSalaService hardwareService)
         {
             _service = service;
+            _hardwareService = hardwareService;
         }
         // GET: api/HorarioSala
         [HttpGet]
@@ -146,6 +150,68 @@ namespace WebAPI.Controllers
             }
         }
 
+
+        // GET: api/Hardware/5
+        [HttpGet("{uuid}/get-horarios-sala")]
+        public ActionResult GetHorarioSemana([FromRoute] string uuid, [FromQuery] string token)
+        {
+
+            try
+            {
+                var hardware = _hardwareService.GetByUuid(uuid);
+                if (hardware == null)
+                    return NotFound(new
+                    {
+                        result = "null",
+                        httpCode = 404,
+                        message = "Hardware não foi encontrado na base de dados com esse uuid",
+                    });
+
+                else if (string.IsNullOrEmpty(token) && !token.Equals(hardware.Token) && (string.IsNullOrEmpty(hardware.Token)))
+                    return StatusCode((int)HttpStatusCode.Unauthorized, new
+                    {
+                        result = "null",
+                        httpCode = 401,
+                        message = "O token é inválido!"
+                    });
+
+                else if (hardware.Uuid == null)
+                    return StatusCode((int)HttpStatusCode.Unauthorized, new
+                    {
+                        result = "null",
+                        httpCode = 401,
+                        message = "Erro crasso, Hardware não está registrado!"
+                    });
+                else
+                {
+                    var horarios = _service.GetReservasDaSemanaByIdSala(hardware.SalaId);
+                    if (horarios.Count > 0)
+                        return Ok(new
+                        {
+                            result = new { schedules = horarios },
+                            httpCode = 200,
+                            message = "Horarios obtidos com sucesso",
+                        });
+                    else
+                        return NotFound(new
+                        {
+                            result = "null",
+                            httpCode = 400,
+                            message = "Horarios não foram encontrados",
+                        });
+                }
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, new
+                {
+                    result = "null",
+                    httpCode = 500,
+                    message = e.Message
+                });
+            }
+        }
+
         // POST: api/HorarioSala
         [HttpPost]
         public ActionResult Post([FromBody] HorarioSalaModel horarioSala)
@@ -207,7 +273,7 @@ namespace WebAPI.Controllers
                          result = "null",
                          httpCode = 500,
                          message = e.Message
-                    });
+                     });
             }
         }
 
