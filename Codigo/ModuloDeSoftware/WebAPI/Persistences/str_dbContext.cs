@@ -307,6 +307,41 @@ namespace Persistence
                     .HasConstraintName("fk_Equipamento_Id");
             });
 
+            modelBuilder.Entity<Logrequest>(entity =>
+            {
+                entity.ToTable("logrequest", "str_db");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Input)
+                    .IsRequired()
+                    .HasColumnName("input")
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Ip)
+                    .IsRequired()
+                    .HasColumnName("ip")
+                    .HasMaxLength(150)
+                    .IsUnicode(false);              
+                
+                entity.Property(e => e.StatusCode)
+                    .IsRequired()
+                    .HasColumnName("statusCode")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Url)
+                    .IsRequired()
+                    .HasColumnName("url")
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<Operacao>(entity =>
             {
                 entity.ToTable("operacao", "str_db");

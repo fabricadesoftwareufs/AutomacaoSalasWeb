@@ -185,4 +185,15 @@ CREATE TABLE IF NOT EXISTS `codigoInfravermelho` (
   KEY `fk_CodigoInfravermelho_Operacao1_idx` (`operacao` ASC) VISIBLE,
   CONSTRAINT `fk_CodigoInfravermelho_Equipamento1` FOREIGN KEY (`equipamento`) REFERENCES `str_db`.`equipamento` (`id`),
   CONSTRAINT `fk_CodigoInfravermelho_Operacao1` FOREIGN KEY (`operacao`) REFERENCES `str_db`.`operacao` (`id`)
-)ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+)ENGINE = InnoDB DEFAULT CHARACTER SET = UTF8;
+
+-- Copiando estrutura para tabela str_db.logrequest
+CREATE TABLE IF NOT EXISTS `logrequest` (
+  `id` int NOT NULL,
+  `ip` varchar(150) NOT NULL,
+  `url` varchar(250) NOT NULL,
+  `date` datetime NOT NULL,
+  `input` text NOT NULL,
+  `statusCode` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
