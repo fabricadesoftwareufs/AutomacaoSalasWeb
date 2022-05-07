@@ -1,5 +1,6 @@
 ﻿using Model;
 using Model.ViewModel;
+using Newtonsoft.Json;
 using Persistence;
 using Service.Interface;
 using System;
@@ -312,9 +313,15 @@ namespace Service
 
             if (dataHorario <= proximoDomingo)
             {
+                var mensagem = JsonConvert.SerializeObject(
+                    new
+                    {
+                        type = "ATUALIZAR_HORARIOS",
+                    });
+
                 var socketService = new ClienteSocketService(ipSala);
                 socketService.AbrirConexao();
-                bool resultado = socketService.EnviarComando("atualizarHorarios;") != null;
+                bool resultado = socketService.EnviarComando(mensagem) != null;
                 socketService.FecharConexao();
 
                 return resultado;

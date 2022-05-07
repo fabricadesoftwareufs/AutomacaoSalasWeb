@@ -1,5 +1,6 @@
 ﻿using Model;
 using Model.ViewModel;
+using Newtonsoft.Json;
 using Persistence;
 using Service.Interface;
 using System;
@@ -11,6 +12,10 @@ namespace Service
     public class MonitoramentoService : IMonitoramentoService
     {
         private readonly str_dbContext _context;
+        private const string AC_ON = "AC-ON";
+        private const string L_ON = "L-ON";
+        private const string NOT_AVALIABLE = "NOT-AVALIABLE";
+
         public MonitoramentoService(str_dbContext context)
         {
             _context = context;
@@ -61,25 +66,26 @@ namespace Service
         {
             var _equipamentoSala = new EquipamentoService(_context);
             var _monitoramentoService = new MonitoramentoService(_context);
-            var equipamentos = _equipamentoSala.GetByIdSala(monitoramento.SalaId);
+            var equipamento = _equipamentoSala.GetByIdSala(monitoramento.SalaId).FirstOrDefault();
 
-            foreach (var eq in equipamentos)
+            if (equipamento != null)
             {
                 if (monitoramento.SalaParticular)
                 {
                     var _salaParticular = new SalaParticularService(_context);
-                    if (_salaParticular.GetByIdUsuarioAndIdSala(idUsuario, eq.Sala) == null)
+                    if (_salaParticular.GetByIdUsuarioAndIdSala(idUsuario, equipamento.Sala) == null)
                         throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
                 }
                 else
                 {
                     var _horarioSalaService = new HorarioSalaService(_context);
-                    if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, eq.Sala))
+                    if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, equipamento.Sala))
                         throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
                 }
 
-                var model = _monitoramentoService.GetByIdEquipamento(eq.Id);
-                model.Estado = eq.TipoEquipamento.Equals(EquipamentoModel.TIPO_CONDICIONADOR) ? monitoramento.ArCondicionado : monitoramento.Luzes;
+                var model = _monitoramentoService.GetByIdEquipamento(equipamento.Id);
+                model.Estado = equipamento.TipoEquipamento.Equals(EquipamentoModel.TIPO_CONDICIONADOR) ?
+                                monitoramento.ArCondicionado : monitoramento.Luzes;
 
                 if (!EnviarComandosMonitoramento(model))
                     throw new ServiceException("Não foi possível concluir seu monitoramento pois não foi possível estabelecer conexão com a sala!");
@@ -142,6 +148,8 @@ namespace Service
                     var hardwareDeSala = _hardwareDeSalaService.GetByIdSalaAndTipoHardware(equipamento.Sala, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
                     var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
 
+                    string tipoEquipamento = string.Empty, operacao = string.Empty, retornoEsperado = string.Empty;
+
                     if (equipamento.TipoEquipamento.Equals(EquipamentoModel.TIPO_CONDICIONADOR))
                     {
                         var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
@@ -151,24 +159,38 @@ namespace Service
                         if (codigosInfravermelho == null)
                             throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
 
-                        var mensagem = "CONDICIONADOR;" + codigosInfravermelho.Codigo + ";";
-
-                        clienteSocket.AbrirConexao();
-                        var status = clienteSocket.EnviarComando(mensagem);
-                        clienteSocket.FecharConexao();
-
-                        solicitacao.Estado = status.Contains("AC-ON");
-                        comandoEnviadoComSucesso = status != null;
+                        tipoEquipamento = "CONDICIONADOR";
+                        operacao = codigosInfravermelho.Codigo;
+                        retornoEsperado = AC_ON;
                     }
                     else
                     {
-                        var mensagem = "LUZES;" + solicitacao.Estado + ";";
+                        tipoEquipamento = "LUZES";
+                        operacao = solicitacao.Estado.ToString();
+                        retornoEsperado = L_ON;
+                    }
 
-                        clienteSocket.AbrirConexao();
-                        var status = clienteSocket.EnviarComando(mensagem);
-                        clienteSocket.FecharConexao();
+                    var mensagem = JsonConvert.SerializeObject(
+                          new
+                          {
+                              type = tipoEquipamento,
+                              code = operacao,
+                              uuid = hardwareDeSala.Uuid
+                          });
 
-                        solicitacao.Estado = status.Contains("L-ON");
+                    clienteSocket.AbrirConexao();
+                    var status = clienteSocket.EnviarComando(mensagem);
+                    clienteSocket.FecharConexao();
+
+                    if (NOT_AVALIABLE.Equals(status))
+                    {
+                        modelDesatualizado = GetById(solicitacao.Id);
+                        comandoEnviadoComSucesso = (solicitacao.Estado == modelDesatualizado.Estado);
+                        solicitacao.Estado = modelDesatualizado.Estado;
+                    }
+                    else
+                    {
+                        solicitacao.Estado = status.Contains(retornoEsperado);
                         comandoEnviadoComSucesso = status != null;
                     }
                 }
