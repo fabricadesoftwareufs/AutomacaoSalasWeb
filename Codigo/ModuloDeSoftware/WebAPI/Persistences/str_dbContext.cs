@@ -203,6 +203,10 @@ namespace Persistence
                     .HasMaxLength(75)
                     .IsUnicode(false);
 
+               entity.Property(e => e.Registrado)
+                    .HasColumnName("registrado")
+                    .HasColumnType("tinyint(4)");
+
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Hardwaredesala)
                     .HasForeignKey(d => d.Sala)

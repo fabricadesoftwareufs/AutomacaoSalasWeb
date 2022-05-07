@@ -30,6 +30,7 @@ namespace Model
 
         public string Ip { get; set; }
         public string Token { get; set; }
+        public bool Registrado { get; set; }
         // Variaveis auxiliares
         public int Bloco { get; set; }
         public int Organizacao { get; set; }

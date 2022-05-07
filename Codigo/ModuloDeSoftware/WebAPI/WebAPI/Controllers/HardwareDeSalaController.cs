@@ -76,28 +76,19 @@ namespace WebAPI.Controllers
         {
             var hardware = _service.GetByMAC(mac);
 
-            if(!token.Equals(hardware.Token) && (string.IsNullOrEmpty(hardware.Token) || !token.Equals(Methods.TOKEN_PADRAO)))
-                return StatusCode((int)HttpStatusCode.Unauthorized, new
-                {
-                    result = "null",
-                    httpCode = 401,
-                    message = "O token é inválido!"
-                });
-
-            else if (hardware == null)
+            if (hardware == null)
                 return NotFound(new
                 {
                     result = "null",
                     httpCode = 404,
                     message = "Hardware não encontrado na base de dados",
                 });
-
-            else if (hardware.Uuid == null)
+            else if (!token.Equals(hardware.Token) && (string.IsNullOrEmpty(hardware.Token) && !token.Equals(Methods.TOKEN_PADRAO)))
                 return StatusCode((int)HttpStatusCode.Unauthorized, new
                 {
                     result = "null",
                     httpCode = 401,
-                    message = "Hardware não está registrado!"
+                    message = "O token é inválido!"
                 });
 
             else if (hardware.TipoHardwareId != tipoHardware)
@@ -231,7 +222,7 @@ namespace WebAPI.Controllers
                         message = "Não há hardware cadastrado para essa requisição!"
                     });
 
-                else if ((registerHardware!.Token != null && hardware!.Token != null) && (!registerHardware.Token.Equals(hardware.Token) || !registerHardware.Token.Equals(Methods.TOKEN_PADRAO)))
+                else if ((registerHardware!.Token != null && hardware!.Token != null) && (!registerHardware.Token.Equals(hardware.Token) && !registerHardware.Token.Equals(Methods.TOKEN_PADRAO)))
                     return StatusCode((int)HttpStatusCode.Unauthorized, new
                     {
                         result = "null",
@@ -239,7 +230,7 @@ namespace WebAPI.Controllers
                         message = "O token é inválido!"
                     });
 
-                else if (!string.IsNullOrEmpty(hardware.Uuid))
+                else if (hardware.Registrado)
                     return
                     StatusCode(200, new
                     {
@@ -248,10 +239,8 @@ namespace WebAPI.Controllers
                         message = "Hardware já tem um registro!"
                     });
 
-                string newUUID = Methods.GenerateUUID();
 
-                hardware.Uuid = newUUID;
-                hardware.Token = Methods.HashSHA256(Methods.RandomStr(12));
+                hardware.Registrado = true;
 
                 return _service.Update(hardware) ? 
                     Ok(new { result = hardware,
@@ -332,7 +321,7 @@ namespace WebAPI.Controllers
                     {
                         return Ok(new
                         {
-                            result = new { uuid = master.Uuid },
+                            result = new { uuid = master.Uuid, mac = master.MAC },
                             httpCode = 200,
                             message = "Controlador de Sala (master) obtido com sucesso!"
                         });

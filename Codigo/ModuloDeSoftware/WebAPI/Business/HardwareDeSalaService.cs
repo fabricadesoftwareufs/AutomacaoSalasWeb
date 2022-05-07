@@ -40,7 +40,7 @@ namespace Service
 
         public HardwareDeSalaModel GetById(int id) => _context.Hardwaredesala.Where(h => h.Id == id).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
 
-        public HardwareDeSalaModel GetByIdAndType(int id, int tipo) => _context.Hardwaredesala.Where(h => h.Id == id && h.TipoHardware == tipo).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
+        public HardwareDeSalaModel GetByIdAndType(int id, int tipo) => _context.Hardwaredesala.Where(h => h.Id == id && h.TipoHardware == tipo).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token, Registrado = Convert.ToBoolean(h.Registrado) }).FirstOrDefault();
 
 
         public List<HardwareDeSalaModel> GetByIdSala(int id) => _context.Hardwaredesala.Where(h => h.Sala == id).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).ToList();
@@ -124,7 +124,11 @@ namespace Service
                 if (entity.TipoHardwareId == TipoHardwareModel.CONTROLADOR_DE_SALA && GetByIp(entity.Ip, idUsuario) != null)
                         throw new ServiceException("Já existe um dispositivo com esse endereço IP");
 
-                //entity.Token = Methods.HashSHA256(Methods.RandomStr(50));
+                string newUUID = Methods.GenerateUUID();
+
+                entity.Uuid = newUUID;
+
+                entity.Token = Methods.HashSHA256(Methods.RandomStr(64));
                 _context.Add(SetEntity(entity, new Hardwaredesala()));
                 return _context.SaveChanges() == 1;
             }
@@ -189,7 +193,8 @@ namespace Service
         {
             entity.Id = model.Id;
             entity.Mac = model.MAC;
-            entity.TipoHardware = model.TipoHardwareId;
+            entity.TipoHardware = model.TipoHardwareId;            
+            entity.Registrado = Convert.ToByte(model.Registrado);
             entity.Sala = model.SalaId;
             entity.Ip = model.Ip;
             entity.Uuid = model.Uuid;
