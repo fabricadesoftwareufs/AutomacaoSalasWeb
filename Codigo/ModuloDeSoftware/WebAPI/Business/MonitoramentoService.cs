@@ -159,13 +159,13 @@ namespace Service
                         if (codigosInfravermelho == null)
                             throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
 
-                        tipoEquipamento = "CONDICIONADOR";
+                        tipoEquipamento = EquipamentoModel.TIPO_CONDICIONADOR;
                         operacao = codigosInfravermelho.Codigo;
                         retornoEsperado = AC_ON;
                     }
                     else
                     {
-                        tipoEquipamento = "LUZES";
+                        tipoEquipamento = EquipamentoModel.TIPO_LUZES;
                         operacao = solicitacao.Estado.ToString();
                         retornoEsperado = L_ON;
                     }
