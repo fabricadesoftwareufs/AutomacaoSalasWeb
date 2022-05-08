@@ -109,8 +109,9 @@ namespace WebAPI.Controllers
                 string newUUID = Methods.GenerateUUID();
 
                 hardware.Uuid = newUUID;
-                
+
                 return _service.Update(hardware) ? Ok(hardware) : StatusCode(500, "Não foi possível registrar o hardware!");
+            }
             catch (ServiceException e)
             {
                 return StatusCode(500, e.Message);

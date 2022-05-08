@@ -19,8 +19,8 @@ namespace WebAPI.Controllers
         }
 
         // GET: api/Monitoramento/5
-        [HttpGet("{idSala}")]
-        [Route("ObterPorSala")]
+        [HttpGet]
+        [Route("ObterPorSala/{idSala}")]
         public ActionResult Get(int idEquipamento)
         {
             try
