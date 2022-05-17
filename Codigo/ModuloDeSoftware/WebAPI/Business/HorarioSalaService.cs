@@ -154,6 +154,7 @@ namespace Service
               (horario, hard) => new {Horario = horario, Hardware = hard})
              .Where(hs => hs.Horario.Data.Date == DateTime.Now.Date 
                       && !hs.Horario.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA)
+                      && !string.IsNullOrWhiteSpace(hs.Hardware.Uuid) 
                       && hs.Hardware.Uuid.Trim().Equals(uuid.Trim()))
              .Select(hs => new HorarioSalaModel
                  {
