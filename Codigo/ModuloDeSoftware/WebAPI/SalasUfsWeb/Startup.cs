@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence;
+using SalasUfsWeb.Middlewares;
 using Service;
 using Service.Interface;
 
@@ -60,7 +61,7 @@ namespace SalasUfsWeb
             services.AddScoped<IMonitoramentoService, MonitoramentoService>();
             services.AddScoped<ICodigoInfravermelhoService, CodigoInfravermelhoService>();
             services.AddScoped<IEquipamentoService, EquipamentoService>();
-
+            services.AddScoped<ILogRequestService, LogRequestService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -78,6 +79,7 @@ namespace SalasUfsWeb
             }
 
             app.UseHttpsRedirection();
+            app.UseLogRequestMiddleware();
             app.UseStaticFiles();
 
 

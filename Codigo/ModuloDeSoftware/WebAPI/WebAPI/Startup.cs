@@ -12,6 +12,7 @@ using Service;
 using Service.Interface;
 using System;
 using System.Text;
+using WebAPI.Middlewares;
 
 namespace WebAPI
 {
@@ -93,7 +94,7 @@ namespace WebAPI
             services.AddScoped<IMonitoramentoService, MonitoramentoService>();
             services.AddScoped<ICodigoInfravermelhoService, CodigoInfravermelhoService>();
             services.AddScoped<IEquipamentoService, EquipamentoService>();
-
+            services.AddScoped<ILogRequestService, LogRequestService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -123,6 +124,8 @@ namespace WebAPI
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseHttpsRedirection();
+            app.UseLogRequestMiddleware();
+
             app.UseMvc();
         }
     }

@@ -33,11 +33,11 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           /* if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=1234;database=str_db");
-            }*/
+            /* if (!optionsBuilder.IsConfigured)
+             {
+ #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                 optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=1234;database=str_db");
+             }*/
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -203,6 +203,10 @@ namespace Persistence
                     .HasMaxLength(75)
                     .IsUnicode(false);
 
+               entity.Property(e => e.Registrado)
+                    .HasColumnName("registrado")
+                    .HasColumnType("tinyint(4)");
+
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Hardwaredesala)
                     .HasForeignKey(d => d.Sala)
@@ -305,6 +309,41 @@ namespace Persistence
                     .HasForeignKey(d => d.Equipamento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Equipamento_Id");
+            });
+
+            modelBuilder.Entity<Logrequest>(entity =>
+            {
+                entity.ToTable("logrequest", "str_db");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Input)
+                    .IsRequired()
+                    .HasColumnName("input")
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Ip)
+                    .IsRequired()
+                    .HasColumnName("ip")
+                    .HasMaxLength(150)
+                    .IsUnicode(false);              
+                
+                entity.Property(e => e.StatusCode)
+                    .IsRequired()
+                    .HasColumnName("statusCode")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Url)
+                    .IsRequired()
+                    .HasColumnName("url")
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Operacao>(entity =>

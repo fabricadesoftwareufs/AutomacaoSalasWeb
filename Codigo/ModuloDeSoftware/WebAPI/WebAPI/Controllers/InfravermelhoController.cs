@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿ using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service;
 using Service.Interface;
@@ -26,13 +26,28 @@ namespace WebAPI.Controllers
             {
                 CodigoInfravermelhoModel codigos = _service.GetByIdSalaAndIdOperacao(idSala, operacao);
                 if (codigos == null)
-                    return NoContent();
+                    return StatusCode(204, new
+                    {
+                        result = "null",
+                        httpCode = 204,
+                        message = "Nenhum código foi encontrado para a requisição!"
+                    });
 
-                return Ok(codigos);
+                return Ok(new
+                {
+                    result = codigos,
+                    httpCode = 200,
+                    message = "Códigos Obtidos com sucesso!"
+                });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new
+                {
+                    result = "null",
+                    httpCode = 500,
+                    message = e.Message
+                });
             }
             
         }
@@ -47,15 +62,30 @@ namespace WebAPI.Controllers
             {
                 var codigos = _service.GetAllByEquipamento(idEquipamento);
                 if (codigos == null)
-                    return NoContent();
+                    return StatusCode(204, new
+                    {
+                        result = "null",
+                        httpCode = 204,
+                        message = "Nenhum código foi encontrado para a requisição!"
+                    });
 
-                return Ok(codigos);
+                return Ok(new
+                {
+                    result = codigos,
+                    httpCode = 200,
+                    message = "Códigos Obtidos com sucesso!"
+                });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new
+                {
+                    result = "null",
+                    httpCode = 500,
+                    message = e.Message
+                });
             }
-
         }
+
     }
 }

@@ -22,9 +22,20 @@ namespace WebAPI.Controllers
         {
             var blocos = _service.GetAll();
             if (blocos.Count == 0)
-                return Ok();
+                return StatusCode(204, new
+                {
+                    result = "null",
+                    httpCode = 204,
+                    message = "Não há nenhum bloco cadastrado!"
+                });
 
-            return NoContent();
+
+            return Ok(new
+            {
+                result = "null",
+                httpCode = 200,
+                message = "Blocos obtidos com sucesso!"
+            });
         }
 
         // GET: api/Bloco/5
@@ -33,9 +44,20 @@ namespace WebAPI.Controllers
         {
             var bloco = _service.GetById(id);
             if (bloco == null)
-                return NotFound("Bloco não encontrado na base de dados");
+                return NotFound(new
+                {
+                    result = "null",
+                    httpCode = 204,
+                    message = "Bloco não encontrado na base de dados!"
+                });
 
-            return Ok(bloco);
+            return Ok(new
+            {
+                result = "null",
+                httpCode = 200,
+                message = "Bloco retornado com sucesso!"
+            });
+
         }
 
         // POST: api/Bloco
@@ -46,13 +68,30 @@ namespace WebAPI.Controllers
             {
                 var bloco = _service.Insert(blocoModel);
                 if (bloco != null)
-                    return Ok(bloco.Id);
+                    return Ok(new
+                    {
+                        result = "null",
+                        httpCode = 200,
+                        message = "Bloco cadastrado com sucesso!"
+                    });
 
-                return BadRequest();
+                return BadRequest(new
+                {
+                    result = "null",
+                    httpCode = 400,
+                    message = "Houve um problema no cadastro!"
+                });
+
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new
+                {
+                    result = "null",
+                    httpCode = 500,
+                    message = e.Message
+                });
+
             }
         }
 
@@ -63,13 +102,30 @@ namespace WebAPI.Controllers
             try
             {
                 if (_service.Update(blocoModel))
-                    return Ok();
+                    return Ok(new
+                    {
+                        result = "null",
+                        httpCode = 200,
+                        message = "Bloco atualizado com sucesso!"
+                    });
 
-                return BadRequest();
+                return StatusCode(400, new
+                {
+                    result = "null",
+                    httpCode = 400,
+                    message = "Houve um problema na atualização do Bloco!"
+                });
+
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(204, new
+                {
+                    result = "null",
+                    httpCode = 500,
+                    message = e.Message
+                });
+
             }
 
         }
@@ -81,13 +137,30 @@ namespace WebAPI.Controllers
             try
             {
                 if (_service.Remove(id))
-                    return Ok();
+                    return Ok(new
+                    {
+                        result = "null",
+                        httpCode = 200,
+                        message = "Bloco removido com sucesso!"
+                    });
 
-                return BadRequest();
+                return BadRequest(new
+                {
+                    result = "null",
+                    httpCode = 400,
+                    message = "Houve um problema ao remover o bloco!"
+                });
+                ;
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new
+                {
+                    result = "null",
+                    httpCode = 500,
+                    message = e.Message
+                });
+
             }
         }
     }

@@ -1,5 +1,4 @@
 ﻿
-
 namespace Persistence
 {
     public partial class Monitoramento

@@ -16,6 +16,8 @@ namespace Persistence
         public int TipoHardware { get; set; }
         public string Ip { get; set; }
         public string Uuid { get; set; }
+        public string Token { get; set; }
+        public byte Registrado { get; set; }
 
         public Sala SalaNavigation { get; set; }
         public Tipohardware TipoHardwareNavigation { get; set; }

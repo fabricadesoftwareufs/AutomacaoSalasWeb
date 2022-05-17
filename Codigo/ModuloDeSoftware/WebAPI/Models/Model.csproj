@@ -3,5 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
+	
+  <PropertyGroup>
+	<Nullable>enable</Nullable>
+	<LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
+	<ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
 
 </Project>

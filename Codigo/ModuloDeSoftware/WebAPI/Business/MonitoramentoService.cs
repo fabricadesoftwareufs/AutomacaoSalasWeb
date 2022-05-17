@@ -1,4 +1,5 @@
 ﻿using Model;
+using Newtonsoft.Json;
 using Model.ViewModel;
 using Newtonsoft.Json;
 using Persistence;
@@ -41,7 +42,7 @@ namespace Service
                                                                   EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.Sala },
                                                               });
 
-
+             
             return monitoramentos;
         }
 
