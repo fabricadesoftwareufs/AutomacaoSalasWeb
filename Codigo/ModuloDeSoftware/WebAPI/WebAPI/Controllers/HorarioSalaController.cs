@@ -212,6 +212,25 @@ namespace WebAPI.Controllers
             }
         }
 
+        // GET: api/ReservaSala/5
+        [HttpGet]
+        [Route("ReservasDeHoje/{idSala}")]
+        public ActionResult GetReservasDeHje(int idSala)
+        {
+            try
+            {
+                var horarios = _service.GetReservasDeHojeByIdSala(idSala);
+                if (horarios.Count == 0)
+                    return NoContent();
+
+                return Ok(horarios);
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         // POST: api/HorarioSala
         [HttpPost]
         public ActionResult Post([FromBody] HorarioSalaModel horarioSala)

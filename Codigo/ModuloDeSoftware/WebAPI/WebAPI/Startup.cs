@@ -6,9 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Persistence;
 using Service;
 using Service.Interface;
+using System;
 using System.Text;
 using WebAPI.Middlewares;
 
@@ -62,8 +64,23 @@ namespace WebAPI
                     */
                 });
 
-            // Injections
-            services.AddScoped<IOrganizacaoService, OrganizacaoService>();
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "SalasUFS API",
+                    Description = "API pública do sistema SalasUFS",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Contato",
+                        Url = new Uri("https://example.com/contact")
+                    },
+                });
+            });
+
+                // Injections
+                services.AddScoped<IOrganizacaoService, OrganizacaoService>();
             services.AddScoped<IBlocoService, BlocoService>();
             services.AddScoped<ISalaService, SalaService>();
             services.AddScoped<IPlanejamentoService, PlanejamentoService>();
@@ -93,6 +110,16 @@ namespace WebAPI
                 app.UseHsts();
             }
 
+            app.UseSwagger(options =>
+            {
+                options.SerializeAsV2 = true;
+            });
+            
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                options.RoutePrefix = "swagger";
+            });
             // Mudar em produção.
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 

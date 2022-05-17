@@ -221,7 +221,6 @@ namespace WebAPI.Controllers
                         httpCode = 400,
                         message = "Não há hardware cadastrado para essa requisição!"
                     });
-
                 else if ((registerHardware!.Token != null && hardware!.Token != null) && (!registerHardware.Token.Equals(hardware.Token) && !registerHardware.Token.Equals(Methods.TOKEN_PADRAO)))
                     return StatusCode((int)HttpStatusCode.Unauthorized, new
                     {
@@ -253,6 +252,7 @@ namespace WebAPI.Controllers
                     httpCode = 500,
                     message = "Não foi possível atualizar o hardware!"
                 });
+
             }
             catch (ServiceException e)
             {
