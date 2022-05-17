@@ -144,6 +144,35 @@ namespace Service
              }).ToList();
         }
 
+        public List<HorarioSalaModel> GetReservasDeHojeByUuid(string uuid)
+        {
+
+            var lista =  _context.Horariosala
+             .Join(_context.Hardwaredesala,
+              horario => horario.Sala,
+              hard => hard.Sala,
+              (horario, hard) => new {Horario = horario, Hardware = hard})
+             .Where(hs => hs.Horario.Data.Date == DateTime.Now.Date 
+                      && !hs.Horario.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA)
+                      && hs.Hardware.Uuid.Trim().Equals(uuid.Trim()))
+             .Select(hs => new HorarioSalaModel
+                 {
+                     Id = hs.Horario.Id,
+                     Data = hs.Horario.Data,
+                     SalaId = hs.Horario.Sala,
+                     HorarioInicio = hs.Horario.HorarioInicio,
+                     HorarioFim = hs.Horario.HorarioFim,
+                     Situacao = hs.Horario.Situacao,
+                     Objetivo = hs.Horario.Objetivo,
+                     UsuarioId = hs.Horario.Usuario,
+                     Planejamento = hs.Horario.Planejamento
+                 }).ToList();
+
+            return lista;
+        }
+        
+
+
         public List<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana)
          => _context.Horariosala
              .Where(hs => hs.Usuario == idUsuario && ((int)hs.Data.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper()) &&

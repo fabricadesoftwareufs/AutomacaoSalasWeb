@@ -7,9 +7,7 @@ namespace Service.Interface
     public interface IHorarioSalaService
     {
         List<HorarioSalaModel> GetAll();
-
         HorarioSalaModel GetById(int id);
-
         List<HorarioSalaModel> GetByIdSala(int id);
         HorarioSalaModel VerificaSalaOcupada(int idSala, DateTime data, TimeSpan horarioInicio, TimeSpan horarioFim);
         List<HorarioSalaModel> GetByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana);
@@ -17,7 +15,7 @@ namespace Service.Interface
         List<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana);
         List<HorarioSalaModel> GetReservasDaSemanaByIdSala(int idSala);
         List<HorarioSalaModel> GetReservasDeHojeByIdSala(int idSala);
-
+        List<HorarioSalaModel> GetReservasDeHojeByUuid(string uuid);
         bool VerificaSeEstaEmHorarioAula(int idUsuario, int idSala);
         bool UpdateColumnPlanejamentoForNull(int idPlanejamento);
         bool RemoveByIdPlanejamento(int idPlanejamento);
