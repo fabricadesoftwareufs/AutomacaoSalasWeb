@@ -215,19 +215,70 @@ namespace WebAPI.Controllers
         // GET: api/ReservaSala/5
         [HttpGet]
         [Route("ReservasDeHoje/{idSala}")]
-        public ActionResult GetReservasDeHje(int idSala)
+        public ActionResult GetReservasDeHoje(int idSala)
         {
             try
             {
                 var horarios = _service.GetReservasDeHojeByIdSala(idSala);
+                
                 if (horarios.Count == 0)
-                    return NoContent();
+                    return StatusCode((int)HttpStatusCode.NoContent, new 
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        message = "Nenhuma reserva encontrado!"
+                    });
 
-                return Ok(horarios);
+                return Ok(new
+                {
+                    result = horarios,
+                    httpCode = (int)HttpStatusCode.OK,
+                    message = "Horários obtidos com sucesso!"
+                });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.InternalServerError,
+                    message = "[ERROR]: " + e.Message
+                });
+            }
+        }
+
+        // GET: api/ReservaSala/5
+        [HttpGet]
+        [Route("ReservasDeHojePorUuid/{uuid}")]
+        public ActionResult GetReservasDeHojeByUuid(string uuid)
+        {
+            try
+            {
+                var horarios = _service.GetReservasDeHojeByUuid(uuid);
+
+                if (horarios.Count == 0)
+                    return StatusCode((int)HttpStatusCode.NoContent, new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        message = "Nenhuma reserva encontrado!"
+                    });
+
+                return Ok(new
+                {
+                    result = horarios,
+                    httpCode = (int)HttpStatusCode.OK,
+                    message = "Horários obtidos com sucesso!"
+                });
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.InternalServerError,
+                    message = "[ERROR]: " + e.Message
+                });
             }
         }
 
