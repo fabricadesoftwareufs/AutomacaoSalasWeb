@@ -18,11 +18,9 @@ namespace Service
         {
             try
             {
-                /*var entity = new Logrequest();
+                var entity = new Logrequest();
                 _context.Add(SetEntity(logRequestModel));
-                return _context.SaveChanges() == 1 ? true : false;*/
-
-                return true;
+                return _context.SaveChanges() == 1 ? true : false;
             }
             catch (Exception e) { throw e; }
         }
