@@ -171,8 +171,6 @@ namespace Service
 
             return lista;
         }
-        
-
 
         public List<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana)
          => _context.Horariosala

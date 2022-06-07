@@ -4,6 +4,7 @@ using Model.AuxModel;
 using Service;
 using Service.Interface;
 using System;
+using System.Linq;
 using System.Net;
 using Utils;
 
@@ -338,6 +339,28 @@ namespace WebAPI.Controllers
                 }
             }
              
+        }
+
+        // GET: api/Hardware/5
+        [HttpGet("/{idSala}/get-sensors-and-actuators")]
+        public ActionResult GetSensorsAndActuatorsByIdSala([FromRoute] int idSala, [FromQuery] string token)
+        {
+            var hardware = _service.GetByIdSala(idSala).Where(h => h.TipoHardwareId != (int)HardwareDeSalaModel.TIPO.CONTROLADOR_SALA);
+
+            if (!token.Equals(Methods.TOKEN_PADRAO))
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    result = "null",
+                    httpCode = 401,
+                    message = "O token é inválido!"
+                });
+                    
+            return StatusCode((int)HttpStatusCode.OK, new
+            {
+                result = hardware,
+                httpCode = 200,
+                message = "Hardwares obtidos com sucesso",
+            });         
         }
 
         // GET: api/Hardware/5

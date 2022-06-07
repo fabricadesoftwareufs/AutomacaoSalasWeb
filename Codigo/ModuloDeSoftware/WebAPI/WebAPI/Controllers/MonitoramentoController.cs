@@ -52,6 +52,42 @@ namespace WebAPI.Controllers
 
         }
 
+        // GET: api/Monitoramento/5
+        [HttpGet]
+        [Route("obter-por-sala-tipo-equipamento/{idSala}/{tipoEquipamento}")]
+        public ActionResult GetMonitoramentoByIdSala([FromRoute] int idSala, [FromRoute] string tipoEquipamento)
+        {
+            try
+            {
+                var monitoramento = _service.GetByIdSalaAndTipoEquipamento(idSala, tipoEquipamento);
+
+                if (monitoramento == null)
+                    return StatusCode(204, new
+                    {
+                        result = "null",
+                        httpCode = 204,
+                        message = "Nenhum Monitoramento encontrado!"
+                    });
+
+                return Ok(new
+                {
+                    result = monitoramento,
+                    httpCode = 200,
+                    message = "Nenhum Monitoramento encontrado!"
+                });
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode(500, new
+                {
+                    result = "null",
+                    httpCode = 500,
+                    message = e.Message
+                });
+            }
+
+        }
+
         // PUT: api/Monitoramento/5
         [HttpPut]
         public ActionResult Atualizar([FromBody] MonitoramentoModel monitoramento)

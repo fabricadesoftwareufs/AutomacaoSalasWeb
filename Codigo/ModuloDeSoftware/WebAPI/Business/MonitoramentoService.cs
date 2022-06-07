@@ -1,7 +1,6 @@
 ﻿using Model;
 using Newtonsoft.Json;
 using Model.ViewModel;
-using Newtonsoft.Json;
 using Persistence;
 using Service.Interface;
 using System;
@@ -43,6 +42,25 @@ namespace Service
                                                               });
 
              
+            return monitoramentos;
+        }
+
+        public MonitoramentoModel GetByIdSalaAndTipoEquipamento(int idSala, string tipoEquipamento)
+        {
+
+            var monitoramentos = (from m in _context.Monitoramento
+                                                              join e in _context.Equipamento on m.Equipamento equals e.Id
+                                                              where e.Sala == idSala && tipoEquipamento.Equals(e.TipoEquipamento)
+                                                              select new MonitoramentoModel
+                                                              {
+                                                                  Id = m.Id,
+                                                                  Estado = Convert.ToBoolean(m.Estado),
+                                                                  EquipamentoId = m.Equipamento,
+                                                                  EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.Sala },
+                                                              }
+                                  ).FirstOrDefault();
+
+
             return monitoramentos;
         }
 
