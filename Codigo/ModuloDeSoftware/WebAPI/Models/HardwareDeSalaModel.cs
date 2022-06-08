@@ -6,8 +6,8 @@ namespace Model
     {
         public enum TIPO : int
         {
-            CONTROLADOR_SALA = 1,
-            MODULO_SENSOR = 2,
+            CONTROLADOR_SALA = 2,
+            MODULO_SENSOR = 1,
             MODULO_DISPOSITIVO = 3
         }
 
@@ -31,8 +31,11 @@ namespace Model
         public string Ip { get; set; }
         public string Token { get; set; }
         public bool Registrado { get; set; }
+
         // Variaveis auxiliares
         public int Bloco { get; set; }
         public int Organizacao { get; set; }
+        public int TipoEquipamento { get; set; }
+
     }
 }

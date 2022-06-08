@@ -55,6 +55,27 @@ namespace Service
             IdOperacao = cs.Operacao
         }).ToList();
 
+        public List<CodigoInfravermelhoModel> GetAllByUuidHardware(string uuid)
+         => _context.Codigoinfravermelho
+          .Join(_context.Equipamento,
+             codigo => codigo.Equipamento,
+             equip => equip.Id,
+             (codigo, equip) => new { Codigo = codigo, Equipamento = equip })
+          .Join(_context.Hardwaredesala,
+             eq => eq.Equipamento.HardwareDeSala,
+             hd => hd.Id,
+             (eq, hd) => new { Equipamento = eq, Hardware = hd })
+          .Where(cs => !string.IsNullOrWhiteSpace(cs.Hardware.Uuid)
+                    && cs.Hardware.Uuid.Trim().Equals(uuid.Trim()))
+          .Select(cs => new CodigoInfravermelhoModel
+          {
+             Id = cs.Equipamento.Codigo.Id,
+             IdEquipamento = cs.Equipamento.Codigo.Equipamento,
+             Codigo = cs.Equipamento.Codigo.Codigo,
+             IdOperacao = cs.Equipamento.Codigo.Operacao
+          }).ToList();
+
+       
         public bool AddAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels)
         {
             List<Codigoinfravermelho> codigos = new List<Codigoinfravermelho>();
