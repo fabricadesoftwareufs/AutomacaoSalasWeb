@@ -345,16 +345,16 @@ namespace WebAPI.Controllers
         [HttpGet("/{idSala}/get-sensors-and-actuators")]
         public ActionResult GetSensorsAndActuatorsByIdSala([FromRoute] int idSala, [FromQuery] string token)
         {
-            var hardware = _service.GetByIdSala(idSala).Where(h => h.TipoHardwareId != (int)HardwareDeSalaModel.TIPO.CONTROLADOR_SALA);
-
-            if (!token.Equals(Methods.TOKEN_PADRAO))
+            if (!Methods.TOKEN_PADRAO.Equals(token))
                 return StatusCode((int)HttpStatusCode.Unauthorized, new
                 {
                     result = "null",
                     httpCode = 401,
                     message = "O token é inválido!"
                 });
-                    
+
+            var hardware = _service.GetByIdSala(idSala).Where(h => h.TipoHardwareId != (int)HardwareDeSalaModel.TIPO.CONTROLADOR_SALA);
+
             return StatusCode((int)HttpStatusCode.OK, new
             {
                 result = hardware,
