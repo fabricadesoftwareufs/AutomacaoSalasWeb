@@ -47,10 +47,11 @@ namespace Service
 
         public MonitoramentoModel GetByIdSalaAndTipoEquipamento(int idSala, string tipoEquipamento)
         {
-
-            var monitoramentos = (from m in _context.Monitoramento
-                                                              join e in _context.Equipamento on m.Equipamento equals e.Id
-                                                              where e.Sala == idSala && tipoEquipamento.Equals(e.TipoEquipamento)
+            var moni = _context.Monitoramento.ToList();
+            var equip = _context.Equipamento.ToList();
+            var monitoramentos = (from m in moni
+                                  join e in equip on m.Equipamento equals e.Id
+                                                              where e.Sala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
                                                               select new MonitoramentoModel
                                                               {
                                                                   Id = m.Id,
@@ -193,6 +194,7 @@ namespace Service
                           new
                           {
                               type = tipoEquipamento,
+                              acting = solicitacao.Estado.ToString(),
                               code = operacao,
                               uuid = hardwareDeSala.Uuid
                           });
