@@ -342,7 +342,7 @@ namespace WebAPI.Controllers
         }
 
         // GET: api/Hardware/5
-        [HttpGet("/{idSala}/get-sensors-and-actuators")]
+        [HttpGet("{idSala}/get-sensors-and-actuators")]
         public ActionResult GetSensorsAndActuatorsByIdSala([FromRoute] int idSala, [FromQuery] string token)
         {
             if (!Methods.TOKEN_PADRAO.Equals(token))
