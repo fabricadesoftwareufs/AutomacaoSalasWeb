@@ -353,7 +353,7 @@ namespace WebAPI.Controllers
                     message = "O token é inválido!"
                 });
 
-            var hardware = _service.GetByIdSala(idSala).Where(h => h.TipoHardwareId != (int)HardwareDeSalaModel.TIPO.CONTROLADOR_SALA);
+            var hardware = _service.GetSensorsAndActuactorsByIdSala(idSala);
 
             return StatusCode((int)HttpStatusCode.OK, new
             {
