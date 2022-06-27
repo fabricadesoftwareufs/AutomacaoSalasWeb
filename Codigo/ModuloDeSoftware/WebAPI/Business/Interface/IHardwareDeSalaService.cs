@@ -14,6 +14,7 @@ namespace Service.Interface
         List<HardwareDeSalaModel> GetAllAtuador();
         List<HardwareDeSalaModel> GetAtuadorNotUsed();
         List<HardwareDeSalaModel> GetByIdSalaAndTipoHardware(int id, int tipo);
+        List<HardwareDeSalaModel> GetSensorsAndActuactorsByIdSala(int id);
         HardwareDeSalaModel GetByMAC(string mac, int idUsuario);
         HardwareDeSalaModel GetByMAC(string mac);
 

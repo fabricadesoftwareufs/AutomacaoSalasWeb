@@ -46,28 +46,66 @@ namespace Service
         public List<HardwareDeSalaModel> GetByIdSala(int id)
         {
             var hardware = _context.Hardwaredesala
-                                  .Join(_context.Equipamento,
-                                     hard => hard.Id,
-                                     equip => equip.HardwareDeSala,
-                                     (hard, equip) => new { Hadware = hard, Equipamento = equip })
-                                  .Where(hs => hs.Hadware.Sala == id)
+                                  .Where(hs => hs.Sala == id)
                                     .Select(h => 
                                         new HardwareDeSalaModel 
                                         { 
-                                            Id = h.Hadware.Id, 
-                                            MAC = h.Hadware.Mac, 
-                                            SalaId = h.Hadware.Sala, 
-                                            TipoHardwareId = h.Hadware.TipoHardware, 
-                                            Ip = h.Hadware.Ip, 
-                                            Uuid = h.Hadware.Uuid, 
-                                            Token = h.Hadware.Token,
-                                            TipoEquipamento = h.Equipamento.TipoEquipamento.Equals(EquipamentoModel.TIPO_CONDICIONADOR) ? 1 : 0
+                                            Id = h.Id, 
+                                            MAC = h.Mac, 
+                                            SalaId = h.Sala, 
+                                            TipoHardwareId = h.TipoHardware, 
+                                            Ip = h.Ip, 
+                                            Uuid = h.Uuid, 
+                                            Token = h.Token,
                                         }
                                       ).ToList();
 
 
             return hardware; 
         }
+
+        public List<HardwareDeSalaModel> GetSensorsAndActuactorsByIdSala(int id)
+        {
+            var hardwares = _context.Hardwaredesala
+                                  .Join(_context.Equipamento,
+                                     hard => hard.Id,
+                                     equip => equip.HardwareDeSala,
+                                     (hard, equip) => new { Hadware = hard, Equipamento = equip })
+                                  .Where(hs => hs.Hadware.Sala == id && hs.Hadware.TipoHardware  == (int)HardwareDeSalaModel.TIPO.MODULO_ATUADOR)
+                                    .Select(h =>
+                                        new HardwareDeSalaModel
+                                        {
+                                            Id = h.Hadware.Id,
+                                            MAC = h.Hadware.Mac,
+                                            SalaId = h.Hadware.Sala,
+                                            TipoHardwareId = h.Hadware.TipoHardware,
+                                            Ip = h.Hadware.Ip,
+                                            Uuid = h.Hadware.Uuid,
+                                            Token = h.Hadware.Token,
+                                            TipoEquipamento = h.Equipamento.TipoEquipamento.Equals(EquipamentoModel.TIPO_CONDICIONADOR) ? 1 : 0
+                                        }
+                                      ).Union(
+                                         _context.Hardwaredesala
+                                        .Where(hs => hs.Sala == id && hs.TipoHardware == (int)HardwareDeSalaModel.TIPO.MODULO_SENSOR)
+                                          .Select(h =>
+                                              new HardwareDeSalaModel
+                                              {
+                                                  Id = h.Id,
+                                                  MAC = h.Mac,
+                                                  SalaId = h.Sala,
+                                                  TipoHardwareId = h.TipoHardware,
+                                                  Ip = h.Ip,
+                                                  Uuid = h.Uuid,
+                                                  Token = h.Token,
+                                                  TipoEquipamento = 0
+                                              }
+                                            )
+                                    );
+
+            return hardwares.ToList();
+        }
+
+
 
         public HardwareDeSalaModel GetByMAC(string mac)
         {
