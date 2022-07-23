@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
         {
             var blocos = _service.GetAll();
             if (blocos.Count == 0)
-                return StatusCode(204, new
+                return NotFound(new
                 {
                     result = "null",
                     httpCode = 204,
@@ -119,7 +119,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(204, new
+                return NotFound(new
                 {
                     result = "null",
                     httpCode = 500,

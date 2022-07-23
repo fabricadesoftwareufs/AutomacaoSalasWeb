@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
             {
                 var monitoramento = _service.GetByIdEquipamento(idEquipamento);
                 if (monitoramento == null)
-                    return StatusCode(204, new
+                    return NotFound(new
                     {
                         result = "null",
                         httpCode = 204,
@@ -62,7 +62,7 @@ namespace WebAPI.Controllers
                 var monitoramento = _service.GetByIdSalaAndTipoEquipamento(idSala, tipoEquipamento);
 
                 if (monitoramento == null)
-                    return StatusCode(204, new
+                    return NotFound(new
                     {
                         result = "null",
                         httpCode = 204,

@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
             {
                 var horarios = _service.GetAll();
                 if (horarios.Count == 0)
-                    return StatusCode(204, new
+                    return NotFound(new
                     {
                         result = "null",
                         httpCode = 204,
@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
             {
                 var horario = _service.GetById(id);
                 if (horario == null)
-                    return StatusCode(204, new
+                    return NotFound(new
                     {
                         result = "null",
                         httpCode = 204,
@@ -95,7 +95,7 @@ namespace WebAPI.Controllers
             {
                 var horarios = _service.GetByIdSala(idSala);
                 if (horarios.Count == 0)
-                    return StatusCode(204, new
+                    return NotFound(new
                     {
                         result = "null",
                         httpCode = 204,
@@ -125,7 +125,7 @@ namespace WebAPI.Controllers
             {
                 var horarios = _service.GetReservasDaSemanaByIdSala(idSala);
                 if (horarios.Count == 0)
-                    return StatusCode(204, new
+                    return NotFound(new
                     {
                         result = "null",
                         httpCode = 204,

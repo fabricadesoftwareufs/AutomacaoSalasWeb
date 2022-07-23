@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
             {
                 CodigoInfravermelhoModel codigos = _service.GetByIdSalaAndIdOperacao(idSala, operacao);
                 if (codigos == null)
-                    return StatusCode(204, new
+                    return NotFound(new
                     {
                         result = "null",
                         httpCode = 204,
@@ -62,7 +62,7 @@ namespace WebAPI.Controllers
             {
                 var codigos = _service.GetAllByEquipamento(idEquipamento);
                 if (codigos == null)
-                    return StatusCode(204, new
+                    return NotFound(new
                     {
                         result = "null",
                         httpCode = 204,
@@ -97,7 +97,7 @@ namespace WebAPI.Controllers
             {
                 var codigos = _service.GetAllByUuidHardware(uuid);
                 if (codigos == null)
-                    return StatusCode(204, new
+                    return NotFound(new
                     {
                         result = "null",
                         httpCode = 204,

@@ -62,7 +62,7 @@ namespace SalasUfsWeb
             services.AddScoped<ICodigoInfravermelhoService, CodigoInfravermelhoService>();
             services.AddScoped<IEquipamentoService, EquipamentoService>();
             services.AddScoped<ILogRequestService, LogRequestService>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,16 +81,15 @@ namespace SalasUfsWeb
             app.UseHttpsRedirection();
             app.UseLogRequestMiddleware();
             app.UseStaticFiles();
+            app.UseRouting();
 
 
             // Forçando a utilizar autenticação.
             app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
             app.UseCookiePolicy();

@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         {
             var hardwares = _service.GetAll();
             if (hardwares.Count == 0)
-                return StatusCode(204, new
+                return StatusCode(200, new
                     {
                         result = "null",
                         httpCode = 204,
