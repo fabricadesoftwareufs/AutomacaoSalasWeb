@@ -42,7 +42,7 @@ namespace WebAPI.Controllers
             {
                 var tipo = _service.GetById(id);
                 if (tipo == null)
-                    return StatusCode((int)HttpStatusCode.OK, new
+                    return Ok(new
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,
