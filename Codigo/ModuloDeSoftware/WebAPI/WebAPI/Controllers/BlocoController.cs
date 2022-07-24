@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
         {
             var blocos = _service.GetAll();
             if (blocos.Count == 0)
-                return NotFound(new
+                return Ok(new
                 {
                     result = "null",
                     httpCode = (int)HttpStatusCode.NoContent,
@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
         {
             var bloco = _service.GetById(id);
             if (bloco == null)
-                return NotFound(new
+                return Ok(new
                 {
                     result = "null",
                     httpCode = (int)HttpStatusCode.NoContent,
@@ -119,7 +119,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return NotFound(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
                     httpCode = (int)HttpStatusCode.InternalServerError,

@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
             {
                 var sala = _service.GetById(id);
                 if (sala == null)
-                    return StatusCode((int)HttpStatusCode.OK, new
+                    return Ok(new
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,

@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
             {
                 var planejamento = _service.GetById(id);
                 if (planejamento == null)
-                    return StatusCode((int)HttpStatusCode.OK, new
+                    return Ok(new
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,
