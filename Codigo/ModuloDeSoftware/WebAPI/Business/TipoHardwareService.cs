@@ -8,8 +8,8 @@ namespace Service
 {
     public class TipoHardwareService : ITipoHardwareService
     {
-        private readonly str_dbContext _context;
-        public TipoHardwareService(str_dbContext context)
+        private readonly SalasUfsDbContext _context;
+        public TipoHardwareService(SalasUfsDbContext context)
         {
             _context = context;
         }

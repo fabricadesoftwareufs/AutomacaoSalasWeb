@@ -8,8 +8,8 @@ namespace Service
 {
     public class TipoUsuarioService : ITipoUsuarioService
     {
-        private readonly str_dbContext _context;
-        public TipoUsuarioService(str_dbContext context)
+        private readonly SalasUfsDbContext _context;
+        public TipoUsuarioService(SalasUfsDbContext context)
         {
             _context = context;
         }

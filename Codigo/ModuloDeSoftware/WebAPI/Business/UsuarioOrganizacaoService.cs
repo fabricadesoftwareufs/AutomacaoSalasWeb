@@ -8,8 +8,8 @@ namespace Service
 {
     public class UsuarioOrganizacaoService : IUsuarioOrganizacaoService
     {
-        private readonly str_dbContext _context;
-        public UsuarioOrganizacaoService(str_dbContext context)
+        private readonly SalasUfsDbContext _context;
+        public UsuarioOrganizacaoService(SalasUfsDbContext context)
         {
             _context = context;
         }

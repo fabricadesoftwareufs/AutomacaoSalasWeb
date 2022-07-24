@@ -42,7 +42,7 @@ namespace SalasUfsWeb
                     options.AccessDeniedPath = "/Login/AcessoNegado";
                 });
 
-            services.AddDbContext<str_dbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
+            services.AddDbContext<SalasUfsDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
 
             services.AddScoped<IOrganizacaoService, OrganizacaoService>();
             services.AddScoped<IBlocoService, BlocoService>();
