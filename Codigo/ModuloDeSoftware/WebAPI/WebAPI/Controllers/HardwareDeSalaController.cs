@@ -316,7 +316,7 @@ namespace WebAPI.Controllers
                         {
                             result = "null",
                             httpCode = (int)HttpStatusCode.BadRequest,
-                            message = "Erro crasso. O Controlador de Sala (master) não foi encontrado!"
+                            message = "Erro. O Controlador de Sala (master) não foi encontrado!"
                         });
                     else
                     {

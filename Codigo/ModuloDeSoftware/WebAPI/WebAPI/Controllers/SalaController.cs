@@ -43,7 +43,12 @@ namespace WebAPI.Controllers
             {
                 var sala = _service.GetById(id);
                 if (sala == null)
-                    return NotFound("Sala não encontrada na base de dados.");
+                    return StatusCode((int)HttpStatusCode.OK, new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        message = "Sala não encontrada na base de dados."
+                    });
 
                 return Ok(sala);
             }

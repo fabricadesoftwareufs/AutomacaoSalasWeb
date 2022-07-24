@@ -9,8 +9,8 @@ namespace Service
 {
     public class LogRequestService : ILogRequestService
     {
-        private readonly str_dbContext _context;
-        public LogRequestService(str_dbContext context)
+        private readonly SalasUfsDbContext _context;
+        public LogRequestService(SalasUfsDbContext context)
         {
             _context = context;
         }

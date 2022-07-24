@@ -41,7 +41,12 @@ namespace WebAPI.Controllers
             {
                 var salaParticular = _service.GetById(id);
                 if (salaParticular == null)
-                    return NotFound("Sala exclusiva não encontrada na base de dados.");
+                    return StatusCode((int)HttpStatusCode.OK, new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        message = "Sala exclusiva não encontrada na base de dados."
+                    });
 
                 return Ok(salaParticular);
             }

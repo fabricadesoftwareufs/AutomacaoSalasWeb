@@ -41,7 +41,12 @@ namespace WebAPI.Controllers
             {
                 var planejamento = _service.GetById(id);
                 if (planejamento == null)
-                    return NotFound("Planejamento não encontrado na base de dados");
+                    return StatusCode((int)HttpStatusCode.OK, new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        message = "Planejamento não encontrado na base de dados"
+                    });
 
                 return Ok(planejamento);
             }

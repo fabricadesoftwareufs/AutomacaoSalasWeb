@@ -79,7 +79,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
                     httpCode = (int)HttpStatusCode.InternalServerError,

@@ -84,7 +84,7 @@ namespace WebAPI.Controllers
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,
                         message = "Equipamento não encontrado na base de dados!"
-                    }); ;
+                    });
 
                 return Ok(equipamentosSala);
             }

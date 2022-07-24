@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
             {
                 var horarios = _service.GetAll();
                 if (horarios.Count == 0)
-                    return NotFound(new
+                    return Ok(new
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,
@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
             {
                 var horario = _service.GetById(id);
                 if (horario == null)
-                    return NotFound(new
+                    return Ok(new
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,
@@ -95,7 +95,7 @@ namespace WebAPI.Controllers
             {
                 var horarios = _service.GetByIdSala(idSala);
                 if (horarios.Count == 0)
-                    return NotFound(new
+                    return Ok(new
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,

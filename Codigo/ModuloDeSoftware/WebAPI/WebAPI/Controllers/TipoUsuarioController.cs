@@ -42,7 +42,12 @@ namespace WebAPI.Controllers
             {
                 var tipo = _service.GetById(id);
                 if (tipo == null)
-                    return NotFound("Tipo de Usuário não encontrado na base de dados.");
+                    return StatusCode((int)HttpStatusCode.OK, new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        mesage = "Tipo de Usuário não encontrado na base de dados."
+                    });
 
                 return Ok(tipo);
             }

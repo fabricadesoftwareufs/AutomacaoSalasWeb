@@ -12,8 +12,8 @@ namespace Service
 {
     public class UsuarioService : IUsuarioService
     {
-        private readonly str_dbContext _context;
-        public UsuarioService(str_dbContext context)
+        private readonly SalasUfsDbContext _context;
+        public UsuarioService(SalasUfsDbContext context)
         {
             _context = context;
         }
