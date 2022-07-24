@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Persistence
 {
-    public partial class str_dbContext : DbContext
+    public partial class SalasUfsDbContext : DbContext
     {
         private const string _dbName = "str_db";
-        public str_dbContext()
+        public SalasUfsDbContext()
         {
         }
 
-        public str_dbContext(DbContextOptions<str_dbContext> options)
+        public SalasUfsDbContext(DbContextOptions<SalasUfsDbContext> options)
             : base(options)
         {
         }

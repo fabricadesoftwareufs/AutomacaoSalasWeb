@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
         {
             var blocos = _service.GetAll();
             if (blocos.Count == 0)
-                return NotFound(new
+                return StatusCode(200,new
                 {
                     result = "null",
                     httpCode = 204,
@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
 
             return Ok(new
             {
-                result = "null",
+                result = blocos,
                 httpCode = 200,
                 message = "Blocos obtidos com sucesso!"
             });
@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
         {
             var bloco = _service.GetById(id);
             if (bloco == null)
-                return NotFound(new
+                return StatusCode(200, new
                 {
                     result = "null",
                     httpCode = 204,
@@ -53,7 +53,7 @@ namespace WebAPI.Controllers
 
             return Ok(new
             {
-                result = "null",
+                result = bloco,
                 httpCode = 200,
                 message = "Bloco retornado com sucesso!"
             });
@@ -70,7 +70,7 @@ namespace WebAPI.Controllers
                 if (bloco != null)
                     return Ok(new
                     {
-                        result = "null",
+                        result = bloco,
                         httpCode = 200,
                         message = "Bloco cadastrado com sucesso!"
                     });
@@ -119,7 +119,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return NotFound(new
+                return StatusCode(500, new
                 {
                     result = "null",
                     httpCode = 500,

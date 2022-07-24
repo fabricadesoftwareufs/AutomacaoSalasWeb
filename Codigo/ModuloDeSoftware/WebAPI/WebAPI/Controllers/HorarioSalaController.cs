@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
             {
                 var horarios = _service.GetAll();
                 if (horarios.Count == 0)
-                    return NotFound(new
+                    return StatusCode(200, new
                     {
                         result = "null",
                         httpCode = 204,
@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
             {
                 var horario = _service.GetById(id);
                 if (horario == null)
-                    return NotFound(new
+                    return StatusCode(200, new
                     {
                         result = "null",
                         httpCode = 204,
@@ -95,7 +95,7 @@ namespace WebAPI.Controllers
             {
                 var horarios = _service.GetByIdSala(idSala);
                 if (horarios.Count == 0)
-                    return NotFound(new
+                    return StatusCode(200, new
                     {
                         result = "null",
                         httpCode = 204,
@@ -125,7 +125,7 @@ namespace WebAPI.Controllers
             {
                 var horarios = _service.GetReservasDaSemanaByIdSala(idSala);
                 if (horarios.Count == 0)
-                    return NotFound(new
+                    return StatusCode(200, new
                     {
                         result = "null",
                         httpCode = 204,
@@ -160,10 +160,10 @@ namespace WebAPI.Controllers
             {
                 var hardware = _hardwareService.GetByUuid(uuid);
                 if (hardware == null)
-                    return NotFound(new
+                    return StatusCode(200, new
                     {
                         result = "null",
-                        httpCode = 404,
+                        httpCode = 204,
                         message = "Hardware não foi encontrado na base de dados com esse uuid",
                     });
 
@@ -222,7 +222,7 @@ namespace WebAPI.Controllers
                 var horarios = _service.GetReservasDeHojeByIdSala(idSala);
                 
                 if (horarios.Count == 0)
-                    return StatusCode((int)HttpStatusCode.NoContent, new 
+                    return StatusCode((int)HttpStatusCode.OK, new 
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,
@@ -257,7 +257,7 @@ namespace WebAPI.Controllers
                 var horarios = _service.GetReservasDeHojeByUuid(uuid);
 
                 if (horarios.Count == 0)
-                    return StatusCode((int)HttpStatusCode.NoContent, new
+                    return StatusCode((int)HttpStatusCode.OK, new
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,

@@ -11,12 +11,12 @@ namespace Service
 {
     public class MonitoramentoService : IMonitoramentoService
     {
-        private readonly str_dbContext _context;
+        private readonly SalasUfsDbContext _context;
         private const string AC_ON = "AC-ON";
         private const string L_ON = "L-ON";
         private const string NOT_AVALIABLE = "NOT-AVALIABLE";
 
-        public MonitoramentoService(str_dbContext context)
+        public MonitoramentoService(SalasUfsDbContext context)
         {
             _context = context;
         }
