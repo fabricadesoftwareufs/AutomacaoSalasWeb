@@ -3,6 +3,7 @@ using Model;
 using Service;
 using Service.Interface;
 using System;
+using System.Net;
 
 namespace WebAPI.Controllers
 {
@@ -22,18 +23,17 @@ namespace WebAPI.Controllers
         {
             var blocos = _service.GetAll();
             if (blocos.Count == 0)
-                return NotFound(new
+                return Ok(new
                 {
                     result = "null",
-                    httpCode = 204,
-                    message = "Não há nenhum bloco cadastrado!"
+                    httpCode = (int)HttpStatusCode.NoContent,
+                    message = "Blocos não encontrados na base de dados!"
                 });
-
 
             return Ok(new
             {
                 result = "null",
-                httpCode = 200,
+                httpCode = (int)HttpStatusCode.OK,
                 message = "Blocos obtidos com sucesso!"
             });
         }
@@ -44,17 +44,17 @@ namespace WebAPI.Controllers
         {
             var bloco = _service.GetById(id);
             if (bloco == null)
-                return NotFound(new
+                return Ok(new
                 {
                     result = "null",
-                    httpCode = 204,
+                    httpCode = (int)HttpStatusCode.NoContent,
                     message = "Bloco não encontrado na base de dados!"
                 });
 
             return Ok(new
             {
-                result = "null",
-                httpCode = 200,
+                result = bloco,
+                httpCode = (int)HttpStatusCode.OK,
                 message = "Bloco retornado com sucesso!"
             });
 
@@ -70,25 +70,25 @@ namespace WebAPI.Controllers
                 if (bloco != null)
                     return Ok(new
                     {
-                        result = "null",
-                        httpCode = 200,
+                        result = bloco,
+                        httpCode = (int)HttpStatusCode.OK,
                         message = "Bloco cadastrado com sucesso!"
                     });
 
                 return BadRequest(new
                 {
                     result = "null",
-                    httpCode = 400,
+                    httpCode = (int)HttpStatusCode.BadRequest,
                     message = "Houve um problema no cadastro!"
                 });
 
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
 
@@ -105,24 +105,24 @@ namespace WebAPI.Controllers
                     return Ok(new
                     {
                         result = "null",
-                        httpCode = 200,
+                        httpCode = (int)HttpStatusCode.OK,
                         message = "Bloco atualizado com sucesso!"
                     });
 
-                return StatusCode(400, new
+                return StatusCode((int)HttpStatusCode.BadRequest, new
                 {
                     result = "null",
-                    httpCode = 400,
+                    httpCode = (int)HttpStatusCode.BadRequest,
                     message = "Houve um problema na atualização do Bloco!"
                 });
 
             }
             catch (ServiceException e)
             {
-                return NotFound(new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
 
@@ -140,24 +140,24 @@ namespace WebAPI.Controllers
                     return Ok(new
                     {
                         result = "null",
-                        httpCode = 200,
+                        httpCode = (int)HttpStatusCode.OK,
                         message = "Bloco removido com sucesso!"
                     });
 
                 return BadRequest(new
                 {
                     result = "null",
-                    httpCode = 400,
+                    httpCode = (int)HttpStatusCode.BadRequest,
                     message = "Houve um problema ao remover o bloco!"
                 });
                 ;
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
 

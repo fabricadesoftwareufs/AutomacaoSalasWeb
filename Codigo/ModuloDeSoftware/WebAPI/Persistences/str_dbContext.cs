@@ -6,7 +6,7 @@ namespace Persistence
 {
     public partial class str_dbContext : DbContext
     {
-        private const string _dbName = "db_a8a8d4_strufss";
+        private const string _dbName = "str_db";
         public str_dbContext()
         {
         }

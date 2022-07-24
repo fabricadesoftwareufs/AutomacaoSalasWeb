@@ -25,17 +25,17 @@ namespace WebAPI.Controllers
         {
             var hardwares = _service.GetAll();
             if (hardwares.Count == 0)
-                return StatusCode(200, new
+                return Ok(new
                     {
                         result = "null",
-                        httpCode = 204,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Não há nenhum hardware cadastrado!"
                     });
 
             return Ok(new
             {
                 result = hardwares,
-                httpCode = 200,
+                httpCode = (int)HttpStatusCode.OK,
                 message = "Hardwares(s) obtido(s) com sucesso!"
             });
         }
@@ -46,10 +46,10 @@ namespace WebAPI.Controllers
         {
             var hardware = _service.GetById(id);
             if (hardware == null)
-                return NotFound(new
+                return Ok(new
                 {
                     result = "null",
-                    httpCode = 404,
+                    httpCode = (int)HttpStatusCode.NoContent,
                     message = "Hardware não encontrado na base de dados",
                 });
 
@@ -57,7 +57,7 @@ namespace WebAPI.Controllers
                 return BadRequest(new
                 {
                     result = "null",
-                    httpCode = 400,
+                    httpCode = (int)HttpStatusCode.BadRequest,
                     message = "Hardware não está registrado!"
                 });   
 
@@ -66,7 +66,7 @@ namespace WebAPI.Controllers
             return Ok(new
             {
                 result = hardware,
-                httpCode = 200,
+                httpCode = (int)HttpStatusCode.OK,
                 message = "Hardware obtido com sucesso!"
             });
         }
@@ -78,17 +78,17 @@ namespace WebAPI.Controllers
             var hardware = _service.GetByMAC(mac);
 
             if (hardware == null)
-                return NotFound(new
+                return Ok(new
                 {
                     result = "null",
-                    httpCode = 404,
+                    httpCode = (int)HttpStatusCode.NoContent,
                     message = "Hardware não encontrado na base de dados",
                 });
             else if (!token.Equals(hardware.Token) && (string.IsNullOrEmpty(hardware.Token) && !token.Equals(Methods.TOKEN_PADRAO)))
                 return StatusCode((int)HttpStatusCode.Unauthorized, new
                 {
                     result = "null",
-                    httpCode = 401,
+                    httpCode = (int)HttpStatusCode.Unauthorized,
                     message = "O token é inválido!"
                 });
 
@@ -96,14 +96,14 @@ namespace WebAPI.Controllers
                 return BadRequest(new
                 {
                     result = "null",
-                    httpCode = 400,
+                    httpCode = (int)HttpStatusCode.BadRequest,
                     message = "Não há match de hardware para essa requisição!"
                 });
 
             return Ok(new
             {
                 result = hardware,
-                httpCode = 200,
+                httpCode = (int)HttpStatusCode.OK,
                 message = "Hardware obtido com sucesso!"
             });
         }
@@ -119,10 +119,10 @@ namespace WebAPI.Controllers
                     ModelState.AddModelError("Ip", "Adicione um endereço IP");
 
                 if (_service.Insert(hardwareModel, idUser))
-                    return StatusCode(201, new
+                    return StatusCode((int)HttpStatusCode.Created, new
                     {
                         result = "null",
-                        httpCode = 201,
+                        httpCode = (int)HttpStatusCode.Created,
                         message = "Hardware cadastrado com sucesso!"
                     });
 
@@ -130,10 +130,10 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500,new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -154,23 +154,23 @@ namespace WebAPI.Controllers
                     return Ok(new
                     {
                         result = "null",
-                        httpCode = 200,
+                        httpCode = (int)HttpStatusCode.OK,
                         message = "Hardware atualizado com sucesso!"
                     });
 
                 return BadRequest(new
                 {
                     result = "null",
-                    httpCode = 400,
+                    httpCode = (int)HttpStatusCode.BadRequest,
                     message = "O Hardware não está existe ou houve problema na montagem da requisição!"
                 });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -186,23 +186,23 @@ namespace WebAPI.Controllers
                     return Ok(new
                     {
                         result = "null",
-                        httpCode = 200,
+                        httpCode = (int)HttpStatusCode.OK,
                         message = "Hardware removido com sucesso!"
                     });
 
                 return BadRequest(new
                 {
                     result = "null",
-                    httpCode = 400,
+                    httpCode = (int)HttpStatusCode.BadRequest,
                     message = "Não foi possível remover o hardware solicitado!"
                 });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -216,26 +216,26 @@ namespace WebAPI.Controllers
                 var hardware = (registerHardware.Id > 0) && (registerHardware.TipoHardwareId > 0) ? _service.GetByIdAndType(registerHardware.Id, registerHardware.TipoHardwareId) : null;
 
                 if (hardware == null)
-                   return StatusCode(400, new
+                   return StatusCode((int)HttpStatusCode.BadRequest, new
                     {
                         result = "null",
-                        httpCode = 400,
+                        httpCode = (int)HttpStatusCode.BadRequest,
                         message = "Não há hardware cadastrado para essa requisição!"
                     });
                 else if ((registerHardware!.Token != null && hardware!.Token != null) && (!registerHardware.Token.Equals(hardware.Token) && !registerHardware.Token.Equals(Methods.TOKEN_PADRAO)))
                     return StatusCode((int)HttpStatusCode.Unauthorized, new
                     {
                         result = "null",
-                        httpCode = 401,
+                        httpCode = (int)HttpStatusCode.Unauthorized,
                         message = "O token é inválido!"
                     });
 
                 else if (hardware.Registrado)
                     return
-                    StatusCode(200, new
+                    Ok(new
                     {
                         result = hardware,
-                        httpCode = 200,
+                        httpCode = (int)HttpStatusCode.OK,
                         message = "Hardware já tem um registro!"
                     });
 
@@ -244,23 +244,23 @@ namespace WebAPI.Controllers
 
                 return _service.Update(hardware) ? 
                     Ok(new { result = hardware,
-                    httpCode = 200,
+                    httpCode = (int)HttpStatusCode.OK,
                     message = "Hardware atualizado e registrado com sucesso!"
                     }) : 
-                StatusCode(500, new
+                StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = "Não foi possível atualizar o hardware!"
                 });
 
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -272,10 +272,10 @@ namespace WebAPI.Controllers
         {
             var hardware = _service.GetByUuid(uuid);
             if (hardware == null)
-                return NotFound(new
+                return Ok(new
                 {
                     result = "null",
-                    httpCode = 404,
+                    httpCode = (int)HttpStatusCode.NoContent,
                     message = "Hardware sensor não foi encontrado na base de dados",
                 });
           
@@ -283,15 +283,15 @@ namespace WebAPI.Controllers
                 return StatusCode((int)HttpStatusCode.Unauthorized, new
                 {
                     result = "null",
-                    httpCode = 401,
+                    httpCode = (int)HttpStatusCode.Unauthorized,
                     message = "O token é inválido!"
                 });
 
             else if (hardware.Uuid == null)
-                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                return StatusCode((int)HttpStatusCode.BadRequest, new
                 {
                     result = "null",
-                    httpCode = 401,
+                    httpCode = (int)HttpStatusCode.BadRequest,
                     message = "Hardware não está registrado!"
                 });
 
@@ -307,7 +307,7 @@ namespace WebAPI.Controllers
                         return BadRequest(new
                         {
                             result = "null",
-                            httpCode = 400,
+                            httpCode = (int)HttpStatusCode.BadRequest,
                             message = "O Controlador de Sala (master) não está registrado!"
                         });
                     }
@@ -315,7 +315,7 @@ namespace WebAPI.Controllers
                         return BadRequest(new
                         {
                             result = "null",
-                            httpCode = 400,
+                            httpCode = (int)HttpStatusCode.BadRequest,
                             message = "Erro crasso. O Controlador de Sala (master) não foi encontrado!"
                         });
                     else
@@ -323,7 +323,7 @@ namespace WebAPI.Controllers
                         return Ok(new
                         {
                             result = new { uuid = master.Uuid, mac = master.MAC },
-                            httpCode = 200,
+                            httpCode = (int)HttpStatusCode.OK,
                             message = "Controlador de Sala (master) obtido com sucesso!"
                         });
                     }
@@ -333,7 +333,7 @@ namespace WebAPI.Controllers
                     return BadRequest(new
                     {
                         result = "null",
-                        httpCode = 400,
+                        httpCode = (int)HttpStatusCode.BadRequest,
                         message = "Erro crasso. O Controlador de Sala (master) não foi encontrado!"
                     });
                 }
@@ -349,7 +349,7 @@ namespace WebAPI.Controllers
                 return StatusCode((int)HttpStatusCode.Unauthorized, new
                 {
                     result = "null",
-                    httpCode = 401,
+                    httpCode = (int)HttpStatusCode.Unauthorized,
                     message = "O token é inválido!"
                 });
 
@@ -358,7 +358,7 @@ namespace WebAPI.Controllers
             return StatusCode((int)HttpStatusCode.OK, new
             {
                 result = hardware,
-                httpCode = 200,
+                httpCode = (int)HttpStatusCode.OK,
                 message = "Hardwares obtidos com sucesso",
             });         
         }
@@ -369,10 +369,10 @@ namespace WebAPI.Controllers
         {
             var hardware = _service.GetByUuid(uuid);
             if (hardware == null)
-                return NotFound(new
+                return Ok(new
                 {
                     result = "null",
-                    httpCode = 404,
+                    httpCode = (int)HttpStatusCode.NoContent,
                     message = "Hardware master não foi encontrado na base de dados",
                 });
 
@@ -380,7 +380,7 @@ namespace WebAPI.Controllers
                 return StatusCode((int)HttpStatusCode.Unauthorized, new
                 {
                     result = "null",
-                    httpCode = 401,
+                    httpCode = (int)HttpStatusCode.Unauthorized,
                     message = "O token é inválido!"
                 });
 
@@ -388,7 +388,7 @@ namespace WebAPI.Controllers
                 return StatusCode((int)HttpStatusCode.Unauthorized, new
                 {
                     result = "null",
-                    httpCode = 401,
+                    httpCode = (int)HttpStatusCode.Unauthorized,
                     message = "Hardware master não está registrado!"
                 });
 
@@ -400,7 +400,7 @@ namespace WebAPI.Controllers
                     return Ok(new
                     {
                         result = new { sensors = listHardwareControlador },
-                        httpCode = 200,
+                        httpCode = (int)HttpStatusCode.OK,
                         message = "Os sensores (slaves) do Controlador de Sala (master) foram obtidos com sucesso!"
                     });
        
@@ -410,7 +410,7 @@ namespace WebAPI.Controllers
                     return BadRequest(new
                     {
                         result = "null",
-                        httpCode = 400,
+                        httpCode = (int)HttpStatusCode.BadRequest,
                         message = "Erro crasso. Os sensores para esse master não foram encontrados!"
                     });
                 }
