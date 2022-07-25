@@ -26,27 +26,27 @@ namespace WebAPI.Controllers
             {
                 var horarios = _service.GetAll();
                 if (horarios.Count == 0)
-                    return StatusCode(204, new
+                    return Ok(new
                     {
                         result = "null",
-                        httpCode = 204,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum Horário encontrado!"
                     });
 
                 return Ok(new
                 {
                     result = horarios,
-                    httpCode = 200,
+                    httpCode = (int)HttpStatusCode.OK,
                     message = "Horário encontrado com sucesso!"
                 });
 
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -60,27 +60,27 @@ namespace WebAPI.Controllers
             {
                 var horario = _service.GetById(id);
                 if (horario == null)
-                    return StatusCode(204, new
+                    return Ok(new
                     {
                         result = "null",
-                        httpCode = 204,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum Horário encontrado!"
                     });
 
                 return Ok(new
                 {
                     result = horario,
-                    httpCode = 200,
+                    httpCode = (int)HttpStatusCode.OK,
                     message = "Horário encontrado com sucesso!"
                 });
 
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -95,24 +95,24 @@ namespace WebAPI.Controllers
             {
                 var horarios = _service.GetByIdSala(idSala);
                 if (horarios.Count == 0)
-                    return StatusCode(204, new
+                    return Ok(new
                     {
                         result = "null",
-                        httpCode = 204,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum Horário encontrado!"
                     });
 
                 return Ok(new
                 {
                     result = horarios,
-                    httpCode = 200,
+                    httpCode = (int)HttpStatusCode.OK,
                     message = "Horário retornado com sucesso!"
                 });
 
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
@@ -125,26 +125,26 @@ namespace WebAPI.Controllers
             {
                 var horarios = _service.GetReservasDaSemanaByIdSala(idSala);
                 if (horarios.Count == 0)
-                    return StatusCode(204, new
+                    return Ok(new
                     {
                         result = "null",
-                        httpCode = 204,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum Reserva encontrada!"
                     });
 
                 return Ok(new
                 {
                     result = horarios,
-                    httpCode = 200,
+                    httpCode = (int)HttpStatusCode.OK,
                     message = "Reservas retornadas com sucesso!"
                 });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -160,10 +160,10 @@ namespace WebAPI.Controllers
             {
                 var hardware = _hardwareService.GetByUuid(uuid);
                 if (hardware == null)
-                    return NotFound(new
+                    return Ok(new
                     {
                         result = "null",
-                        httpCode = 404,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Hardware não foi encontrado na base de dados com esse uuid",
                     });
 
@@ -171,7 +171,7 @@ namespace WebAPI.Controllers
                     return StatusCode((int)HttpStatusCode.Unauthorized, new
                     {
                         result = "null",
-                        httpCode = 401,
+                        httpCode = (int)HttpStatusCode.Unauthorized,
                         message = "O token é inválido!"
                     });
 
@@ -179,8 +179,8 @@ namespace WebAPI.Controllers
                     return StatusCode((int)HttpStatusCode.Unauthorized, new
                     {
                         result = "null",
-                        httpCode = 401,
-                        message = "Erro crasso, Hardware não está registrado!"
+                        httpCode = (int)HttpStatusCode.Unauthorized,
+                        message = "Erro, Hardware não está registrado!"
                     });
                 else
                 {
@@ -189,24 +189,24 @@ namespace WebAPI.Controllers
                         return Ok(new
                         {
                             result = new { schedules = horarios },
-                            httpCode = 200,
+                            httpCode = (int)HttpStatusCode.OK,
                             message = "Horarios obtidos com sucesso",
                         });
                     else
-                        return NotFound(new
+                        return Ok(new
                         {
                             result = "null",
-                            httpCode = 400,
+                            httpCode = (int)HttpStatusCode.BadRequest,
                             message = "Horarios não foram encontrados",
                         });
                 }
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -222,7 +222,7 @@ namespace WebAPI.Controllers
                 var horarios = _service.GetReservasDeHojeByIdSala(idSala);
                 
                 if (horarios.Count == 0)
-                    return StatusCode((int)HttpStatusCode.NoContent, new 
+                    return Ok(new 
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,
@@ -257,7 +257,7 @@ namespace WebAPI.Controllers
                 var horarios = _service.GetReservasDeHojeByUuid(uuid);
 
                 if (horarios.Count == 0)
-                    return StatusCode((int)HttpStatusCode.NoContent, new
+                    return Ok(new
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,
@@ -293,24 +293,24 @@ namespace WebAPI.Controllers
                     return Ok(new
                     {
                         result = horarioSala,
-                        httpCode = 200,
+                        httpCode = (int)HttpStatusCode.OK,
                         message = "Horário criado com sucesso!"
                     });
 
                 return BadRequest(new
                 {
                     result = "null",
-                    httpCode = 400,
+                    httpCode = (int)HttpStatusCode.BadRequest,
                     message = "Houve um problema na inclusão do horário!"
                 });
 
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -331,17 +331,17 @@ namespace WebAPI.Controllers
                 return BadRequest(new
                 {
                     result = "null",
-                    httpCode = 200,
+                    httpCode = (int)HttpStatusCode.BadRequest,
                     message = "Houve um problema na atualização do horário!"
                 });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500,
+                return StatusCode((int)HttpStatusCode.InternalServerError,
                      new
                      {
                          result = "null",
-                         httpCode = 500,
+                         httpCode = (int)HttpStatusCode.InternalServerError,
                          message = e.Message
                      });
             }
@@ -357,7 +357,7 @@ namespace WebAPI.Controllers
                     return Ok(new
                     {
                         result = "null",
-                        httpCode = 200,
+                        httpCode = (int)HttpStatusCode.OK,
                         message = "Horário excluido com sucesso!"
                     });
 
@@ -365,10 +365,10 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }

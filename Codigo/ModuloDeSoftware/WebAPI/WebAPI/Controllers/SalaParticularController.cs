@@ -2,6 +2,7 @@
 using Model;
 using Service;
 using Service.Interface;
+using System.Net;
 
 namespace WebAPI.Controllers
 {
@@ -28,7 +29,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }  
         }
 
@@ -40,13 +41,18 @@ namespace WebAPI.Controllers
             {
                 var salaParticular = _service.GetById(id);
                 if (salaParticular == null)
-                    return NotFound("Sala exclusiva não encontrada na base de dados.");
+                    return Ok(new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        message = "Sala exclusiva não encontrada na base de dados."
+                    });
 
                 return Ok(salaParticular);
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
            
         }
@@ -64,7 +70,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
@@ -81,7 +87,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }        
         }
 
@@ -98,7 +104,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
     }

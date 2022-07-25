@@ -3,6 +3,7 @@ using Model;
 using Model.ViewModel;
 using Service;
 using Service.Interface;
+using System.Net;
 
 namespace WebAPI.Controllers
 {
@@ -24,24 +25,24 @@ namespace WebAPI.Controllers
             {
                 var equipamentosSala = _service.GetByIdEquipamento(id);
                 if (equipamentosSala == null)
-                    return NotFound(new
+                    return Ok(new
                     {
                         result = "null",
-                        httpCode = 204,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Equipamento não encontrado na base de dados."
                     });
 
                 return Ok(new
                 {
                     result = equipamentosSala,
-                    httpCode = 200,
+                    httpCode = (int)HttpStatusCode.OK,
                     message = "Equipamento obtido com sucesso!"
                 });
 
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
 
         }
@@ -54,13 +55,18 @@ namespace WebAPI.Controllers
             {
                 var equipamentosSala = _service.GetByIdSala(id);
                 if (equipamentosSala.Count == 0)
-                    return NoContent();
+                    return Ok(new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        message = "Euuipamentos não encontrados na base de dados!"
+                    });
 
                 return Ok(equipamentosSala);
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
 
         }
@@ -73,13 +79,18 @@ namespace WebAPI.Controllers
             {
                 var equipamentosSala = _service.GetByIdSalaAndTipoEquipamento(id, tipo);
                 if (equipamentosSala == null)
-                    return NoContent();
+                    return Ok(new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        message = "Equipamento não encontrado na base de dados!"
+                    });
 
                 return Ok(equipamentosSala);
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
 
         }
@@ -97,7 +108,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
@@ -114,7 +125,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
@@ -131,7 +142,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
     }

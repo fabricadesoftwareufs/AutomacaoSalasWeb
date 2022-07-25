@@ -2,6 +2,7 @@
 using Model;
 using Service;
 using Service.Interface;
+using System.Net;
 
 namespace WebAPI.Controllers
 {
@@ -28,7 +29,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
@@ -40,13 +41,18 @@ namespace WebAPI.Controllers
             {
                 var planejamento = _service.GetById(id);
                 if (planejamento == null)
-                    return NotFound("Planejamento não encontrado na base de dados");
+                    return Ok(new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        message = "Planejamento não encontrado na base de dados"
+                    });
 
                 return Ok(planejamento);
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
@@ -63,7 +69,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
@@ -80,7 +86,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
@@ -97,7 +103,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
     }

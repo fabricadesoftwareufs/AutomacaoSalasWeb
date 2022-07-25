@@ -28,7 +28,7 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<str_dbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
+            services.AddDbContext<SalasUfsDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
 
             // Configuração da barreira
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -95,7 +95,16 @@ namespace WebAPI
             services.AddScoped<ICodigoInfravermelhoService, CodigoInfravermelhoService>();
             services.AddScoped<IEquipamentoService, EquipamentoService>();
             services.AddScoped<ILogRequestService, LogRequestService>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddMvcCore(options =>
+            {
+                options.RequireHttpsPermanent = true; //does not affect API requests
+                options.RespectBrowserAcceptHeader = true; //false by default
+            })
+            .AddApiExplorer()
+            .AddNewtonsoftJson()
+            .AddDataAnnotations()
+            .AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -126,7 +135,11 @@ namespace WebAPI
             app.UseHttpsRedirection();
             app.UseLogRequestMiddleware();
 
-            app.UseMvc();
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

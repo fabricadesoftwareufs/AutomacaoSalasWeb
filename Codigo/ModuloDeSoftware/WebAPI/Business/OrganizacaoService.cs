@@ -9,8 +9,8 @@ namespace Service
 {
     public class OrganizacaoService : IOrganizacaoService
     {
-        private readonly str_dbContext _context;
-        public OrganizacaoService(str_dbContext context)
+        private readonly SalasUfsDbContext _context;
+        public OrganizacaoService(SalasUfsDbContext context)
         {
             _context = context;
         }

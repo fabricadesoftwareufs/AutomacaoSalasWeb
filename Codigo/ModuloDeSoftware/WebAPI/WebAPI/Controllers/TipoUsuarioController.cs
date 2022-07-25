@@ -2,6 +2,7 @@
 using Model;
 using Service;
 using Service.Interface;
+using System.Net;
 
 namespace WebAPI.Controllers
 {
@@ -28,7 +29,7 @@ namespace WebAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
            
         }
@@ -41,13 +42,18 @@ namespace WebAPI.Controllers
             {
                 var tipo = _service.GetById(id);
                 if (tipo == null)
-                    return NotFound("Tipo de Usuário não encontrado na base de dados.");
+                    return Ok(new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        mesage = "Tipo de Usuário não encontrado na base de dados."
+                    });
 
                 return Ok(tipo);
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
            
         }

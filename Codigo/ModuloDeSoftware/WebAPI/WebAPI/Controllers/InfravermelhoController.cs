@@ -2,6 +2,7 @@
 using Model;
 using Service;
 using Service.Interface;
+using System.Net;
 
 namespace WebAPI.Controllers
 {
@@ -26,17 +27,17 @@ namespace WebAPI.Controllers
             {
                 CodigoInfravermelhoModel codigos = _service.GetByIdSalaAndIdOperacao(idSala, operacao);
                 if (codigos == null)
-                    return StatusCode(204, new
+                    return Ok(new
                     {
                         result = "null",
-                        httpCode = 204,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum código foi encontrado para a requisição!"
                     });
 
                 return Ok(new
                 {
                     result = codigos,
-                    httpCode = 200,
+                    httpCode = (int)HttpStatusCode.OK,
                     message = "Códigos Obtidos com sucesso!"
                 });
             }
@@ -45,7 +46,7 @@ namespace WebAPI.Controllers
                 return StatusCode(500, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -62,26 +63,26 @@ namespace WebAPI.Controllers
             {
                 var codigos = _service.GetAllByEquipamento(idEquipamento);
                 if (codigos == null)
-                    return StatusCode(204, new
+                    return Ok(new
                     {
                         result = "null",
-                        httpCode = 204,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum código foi encontrado para a requisição!"
                     });
 
                 return Ok(new
                 {
                     result = codigos,
-                    httpCode = 200,
+                    httpCode = (int)HttpStatusCode.OK,
                     message = "Códigos Obtidos com sucesso!"
                 });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -97,26 +98,26 @@ namespace WebAPI.Controllers
             {
                 var codigos = _service.GetAllByUuidHardware(uuid);
                 if (codigos == null)
-                    return StatusCode(204, new
+                    return Ok(new
                     {
                         result = "null",
-                        httpCode = 204,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum código foi encontrado para a requisição!"
                     });
 
                 return Ok(new
                 {
                     result = codigos,
-                    httpCode = 200,
+                    httpCode = (int)HttpStatusCode.OK,
                     message = "Códigos Obtidos com sucesso!"
                 });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }

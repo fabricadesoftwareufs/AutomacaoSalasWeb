@@ -2,6 +2,7 @@
 using Model;
 using Service;
 using Service.Interface;
+using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,25 +28,25 @@ namespace WebAPI.Controllers
             {
                 var monitoramento = _service.GetByIdEquipamento(idEquipamento);
                 if (monitoramento == null)
-                    return StatusCode(204, new
+                    return Ok(new
                     {
                         result = "null",
-                        httpCode = 204,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum Monitoramento encontrado!"
                     });
 
                 return Ok(new {
                         result = monitoramento,
-                        httpCode = 200,
-                        message = "Nenhum Monitoramento encontrado!"
+                        httpCode = (int)HttpStatusCode.OK,
+                        message = "Monitoramento retornado com sucesso!"
                     });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -62,26 +63,26 @@ namespace WebAPI.Controllers
                 var monitoramento = _service.GetByIdSalaAndTipoEquipamento(idSala, tipoEquipamento);
 
                 if (monitoramento == null)
-                    return StatusCode(204, new
+                    return Ok(new
                     {
                         result = "null",
-                        httpCode = 204,
+                        httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum Monitoramento encontrado!"
                     });
 
                 return Ok(new
                 {
                     result = monitoramento,
-                    httpCode = 200,
-                    message = "Nenhum Monitoramento encontrado!"
+                    httpCode = (int)HttpStatusCode.OK,
+                    message = "Monitoramento retornado com sucesso!"
                 });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
                 {
                     result = "null",
-                    httpCode = 500,
+                    httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
                 });
             }
@@ -97,20 +98,20 @@ namespace WebAPI.Controllers
                 if (_service.Update(monitoramento))
                     return Ok(new {
                         result = monitoramento,
-                        httpCode = 200,
-                        message = "Nenhum Monitoramento encontrado!"
+                        httpCode = (int)HttpStatusCode.OK,
+                        message = "Monitoramento atualizado!"
                     }); 
 
                 return BadRequest(new
                 {
                     result = monitoramento,
-                    httpCode = 400,
+                    httpCode = (int)HttpStatusCode.BadRequest,
                     message = "Houve um problema ao atualizar monitoramento!"
                 });
             }
             catch (ServiceException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
     }

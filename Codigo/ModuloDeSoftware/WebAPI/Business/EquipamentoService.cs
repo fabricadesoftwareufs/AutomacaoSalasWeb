@@ -10,9 +10,9 @@ namespace Service
 {
     public class EquipamentoService : IEquipamentoService
     {
-        private readonly str_dbContext _context;
+        private readonly SalasUfsDbContext _context;
 
-        public EquipamentoService(str_dbContext context)
+        public EquipamentoService(SalasUfsDbContext context)
         {
             _context = context;
         }

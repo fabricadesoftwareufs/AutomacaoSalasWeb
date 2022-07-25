@@ -11,9 +11,9 @@ namespace Service
 {
     public class HorarioSalaService : IHorarioSalaService
     {
-        private readonly str_dbContext _context;
+        private readonly SalasUfsDbContext _context;
         private const string ATUALIZAR_HORARIOS = "ATUALIZAR_HORARIOS";
-        public HorarioSalaService(str_dbContext context)
+        public HorarioSalaService(SalasUfsDbContext context)
         {
             _context = context;
         }
