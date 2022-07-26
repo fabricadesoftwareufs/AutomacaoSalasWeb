@@ -96,17 +96,17 @@ namespace Service
                     _context.Entry(usuarioAdd).State = EntityState.Detached;
                     entity.UsuarioModel.Id = usuarioAdd.Id;
 
-                    IUsuarioOrganizacaoService usuarioOrgService = new UsuarioOrganizacaoService(_context);
+                    var usuarioOrgService = new UsuarioOrganizacaoService(_context);
 
                     usuarioOrgService.Insert
                     (
                         new UsuarioOrganizacaoModel
                         {
-                            Id = entity.OrganizacaoModel.Id,
                             OrganizacaoId = entity.OrganizacaoModel.Id,
                             UsuarioId = entity.UsuarioModel.Id
                         }
                      );
+
                     _context.SaveChanges();
                     transaction.Commit();
                 }
