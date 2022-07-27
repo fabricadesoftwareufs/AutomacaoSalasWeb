@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,7 @@ using Service.Interface;
 using System;
 using System.Text;
 using WebAPI.Middlewares;
+using Utils;
 
 namespace WebAPI
 {
@@ -133,13 +135,32 @@ namespace WebAPI
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseHttpsRedirection();
-            app.UseLogRequestMiddleware();
+
+            app.UseWhen(context => CheckRoutesHardware(context), appBuilder =>
+             {
+                 appBuilder.UseLogRequestMiddleware();
+             });
+            
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private static bool CheckRoutesHardware(HttpContext context)
+        {
+            PathString path = context.Request.Path;
+
+            foreach(string route in Constants.ROUTES_HARDWARE)
+            {
+                if(path.StartsWithSegments(route, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

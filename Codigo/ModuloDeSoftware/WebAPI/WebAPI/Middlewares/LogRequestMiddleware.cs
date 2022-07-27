@@ -22,6 +22,7 @@ namespace WebAPI.Middlewares
 
         public async Task Invoke(HttpContext context, ILogRequestService logRequestService)
         {
+
             var features = context.Features.Get<IHttpRequestFeature>();
             var input = "";
             if (context.Request.HasFormContentType)
@@ -45,8 +46,8 @@ namespace WebAPI.Middlewares
                 Input = input,
                 StatusCode = context.Response?.StatusCode.ToString()
             };
-            if (!logRequest.Url.Contains(".js") && !logRequest.Url.Contains(".woff2") && !logRequest.Url.Contains(".css"))
-                logRequestService.Insert(logRequest);
+            
+            logRequestService.Insert(logRequest);
 
             await _next(context);
         }
