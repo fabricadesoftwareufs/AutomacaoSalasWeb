@@ -6,9 +6,9 @@ namespace Model
     {
         public enum TIPO : int
         {
-            CONTROLADOR_SALA = 2,
-            MODULO_SENSOR = 3,
-            MODULO_ATUADOR = 1
+            CONTROLADOR_SALA = 1,
+            MODULO_ATUADOR = 2,
+            MODULO_SENSOR = 3
         }
 
         [Required(ErrorMessage = "Campo obrigatório")]
