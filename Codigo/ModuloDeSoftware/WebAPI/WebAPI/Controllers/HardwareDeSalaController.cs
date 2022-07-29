@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.AuxModel;
 using Service;
 using Service.Interface;
-using System;
-using System.Linq;
 using System.Net;
 using Utils;
 
@@ -12,6 +11,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class HardwareDeSalaController : ControllerBase
     {
         private readonly IHardwareDeSalaService _service;
@@ -21,6 +21,7 @@ namespace WebAPI.Controllers
         }
         // GET: api/Hardware
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult Get()
         {
             var hardwares = _service.GetAll();
@@ -42,6 +43,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Hardware/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult Get(int id)
         {
             var hardware = _service.GetById(id);
@@ -73,6 +75,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Hardware/5
         [HttpGet("info/{mac}")]
+        [AllowAnonymous]
         public ActionResult Get([FromRoute]string mac, [FromQuery]string token, [FromQuery(Name = "tipo-hardware")] int tipoHardware)
         {
             var hardware = _service.GetByMAC(mac);
@@ -209,6 +212,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("Register")]
+        [AllowAnonymous]
         public ActionResult Register([FromBody] RegisterHardware registerHardware)
         {
             try
@@ -268,6 +272,7 @@ namespace WebAPI.Controllers
 
         // GET: Master by UUID of slave
         [HttpGet("slave/{uuid}/get-master")]
+        [AllowAnonymous]
         public ActionResult GetMaster([FromRoute] string uuid, [FromQuery] string token)
         {
             var hardware = _service.GetByUuid(uuid);
@@ -343,6 +348,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Hardware/5
         [HttpGet("{idSala}/get-sensors-and-actuators")]
+        [AllowAnonymous]
         public ActionResult GetSensorsAndActuatorsByIdSala([FromRoute] int idSala, [FromQuery] string token)
         {
             if (!Methods.TOKEN_PADRAO.Equals(token))
@@ -365,6 +371,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Hardware/5
         [HttpGet("master/{uuid}/get-sensors")]
+        [AllowAnonymous]
         public ActionResult GetSensors([FromRoute] string uuid, [FromQuery] string token)
         {
             var hardware = _service.GetByUuid(uuid);

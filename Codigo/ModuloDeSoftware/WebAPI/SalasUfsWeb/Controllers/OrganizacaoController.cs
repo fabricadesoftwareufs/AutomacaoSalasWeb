@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace SalasUfsWeb.Controllers
 {
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class OrganizacaoController : Controller
     {
         private readonly IOrganizacaoService _organizacaoService;

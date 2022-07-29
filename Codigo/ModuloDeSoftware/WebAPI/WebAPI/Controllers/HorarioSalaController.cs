@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service;
 using Service.Interface;
@@ -9,6 +10,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
     public class HorarioSalaController : ControllerBase
     {
         private readonly IHorarioSalaService _service;
@@ -20,6 +22,7 @@ namespace WebAPI.Controllers
         }
         // GET: api/HorarioSala
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult Get()
         {
             try
@@ -54,6 +57,7 @@ namespace WebAPI.Controllers
 
         // GET: api/HorarioSala/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult Get(int id)
         {
             try
@@ -89,6 +93,7 @@ namespace WebAPI.Controllers
         // GET: api/ReservaSala/5
         [HttpGet]
         [Route("ReservasDaSala/{idSala}")]
+        [AllowAnonymous]
         public ActionResult GetReservasDaSala(int idSala)
         {
             try
@@ -119,6 +124,7 @@ namespace WebAPI.Controllers
         // GET: api/ReservaSala/5
         [HttpGet]
         [Route("ReservasDaSemana/{idSala}")]
+        [AllowAnonymous]
         public ActionResult GetReservasDaSamana(int idSala)
         {
             try
@@ -153,6 +159,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Hardware/5
         [HttpGet("{uuid}/get-horarios-sala")]
+        [AllowAnonymous]
         public ActionResult GetHorarioSemana([FromRoute] string uuid, [FromQuery] string token)
         {
 
@@ -215,6 +222,7 @@ namespace WebAPI.Controllers
         // GET: api/ReservaSala/5
         [HttpGet]
         [Route("ReservasDeHoje/{idSala}")]
+        [AllowAnonymous]
         public ActionResult GetReservasDeHoje(int idSala)
         {
             try
@@ -250,6 +258,7 @@ namespace WebAPI.Controllers
         // GET: api/ReservaSala/5
         [HttpGet]
         [Route("ReservasDeHojePorUuid/{uuid}")]
+        [AllowAnonymous]
         public ActionResult GetReservasDeHojeByUuid(string uuid)
         {
             try

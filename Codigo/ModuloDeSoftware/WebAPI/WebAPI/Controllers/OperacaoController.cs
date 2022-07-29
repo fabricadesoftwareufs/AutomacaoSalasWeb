@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Model;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Service;
 using Service.Interface;
 using System.Net;
@@ -8,6 +8,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class OperacaoController : ControllerBase
     {
         private readonly IOperacaoCodigoService _service;
