@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class BlocoController : Controller
     {
         private readonly IBlocoService _blocoService;

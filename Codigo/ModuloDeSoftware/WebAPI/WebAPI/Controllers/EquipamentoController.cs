@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.ViewModel;
 using Service;
@@ -9,6 +10,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class EquipamentoController : ControllerBase
     {
         private readonly IEquipamentoService _service;
@@ -19,6 +21,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Equipamento/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult Get(int id)
         {
             try
@@ -49,6 +52,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Equipamento/5
         [HttpGet("equipamentosSala/{id}")]
+        [AllowAnonymous]
         public ActionResult GetEquipamentosSala(int id)
         {
             try
@@ -73,6 +77,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Equipamento/5
         [HttpGet("sala/{id}/tipoEquipamento/{tipo}")]
+        [AllowAnonymous]
         public ActionResult GetTipoEquipamentoSala(int id, string tipo)
         {
             try

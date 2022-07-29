@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service;
 using Service.Interface;
@@ -9,6 +10,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class BlocoController : ControllerBase
     {
         private readonly IBlocoService _service;
@@ -19,6 +21,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Bloco
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult Get()
         {
             var blocos = _service.GetAll();
@@ -40,6 +43,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Bloco/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult Get(int id)
         {
             var bloco = _service.GetById(id);

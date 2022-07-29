@@ -12,7 +12,7 @@ using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
-    [Authorize(Roles = "GESTOR, ADMIN")]
+    [Authorize(Roles = TipoUsuarioModel.ADMINISTRATIVE_ROLES)]
     public class SalaController : Controller
     {
         private readonly ISalaService _salaService;

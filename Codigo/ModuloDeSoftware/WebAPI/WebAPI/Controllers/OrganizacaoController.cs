@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service;
 using Service.Interface;
@@ -8,6 +9,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class OrganizacaoController : ControllerBase
     {
         private readonly IOrganizacaoService _service;
@@ -17,6 +19,7 @@ namespace WebAPI.Controllers
         }
         // GET: api/Organizacao
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult Get()
         {
             try
@@ -35,6 +38,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Organizacao/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult Get(int id)
         {
             try

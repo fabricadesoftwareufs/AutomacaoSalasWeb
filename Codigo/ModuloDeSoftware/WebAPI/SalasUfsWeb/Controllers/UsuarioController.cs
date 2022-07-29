@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Model;
 using Model.AuxModel;
 using Model.ViewModel;
 using Service;
@@ -13,7 +14,7 @@ using Utils;
 
 namespace SalasUfsWeb.Controllers
 {
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class UsuarioController : Controller
     {
         private readonly IUsuarioService _usuarioService;

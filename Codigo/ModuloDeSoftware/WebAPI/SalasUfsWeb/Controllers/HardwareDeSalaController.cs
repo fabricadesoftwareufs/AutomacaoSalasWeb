@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class HardwareDeSalaController : Controller
     {
         private readonly IHardwareDeSalaService _hardwareService;

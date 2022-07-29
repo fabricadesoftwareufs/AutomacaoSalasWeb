@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +11,7 @@ using Service;
 using Service.Interface;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using WebAPI.Middlewares;
 
 namespace WebAPI
@@ -31,22 +31,26 @@ namespace WebAPI
             services.AddDbContext<SalasUfsDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
 
             // Configuração da barreira
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
                 {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "Gabriel",
-                        ValidAudience = "Gabriel",
+                        ValidIssuer = "SalasUfsWebApi.net",
+                        ValidAudience = "SalasUfsWebApi.net",
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecurityKey"]))
                     };
-
-                    // Configurando eventos.
-                    /*
+                    
                     options.Events = new JwtBearerEvents
                     {
                         OnAuthenticationFailed = context =>
@@ -61,7 +65,6 @@ namespace WebAPI
                             return Task.CompletedTask;
                         }
                     };
-                    */
                 });
 
             services.AddSwaggerGen(options =>
@@ -74,13 +77,14 @@ namespace WebAPI
                     Contact = new OpenApiContact
                     {
                         Name = "Contato",
-                        Url = new Uri("https://example.com/contact")
+                        Url = new Uri("http://marcosdosea-002-site1.gtempurl.com/")
                     },
                 });
             });
 
-                // Injections
-                services.AddScoped<IOrganizacaoService, OrganizacaoService>();
+            // Injections
+            services.AddAuthorization();
+            services.AddScoped<IOrganizacaoService, OrganizacaoService>();
             services.AddScoped<IBlocoService, BlocoService>();
             services.AddScoped<ISalaService, SalaService>();
             services.AddScoped<IPlanejamentoService, PlanejamentoService>();
@@ -129,6 +133,7 @@ namespace WebAPI
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 options.RoutePrefix = "swagger";
             });
+
             // Mudar em produção.
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
@@ -136,6 +141,8 @@ namespace WebAPI
             app.UseLogRequestMiddleware();
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

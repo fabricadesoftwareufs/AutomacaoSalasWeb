@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
-    [Authorize(Roles = "GESTOR, ADMIN, CLIENTE")]
+    [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
     public class HomeController : Controller
     {
         private readonly ISalaParticularService _salaParticularService;
