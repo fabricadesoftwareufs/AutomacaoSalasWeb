@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service;
 using Service.Interface;
@@ -8,6 +9,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = TipoUsuarioModel.ADMINISTRATIVE_ROLES)]
     public class SalaController : ControllerBase
     {
         private readonly ISalaService _service;
@@ -17,6 +19,7 @@ namespace WebAPI.Controllers
         }
         // GET: api/Sala
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult Get()
         {
             try
@@ -36,7 +39,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Sala/5
         [HttpGet("{id}")]
-
+        [AllowAnonymous]
         public ActionResult Get(int id)
         {
             try

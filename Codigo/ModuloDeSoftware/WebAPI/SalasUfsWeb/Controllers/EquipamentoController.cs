@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.ViewModel;
@@ -10,6 +11,7 @@ using System.Security.Claims;
 
 namespace SalasUfsWeb.Controllers
 {
+    [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class EquipamentoController : Controller
     {
         private readonly IEquipamentoService _equipamentoService;

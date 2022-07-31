@@ -13,7 +13,7 @@ namespace Utils
             "/api/HorarioSala/ReservasDeHojePorUuid",
             "/api/hardwaredesala/slave/get-master",
             "/api/monitoramento",
-            "/api/infravermelho/CodigosPorUuid"
+            "/api/infravermelho/CodigosPorUuid" 
         };
     }
 }

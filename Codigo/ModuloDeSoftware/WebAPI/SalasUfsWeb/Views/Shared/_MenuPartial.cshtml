@@ -1,4 +1,5 @@
 ﻿@using System.Security.Claims;
+@using Model;
 @{
     ViewData["Title"] = "_MenuPartial";
     var claimsIdentity = User.Identity as ClaimsIdentity;
@@ -47,7 +48,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
 
-                @if (role.Equals("CLIENTE"))
+                @if (role.Equals(TipoUsuarioModel.ROLE_COLABORADOR))
                 {
                     <li class="nav-header">MINHAS SALAS</li>
                     <li class="nav-item">
@@ -68,7 +69,7 @@
                         </a>
                     </li>
                 }
-                else if (role.Equals("GESTOR"))
+                else if (role.Equals(TipoUsuarioModel.ROLE_GESTOR))
                 {
                     <li class="nav-header">MINHAS SALAS</li>
                     <li class="nav-item">
@@ -105,7 +106,7 @@
                         </a>
                     </li>
                 }
-                else if (role.Equals("ADMIN"))
+                else if (role.Equals(TipoUsuarioModel.ROLE_ADMIN))
                 {
                     <li class="nav-header">MINHAS SALAS</li>
                     <li class="nav-item">
