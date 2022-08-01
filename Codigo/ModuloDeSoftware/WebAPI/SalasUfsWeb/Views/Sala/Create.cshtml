@@ -54,6 +54,10 @@
                                     <input id="input-mac" class="form-control" />
                                     <span class="text-danger"></span>
                                 </div>
+                                <div class="form-group align-element" id="div-input-ip">
+                                    <label class="control-label">Ip</label>
+                                    <input id="input-ip" ip-mask class="form-control" placeholder="000.000.000.000" />
+                                </div>
                                 <div class="form-group align-element">
                                     <label class="control-label">Tipo de Hardware</label>
                                     <select class="form-control" onchange="mostraInputIP()" id="select-tipo-hardware">
@@ -64,12 +68,6 @@
                                     </select>
                                     <span class="text-danger"></span>
                                 </div>
-
-                                <div class="form-group align-element" id="div-input-ip" hidden>
-                                    <label class="control-label">Ip</label>
-                                    <input id="input-ip" ip-mask class="form-control" placeholder="000.000.000.000" />
-                                </div>
-
                                 <div class="form-group align-element">
                                     <a id="add-novo-horario" onclick="AdicionarHardware()" class="btn btn-primary text-white"><i class="nav-icon fa fa-plus"></i> </a>
                                 </div>

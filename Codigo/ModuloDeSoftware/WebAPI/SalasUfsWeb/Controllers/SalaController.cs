@@ -76,7 +76,7 @@ namespace SalasUfsWeb.Controllers
 
             try
             {
-                if (ModelState.IsValid)
+                    if (ModelState.IsValid)
                 {
 
                     if (_salaService.InsertSalaWithHardwares(salaModel, usuario.UsuarioModel.Id))

@@ -108,6 +108,7 @@ namespace SalasUfsWeb.Controllers
             ViewBag.usuarios = new SelectList(usuarios.Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
             ViewBag.salas = new SelectList(salas.Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
             ViewBag.blocos = new SelectList(blocos.Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
+
             try
             {
                 if (ModelState.IsValid)
