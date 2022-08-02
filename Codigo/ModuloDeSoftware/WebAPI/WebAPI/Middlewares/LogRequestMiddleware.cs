@@ -41,10 +41,11 @@ namespace WebAPI.Middlewares
             var logRequest = new LogRequestModel
             {
                 Date = DateTime.Now,
-                Ip = context.Connection?.RemoteIpAddress?.ToString(),
-                Url = $"{features?.Scheme}://{context.Request?.Host.Value}{features.RawTarget}",
+                Ip = context.Connection.RemoteIpAddress.ToString(),
+                Url = $"{features?.Scheme}://{context.Request?.Host.Value}{features?.RawTarget}",
                 Input = input,
-                StatusCode = context.Response?.StatusCode.ToString()
+                StatusCode = context.Response.StatusCode.ToString(),
+                Origin = "API"
             };
             
             logRequestService.Insert(logRequest);

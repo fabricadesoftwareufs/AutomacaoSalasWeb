@@ -6,7 +6,7 @@ namespace Persistence
 {
     public partial class SalasUfsDbContext : DbContext
     {
-        private const string _dbName = "str_db";
+        private const string _dbName = "db_a8a8d4_dbsalas";
         public SalasUfsDbContext()
         {
         }
@@ -31,6 +31,7 @@ namespace Persistence
         public virtual DbSet<Tipousuario> Tipousuario { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
         public virtual DbSet<Usuarioorganizacao> Usuarioorganizacao { get; set; }
+        public virtual DbSet<Logrequest> LogRequest { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -341,6 +342,11 @@ namespace Persistence
                     .HasColumnName("url")
                     .HasMaxLength(250)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Origin)
+                    .HasColumnName("origin")
+                    .HasColumnType("enum('API','ESP32')")
+                    .HasDefaultValueSql("_utf8mb4\\'API\\'");
             });
 
             modelBuilder.Entity<Operacao>(entity =>

@@ -166,7 +166,7 @@ namespace Service
                     var _equipamentoServiceService = new EquipamentoService(_context);
                     var equipamento = _equipamentoServiceService.GetByIdEquipamento(solicitacao.EquipamentoId);
                     var hardwareDeSala = _hardwareDeSalaService.GetByIdSalaAndTipoHardware(equipamento.Sala, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
-                    var clienteSocket = new ClienteSocketService(hardwareDeSala.Ip);
+                    var clienteSocket = new ClienteSocketService(_context, hardwareDeSala.Ip);
 
                     string tipoEquipamento = string.Empty, operacao = string.Empty, retornoEsperado = string.Empty;
 
