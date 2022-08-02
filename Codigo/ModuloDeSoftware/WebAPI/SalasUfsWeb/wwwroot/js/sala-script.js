@@ -15,7 +15,7 @@ function AdicionarHardware() {
     if (!validacoesHardwareExistente(enderecoMac, enderecoIp, tipoHardwareId)) {
         document.getElementById("mensagem-erro-hardwares").hidden = true;
         var novoHardware = new Array();
-        novoHardware.push(adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardwareTexto, tipoHardwareId == 2 ? enderecoIp : ""));
+        novoHardware.push(adicionaHardwareNaTabela(indice, enderecoMac, tipoHardwareId, tipoHardwareTexto, tipoHardwareId == 1 ? enderecoIp : ""));
 
         let hardwares = document.getElementsByClassName('hardware-sala');
         if (document.querySelector('.hardware-sala')) {
@@ -26,7 +26,7 @@ function AdicionarHardware() {
                 tipoHardwareTexto = hardwares[indice].childNodes[0].childNodes[2].value;
                 enderecoIp = hardwares[indice].childNodes[0].childNodes[3].value;
 
-                novoHardware.push(adicionaHardwareNaTabela(indice + 1, enderecoMac, tipoHardwareId, tipoHardwareTexto, tipoHardwareId == 2 ? enderecoIp : ""));
+                novoHardware.push(adicionaHardwareNaTabela(indice + 1, enderecoMac, tipoHardwareId, tipoHardwareTexto, tipoHardwareId == 1 ? enderecoIp : ""));
             }
         }
 
@@ -41,7 +41,7 @@ function validacoesHardwareExistente(enderecoMac, enderecoIp, tipoHardwareId) {
 
     let hardwareExistente = false;
 
-    if (tipoHardwareId != 2 || (enderecoIp != undefined && enderecoIp.length > 0)) {
+    if (tipoHardwareId != 1 || (enderecoIp != undefined && enderecoIp.length > 0)) {
 
         if (enderecoMac.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').length == 12) {
             let hardwares = document.getElementsByClassName('hardware-sala');
@@ -57,7 +57,7 @@ function validacoesHardwareExistente(enderecoMac, enderecoIp, tipoHardwareId) {
                         document.getElementById("mensagem-erro-hardwares").hidden = false;
                     }
 
-                    if (ip == enderecoIp && tipoHardwareId == 2) {
+                    if (ip == enderecoIp && tipoHardwareId == 1) {
                         hardwareExistente = true;
                         document.getElementById("mensagem-erro-hardwares").innerText = "Um hardware com esse endereço IP já foi adicionado!";
                         document.getElementById("mensagem-erro-hardwares").hidden = false;
