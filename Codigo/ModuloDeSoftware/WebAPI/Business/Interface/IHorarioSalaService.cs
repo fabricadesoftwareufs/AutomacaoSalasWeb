@@ -1,6 +1,7 @@
 ﻿using Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Service.Interface
 {
@@ -12,7 +13,7 @@ namespace Service.Interface
         HorarioSalaModel VerificaSalaOcupada(int idSala, DateTime data, TimeSpan horarioInicio, TimeSpan horarioFim);
         List<HorarioSalaModel> GetByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana);
         List<HorarioSalaModel> GetByIdUsuario(int idUsuario);
-        List<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana);
+        IEnumerable<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana);
         List<HorarioSalaModel> GetReservasDaSemanaByIdSala(int idSala);
         List<HorarioSalaModel> GetReservasDeHojeByIdSala(int idSala);
         List<HorarioSalaModel> GetReservasDeHojeByUuid(string uuid);
