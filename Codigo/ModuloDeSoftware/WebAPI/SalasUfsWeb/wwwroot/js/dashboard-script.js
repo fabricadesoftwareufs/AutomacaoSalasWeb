@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
     let codDia = new Date().getDay();
-    checkButtonByCodigoDia(codDia);
     loadSalasByDiaSemana(getDiaSemana(codDia));
+    checkButtonByCodigoDia(codDia);
 });
 
 function submitForm(formId, idItem, salaParticular) {
@@ -32,7 +32,6 @@ function loadSalasByDiaSemana(dia) {
     let url = "/Home/GetReservasUsuario";
 
     checkButtonByCodigoDia(getCodigoSemana(dia));
-
     document.getElementById('container-reservas').innerHTML = "";
     $.get(url, { diaSemana: dia }, function (data) {
         if (data.salasUsuario.length > 0) {
@@ -53,7 +52,7 @@ function addReserva(data, indice ,dia) {
         '</div>' +
         '<div class="card-body">' +
         '<div class="align-element">' +
-        '<h5 class="card-text">' + data.horarioSala.horarioInicio.substring(0, 5) + ' às ' + data.horarioSala.horarioFim.substring(0, 5) + '</h5>' +
+        '<h5 class="card-text">' + convertMsToHM(data.horarioSala.horarioInicio.totalMilliseconds) + ' às ' + convertMsToHM(data.horarioSala.horarioFim.totalMilliseconds) + '</h5>' +
         '<form asp-controller="Home" asp-action="CancelarReserva" method="post" action="/Home/CancelarReserva">' +
         '<input class="form-control" name="idReserva" value="' + data.horarioSala.id + '" hidden>' +
         '<input type="submit" class="btn btn-danger" value="Cancelar" />' +
@@ -93,13 +92,31 @@ function addReserva(data, indice ,dia) {
     $('#container-reservas').append(item);
 }
 
+function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+}
+
+function convertMsToHM(milliseconds) {
+    let seconds = Math.floor(milliseconds / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+
+    seconds = seconds % 60;
+    minutes = seconds >= 30 ? minutes + 1 : minutes;
+
+    minutes = minutes % 60;
+
+    hours = hours % 24;
+
+    return `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`;
+}
 function checkButtonByCodigoDia(dia) {
     switch (dia) {
         case 0: document.getElementById("option_dom").checked = true;
             break;
         case 1: document.getElementById("option_seg").checked = true;
             break;
-        case 2: document.getElementById("option_ter").checked = true;
+        case 2: document.getElementById("option_ter").enable = true;
             break;
         case 3: document.getElementById("option_qua").checked = true;
             break;

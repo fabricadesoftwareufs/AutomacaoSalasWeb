@@ -172,22 +172,26 @@ namespace Service
             return lista;
         }
 
-        public List<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana)
-         => _context.Horariosala
-             .Where(hs => hs.Usuario == idUsuario && ((int)hs.Data.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper()) &&
-                    hs.Data >= DateTime.Now.Date && hs.Data <= DateTime.Now.AddDays(6) && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))
-             .Select(hs => new HorarioSalaModel
-             {
-                 Id = hs.Id,
-                 Data = hs.Data,
-                 SalaId = hs.Sala,
-                 HorarioInicio = hs.HorarioInicio,
-                 HorarioFim = hs.HorarioFim,
-                 Situacao = hs.Situacao,
-                 Objetivo = hs.Objetivo,
-                 UsuarioId = hs.Usuario,
-                 Planejamento = hs.Planejamento
-             }).ToList();
+        public IEnumerable<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(int idUsuario, string diaSemana)
+        {
+            var reservas = _context.Horariosala
+               .Where(hs => hs.Usuario == idUsuario)
+               .Select(hs => new HorarioSalaModel
+               {
+                   Id = hs.Id,
+                   Data = hs.Data,
+                   SalaId = hs.Sala,
+                   HorarioInicio = hs.HorarioInicio,
+                   HorarioFim = hs.HorarioFim,
+                   Situacao = hs.Situacao,
+                   Objetivo = hs.Objetivo,
+                   UsuarioId = hs.Usuario,
+                   Planejamento = hs.Planejamento
+               }).ToList();
+
+            return reservas.Where(hs => hs.Data >= DateTime.Now.Date && ((int)hs.Data.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper())
+              && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA));
+        }
 
         public bool ConcelarReserva(int idReserva)
         {
