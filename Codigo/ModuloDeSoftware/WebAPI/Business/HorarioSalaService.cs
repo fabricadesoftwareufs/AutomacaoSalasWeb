@@ -370,7 +370,7 @@ namespace Service
                         type = ATUALIZAR_HORARIOS,
                     });
 
-                var socketService = new ClienteSocketService(ipSala);
+                var socketService = new ClienteSocketService(_context, ipSala);
                 socketService.AbrirConexao();
                 bool resultado = socketService.EnviarComando(mensagem) != null;
                 socketService.FecharConexao();

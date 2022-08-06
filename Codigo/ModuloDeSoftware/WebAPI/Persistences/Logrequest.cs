@@ -11,5 +11,6 @@ namespace Persistence
         public DateTime Date { get; set; }
         public string Input { get; set; }
         public string StatusCode { get; set; }
+        public string Origin { get; set; }
     }
 }

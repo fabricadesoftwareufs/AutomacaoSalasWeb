@@ -44,8 +44,8 @@ namespace SalasUfsWeb.Middlewares
                 Input = input,
                 StatusCode = context.Response?.StatusCode.ToString()
             };
-            if(!logRequest.Url.Contains(".js") && !logRequest.Url.Contains(".woff2") && !logRequest.Url.Contains(".css"))
-                logRequestService.Insert(logRequest);
+
+            logRequestService.Insert(logRequest);
 
             await _next(context);
         }

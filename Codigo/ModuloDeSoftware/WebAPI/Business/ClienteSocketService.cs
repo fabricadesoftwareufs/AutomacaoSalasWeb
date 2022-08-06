@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Persistence;
+using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -6,14 +8,18 @@ namespace Service
 {
     public class ClienteSocketService
     {
+        private readonly SalasUfsDbContext _context;
         private string Ip { get; set; }
         private const int PORTA = 8088;
         private const int NR_TENTATIVAS_CONEXAO = 5;
         public TcpClient Client { get; set; }
-        public ClienteSocketService(string ip)
+        public Logrequest LogRequest { get; set; }
+
+        public ClienteSocketService(SalasUfsDbContext context, string ip)
         {
             Ip = ip;
             Client = new TcpClient();
+            _context = context;
         }
 
         public void AbrirConexao()
@@ -29,6 +35,8 @@ namespace Service
 
         public string EnviarComando(string comando)
         {
+            CreateLog(comando);
+
             if (Client.Connected)
             {
                 int tentativas = 0;
@@ -66,26 +74,47 @@ namespace Service
                         while (stream.DataAvailable);
 
                         resposta = myCompleteMessage.ToString();
-
                         stream.Close();
                     }
                     catch (Exception e)
                     {
                         tentativas++;
                         enviouComando = false;
-                        Console.WriteLine("Conexão falhhou, tentando novamente...");
+                        Console.WriteLine("Conexão falhou, tentando novamente...");
                         Console.WriteLine("Tentativa nr: " + tentativas);
                         Console.WriteLine(e);
                     }
                 } while (!enviouComando && tentativas < NR_TENTATIVAS_CONEXAO);
 
+                SaveLog(resposta);
+
                 return resposta;
             }
             else
             {
+                LogRequest.Date = DateTime.Now;
+                SaveLog(null);
                 Console.WriteLine("Não foi possível estabelecer conexão");
                 throw new ServiceException("Não foi possível estabelecer conexão");
             }
+        }
+
+        private void CreateLog(string comando)
+        {
+            LogRequest = new Logrequest()
+            {
+                Ip = Ip,
+                Origin = "ESP32",
+                Url = comando
+            };
+        }
+        private void SaveLog(string resposta)
+        {
+            LogRequest.Date = DateTime.Now;
+            LogRequest.Input = resposta;
+            LogRequest.StatusCode = LogRequest.Input != null ? HttpStatusCode.OK.ToString() : HttpStatusCode.BadRequest.ToString();
+            _context.LogRequest.Add(LogRequest);
+            _context.SaveChanges();
         }
     }
 }
