@@ -45,7 +45,7 @@ namespace SalasUfsWeb.Middlewares
                 StatusCode = context.Response?.StatusCode.ToString()
             };
 
-            logRequestService.Insert(logRequest);
+            //logRequestService.Insert(logRequest);
 
             await _next(context);
         }
