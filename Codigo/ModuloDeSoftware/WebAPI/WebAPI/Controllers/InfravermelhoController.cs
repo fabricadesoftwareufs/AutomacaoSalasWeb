@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
             try
             {
                 var codigos = _service.GetAllByEquipamento(idEquipamento);
-                if (codigos == null)
+                if (codigos == null || codigos.Count == 0)
                     return Ok(new
                     {
                         result = "null",
@@ -99,7 +99,7 @@ namespace WebAPI.Controllers
             try
             {
                 var codigos = _service.GetAllByUuidHardware(uuid);
-                if (codigos == null)
+                if (codigos == null || codigos.Count == 0)
                     return Ok(new
                     {
                         result = "null",

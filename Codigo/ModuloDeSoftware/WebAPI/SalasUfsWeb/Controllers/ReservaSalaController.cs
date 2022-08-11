@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.DependencyInjection;
 using Model;
 using Model.AuxModel;
 using Model.ViewModel;
@@ -11,6 +12,7 @@ using Service.Interface;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace SalasUfsWeb.Controllers
 {
@@ -24,6 +26,7 @@ namespace SalasUfsWeb.Controllers
         private readonly IOrganizacaoService _organizacaoService;
         private readonly IHorarioSalaService _horarioSalaService;
         private readonly IHardwareDeSalaService _hardwareDeSalaService;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
         public ReservaSalaController(
                                         ISalaService salaService,
@@ -32,7 +35,8 @@ namespace SalasUfsWeb.Controllers
                                         IUsuarioOrganizacaoService usuarioOrganizacaoService,
                                         IOrganizacaoService organizacaoService,
                                         IHorarioSalaService horarioSalaService,
-                                        IHardwareDeSalaService hardwareDeSalaService
+                                        IHardwareDeSalaService hardwareDeSalaService,
+                                        IServiceScopeFactory serviceScopeFactory
                                     )
         {
             _salaService = salaService;
@@ -42,6 +46,7 @@ namespace SalasUfsWeb.Controllers
             _organizacaoService = organizacaoService;
             _horarioSalaService = horarioSalaService;
             _hardwareDeSalaService = hardwareDeSalaService;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         // GET: ReservaSalaController
@@ -125,8 +130,18 @@ namespace SalasUfsWeb.Controllers
                     }))
                     {
                         TempData["mensagemSucesso"] = "Reserva feita com sucesso!";
-                        var hardwareDeSala = _hardwareDeSalaService.GetByIdSalaAndTipoHardware(reservaModel.HorarioSalaModel.SalaId, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
-                        bool atualizou = _horarioSalaService.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Ip, reservaModel.HorarioSalaModel.Data);
+
+                        _ = Task.Run(() =>
+                        {
+                            using var scope = _serviceScopeFactory.CreateScope();
+                            var hardwareDeSalaService = scope.ServiceProvider.GetRequiredService<IHardwareDeSalaService>();
+
+                            var hardwareDeSala = hardwareDeSalaService?.GetByIdSalaAndTipoHardware(reservaModel.HorarioSalaModel.SalaId, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
+
+                            var horarioSalaService = scope.ServiceProvider.GetRequiredService<IHorarioSalaService>();
+
+                            horarioSalaService?.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Ip, reservaModel.HorarioSalaModel.Data);
+                        });
                     }
                     else
                     {
@@ -178,7 +193,7 @@ namespace SalasUfsWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "GESTOR, ADMIN")]
-        public ActionResult Edit(ReservaSalaViewModel reservaModel)
+        public  ActionResult Edit(ReservaSalaViewModel reservaModel)
         {
             var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
@@ -210,8 +225,18 @@ namespace SalasUfsWeb.Controllers
                     }))
                     {
                         TempData["mensagemSucesso"] = "Reserva editada com sucesso!";
-                        var hardwareDeSala = _hardwareDeSalaService.GetByIdSalaAndTipoHardware(reservaModel.HorarioSalaModel.SalaId, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
-                        bool atualizou = _horarioSalaService.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Ip, reservaModel.HorarioSalaModel.Data);
+
+                        _ = Task.Run(() =>
+                        {
+                            using var scope = _serviceScopeFactory.CreateScope();
+                            var hardwareDeSalaService = scope.ServiceProvider.GetRequiredService<IHardwareDeSalaService>();
+
+                            var hardwareDeSala = hardwareDeSalaService?.GetByIdSalaAndTipoHardware(reservaModel.HorarioSalaModel.SalaId, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
+
+                            var horarioSalaService = scope.ServiceProvider.GetRequiredService<IHorarioSalaService>();
+
+                            horarioSalaService?.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Ip, reservaModel.HorarioSalaModel.Data);
+                        });                       
                     }
                     else
                     {
