@@ -84,7 +84,7 @@ namespace SalasUfsWeb.Controllers
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
-            var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id).Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }).ToList();
+            var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var salas = _salaService.GetAllByIdUsuarioOrganizacao(idUsuario);
             var usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
 
