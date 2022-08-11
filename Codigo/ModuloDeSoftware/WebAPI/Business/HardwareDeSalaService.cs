@@ -71,7 +71,7 @@ namespace Service
                                      hard => hard.Id,
                                      equip => equip.HardwareDeSala,
                                      (hard, equip) => new { Hadware = hard, Equipamento = equip })
-                                  .Where(hs => hs.Hadware.Sala == id && hs.Hadware.TipoHardware  == (int)HardwareDeSalaModel.TIPO.MODULO_ATUADOR)
+                                  .Where(hs => hs.Equipamento.HardwareDeSala == hs.Hadware.Id && hs.Hadware.Sala == id && hs.Hadware.TipoHardware  == (int)HardwareDeSalaModel.TIPO.MODULO_ATUADOR)
                                     .Select(h =>
                                         new HardwareDeSalaModel
                                         {

@@ -19,8 +19,8 @@ namespace Service
             try
             {
                 var entity = new Logrequest();
-                _context.Add(SetEntity(logRequestModel));
-                return _context.SaveChanges() == 1 ? true : false;
+                _context.LogRequest.Add(SetEntity(logRequestModel));
+                return _context.SaveChanges() == 1;
             }
             catch (Exception e) { throw e; }
         }
@@ -35,6 +35,7 @@ namespace Service
                 Date = model.Date,
                 StatusCode = model.StatusCode,
                 Input = model.Input,
+                Origin = model.Origin,
             };
             return entity;
         }
