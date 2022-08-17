@@ -6,7 +6,8 @@ namespace Model.AuxModel
     {
         public SalaParticularModel SalaExclusiva { get; set; }
         public SalaModel Sala { get; set; }
-        public MonitoramentoViewModel Monitoramento { get; set; }
+        public MonitoramentoModel MonitoramentoLuzes { get; set; }
+        public MonitoramentoModel MonitoramentoCondicionadores { get; set; }
         public BlocoModel Bloco { get; set; }
         public HorarioSalaModel HorarioSala { get; set; }
     }

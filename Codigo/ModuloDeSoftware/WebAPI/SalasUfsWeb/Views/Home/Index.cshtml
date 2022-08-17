@@ -24,55 +24,68 @@
                                 @foreach (var item in Model.SalasUsuario)
                                 {
                                     <div class="card">
-
                                         <div class="card-body">
                                             <div class="card-title">
                                                 <h4>
                                                     @item.Bloco.Titulo <br />
                                                     @item.Sala.Titulo
                                                 </h4>
-                                            </div>
-                                            <form asp-controller="Home" asp-action="MonitorarSala" id="form-@item.Monitoramento.Id">
-                                                <div class="form-control" hidden>
-                                                    <input class="form-control" name="SalaId" value="@item.Monitoramento.SalaId" />
-                                                    <input class="form-control" name="Id" value="@item.Monitoramento.Id" />
-                                                    <input class="form-control" name="SalaParticular" value="True" />
+                                            </div>                                          
+                                            <div class="float-right">
+                                                <div class="float-right">
+                                                    <div class="align-element">
+                                                        <form asp-controller="Home" asp-action="MonitorarSala" id="form-@item.MonitoramentoLuzes.Id">
+
+                                                            <div class="form-control" hidden>
+                                                                <input class="form-control" name="SalaId" value="@item.Sala.Id" />
+                                                                <input class="form-control" name="EquipamentoId" value="@item.MonitoramentoLuzes.EquipamentoId" />
+                                                                <input class="form-control" name="Id" value="@item.MonitoramentoLuzes.Id" />
+                                                                <input class="form-control" name="SalaParticular" value="True" />
+                                                            </div>
+
+                                                            <h5 class="card-text">Luzes</h5>
+                                                            <label class="switch" onchange="submitForm('form-@item.MonitoramentoLuzes.Id',@item.SalaExclusiva.Id,true)">
+                                                                @if (item.MonitoramentoLuzes.Estado)
+                                                                {
+                                                                    <input type="checkbox" name="Estado" id="luzes-@item.SalaExclusiva.Id" value="@item.MonitoramentoLuzes.Estado" checked />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="checkbox" name="Estado" id="luzes-@item.SalaExclusiva.Id" value="@item.MonitoramentoLuzes.Estado" />
+                                                                }
+                                                                <span class="slider round"></span>
+                                                            </label>
+
+                                                        </form>
+                                                    </div>
                                                 </div>
                                                 <div class="float-right">
-                                                    <div class="float-right">
-                                                        <div class="align-element">
-                                                            <h5 class="card-text">Luzes</h5>
-                                                            <label class="switch" onchange="submitForm('form-@item.Monitoramento.Id',@item.SalaExclusiva.Id,true)">
-                                                                @if (item.Monitoramento.Luzes)
-                                                                {
-                                                                    <input type="checkbox" name="Luzes" id="luzes-@item.SalaExclusiva.Id" value="@item.Monitoramento.Luzes" checked />
-                                                                }
-                                                                else
-                                                                {
-                                                                    <input type="checkbox" name="Luzes" id="luzes-@item.SalaExclusiva.Id" value="@item.Monitoramento.Luzes" />
-                                                                }
-                                                                <span class="slider round"></span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="float-right">
-                                                        <div class="align-element">
+                                                    <div class="align-element">
+                                                        <form asp-controller="Home" asp-action="MonitorarSala" id="form-@item.MonitoramentoCondicionadores.Id">
+
+                                                            <div class="form-control" hidden>
+                                                                <input class="form-control" name="SalaId" value="@item.Sala.Id" />
+                                                                <input class="form-control" name="EquipamentoId" value="@item.MonitoramentoCondicionadores.EquipamentoId" />
+                                                                <input class="form-control" name="Id" value="@item.MonitoramentoCondicionadores.Id" />
+                                                                <input class="form-control" name="SalaParticular" value="True" />
+                                                            </div>
+
                                                             <h5 class="card-text">Condicionadores</h5>
-                                                            <label class="switch" onchange="submitForm('form-@item.Monitoramento.Id',@item.SalaExclusiva.Id,true)">
-                                                                @if (item.Monitoramento.ArCondicionado)
+                                                            <label class="switch" onchange="submitForm('form-@item.MonitoramentoCondicionadores.Id',@item.SalaExclusiva.Id,true)">
+                                                                @if (item.MonitoramentoCondicionadores.Estado)
                                                                 {
-                                                                    <input type="checkbox" name="ArCondicionado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.Monitoramento.ArCondicionado" checked />
+                                                                    <input type="checkbox" name="Estado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.MonitoramentoCondicionadores.Estado" checked />
                                                                 }
                                                                 else
                                                                 {
-                                                                    <input type="checkbox" name="ArCondicionado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.Monitoramento.ArCondicionado" />
+                                                                    <input type="checkbox" name="Estado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.MonitoramentoCondicionadores.Estado" />
                                                                 }
                                                                 <span class="slider round"></span>
                                                             </label>
-                                                        </div>
+                                                        </form>
                                                     </div>
                                                 </div>
-                                            </form>
+                                            </div>
                                         </div>
                                     </div>
                                 }

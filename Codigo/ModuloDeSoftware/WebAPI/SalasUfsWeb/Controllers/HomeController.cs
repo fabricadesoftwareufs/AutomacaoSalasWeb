@@ -101,7 +101,8 @@ namespace SalasUfsWeb.Controllers
                     SalaExclusiva = item,
                     Sala = sala,
                     Bloco = bloco,
-                    Monitoramento = GetEstadoMonitoramentoSala(sala.Id),
+                    MonitoramentoLuzes = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_LUZES),
+                    MonitoramentoCondicionadores = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_CONDICIONADOR)
                 });
             }
 
@@ -123,35 +124,12 @@ namespace SalasUfsWeb.Controllers
                     HorarioSala = item,
                     Sala = sala,
                     Bloco = bloco,
-                    Monitoramento = GetEstadoMonitoramentoSala(sala.Id),
+                    MonitoramentoLuzes = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_LUZES),
+                    MonitoramentoCondicionadores = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_CONDICIONADOR)
                 });
             }
 
             return salas;
         }
-
-        public MonitoramentoViewModel GetEstadoMonitoramentoSala(int idSala) 
-        {
-            var monitoramento = new MonitoramentoViewModel();
-            foreach (var m in _monitoramentoService.GetByIdSala(idSala))
-            {
-                if (m.Estado)
-                {
-                    switch (m.EquipamentoNavigation.TipoEquipamento)
-                    {
-                        case EquipamentoModel.TIPO_CONDICIONADOR:
-                            monitoramento.ArCondicionado = m.Estado;
-                            break;
-
-                        case EquipamentoModel.TIPO_LUZES:
-                            monitoramento.Luzes = m.Estado;
-                            break;
-                    }
-                }
-            }
-
-            return monitoramento;
-        }
-
     }
 }
