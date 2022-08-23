@@ -20,8 +20,8 @@ namespace Persistence
         public int Usuario { get; set; }
         public int Sala { get; set; }
 
-        public Sala SalaNavigation { get; set; }
-        public Usuario UsuarioNavigation { get; set; }
-        public ICollection<Horariosala> Horariosala { get; set; }
+        public virtual Sala SalaNavigation { get; set; }
+        public virtual Usuario UsuarioNavigation { get; set; }
+        public virtual ICollection<Horariosala> Horariosala { get; set; }
     }
 }

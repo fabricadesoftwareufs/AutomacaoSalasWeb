@@ -6,7 +6,6 @@ namespace Persistence
     public partial class Horariosala
     {
         public int Id { get; set; }
-        public DateTime Data { get; set; }
         public TimeSpan HorarioInicio { get; set; }
         public TimeSpan HorarioFim { get; set; }
         public string Situacao { get; set; }
@@ -15,8 +14,8 @@ namespace Persistence
         public int Sala { get; set; }
         public int? Planejamento { get; set; }
 
-        public Planejamento PlanejamentoNavigation { get; set; }
-        public Sala SalaNavigation { get; set; }
-        public Usuario UsuarioNavigation { get; set; }
+        public virtual Planejamento PlanejamentoNavigation { get; set; }
+        public virtual Sala SalaNavigation { get; set; }
+        public virtual Usuario UsuarioNavigation { get; set; }
     }
 }

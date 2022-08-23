@@ -15,7 +15,7 @@ namespace Persistence
         public string Cnpj { get; set; }
         public string RazaoSocial { get; set; }
 
-        public ICollection<Bloco> Bloco { get; set; }
-        public ICollection<Usuarioorganizacao> Usuarioorganizacao { get; set; }
+        public virtual ICollection<Bloco> Bloco { get; set; }
+        public virtual ICollection<Usuarioorganizacao> Usuarioorganizacao { get; set; }
     }
 }

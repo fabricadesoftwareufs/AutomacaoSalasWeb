@@ -13,6 +13,6 @@ namespace Persistence
         public int Id { get; set; }
         public string Descricao { get; set; }
 
-        public ICollection<Usuario> Usuario { get; set; }
+        public virtual ICollection<Usuario> Usuario { get; set; }
     }
 }
