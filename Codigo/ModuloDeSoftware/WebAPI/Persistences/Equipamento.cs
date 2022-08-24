@@ -9,21 +9,21 @@ namespace Persistence
     {
         public Equipamento()
         {
-            Codigoinfravermelhos = new HashSet<Codigoinfravermelho>();
-            Monitoramentos = new HashSet<Monitoramento>();
+            Codigoinfravermelho = new HashSet<Codigoinfravermelho>();
+            Monitoramento = new HashSet<Monitoramento>();
         }
 
         public int Id { get; set; }
         public string Modelo { get; set; }
         public string Marca { get; set; }
         public string Descricao { get; set; }
-        public uint Sala { get; set; }
+        public int Sala { get; set; }
         public string TipoEquipamento { get; set; }
-        public uint? HardwareDeSala { get; set; }
+        public int? HardwareDeSala { get; set; }
 
         public virtual Hardwaredesala HardwareDeSalaNavigation { get; set; }
         public virtual Sala SalaNavigation { get; set; }
-        public virtual ICollection<Codigoinfravermelho> Codigoinfravermelhos { get; set; }
-        public virtual ICollection<Monitoramento> Monitoramentos { get; set; }
+        public virtual ICollection<Codigoinfravermelho> Codigoinfravermelho { get; set; }
+        public virtual ICollection<Monitoramento> Monitoramento { get; set; }
     }
 }

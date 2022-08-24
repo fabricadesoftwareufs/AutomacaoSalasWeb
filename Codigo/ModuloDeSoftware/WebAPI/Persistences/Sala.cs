@@ -9,22 +9,22 @@ namespace Persistence
     {
         public Sala()
         {
-            Equipamentos = new HashSet<Equipamento>();
-            Hardwaredesalas = new HashSet<Hardwaredesala>();
-            Horariosalas = new HashSet<Horariosala>();
-            Planejamentos = new HashSet<Planejamento>();
-            Salaparticulars = new HashSet<Salaparticular>();
+            Equipamento = new HashSet<Equipamento>();
+            Hardwaredesala = new HashSet<Hardwaredesala>();
+            Horariosala = new HashSet<Horariosala>();
+            Planejamento  = new HashSet<Planejamento>();
+            Salaparticular = new HashSet<Salaparticular>();
         }
 
-        public uint Id { get; set; }
+        public int Id { get; set; }
         public string Titulo { get; set; }
-        public uint Bloco { get; set; }
+        public int Bloco { get; set; }
 
         public virtual Bloco BlocoNavigation { get; set; }
-        public virtual ICollection<Equipamento> Equipamentos { get; set; }
-        public virtual ICollection<Hardwaredesala> Hardwaredesalas { get; set; }
-        public virtual ICollection<Horariosala> Horariosalas { get; set; }
-        public virtual ICollection<Planejamento> Planejamentos { get; set; }
-        public virtual ICollection<Salaparticular> Salaparticulars { get; set; }
+        public virtual ICollection<Equipamento> Equipamento { get; set; }
+        public virtual ICollection<Hardwaredesala> Hardwaredesala { get; set; }
+        public virtual ICollection<Horariosala> Horariosala { get; set; }
+        public virtual ICollection<Planejamento> Planejamento  { get; set; }
+        public virtual ICollection<Salaparticular> Salaparticular { get; set; }
     }
 }

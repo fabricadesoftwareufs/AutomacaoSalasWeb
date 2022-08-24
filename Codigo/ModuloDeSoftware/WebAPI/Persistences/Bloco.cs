@@ -9,14 +9,14 @@ namespace Persistence
     {
         public Bloco()
         {
-            Salas = new HashSet<Sala>();
+            Sala = new HashSet<Sala>();
         }
 
-        public uint Id { get; set; }
-        public uint Organizacao { get; set; }
+        public int Id { get; set; }
+        public int Organizacao { get; set; }
         public string Titulo { get; set; }
 
         public virtual Organizacao OrganizacaoNavigation { get; set; }
-        public virtual ICollection<Sala> Salas { get; set; }
+        public virtual ICollection<Sala> Sala { get; set; }
     }
 }

@@ -7,9 +7,9 @@ namespace Persistence
 {
     public partial class Salaparticular
     {
-        public uint Id { get; set; }
-        public uint Usuario { get; set; }
-        public uint Sala { get; set; }
+        public int Id { get; set; }
+        public int Usuario { get; set; }
+        public int Sala { get; set; }
 
         public virtual Sala SalaNavigation { get; set; }
         public virtual Usuario UsuarioNavigation { get; set; }

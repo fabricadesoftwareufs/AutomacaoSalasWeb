@@ -7,8 +7,8 @@ namespace Persistence
 {
     public partial class Solicitacao
     {
-        public uint Id { get; set; }
-        public uint IdHardware { get; set; }
+        public int Id { get; set; }
+        public int IdHardware { get; set; }
         public string Payload { get; set; }
         public DateTime DataSolicitacao { get; set; }
         public DateTime? DataFinalizacao { get; set; }

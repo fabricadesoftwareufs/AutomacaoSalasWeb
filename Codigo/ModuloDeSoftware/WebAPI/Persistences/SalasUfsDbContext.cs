@@ -16,31 +16,27 @@ namespace Persistence
         {
         }
 
-        public virtual DbSet<Bloco> Blocos { get; set; }
-        public virtual DbSet<Codigoinfravermelho> Codigoinfravermelhos { get; set; }
-        public virtual DbSet<Equipamento> Equipamentos { get; set; }
-        public virtual DbSet<Hardwaredesala> Hardwaredesalas { get; set; }
-        public virtual DbSet<Horariosala> Horariosalas { get; set; }
-        public virtual DbSet<Logrequest> Logrequests { get; set; }
-        public virtual DbSet<Monitoramento> Monitoramentos { get; set; }
-        public virtual DbSet<Operacao> Operacaos { get; set; }
-        public virtual DbSet<Organizacao> Organizacaos { get; set; }
-        public virtual DbSet<Planejamento> Planejamentos { get; set; }
-        public virtual DbSet<Sala> Salas { get; set; }
-        public virtual DbSet<Salaparticular> Salaparticulars { get; set; }
-        public virtual DbSet<Solicitacao> Solicitacaos { get; set; }
-        public virtual DbSet<Tipohardware> Tipohardwares { get; set; }
-        public virtual DbSet<Tipousuario> Tipousuarios { get; set; }
-        public virtual DbSet<Usuario> Usuarios { get; set; }
-        public virtual DbSet<Usuarioorganizacao> Usuarioorganizacaos { get; set; }
+        public virtual DbSet<Bloco> Bloco { get; set; }
+        public virtual DbSet<Codigoinfravermelho> Codigoinfravermelho { get; set; }
+        public virtual DbSet<Equipamento> Equipamento { get; set; }
+        public virtual DbSet<Hardwaredesala> Hardwaredesala { get; set; }
+        public virtual DbSet<Horariosala> Horariosala { get; set; }
+        public virtual DbSet<Logrequest> Logrequest { get; set; }
+        public virtual DbSet<Monitoramento> Monitoramento { get; set; }
+        public virtual DbSet<Operacao> Operacao { get; set; }
+        public virtual DbSet<Organizacao> Organizacao { get; set; }
+        public virtual DbSet<Planejamento> Planejamento { get; set; }
+        public virtual DbSet<Sala> Sala { get; set; }
+        public virtual DbSet<Salaparticular> Salaparticular { get; set; }
+        public virtual DbSet<Solicitacao> Solicitacao { get; set; }
+        public virtual DbSet<Tipohardware> Tipohardware { get; set; }
+        public virtual DbSet<Tipousuario> Tipousuario { get; set; }
+        public virtual DbSet<Usuario> Usuario { get; set; }
+        public virtual DbSet<Usuarioorganizacao> Usuarioorganizacao { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=MYSQL8002.site4now.net;user=a8a8d4_dbsalas;password=salas@2022;database=db_a8a8d4_dbsalas", x => x.ServerVersion("8.0.29-mysql"));
-            }
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,7 +59,7 @@ namespace Persistence
                     .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.OrganizacaoNavigation)
-                    .WithMany(p => p.Blocos)
+                    .WithMany(p => p.Bloco)
                     .HasForeignKey(d => d.Organizacao)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Bloco_Organizacao1");
@@ -91,13 +87,13 @@ namespace Persistence
                 entity.Property(e => e.Operacao).HasColumnName("operacao");
 
                 entity.HasOne(d => d.EquipamentoNavigation)
-                    .WithMany(p => p.Codigoinfravermelhos)
+                    .WithMany(p => p.Codigoinfravermelho)
                     .HasForeignKey(d => d.Equipamento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_CodigoInfravermelho_Equipamento1");
 
                 entity.HasOne(d => d.OperacaoNavigation)
-                    .WithMany(p => p.Codigoinfravermelhos)
+                    .WithMany(p => p.Codigoinfravermelho)
                     .HasForeignKey(d => d.Operacao)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_CodigoInfravermelho_Operacao1");
@@ -146,12 +142,12 @@ namespace Persistence
                     .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.HardwareDeSalaNavigation)
-                    .WithMany(p => p.Equipamentos)
+                    .WithMany(p => p.Equipamento)
                     .HasForeignKey(d => d.HardwareDeSala)
                     .HasConstraintName("fk_Equipamento_HardwareDeSala1");
 
                 entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Equipamentos)
+                    .WithMany(p => p.Equipamento)
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Equipamento_Sala1");
@@ -199,13 +195,13 @@ namespace Persistence
                     .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Hardwaredesalas)
+                    .WithMany(p => p.Hardwaredesala)
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Hardware_Sala1");
 
                 entity.HasOne(d => d.TipoHardwareNavigation)
-                    .WithMany(p => p.Hardwaredesalas)
+                    .WithMany(p => p.Hardwaredesala)
                     .HasForeignKey(d => d.TipoHardware)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_HardwareDeSala_TipoHardware1");
@@ -257,18 +253,18 @@ namespace Persistence
                 entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.PlanejamentoNavigation)
-                    .WithMany(p => p.Horariosalas)
+                    .WithMany(p => p.Horariosala)
                     .HasForeignKey(d => d.Planejamento)
                     .HasConstraintName("fk_HorarioSala_Planejamento1");
 
                 entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Horariosalas)
+                    .WithMany(p => p.Horariosala)
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_HorarioSala_Sala1");
 
                 entity.HasOne(d => d.UsuarioNavigation)
-                    .WithMany(p => p.Horariosalas)
+                    .WithMany(p => p.Horariosala)
                     .HasForeignKey(d => d.Usuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_HorarioSala_Usuario1");
@@ -334,7 +330,7 @@ namespace Persistence
                 entity.Property(e => e.Estado).HasColumnName("estado");
 
                 entity.HasOne(d => d.EquipamentoNavigation)
-                    .WithMany(p => p.Monitoramentos)
+                    .WithMany(p => p.Monitoramento)
                     .HasForeignKey(d => d.Equipamento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Equipamento_Id");
@@ -426,13 +422,13 @@ namespace Persistence
                 entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Planejamentos)
+                    .WithMany(p => p.Planejamento )
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Planejamento_Sala1");
 
                 entity.HasOne(d => d.UsuarioNavigation)
-                    .WithMany(p => p.Planejamentos)
+                    .WithMany(p => p.Planejamento)
                     .HasForeignKey(d => d.Usuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Planejamento_Usuario1");
@@ -456,7 +452,7 @@ namespace Persistence
                     .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.BlocoNavigation)
-                    .WithMany(p => p.Salas)
+                    .WithMany(p => p.Sala)
                     .HasForeignKey(d => d.Bloco)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Sala_Bloco1");
@@ -477,13 +473,13 @@ namespace Persistence
                 entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Salaparticulars)
+                    .WithMany(p => p.Salaparticular)
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_MinhaSala_Sala1");
 
                 entity.HasOne(d => d.UsuarioNavigation)
-                    .WithMany(p => p.Salaparticulars)
+                    .WithMany(p => p.Salaparticular)
                     .HasForeignKey(d => d.Usuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_MinhaSala_Usuario1");
@@ -587,7 +583,7 @@ namespace Persistence
                 entity.Property(e => e.TipoUsuario).HasColumnName("tipoUsuario");
 
                 entity.HasOne(d => d.TipoUsuarioNavigation)
-                    .WithMany(p => p.Usuarios)
+                    .WithMany(p => p.Usuario)
                     .HasForeignKey(d => d.TipoUsuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Usuario_TipoUsuario1");
@@ -613,13 +609,13 @@ namespace Persistence
                 entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.OrganizacaoNavigation)
-                    .WithMany(p => p.Usuarioorganizacaos)
+                    .WithMany(p => p.Usuarioorganizacao)
                     .HasForeignKey(d => d.Organizacao)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Organizacao_has_Usuario_Organizacao1");
 
                 entity.HasOne(d => d.UsuarioNavigation)
-                    .WithMany(p => p.Usuarioorganizacaos)
+                    .WithMany(p => p.Usuarioorganizacao)
                     .HasForeignKey(d => d.Usuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Organizacao_has_Usuario_Usuario1");

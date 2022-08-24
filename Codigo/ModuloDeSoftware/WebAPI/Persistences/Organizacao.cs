@@ -9,15 +9,15 @@ namespace Persistence
     {
         public Organizacao()
         {
-            Blocos = new HashSet<Bloco>();
-            Usuarioorganizacaos = new HashSet<Usuarioorganizacao>();
+            Bloco = new HashSet<Bloco>();
+            Usuarioorganizacao = new HashSet<Usuarioorganizacao>();
         }
 
-        public uint Id { get; set; }
+        public int Id { get; set; }
         public string Cnpj { get; set; }
         public string RazaoSocial { get; set; }
 
-        public virtual ICollection<Bloco> Blocos { get; set; }
-        public virtual ICollection<Usuarioorganizacao> Usuarioorganizacaos { get; set; }
+        public virtual ICollection<Bloco> Bloco { get; set; }
+        public virtual ICollection<Usuarioorganizacao> Usuarioorganizacao { get; set; }
     }
 }
