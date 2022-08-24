@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
+
 
 namespace Persistence
 {
@@ -10,7 +10,7 @@ namespace Persistence
         public Hardwaredesala()
         {
             Equipamento = new HashSet<Equipamento>();
-            Solicitacaos = new HashSet<Solicitacao>();
+            Solicitacao = new HashSet<Solicitacao>();
         }
 
         public int Id { get; set; }
@@ -25,6 +25,6 @@ namespace Persistence
         public virtual Sala SalaNavigation { get; set; }
         public virtual Tipohardware TipoHardwareNavigation { get; set; }
         public virtual ICollection<Equipamento> Equipamento { get; set; }
-        public virtual ICollection<Solicitacao> Solicitacaos { get; set; }
+        public virtual ICollection<Solicitacao> Solicitacao { get; set; }
     }
 }

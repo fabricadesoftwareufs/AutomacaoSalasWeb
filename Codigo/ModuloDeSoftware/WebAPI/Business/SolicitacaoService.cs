@@ -25,8 +25,8 @@ namespace Service
                     IdHardware = s.IdHardware,
                     Payload = s.Payload,
                     DataSolicitacao = s.DataSolicitacao,
-                    DataFinalizacao = s.DataFinalizacao
-
+                    DataFinalizacao = s.DataFinalizacao,
+                    TipoSolicitacao = s.TipoSolicitacao
                 }).ToList();
 
         public SolicitacaoModel GetById(int id)
@@ -38,8 +38,8 @@ namespace Service
                     IdHardware = s.IdHardware,
                     Payload = s.Payload,
                     DataSolicitacao = s.DataSolicitacao,
-                    DataFinalizacao = s.DataFinalizacao
-
+                    DataFinalizacao = s.DataFinalizacao,
+                    TipoSolicitacao = s.TipoSolicitacao
                 }).FirstOrDefault();
 
         private static Solicitacao SetEntity(SolicitacaoModel model)
@@ -49,7 +49,8 @@ namespace Service
                 Payload = model.Payload,
                 IdHardware = model.IdHardware,
                 DataFinalizacao = model.DataFinalizacao,
-                DataSolicitacao = model.DataSolicitacao
+                DataSolicitacao = model.DataSolicitacao,
+                TipoSolicitacao = model.TipoSolicitacao
             };
 
         public List<SolicitacaoModel> GetByIdHardware(int idHardware)

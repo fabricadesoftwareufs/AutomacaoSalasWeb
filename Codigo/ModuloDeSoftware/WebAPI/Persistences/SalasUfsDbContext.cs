@@ -510,7 +510,7 @@ namespace Persistence
                     .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.IdHardwareNavigation)
-                    .WithMany(p => p.Solicitacaos)
+                    .WithMany(p => p.Solicitacao)
                     .HasForeignKey(d => d.IdHardware)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Solicitacao_Hardware1");
