@@ -20,10 +20,10 @@ namespace Persistence
         public string Senha { get; set; }
         public int TipoUsuario { get; set; }
 
-        public Tipousuario TipoUsuarioNavigation { get; set; }
-        public ICollection<Horariosala> Horariosala { get; set; }
-        public ICollection<Planejamento> Planejamento { get; set; }
-        public ICollection<Salaparticular> Salaparticular { get; set; }
-        public ICollection<Usuarioorganizacao> Usuarioorganizacao { get; set; }
+        public virtual Tipousuario TipoUsuarioNavigation { get; set; }
+        public virtual ICollection<Horariosala> Horariosala { get; set; }
+        public virtual ICollection<Planejamento> Planejamento { get; set; }
+        public virtual ICollection<Salaparticular> Salaparticular { get; set; }
+        public virtual ICollection<Usuarioorganizacao> Usuarioorganizacao { get; set; }
     }
 }
