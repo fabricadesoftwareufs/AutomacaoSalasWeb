@@ -16,27 +16,31 @@ namespace Persistence
         {
         }
 
-        public virtual DbSet<Bloco> Bloco { get; set; }
-        public virtual DbSet<Codigoinfravermelho> Codigoinfravermelho { get; set; }
-        public virtual DbSet<Equipamento> Equipamento { get; set; }
-        public virtual DbSet<Hardwaredesala> Hardwaredesala { get; set; }
-        public virtual DbSet<Horariosala> Horariosala { get; set; }
-        public virtual DbSet<Logrequest> Logrequest { get; set; }
-        public virtual DbSet<Monitoramento> Monitoramento { get; set; }
-        public virtual DbSet<Operacao> Operacao { get; set; }
-        public virtual DbSet<Organizacao> Organizacao { get; set; }
-        public virtual DbSet<Planejamento> Planejamento { get; set; }
-        public virtual DbSet<Sala> Sala { get; set; }
-        public virtual DbSet<Salaparticular> Salaparticular { get; set; }
-        public virtual DbSet<Solicitacao> Solicitacao { get; set; }
-        public virtual DbSet<Tipohardware> Tipohardware { get; set; }
-        public virtual DbSet<Tipousuario> Tipousuario { get; set; }
-        public virtual DbSet<Usuario> Usuario { get; set; }
-        public virtual DbSet<Usuarioorganizacao> Usuarioorganizacao { get; set; }
+        public virtual DbSet<Bloco> Blocos { get; set; }
+        public virtual DbSet<Codigoinfravermelho> Codigoinfravermelhos { get; set; }
+        public virtual DbSet<Equipamento> Equipamentos { get; set; }
+        public virtual DbSet<Hardwaredesala> Hardwaredesalas { get; set; }
+        public virtual DbSet<Horariosala> Horariosalas { get; set; }
+        public virtual DbSet<Logrequest> Logrequests { get; set; }
+        public virtual DbSet<Monitoramento> Monitoramentos { get; set; }
+        public virtual DbSet<Operacao> Operacaos { get; set; }
+        public virtual DbSet<Organizacao> Organizacaos { get; set; }
+        public virtual DbSet<Planejamento> Planejamentos { get; set; }
+        public virtual DbSet<Sala> Salas { get; set; }
+        public virtual DbSet<Salaparticular> Salaparticulars { get; set; }
+        public virtual DbSet<Solicitacao> Solicitacaos { get; set; }
+        public virtual DbSet<Tipohardware> Tipohardwares { get; set; }
+        public virtual DbSet<Tipousuario> Tipousuarios { get; set; }
+        public virtual DbSet<Usuario> Usuarios { get; set; }
+        public virtual DbSet<Usuarioorganizacao> Usuarioorganizacaos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseMySql("server=MYSQL8002.site4now.net;user=a8a8d4_dbsalas;password=salas@2022;database=db_a8a8d4_dbsalas", x => x.ServerVersion("8.0.29-mysql"));
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,24 +49,21 @@ namespace Persistence
             {
                 entity.ToTable("bloco");
 
-                entity.HasIndex(e => e.Organizacao)
-                    .HasName("fk_Bloco_Organizacao1_idx");
+                entity.HasIndex(e => e.Organizacao, "fk_Bloco_Organizacao1_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Organizacao)
-                    .HasColumnName("organizacao")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Organizacao).HasColumnName("organizacao");
 
                 entity.Property(e => e.Titulo)
                     .IsRequired()
+                    .HasColumnType("varchar(100)")
                     .HasColumnName("titulo")
-                    .HasMaxLength(100);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.OrganizacaoNavigation)
-                    .WithMany(p => p.Bloco)
+                    .WithMany(p => p.Blocos)
                     .HasForeignKey(d => d.Organizacao)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Bloco_Organizacao1");
@@ -72,31 +73,31 @@ namespace Persistence
             {
                 entity.ToTable("codigoinfravermelho");
 
-                entity.HasIndex(e => e.Equipamento)
-                    .HasName("fk_CodigoInfravermelho_Equipamento1_idx");
+                entity.HasIndex(e => e.Equipamento, "fk_CodigoInfravermelho_Equipamento1_idx");
 
-                entity.HasIndex(e => e.Operacao)
-                    .HasName("fk_CodigoInfravermelho_Operacao1_idx");
+                entity.HasIndex(e => e.Operacao, "fk_CodigoInfravermelho_Operacao1_idx");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Codigo)
                     .IsRequired()
+                    .HasColumnType("mediumtext")
                     .HasColumnName("codigo")
-                    .HasColumnType("mediumtext");
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Equipamento).HasColumnName("equipamento");
 
                 entity.Property(e => e.Operacao).HasColumnName("operacao");
 
                 entity.HasOne(d => d.EquipamentoNavigation)
-                    .WithMany(p => p.Codigoinfravermelho)
+                    .WithMany(p => p.Codigoinfravermelhos)
                     .HasForeignKey(d => d.Equipamento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_CodigoInfravermelho_Equipamento1");
 
                 entity.HasOne(d => d.OperacaoNavigation)
-                    .WithMany(p => p.Codigoinfravermelho)
+                    .WithMany(p => p.Codigoinfravermelhos)
                     .HasForeignKey(d => d.Operacao)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_CodigoInfravermelho_Operacao1");
@@ -106,49 +107,51 @@ namespace Persistence
             {
                 entity.ToTable("equipamento");
 
-                entity.HasIndex(e => e.HardwareDeSala)
-                    .HasName("fk_Equipamento_HardwareDeSala1_idx");
+                entity.HasIndex(e => e.HardwareDeSala, "fk_Equipamento_HardwareDeSala1_idx");
 
-                entity.HasIndex(e => e.Sala)
-                    .HasName("fk_Equipamento_Sala1_idx");
+                entity.HasIndex(e => e.Sala, "fk_Equipamento_Sala1_idx");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Descricao)
+                    .HasColumnType("varchar(1000)")
                     .HasColumnName("descricao")
-                    .HasMaxLength(1000);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.HardwareDeSala)
-                    .HasColumnName("hardwareDeSala")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.HardwareDeSala).HasColumnName("hardwareDeSala");
 
                 entity.Property(e => e.Marca)
                     .IsRequired()
+                    .HasColumnType("varchar(100)")
                     .HasColumnName("marca")
-                    .HasMaxLength(100);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Modelo)
                     .IsRequired()
+                    .HasColumnType("varchar(200)")
                     .HasColumnName("modelo")
-                    .HasMaxLength(200);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Sala)
-                    .HasColumnName("sala")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Sala).HasColumnName("sala");
 
                 entity.Property(e => e.TipoEquipamento)
                     .IsRequired()
-                    .HasColumnName("tipoEquipamento")
                     .HasColumnType("enum('CONDICIONADOR','LUZES')")
-                    .HasDefaultValueSql("'CONDICIONADOR'");
+                    .HasColumnName("tipoEquipamento")
+                    .HasDefaultValueSql("'CONDICIONADOR'")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.HardwareDeSalaNavigation)
-                    .WithMany(p => p.Equipamento)
+                    .WithMany(p => p.Equipamentos)
                     .HasForeignKey(d => d.HardwareDeSala)
                     .HasConstraintName("fk_Equipamento_HardwareDeSala1");
 
                 entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Equipamento)
+                    .WithMany(p => p.Equipamentos)
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Equipamento_Sala1");
@@ -158,51 +161,51 @@ namespace Persistence
             {
                 entity.ToTable("hardwaredesala");
 
-                entity.HasIndex(e => e.Sala)
-                    .HasName("fk_Hardware_Sala1_idx");
+                entity.HasIndex(e => e.TipoHardware, "fk_HardwareDeSala_TipoHardware1_idx");
 
-                entity.HasIndex(e => e.TipoHardware)
-                    .HasName("fk_HardwareDeSala_TipoHardware1_idx");
+                entity.HasIndex(e => e.Sala, "fk_Hardware_Sala1_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Ip)
+                    .HasColumnType("varchar(15)")
                     .HasColumnName("ip")
-                    .HasMaxLength(15);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Mac)
                     .IsRequired()
+                    .HasColumnType("varchar(45)")
                     .HasColumnName("mac")
-                    .HasMaxLength(45);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Registrado).HasColumnName("registrado");
 
-                entity.Property(e => e.Sala)
-                    .HasColumnName("sala")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Sala).HasColumnName("sala");
 
-                entity.Property(e => e.TipoHardware)
-                    .HasColumnName("tipoHardware")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.TipoHardware).HasColumnName("tipoHardware");
 
                 entity.Property(e => e.Token)
+                    .HasColumnType("varchar(400)")
                     .HasColumnName("token")
-                    .HasMaxLength(400);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Uuid)
+                    .HasColumnType("varchar(75)")
                     .HasColumnName("uuid")
-                    .HasMaxLength(75);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Hardwaredesala)
+                    .WithMany(p => p.Hardwaredesalas)
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Hardware_Sala1");
 
                 entity.HasOne(d => d.TipoHardwareNavigation)
-                    .WithMany(p => p.Hardwaredesala)
+                    .WithMany(p => p.Hardwaredesalas)
                     .HasForeignKey(d => d.TipoHardware)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_HardwareDeSala_TipoHardware1");
@@ -212,59 +215,60 @@ namespace Persistence
             {
                 entity.ToTable("horariosala");
 
-                entity.HasIndex(e => e.Planejamento)
-                    .HasName("fk_HorarioSala_Planejamento1_idx");
+                entity.HasIndex(e => e.Planejamento, "fk_HorarioSala_Planejamento1_idx");
 
-                entity.HasIndex(e => e.Sala)
-                    .HasName("fk_HorarioSala_Sala1_idx");
+                entity.HasIndex(e => e.Sala, "fk_HorarioSala_Sala1_idx");
 
-                entity.HasIndex(e => e.Usuario)
-                    .HasName("fk_HorarioSala_Usuario1_idx");
+                entity.HasIndex(e => e.Usuario, "fk_HorarioSala_Usuario1_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.HorarioFim).HasColumnName("horarioFim");
+                entity.Property(e => e.Data)
+                    .HasColumnType("datetime")
+                    .HasColumnName("data");
 
-                entity.Property(e => e.HorarioInicio).HasColumnName("horarioInicio");
+                entity.Property(e => e.HorarioFim)
+                    .HasColumnType("time")
+                    .HasColumnName("horarioFim");
+
+                entity.Property(e => e.HorarioInicio)
+                    .HasColumnType("time")
+                    .HasColumnName("horarioInicio");
 
                 entity.Property(e => e.Objetivo)
                     .IsRequired()
+                    .HasColumnType("varchar(500)")
                     .HasColumnName("objetivo")
-                    .HasMaxLength(500);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Planejamento)
-                    .HasColumnName("planejamento")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Planejamento).HasColumnName("planejamento");
 
-                entity.Property(e => e.Sala)
-                    .HasColumnName("sala")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Sala).HasColumnName("sala");
 
                 entity.Property(e => e.Situacao)
                     .IsRequired()
-                    .HasColumnName("situacao")
                     .HasColumnType("enum('PENDENTE','APROVADA','REPROVADA','CANCELADA')")
-                    .HasDefaultValueSql("'APROVADA'");
+                    .HasColumnName("situacao")
+                    .HasDefaultValueSql("'APROVADA'")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Usuario)
-                    .HasColumnName("usuario")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.PlanejamentoNavigation)
-                    .WithMany(p => p.Horariosala)
+                    .WithMany(p => p.Horariosalas)
                     .HasForeignKey(d => d.Planejamento)
                     .HasConstraintName("fk_HorarioSala_Planejamento1");
 
                 entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Horariosala)
+                    .WithMany(p => p.Horariosalas)
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_HorarioSala_Sala1");
 
                 entity.HasOne(d => d.UsuarioNavigation)
-                    .WithMany(p => p.Horariosala)
+                    .WithMany(p => p.Horariosalas)
                     .HasForeignKey(d => d.Usuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_HorarioSala_Usuario1");
@@ -276,38 +280,52 @@ namespace Persistence
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.Date)
+                    .HasColumnType("datetime")
+                    .HasColumnName("date");
+
                 entity.Property(e => e.Input)
                     .IsRequired()
-                    .HasColumnName("input");
+                    .HasColumnType("text")
+                    .HasColumnName("input")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Ip)
                     .IsRequired()
+                    .HasColumnType("varchar(150)")
                     .HasColumnName("ip")
-                    .HasMaxLength(150);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Origin)
                     .IsRequired()
-                    .HasColumnName("origin")
                     .HasColumnType("enum('API','ESP32')")
-                    .HasDefaultValueSql("'API'");
+                    .HasColumnName("origin")
+                    .HasDefaultValueSql("'API'")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.StatusCode)
                     .IsRequired()
+                    .HasColumnType("varchar(50)")
                     .HasColumnName("statusCode")
-                    .HasMaxLength(50);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Url)
                     .IsRequired()
+                    .HasColumnType("varchar(250)")
                     .HasColumnName("url")
-                    .HasMaxLength(250);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<Monitoramento>(entity =>
             {
                 entity.ToTable("monitoramento");
 
-                entity.HasIndex(e => e.Equipamento)
-                    .HasName("fk_Equipamento_Id");
+                entity.HasIndex(e => e.Equipamento, "fk_Equipamento_Id");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -316,7 +334,7 @@ namespace Persistence
                 entity.Property(e => e.Estado).HasColumnName("estado");
 
                 entity.HasOne(d => d.EquipamentoNavigation)
-                    .WithMany(p => p.Monitoramento)
+                    .WithMany(p => p.Monitoramentos)
                     .HasForeignKey(d => d.Equipamento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Equipamento_Id");
@@ -329,86 +347,92 @@ namespace Persistence
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Descricao)
+                    .HasColumnType("varchar(200)")
                     .HasColumnName("descricao")
-                    .HasMaxLength(200);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Titulo)
                     .IsRequired()
+                    .HasColumnType("varchar(50)")
                     .HasColumnName("titulo")
-                    .HasMaxLength(50);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<Organizacao>(entity =>
             {
                 entity.ToTable("organizacao");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Cnpj)
                     .IsRequired()
+                    .HasColumnType("varchar(15)")
                     .HasColumnName("cnpj")
-                    .HasMaxLength(15);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.RazaoSocial)
                     .IsRequired()
+                    .HasColumnType("varchar(45)")
                     .HasColumnName("razaoSocial")
-                    .HasMaxLength(45);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<Planejamento>(entity =>
             {
                 entity.ToTable("planejamento");
 
-                entity.HasIndex(e => e.Sala)
-                    .HasName("fk_Planejamento_Sala1_idx");
+                entity.HasIndex(e => e.Sala, "fk_Planejamento_Sala1_idx");
 
-                entity.HasIndex(e => e.Usuario)
-                    .HasName("fk_Planejamento_Usuario1_idx");
+                entity.HasIndex(e => e.Usuario, "fk_Planejamento_Usuario1_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.DataFim)
-                    .HasColumnName("dataFim")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .HasColumnName("dataFim");
 
                 entity.Property(e => e.DataInicio)
-                    .HasColumnName("dataInicio")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .HasColumnName("dataInicio");
 
                 entity.Property(e => e.DiaSemana)
                     .IsRequired()
+                    .HasColumnType("enum('SEG','TER','QUA','QUI','SEX','SAB','DOM')")
                     .HasColumnName("diaSemana")
-                    .HasColumnType("enum('SEG','TER','QUA','QUI','SEX','SAB','DOM')");
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.HorarioFim).HasColumnName("horarioFim");
+                entity.Property(e => e.HorarioFim)
+                    .HasColumnType("time")
+                    .HasColumnName("horarioFim");
 
-                entity.Property(e => e.HorarioInicio).HasColumnName("horarioInicio");
+                entity.Property(e => e.HorarioInicio)
+                    .HasColumnType("time")
+                    .HasColumnName("horarioInicio");
 
                 entity.Property(e => e.Objetivo)
                     .IsRequired()
+                    .HasColumnType("varchar(500)")
                     .HasColumnName("objetivo")
-                    .HasMaxLength(500);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Sala)
-                    .HasColumnName("sala")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Sala).HasColumnName("sala");
 
-                entity.Property(e => e.Usuario)
-                    .HasColumnName("usuario")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Planejamento)
+                    .WithMany(p => p.Planejamentos)
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Planejamento_Sala1");
 
                 entity.HasOne(d => d.UsuarioNavigation)
-                    .WithMany(p => p.Planejamento)
+                    .WithMany(p => p.Planejamentos)
                     .HasForeignKey(d => d.Usuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Planejamento_Usuario1");
@@ -418,24 +442,21 @@ namespace Persistence
             {
                 entity.ToTable("sala");
 
-                entity.HasIndex(e => e.Bloco)
-                    .HasName("fk_Sala_Bloco1_idx");
+                entity.HasIndex(e => e.Bloco, "fk_Sala_Bloco1_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Bloco)
-                    .HasColumnName("bloco")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Bloco).HasColumnName("bloco");
 
                 entity.Property(e => e.Titulo)
                     .IsRequired()
+                    .HasColumnType("varchar(100)")
                     .HasColumnName("titulo")
-                    .HasMaxLength(100);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.BlocoNavigation)
-                    .WithMany(p => p.Sala)
+                    .WithMany(p => p.Salas)
                     .HasForeignKey(d => d.Bloco)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Sala_Bloco1");
@@ -445,32 +466,24 @@ namespace Persistence
             {
                 entity.ToTable("salaparticular");
 
-                entity.HasIndex(e => e.Sala)
-                    .HasName("fk_MinhaSala_Sala1_idx");
+                entity.HasIndex(e => e.Sala, "fk_MinhaSala_Sala1_idx");
 
-                entity.HasIndex(e => e.Usuario)
-                    .HasName("fk_MinhaSala_Usuario1_idx");
+                entity.HasIndex(e => e.Usuario, "fk_MinhaSala_Usuario1_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Sala)
-                    .HasColumnName("sala")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Sala).HasColumnName("sala");
 
-                entity.Property(e => e.Usuario)
-                    .HasColumnName("usuario")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Salaparticular)
+                    .WithMany(p => p.Salaparticulars)
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_MinhaSala_Sala1");
 
                 entity.HasOne(d => d.UsuarioNavigation)
-                    .WithMany(p => p.Salaparticular)
+                    .WithMany(p => p.Salaparticulars)
                     .HasForeignKey(d => d.Usuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_MinhaSala_Usuario1");
@@ -480,24 +493,28 @@ namespace Persistence
             {
                 entity.ToTable("solicitacao");
 
-                entity.HasIndex(e => e.IdHardware)
-                    .HasName("fk_Solicitacao_Hardware1");
+                entity.HasIndex(e => e.IdHardware, "fk_Solicitacao_Hardware1");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.IdHardware)
-                    .HasColumnName("idHardware")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.DataFinalizacao)
+                    .HasColumnType("datetime")
+                    .HasColumnName("dataFinalizacao");
 
-                entity.Property(e => e.Payload)
-                    .IsRequired()
-                    .HasColumnName("payload")
-                    .HasColumnType("json");
+                entity.Property(e => e.DataSolicitacao)
+                    .HasColumnType("datetime")
+                    .HasColumnName("dataSolicitacao");
+
+                entity.Property(e => e.IdHardware).HasColumnName("idHardware");
+
+                entity.Property(e => e.TipoSolicitacao)
+                    .HasColumnType("enum('MONITORAMENTO_LUZES','MONITORAMENTO_AR_CONDICIONADO','ATUALIZAR_RESERVAS')")
+                    .HasColumnName("tipoSolicitacao")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.IdHardwareNavigation)
-                    .WithMany(p => p.Solicitacao)
+                    .WithMany(p => p.Solicitacaos)
                     .HasForeignKey(d => d.IdHardware)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Solicitacao_Hardware1");
@@ -507,70 +524,70 @@ namespace Persistence
             {
                 entity.ToTable("tipohardware");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Descricao)
                     .IsRequired()
+                    .HasColumnType("varchar(45)")
                     .HasColumnName("descricao")
-                    .HasMaxLength(45);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<Tipousuario>(entity =>
             {
                 entity.ToTable("tipousuario");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Descricao)
                     .IsRequired()
+                    .HasColumnType("varchar(45)")
                     .HasColumnName("descricao")
-                    .HasMaxLength(45);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<Usuario>(entity =>
             {
                 entity.ToTable("usuario");
 
-                entity.HasIndex(e => e.Cpf)
-                    .HasName("Cpf_UNIQUE")
+                entity.HasIndex(e => e.Cpf, "Cpf_UNIQUE")
                     .IsUnique();
 
-                entity.HasIndex(e => e.TipoUsuario)
-                    .HasName("fk_Usuario_TipoUsuario1_idx");
+                entity.HasIndex(e => e.TipoUsuario, "fk_Usuario_TipoUsuario1_idx");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Cpf)
                     .IsRequired()
+                    .HasColumnType("varchar(11)")
                     .HasColumnName("cpf")
-                    .HasMaxLength(11);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.DataNascimento)
-                    .HasColumnName("dataNascimento")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .HasColumnName("dataNascimento");
 
                 entity.Property(e => e.Nome)
                     .IsRequired()
+                    .HasColumnType("varchar(45)")
                     .HasColumnName("nome")
-                    .HasMaxLength(45);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Senha)
                     .IsRequired()
+                    .HasColumnType("varchar(100)")
                     .HasColumnName("senha")
-                    .HasMaxLength(100);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.TipoUsuario)
-                    .HasColumnName("tipoUsuario")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.TipoUsuario).HasColumnName("tipoUsuario");
 
                 entity.HasOne(d => d.TipoUsuarioNavigation)
-                    .WithMany(p => p.Usuario)
+                    .WithMany(p => p.Usuarios)
                     .HasForeignKey(d => d.TipoUsuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Usuario_TipoUsuario1");
@@ -583,33 +600,26 @@ namespace Persistence
 
                 entity.ToTable("usuarioorganizacao");
 
-                entity.HasIndex(e => e.Organizacao)
-                    .HasName("fk_Organizacao_has_Usuario_Organizacao1_idx");
+                entity.HasIndex(e => e.Organizacao, "fk_Organizacao_has_Usuario_Organizacao1_idx");
 
-                entity.HasIndex(e => e.Usuario)
-                    .HasName("fk_Organizacao_has_Usuario_Usuario1_idx");
+                entity.HasIndex(e => e.Usuario, "fk_Organizacao_has_Usuario_Usuario1_idx");
 
                 entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int unsigned")
-                    .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("id");
 
-                entity.Property(e => e.Organizacao)
-                    .HasColumnName("organizacao")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Organizacao).HasColumnName("organizacao");
 
-                entity.Property(e => e.Usuario)
-                    .HasColumnName("usuario")
-                    .HasColumnType("int unsigned");
+                entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.OrganizacaoNavigation)
-                    .WithMany(p => p.Usuarioorganizacao)
+                    .WithMany(p => p.Usuarioorganizacaos)
                     .HasForeignKey(d => d.Organizacao)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Organizacao_has_Usuario_Organizacao1");
 
                 entity.HasOne(d => d.UsuarioNavigation)
-                    .WithMany(p => p.Usuarioorganizacao)
+                    .WithMany(p => p.Usuarioorganizacaos)
                     .HasForeignKey(d => d.Usuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Organizacao_has_Usuario_Usuario1");

@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 
+#nullable disable
+
 namespace Persistence
 {
     public partial class Organizacao
     {
         public Organizacao()
         {
-            Bloco = new HashSet<Bloco>();
-            Usuarioorganizacao = new HashSet<Usuarioorganizacao>();
+            Blocos = new HashSet<Bloco>();
+            Usuarioorganizacaos = new HashSet<Usuarioorganizacao>();
         }
 
-        public int Id { get; set; }
+        public uint Id { get; set; }
         public string Cnpj { get; set; }
         public string RazaoSocial { get; set; }
 
-        public virtual ICollection<Bloco> Bloco { get; set; }
-        public virtual ICollection<Usuarioorganizacao> Usuarioorganizacao { get; set; }
+        public virtual ICollection<Bloco> Blocos { get; set; }
+        public virtual ICollection<Usuarioorganizacao> Usuarioorganizacaos { get; set; }
     }
 }

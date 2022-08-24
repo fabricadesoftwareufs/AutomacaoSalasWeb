@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 
+#nullable disable
+
 namespace Persistence
 {
     public partial class Tipohardware
     {
         public Tipohardware()
         {
-            Hardwaredesala = new HashSet<Hardwaredesala>();
+            Hardwaredesalas = new HashSet<Hardwaredesala>();
         }
 
-        public int Id { get; set; }
+        public uint Id { get; set; }
         public string Descricao { get; set; }
 
-        public virtual ICollection<Hardwaredesala> Hardwaredesala { get; set; }
+        public virtual ICollection<Hardwaredesala> Hardwaredesalas { get; set; }
     }
 }
