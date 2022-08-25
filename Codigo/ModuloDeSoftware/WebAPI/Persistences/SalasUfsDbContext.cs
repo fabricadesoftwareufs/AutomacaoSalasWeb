@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
@@ -225,6 +223,8 @@ namespace Persistence
                     .HasColumnName("id")
                     .HasColumnType("int unsigned");
 
+                entity.Property(e => e.Data).HasColumnName("data");
+
                 entity.Property(e => e.HorarioFim).HasColumnName("horarioFim");
 
                 entity.Property(e => e.HorarioInicio).HasColumnName("horarioInicio");
@@ -279,6 +279,10 @@ namespace Persistence
                 entity.Property(e => e.Input)
                     .IsRequired()
                     .HasColumnName("input");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.Ip)
                     .IsRequired()
@@ -495,6 +499,13 @@ namespace Persistence
                     .IsRequired()
                     .HasColumnName("payload")
                     .HasColumnType("json");
+
+
+                entity.Property(e => e.TipoSolicitacao)
+                    .IsRequired()
+                    .HasColumnName("tipoSolicitacao")
+                    .HasColumnType("enum('MONITORAMENTO_LUZES','MONITORAMENTO_AR_CONDICIONADO','ATUALIZAR_RESERVAS')")
+                    .HasDefaultValueSql("ATUALIZAR_RESERVAS");
 
                 entity.HasOne(d => d.IdHardwareNavigation)
                     .WithMany(p => p.Solicitacao)

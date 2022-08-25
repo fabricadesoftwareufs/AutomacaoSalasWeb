@@ -23,6 +23,8 @@ namespace Service.Interface
 
         HardwareDeSalaModel GetByUuid(string uuid);
 
+        HardwareDeSalaModel GetControladorByIdSala(int idSala);
+
         bool Insert(HardwareDeSalaModel entity, int idUsuario);
         bool Remove(int id);
         bool Update(HardwareDeSalaModel entity, int idUsuario);

@@ -113,7 +113,7 @@ namespace Service
             LogRequest.Date = DateTime.Now;
             LogRequest.Input = resposta;
             LogRequest.StatusCode = LogRequest.Input != null ? HttpStatusCode.OK.ToString() : HttpStatusCode.BadRequest.ToString();
-            _context.LogRequest.Add(LogRequest);
+            _context.Logrequest.Add(LogRequest);
             _context.SaveChanges();
         }
     }

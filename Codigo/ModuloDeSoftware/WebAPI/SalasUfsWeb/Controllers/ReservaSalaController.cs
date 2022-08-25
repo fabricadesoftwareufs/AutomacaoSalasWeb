@@ -129,19 +129,13 @@ namespace SalasUfsWeb.Controllers
                         UsuarioId = idUsuario
                     }))
                     {
+                       
                         TempData["mensagemSucesso"] = "Reserva feita com sucesso!";
 
-                        _ = Task.Run(() =>
-                        {
-                            using var scope = _serviceScopeFactory.CreateScope();
-                            var hardwareDeSalaService = scope.ServiceProvider.GetRequiredService<IHardwareDeSalaService>();
+                        var hardwareDeSala = _hardwareDeSalaService.GetControladorByIdSala(reservaModel.HorarioSalaModel.SalaId);
 
-                            var hardwareDeSala = hardwareDeSalaService?.GetByIdSalaAndTipoHardware(reservaModel.HorarioSalaModel.SalaId, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
-
-                            var horarioSalaService = scope.ServiceProvider.GetRequiredService<IHorarioSalaService>();
-
-                            horarioSalaService?.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Ip, reservaModel.HorarioSalaModel.Data);
-                        });
+                        if(hardwareDeSala != null)
+                            _horarioSalaService.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Id, reservaModel.HorarioSalaModel.Data);
                     }
                     else
                     {
@@ -226,17 +220,10 @@ namespace SalasUfsWeb.Controllers
                     {
                         TempData["mensagemSucesso"] = "Reserva editada com sucesso!";
 
-                        _ = Task.Run(() =>
-                        {
-                            using var scope = _serviceScopeFactory.CreateScope();
-                            var hardwareDeSalaService = scope.ServiceProvider.GetRequiredService<IHardwareDeSalaService>();
+                        var hardwareDeSala = _hardwareDeSalaService.GetControladorByIdSala(reservaModel.HorarioSalaModel.SalaId);
 
-                            var hardwareDeSala = hardwareDeSalaService?.GetByIdSalaAndTipoHardware(reservaModel.HorarioSalaModel.SalaId, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
-
-                            var horarioSalaService = scope.ServiceProvider.GetRequiredService<IHorarioSalaService>();
-
-                            horarioSalaService?.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Ip, reservaModel.HorarioSalaModel.Data);
-                        });                       
+                        if(hardwareDeSala != null)
+                            _horarioSalaService.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Id, reservaModel.HorarioSalaModel.Data);
                     }
                     else
                     {

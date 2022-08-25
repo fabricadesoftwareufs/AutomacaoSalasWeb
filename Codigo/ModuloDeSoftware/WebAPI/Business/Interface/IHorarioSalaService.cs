@@ -25,6 +25,6 @@ namespace Service.Interface
         bool RemoveByUsuario(int id);
         bool ConcelarReserva(int idReserva);
         bool Update(HorarioSalaModel entity);
-        bool SolicitaAtualizacaoHorarioESP(string ipSala, DateTime dataHorario);
+        bool SolicitaAtualizacaoHorarioESP(int idSala, DateTime dataHorario);
     }
 }

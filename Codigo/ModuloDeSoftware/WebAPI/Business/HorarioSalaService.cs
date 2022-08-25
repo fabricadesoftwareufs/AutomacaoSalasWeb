@@ -351,25 +351,36 @@ namespace Service
             return false;
         }
 
-        public bool SolicitaAtualizacaoHorarioESP(string ipSala, DateTime dataHorario)
+        public bool SolicitaAtualizacaoHorarioESP(int idHardware, DateTime dataHorario)
         {
             DateTime dataAtual = DateTime.Now;
+            bool resultado = false;
 
             if (dataHorario.Date == dataAtual.Date)
             {
-                var mensagem = JsonConvert.SerializeObject(
-                    new
-                    {
-                        type = ATUALIZAR_HORARIOS,
-                    });
+                var solicitacaoModel = new SolicitacaoModel
+                {
+                    DataSolicitacao = DateTime.Now,
+                    IdHardware = idHardware,
+                    Payload = "{}",
+                    TipoSolicitacao = SolicitacaoModel.ATUALIZAR_RESERVAS
+                };
 
-                var socketService = new ClienteSocketService(_context, ipSala);
-                socketService.AbrirConexao();
-                bool resultado = socketService.EnviarComando(mensagem) != null;
-                socketService.FecharConexao();
+                var _solicitacaService = new SolicitacacaoService(_context);
 
-                return resultado;
+                var solicitacoes = _solicitacaService.GetByIdHardware(idHardware);
+
+                var solicitacao = solicitacoes?.FirstOrDefault(s => s.TipoSolicitacao.Equals(SolicitacaoModel.ATUALIZAR_RESERVAS));
+
+                if (solicitacao != null)
+                {
+                    solicitacao.DataFinalizacao = DateTime.UtcNow;
+                    _solicitacaService.Update(solicitacao);
+                }
+
+                resultado = _solicitacaService.Insert(solicitacaoModel);
             }
+
             return false;
         }
     }

@@ -1,6 +1,4 @@
 ﻿using Model;
-using Model.AuxModel;
-using Model.ViewModel;
 using Persistence;
 using Service.Interface;
 using System;
@@ -25,7 +23,8 @@ namespace Service
                     IdHardware = s.IdHardware,
                     Payload = s.Payload,
                     DataSolicitacao = s.DataSolicitacao,
-                    DataFinalizacao = s.DataFinalizacao
+                    DataFinalizacao = s.DataFinalizacao,
+                    TipoSolicitacao = s.TipoSolicitacao
 
                 }).ToList();
 
@@ -38,7 +37,8 @@ namespace Service
                     IdHardware = s.IdHardware,
                     Payload = s.Payload,
                     DataSolicitacao = s.DataSolicitacao,
-                    DataFinalizacao = s.DataFinalizacao
+                    DataFinalizacao = s.DataFinalizacao,
+                    TipoSolicitacao = s.TipoSolicitacao
 
                 }).FirstOrDefault();
 
@@ -49,19 +49,21 @@ namespace Service
                 Payload = model.Payload,
                 IdHardware = model.IdHardware,
                 DataFinalizacao = model.DataFinalizacao,
-                DataSolicitacao = model.DataSolicitacao
+                DataSolicitacao = model.DataSolicitacao,
+                TipoSolicitacao = model.TipoSolicitacao
             };
 
         public List<SolicitacaoModel> GetByIdHardware(int idHardware)
             => _context.Solicitacao
-                .Where(s => s.IdHardware == idHardware)
+                .Where(s => s.IdHardware == idHardware && s.DataFinalizacao == null)
                 .Select(s => new SolicitacaoModel
                 {
                     Id = s.Id,
                     IdHardware = s.IdHardware,
                     Payload = s.Payload,
                     DataSolicitacao = s.DataSolicitacao,
-                    DataFinalizacao = s.DataFinalizacao
+                    DataFinalizacao = s.DataFinalizacao,
+                    TipoSolicitacao = s.TipoSolicitacao
 
                 }).ToList();
 

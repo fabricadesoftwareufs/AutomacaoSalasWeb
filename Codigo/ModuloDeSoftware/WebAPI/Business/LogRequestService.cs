@@ -19,7 +19,7 @@ namespace Service
             try
             {
                 var entity = new Logrequest();
-                _context.LogRequest.Add(SetEntity(logRequestModel));
+                _context.Logrequest.Add(SetEntity(logRequestModel));
                 return _context.SaveChanges() == 1;
             }
             catch (Exception e) { throw e; }

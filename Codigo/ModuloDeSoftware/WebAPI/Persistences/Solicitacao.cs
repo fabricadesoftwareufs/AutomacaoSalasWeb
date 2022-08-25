@@ -10,6 +10,8 @@ namespace Persistence
         public int IdHardware { get; set; }
         public DateTime DataSolicitacao { get; set; }
         public DateTime? DataFinalizacao { get; set; }
+        public string TipoSolicitacao { get; set; }
+
 
         public virtual Hardwaredesala IdHardwareNavigation { get; set; }
     }
