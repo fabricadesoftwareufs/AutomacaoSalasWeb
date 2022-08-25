@@ -53,18 +53,22 @@ namespace Service
                 TipoSolicitacao = model.TipoSolicitacao
             };
 
-        public List<SolicitacaoModel> GetByIdHardware(int idHardware)
-            => _context.Solicitacao
-                .Where(s => s.IdHardware == idHardware)
-                .Select(s => new SolicitacaoModel
-                {
-                    Id = s.Id,
-                    IdHardware = s.IdHardware,
-                    Payload = s.Payload,
-                    DataSolicitacao = s.DataSolicitacao,
-                    DataFinalizacao = s.DataFinalizacao
+        public List<SolicitacaoModel> GetByIdHardware(int idHardware, string tipo, bool todos = false)
+        {
+            var query = todos ?
+                _context.Solicitacao.Where(s => s.IdHardware == idHardware && s.TipoSolicitacao.Contains(tipo)) :
+                _context.Solicitacao.Where(s => s.IdHardware == idHardware && s.TipoSolicitacao.Contains(tipo) && !s.DataFinalizacao.HasValue);
 
-                }).ToList();
+            return query.Select(s => new SolicitacaoModel
+            {
+                Id = s.Id,
+                IdHardware = s.IdHardware,
+                Payload = s.Payload,
+                DataSolicitacao = s.DataSolicitacao,
+                DataFinalizacao = s.DataFinalizacao,
+                TipoSolicitacao = s.TipoSolicitacao
+            }).ToList();
+        }
 
         public bool Insert(SolicitacaoModel entity)
         {
