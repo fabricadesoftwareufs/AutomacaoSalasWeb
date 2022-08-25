@@ -472,17 +472,12 @@ namespace Persistence
                 entity.Property(e => e.IdHardware).HasColumnName("idHardware");
 
                 entity.Property(e => e.TipoSolicitacao)
-                    .HasColumnType("enum('MONITORAMENTO_LUZES','MONITORAMENTO_AR_CONDICIONADO','ATUALIZAR_RESERVAS')")
-                    .HasColumnName("tipoSolicitacao")
-                    .HasCharSet("utf8mb3")
-                    .HasCollation("utf8_general_ci");
-
-
-                entity.Property(e => e.TipoSolicitacao)
                     .IsRequired()
                     .HasColumnName("tipoSolicitacao")
                     .HasColumnType("enum('MONITORAMENTO_LUZES','MONITORAMENTO_AR_CONDICIONADO','ATUALIZAR_RESERVAS')")
-                    .HasDefaultValueSql("ATUALIZAR_RESERVAS");
+                    .HasDefaultValueSql("ATUALIZAR_RESERVAS")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.IdHardwareNavigation)
                     .WithMany(p => p.Solicitacao)

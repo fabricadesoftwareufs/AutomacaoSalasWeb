@@ -374,14 +374,14 @@ namespace Service
 
                 if (solicitacao != null)
                 {
-                    solicitacao.DataFinalizacao = DateTime.UtcNow;
+                    solicitacao.DataFinalizacao = DateTime.Now;
                     _solicitacaService.Update(solicitacao);
                 }
 
                 resultado = _solicitacaService.Insert(solicitacaoModel);
             }
 
-            return false;
+            return resultado;
         }
     }
 }
