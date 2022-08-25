@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+
 namespace Persistence
 {
     public partial class Usuario
@@ -8,7 +10,7 @@ namespace Persistence
         public Usuario()
         {
             Horariosala = new HashSet<Horariosala>();
-            Planejamento = new HashSet<Planejamento>();
+            Planejamento  = new HashSet<Planejamento>();
             Salaparticular = new HashSet<Salaparticular>();
             Usuarioorganizacao = new HashSet<Usuarioorganizacao>();
         }
@@ -22,7 +24,7 @@ namespace Persistence
 
         public virtual Tipousuario TipoUsuarioNavigation { get; set; }
         public virtual ICollection<Horariosala> Horariosala { get; set; }
-        public virtual ICollection<Planejamento> Planejamento { get; set; }
+        public virtual ICollection<Planejamento> Planejamento  { get; set; }
         public virtual ICollection<Salaparticular> Salaparticular { get; set; }
         public virtual ICollection<Usuarioorganizacao> Usuarioorganizacao { get; set; }
     }
