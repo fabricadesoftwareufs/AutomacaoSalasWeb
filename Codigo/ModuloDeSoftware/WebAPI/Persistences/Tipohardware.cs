@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+
 namespace Persistence
 {
     public partial class Tipohardware
@@ -13,6 +15,6 @@ namespace Persistence
         public int Id { get; set; }
         public string Descricao { get; set; }
 
-        public ICollection<Hardwaredesala> Hardwaredesala { get; set; }
+        public virtual ICollection<Hardwaredesala> Hardwaredesala { get; set; }
     }
 }

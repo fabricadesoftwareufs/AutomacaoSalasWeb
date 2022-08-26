@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+
 namespace Persistence
 {
     public partial class Horariosala
@@ -15,8 +17,8 @@ namespace Persistence
         public int Sala { get; set; }
         public int? Planejamento { get; set; }
 
-        public Planejamento PlanejamentoNavigation { get; set; }
-        public Sala SalaNavigation { get; set; }
-        public Usuario UsuarioNavigation { get; set; }
+        public virtual Planejamento PlanejamentoNavigation { get; set; }
+        public virtual Sala SalaNavigation { get; set; }
+        public virtual Usuario UsuarioNavigation { get; set; }
     }
 }

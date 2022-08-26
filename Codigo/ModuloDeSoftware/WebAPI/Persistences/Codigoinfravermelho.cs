@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+
 namespace Persistence
 {
     public partial class Codigoinfravermelho
@@ -10,7 +12,7 @@ namespace Persistence
         public int Operacao { get; set; }
         public string Codigo { get; set; }
 
-        public Equipamento EquipamentoNavigation { get; set; }
-        public Operacao OperacaoNavigation { get; set; }
+        public virtual Equipamento EquipamentoNavigation { get; set; }
+        public virtual Operacao OperacaoNavigation { get; set; }
     }
 }

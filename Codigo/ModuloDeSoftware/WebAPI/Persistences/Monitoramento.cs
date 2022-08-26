@@ -1,4 +1,8 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+
+
+
 namespace Persistence
 {
     public partial class Monitoramento
@@ -7,6 +11,6 @@ namespace Persistence
         public byte Estado { get; set; }
         public int Equipamento { get; set; }
 
-        public Equipamento EquipamentoNavigation { get; set; }
+        public virtual Equipamento EquipamentoNavigation { get; set; }
     }
 }

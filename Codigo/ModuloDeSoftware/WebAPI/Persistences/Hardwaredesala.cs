@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+
 namespace Persistence
 {
     public partial class Hardwaredesala
@@ -8,6 +10,7 @@ namespace Persistence
         public Hardwaredesala()
         {
             Equipamento = new HashSet<Equipamento>();
+            Solicitacao = new HashSet<Solicitacao>();
         }
 
         public int Id { get; set; }
@@ -19,8 +22,9 @@ namespace Persistence
         public string Token { get; set; }
         public byte Registrado { get; set; }
 
-        public Sala SalaNavigation { get; set; }
-        public Tipohardware TipoHardwareNavigation { get; set; }
-        public ICollection<Equipamento> Equipamento { get; set; }
+        public virtual Sala SalaNavigation { get; set; }
+        public virtual Tipohardware TipoHardwareNavigation { get; set; }
+        public virtual ICollection<Equipamento> Equipamento { get; set; }
+        public virtual ICollection<Solicitacao> Solicitacao { get; set; }
     }
 }
