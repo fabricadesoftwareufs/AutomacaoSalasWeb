@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
@@ -266,6 +264,10 @@ namespace Persistence
                     .HasCharSet("utf8mb3")
                     .HasCollation("utf8_general_ci");
 
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("date");
+
                 entity.Property(e => e.Ip)
                     .IsRequired()
                     .HasColumnType("varchar(150)")
@@ -470,8 +472,10 @@ namespace Persistence
                 entity.Property(e => e.IdHardware).HasColumnName("idHardware");
 
                 entity.Property(e => e.TipoSolicitacao)
-                    .HasColumnType("enum('MONITORAMENTO_LUZES','MONITORAMENTO_AR_CONDICIONADO','ATUALIZAR_RESERVAS')")
+                    .IsRequired()
                     .HasColumnName("tipoSolicitacao")
+                    .HasColumnType("enum('MONITORAMENTO_LUZES','MONITORAMENTO_AR_CONDICIONADO','ATUALIZAR_RESERVAS')")
+                    .HasDefaultValueSql("ATUALIZAR_RESERVAS")
                     .HasCharSet("utf8mb3")
                     .HasCollation("utf8_general_ci");
 

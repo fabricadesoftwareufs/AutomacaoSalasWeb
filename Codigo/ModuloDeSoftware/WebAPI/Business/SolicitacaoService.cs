@@ -1,6 +1,4 @@
 ﻿using Model;
-using Model.AuxModel;
-using Model.ViewModel;
 using Persistence;
 using Service.Interface;
 using System;
@@ -27,6 +25,7 @@ namespace Service
                     DataSolicitacao = s.DataSolicitacao,
                     DataFinalizacao = s.DataFinalizacao,
                     TipoSolicitacao = s.TipoSolicitacao
+
                 }).ToList();
 
         public SolicitacaoModel GetById(int id)
@@ -40,6 +39,7 @@ namespace Service
                     DataSolicitacao = s.DataSolicitacao,
                     DataFinalizacao = s.DataFinalizacao,
                     TipoSolicitacao = s.TipoSolicitacao
+
                 }).FirstOrDefault();
 
         private static Solicitacao SetEntity(SolicitacaoModel model)

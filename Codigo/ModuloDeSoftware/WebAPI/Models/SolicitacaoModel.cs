@@ -1,10 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Model
 {
     public partial class SolicitacaoModel
     {
+        public static string ATUALIZAR_RESERVAS = "ATUALIZAR_RESERVAS";
+        public static string MONITORAMENTO_AR_CONDICIONADO = "MONITORAMENTO_AR_CONDICIONADO";
+        public static string MONITORAMENTO_LUZES = "MONITORAMENTO_LUZES";
+
         public int Id { get; set; }
         public string Payload { get; set; }
         public int IdHardware { get; set; }

@@ -22,7 +22,6 @@ namespace SalasUfsWeb.Controllers
         private readonly IMonitoramentoService _monitoramentoService;
         private readonly ICodigoInfravermelhoService _codigoInfravermelhoService;
 
-
         public HomeController(ISalaParticularService salaParticularService,
                               ISalaService salaService,
                               IBlocoService blocoService,
