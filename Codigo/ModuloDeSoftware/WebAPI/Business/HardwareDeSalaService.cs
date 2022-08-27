@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Utils;
+using static Model.HardwareDeSalaModel;
 
 namespace Service
 {
@@ -277,10 +278,10 @@ namespace Service
         => _context.Hardwaredesala.Where(h => h.Sala == id && h.TipoHardware == tipo).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).ToList();
 
         public List<HardwareDeSalaModel> GetAtuadorByIdSala(int id)
-            => _context.Hardwaredesala.Where(h => h.Sala == id && h.TipoHardware == 2).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).ToList();
+            => _context.Hardwaredesala.Where(h => h.Sala == id && h.TipoHardware == (int)TIPO.MODULO_ATUADOR).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).ToList();
 
         public HardwareDeSalaModel GetControladorByIdSala(int idSala)
-            => _context.Hardwaredesala.Where(h => h.Sala == idSala && h.TipoHardware == 1).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).FirstOrDefault();
+            => _context.Hardwaredesala.Where(h => h.Sala == idSala && h.TipoHardware == (int)TIPO.CONTROLADOR_SALA).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).FirstOrDefault();
 
         /// <summary>
         /// Remove da lista os atuadores que estão sendo usados em outros equipamentos, pois só pode haver um atuador vinculo a um equipamento
