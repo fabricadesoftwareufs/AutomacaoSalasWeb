@@ -95,6 +95,7 @@ namespace WebAPI
             services.AddScoped<ITipoHardwareService, TipoHardwareService>();
             services.AddScoped<IHardwareDeSalaService, HardwareDeSalaService>();
             services.AddScoped<ISalaParticularService, SalaParticularService>();
+            services.AddScoped<ISolicitacaoService, SolicitacacaoService>();
             services.AddScoped<IUsuarioOrganizacaoService, UsuarioOrganizacaoService>();
             services.AddScoped<IHorarioSalaService, HorarioSalaService>();
             services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();

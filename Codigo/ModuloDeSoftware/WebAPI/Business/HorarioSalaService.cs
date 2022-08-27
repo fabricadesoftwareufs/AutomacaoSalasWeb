@@ -368,9 +368,7 @@ namespace Service
 
                 var _solicitacaService = new SolicitacacaoService(_context);
 
-                var solicitacoes = _solicitacaService.GetByIdHardware(idHardware);
-
-                var solicitacao = solicitacoes?.FirstOrDefault(s => s.TipoSolicitacao.Equals(SolicitacaoModel.ATUALIZAR_RESERVAS));
+                var solicitacao = _solicitacaService.GetByIdHardware(idHardware, SolicitacaoModel.ATUALIZAR_RESERVAS).FirstOrDefault();
 
                 if (solicitacao != null)
                 {

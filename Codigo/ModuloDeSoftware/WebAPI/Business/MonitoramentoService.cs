@@ -217,9 +217,7 @@ namespace Service
 
                     var _solicitacaService = new SolicitacacaoService(_context);
 
-                    var solicitacoes = _solicitacaService.GetByIdHardware(hardwareDeSala.Id);
-
-                    var solicitacao = solicitacoes?.FirstOrDefault(s => s.TipoSolicitacao.Equals(GetTipoSolicitacao(tipoEquipamento)));
+                    var solicitacao = _solicitacaService.GetByIdHardware(hardwareDeSala.Id, GetTipoSolicitacao(tipoEquipamento)).FirstOrDefault();
 
                     if (solicitacao != null)
                     {

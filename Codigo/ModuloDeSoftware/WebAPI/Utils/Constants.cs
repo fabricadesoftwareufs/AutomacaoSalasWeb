@@ -11,6 +11,8 @@ namespace Utils
             "/api/hardwaredesala",
             "/api/monitoramento",
             "/api/infravermelho",
+            "/api/teste",
+            "/api/solicitacao",
         };
     }
 }
