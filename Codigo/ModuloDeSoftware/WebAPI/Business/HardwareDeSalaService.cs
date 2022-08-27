@@ -276,12 +276,9 @@ namespace Service
         public List<HardwareDeSalaModel> GetByIdSalaAndTipoHardware(int id, int tipo)
         => _context.Hardwaredesala.Where(h => h.Sala == id && h.TipoHardware == tipo).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).ToList();
 
-
-        // TIPO 2 MODULO ATUADOR
         public List<HardwareDeSalaModel> GetAtuadorByIdSala(int id)
             => _context.Hardwaredesala.Where(h => h.Sala == id && h.TipoHardware == 2).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).ToList();
 
-        // TIPO 1 MODULO ATUADOR
         public HardwareDeSalaModel GetControladorByIdSala(int idSala)
             => _context.Hardwaredesala.Where(h => h.Sala == idSala && h.TipoHardware == 1).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).FirstOrDefault();
 
