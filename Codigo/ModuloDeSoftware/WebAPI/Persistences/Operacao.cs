@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+
 namespace Persistence
 {
     public partial class Operacao
@@ -14,6 +16,6 @@ namespace Persistence
         public string Titulo { get; set; }
         public string Descricao { get; set; }
 
-        public ICollection<Codigoinfravermelho> Codigoinfravermelho { get; set; }
+        public virtual ICollection<Codigoinfravermelho> Codigoinfravermelho { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+
 namespace Persistence
 {
     public partial class Sala
@@ -10,7 +12,7 @@ namespace Persistence
             Equipamento = new HashSet<Equipamento>();
             Hardwaredesala = new HashSet<Hardwaredesala>();
             Horariosala = new HashSet<Horariosala>();
-            Planejamento = new HashSet<Planejamento>();
+            Planejamento  = new HashSet<Planejamento>();
             Salaparticular = new HashSet<Salaparticular>();
         }
 
@@ -18,11 +20,11 @@ namespace Persistence
         public string Titulo { get; set; }
         public int Bloco { get; set; }
 
-        public Bloco BlocoNavigation { get; set; }
-        public ICollection<Equipamento> Equipamento { get; set; }
-        public ICollection<Hardwaredesala> Hardwaredesala { get; set; }
-        public ICollection<Horariosala> Horariosala { get; set; }
-        public ICollection<Planejamento> Planejamento { get; set; }
-        public ICollection<Salaparticular> Salaparticular { get; set; }
+        public virtual Bloco BlocoNavigation { get; set; }
+        public virtual ICollection<Equipamento> Equipamento { get; set; }
+        public virtual ICollection<Hardwaredesala> Hardwaredesala { get; set; }
+        public virtual ICollection<Horariosala> Horariosala { get; set; }
+        public virtual ICollection<Planejamento> Planejamento  { get; set; }
+        public virtual ICollection<Salaparticular> Salaparticular { get; set; }
     }
 }

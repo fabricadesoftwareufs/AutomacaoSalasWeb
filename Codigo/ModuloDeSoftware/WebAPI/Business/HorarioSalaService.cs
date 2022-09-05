@@ -351,33 +351,35 @@ namespace Service
             return false;
         }
 
-        public bool SolicitaAtualizacaoHorarioESP(string ipSala, DateTime dataHorario)
+        public bool SolicitaAtualizacaoHorarioESP(int idHardware, DateTime dataHorario)
         {
-            //Se a reserva cadastrada for antes do próximo domingo, será solicitado ao esp32 
-            //para atualizar a base
             DateTime dataAtual = DateTime.Now;
-            DateTime proximoDomingo;
+            bool resultado = false;
 
-            int nDia = (int)dataAtual.DayOfWeek;
-
-            proximoDomingo = nDia == 0 ? dataAtual : DateTime.Now.AddDays(7 - nDia).Date;
-
-            if (dataHorario <= proximoDomingo)
+            if (dataHorario.Date == dataAtual.Date)
             {
-                var mensagem = JsonConvert.SerializeObject(
-                    new
-                    {
-                        type = ATUALIZAR_HORARIOS,
-                    });
+                var solicitacaoModel = new SolicitacaoModel
+                {
+                    DataSolicitacao = DateTime.Now,
+                    IdHardware = idHardware,
+                    Payload = "{}",
+                    TipoSolicitacao = SolicitacaoModel.ATUALIZAR_RESERVAS
+                };
 
-                var socketService = new ClienteSocketService(_context, ipSala);
-                socketService.AbrirConexao();
-                bool resultado = socketService.EnviarComando(mensagem) != null;
-                socketService.FecharConexao();
+                var _solicitacaService = new SolicitacacaoService(_context);
 
-                return resultado;
+                var solicitacao = _solicitacaService.GetByIdHardware(idHardware, SolicitacaoModel.ATUALIZAR_RESERVAS).FirstOrDefault();
+
+                if (solicitacao != null)
+                {
+                    solicitacao.DataFinalizacao = DateTime.Now;
+                    _solicitacaService.Update(solicitacao);
+                }
+
+                resultado = _solicitacaService.Insert(solicitacaoModel);
             }
-            return false;
+
+            return resultado;
         }
     }
 }

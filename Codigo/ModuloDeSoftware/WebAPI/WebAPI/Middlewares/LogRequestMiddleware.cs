@@ -24,19 +24,20 @@ namespace WebAPI.Middlewares
         {
 
             var features = context.Features.Get<IHttpRequestFeature>();
-            var input = "";
+            string? input;
             if (context.Request.HasFormContentType)
             {
                 IFormCollection form;
-                form = context.Request.Form; // sync
-                                             // Or
-                form = await context.Request.ReadFormAsync(); // async
+                form = await context.Request.ReadFormAsync();
 
-                input = String.Join(',', form.ToArray());
+                input = string.Join(',', form.ToArray());
             }
             else
             {
-                String.Join(',', context.Request?.Query.ToArray());
+                context.Request.EnableBuffering();
+                var body = await new System.IO.StreamReader(context.Request.Body).ReadToEndAsync();
+                context.Request.Body.Position = 0;
+                input = string.IsNullOrEmpty(body) ? "" : "body{" + body + "}.";
             }
             var logRequest = new LogRequestModel
             {

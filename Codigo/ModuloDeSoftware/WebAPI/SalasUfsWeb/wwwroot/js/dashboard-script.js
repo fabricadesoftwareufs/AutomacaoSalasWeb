@@ -58,34 +58,50 @@ function addReserva(data, indice ,dia) {
         '<input type="submit" class="btn btn-danger" value="Cancelar" />' +
         '</form>' +
         '</div>' +
-
-        '<form class="align-element float-right" method="post" action="/Home/MonitorarSala" asp-controller="Home" asp-action="MonitorarSala" id="form-' + indice + "-" + data.monitoramento.id + "-" + data.horarioSala.id + '">' +
-        '<div class="form-control" hidden>' +
-        '<input class="form-control" name="SalaId" value="' + data.monitoramento.salaId + '" />' +
-        '<input class="form-control" name="Id" value="' + data.monitoramento.id + '" />' +
-        '<input class="form-control" name="SalaParticular" value="False" />' +
-        '</div>' +
-
         '<div class="float-right">' +
-            '<div class="align-element">' +
-                '<h5 class="card-text">Luzes</h5>' +
-                '<label class="switch" onchange="submitForm(\'form-' + indice + "-" + data.monitoramento.id + "-" + data.horarioSala.id + '\',\'' + indice + "-" + data.monitoramento.id + "-" + data.horarioSala.id + '\',false)">' +
-                    '<input type="checkbox" name="Luzes" id="luzes-' + indice + "-"+ data.monitoramento.id + "-" + data.horarioSala.id + '" value="' + data.monitoramento.luzes + '"' + new String(data.monitoramento.luzes ? "checked" : "") + '/>' +
-                    '<span class="slider round"></span>' +
-                '</label>' +
+            '<div class="float-right">' + 
+                '<div class="align-element">' +   
+                    '<form method="post" action="/Home/MonitorarSala" asp-controller="Home" asp-action="MonitorarSala" id="form-' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '">' +
+                        '<div class="form-control" hidden>' +
+                            '<input class="form-control" name="SalaId" value="' + data.sala.id + '" />' +
+                            '<input class="form-control" name="Id" value="' + data.monitoramentoLuzes.id + '" />' +
+                            '<input class="form-control" name="EquipamentoId" value="' + data.monitoramentoLuzes.equipamentoId +'" />' +
+                            '<input class="form-control" name="SalaParticular" value="False" />' +
+                        '</div>' +
+
+                         '<div class="align-element">' +
+                             '<h5 class="card-text">Luzes</h5>' +
+                                    '<label class="switch" onchange="submitForm(\'form-' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '\',\'' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '\',false)">' +
+                                    '<input type="checkbox" name="Estado" id="luzes-' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '" value="' + data.monitoramentoLuzes.estado + '"' + new String(data.monitoramentoLuzes.estado ? "checked" : "") + '/>' +
+                                    '<span class="slider round"></span>' +
+                             '</label>' +
+                        '</div>' +
+                      '</form>' +
+                '</div>' +
             '</div>' +
-        '</div>' +
 
-        '<div class="float-right">' +
-        '<div class="align-element">' +
-        '<h5 class="card-text">Condicionadores</h5>' +
-        '<label class="switch" onchange="submitForm(\'form-' + indice + "-" + data.monitoramento.id + "-" + data.horarioSala.id + '\',\'' + indice + "-" + data.monitoramento.id + "-" + data.horarioSala.id + '\',false)">' +
-        '<input type="checkbox" name="ArCondicionado" id="arCondicionado-' + indice + "-" + data.monitoramento.id + "-" + data.horarioSala.id + '" value="' + data.monitoramento.arCondicionado + '"' + new String(data.monitoramento.arCondicionado ? "checked" : "") +'/>' +
-        '<span class="slider round"></span>' +
-        '</label>' +
-        '</div>' +
-        '</div>' +
-        '</form>' +
+            '<div class="float-right">' + 
+                '<div class="align-element">' +    
+                    '<form method="post" action="/Home/MonitorarSala" asp-controller="Home" asp-action="MonitorarSala" id="form-' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '">' +
+                        '<div class="form-control" hidden>' +
+                            '<input class="form-control" name="SalaId" value="' + data.sala.id + '" />' +
+                            '<input class="form-control" name="Id" value="' + data.monitoramentoCondicionadores.id + '" />' +
+                            '<input class="form-control" name="EquipamentoId" value="' + data.monitoramentoCondicionadores.equipamentoId + '" />' +
+                            '<input class="form-control" name="SalaParticular" value="False" />' +
+                        '</div>' +
+
+                        '<div class="align-element">' +
+                                '<h5 class="card-text">Condicionadores</h5>' +
+                                '<label class="switch" onchange="submitForm(\'form-' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '\',\'' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '\',false)">' +
+                                '<input type="checkbox" name="Estado" id="arCondicionado-' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '" value="' + data.monitoramentoCondicionadores.estado + '"' + new String(data.monitoramentoCondicionadores.estado ? "checked" : "") +'/>' +
+                                '<span class="slider round"></span>' +
+                                '</label>' +
+                        '</div>' +
+                    '</form>' +
+                '</div>' +
+            '</div>' +
+
+        '</div>'
         '</div>' +
         '</div>';
 

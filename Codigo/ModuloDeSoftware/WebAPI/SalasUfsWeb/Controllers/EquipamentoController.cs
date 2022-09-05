@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Model;
 using Model.ViewModel;
 using Service;
@@ -23,6 +24,7 @@ namespace SalasUfsWeb.Controllers
         private readonly IBlocoService _blocoService;
         private readonly IOrganizacaoService _organizacaoService;
         private readonly IHardwareDeSalaService _hardwareDeSalaService;
+
         public EquipamentoController(
                                         IEquipamentoService equipamentoService,
                                         ICodigoInfravermelhoService codigoInfravermelhoService,
@@ -33,7 +35,6 @@ namespace SalasUfsWeb.Controllers
                                         IBlocoService blocoService,
                                         IOrganizacaoService organizacaoService,
                                         IHardwareDeSalaService hardwareDeSalaService
-
                                     )
         {
             _equipamentoService = equipamentoService;

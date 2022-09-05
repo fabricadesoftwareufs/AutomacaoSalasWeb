@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+
 namespace Persistence
 {
     public partial class Equipamento
@@ -19,9 +21,9 @@ namespace Persistence
         public string TipoEquipamento { get; set; }
         public int? HardwareDeSala { get; set; }
 
-        public Hardwaredesala HardwareDeSalaNavigation { get; set; }
-        public Sala SalaNavigation { get; set; }
-        public ICollection<Codigoinfravermelho> Codigoinfravermelho { get; set; }
-        public ICollection<Monitoramento> Monitoramento { get; set; }
+        public virtual Hardwaredesala HardwareDeSalaNavigation { get; set; }
+        public virtual Sala SalaNavigation { get; set; }
+        public virtual ICollection<Codigoinfravermelho> Codigoinfravermelho { get; set; }
+        public virtual ICollection<Monitoramento> Monitoramento { get; set; }
     }
 }

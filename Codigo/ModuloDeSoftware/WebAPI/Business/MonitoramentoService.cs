@@ -13,7 +13,9 @@ namespace Service
     {
         private readonly SalasUfsDbContext _context;
         private const string AC_ON = "AC-ON";
-        private const string L_ON = "L-ON";
+        private const string L_ON = "LZ-ON";
+        private const string AC_OFF = "AC-OFF";
+        private const string L_OFF = "LZ-OFF";
         private const string NOT_AVALIABLE = "NOT-AVALIABLE";
 
         public MonitoramentoService(SalasUfsDbContext context)
@@ -85,8 +87,7 @@ namespace Service
         public bool MonitorarSala(int idUsuario, MonitoramentoViewModel monitoramento)
         {
             var _equipamentoSala = new EquipamentoService(_context);
-            var _monitoramentoService = new MonitoramentoService(_context);
-            var equipamento = _equipamentoSala.GetByIdSala(monitoramento.SalaId).FirstOrDefault();
+            var equipamento = _equipamentoSala.GetByIdEquipamento(monitoramento.EquipamentoId);
 
             if (equipamento != null)
             {
@@ -103,14 +104,18 @@ namespace Service
                         throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
                 }
 
-                var model = _monitoramentoService.GetByIdEquipamento(equipamento.Id);
-                model.Estado = equipamento.TipoEquipamento.Equals(EquipamentoModel.TIPO_CONDICIONADOR) ?
-                                monitoramento.ArCondicionado : monitoramento.Luzes;
+                var monitoramentoModel = new MonitoramentoModel
+                {
+                     EquipamentoId = monitoramento.EquipamentoId,
+                     Estado = monitoramento.Estado,
+                     Id = monitoramento.Id,
+                     SalaParticular = monitoramento.SalaParticular
+                };
 
-                if (!EnviarComandosMonitoramento(model))
+                if (!EnviarComandosMonitoramento(monitoramentoModel))
                     throw new ServiceException("Não foi possível concluir seu monitoramento pois não foi possível estabelecer conexão com a sala!");
 
-                Update(model);
+                Update(monitoramentoModel);
             }
 
             return true;
@@ -153,27 +158,25 @@ namespace Service
             }
         }
 
-        private bool EnviarComandosMonitoramento(MonitoramentoModel solicitacao)
+        private bool EnviarComandosMonitoramento(MonitoramentoModel monitoramento)
         {
             try
             {
-                var modelDesatualizado = GetById(solicitacao.Id);
+                var modelDesatualizado = GetById(monitoramento.Id);
                 bool comandoEnviadoComSucesso = true;
 
-                if (solicitacao.Estado != modelDesatualizado.Estado)
+                if (monitoramento.Estado != modelDesatualizado.Estado)
                 {
                     var _hardwareDeSalaService = new HardwareDeSalaService(_context);
                     var _equipamentoServiceService = new EquipamentoService(_context);
-                    var equipamento = _equipamentoServiceService.GetByIdEquipamento(solicitacao.EquipamentoId);
-                    var hardwareDeSala = _hardwareDeSalaService.GetByIdSalaAndTipoHardware(equipamento.Sala, TipoHardwareModel.CONTROLADOR_DE_SALA).FirstOrDefault();
-                    var clienteSocket = new ClienteSocketService(_context, hardwareDeSala.Ip);
+                    var equipamento = _equipamentoServiceService.GetByIdEquipamento(monitoramento.EquipamentoId);
 
                     string tipoEquipamento = string.Empty, operacao = string.Empty, retornoEsperado = string.Empty;
 
                     if (equipamento.TipoEquipamento.Equals(EquipamentoModel.TIPO_CONDICIONADOR))
                     {
                         var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
-                        var idOperacao = solicitacao.Estado ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
+                        var idOperacao = monitoramento.Estado ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
                         var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdEquipamento(equipamento.Id, idOperacao);
 
                         if (codigosInfravermelho == null)
@@ -181,39 +184,48 @@ namespace Service
 
                         tipoEquipamento = EquipamentoModel.TIPO_CONDICIONADOR;
                         operacao = codigosInfravermelho.Codigo;
-                        retornoEsperado = AC_ON;
+                        retornoEsperado = monitoramento.Estado ? AC_ON : AC_OFF;
                     }
                     else
                     {
                         tipoEquipamento = EquipamentoModel.TIPO_LUZES;
-                        operacao = solicitacao.Estado.ToString();
-                        retornoEsperado = L_ON;
+                        operacao = monitoramento.Estado.ToString();
+                        retornoEsperado = monitoramento.Estado ? L_ON : L_OFF;
                     }
+
+                 
+
+                    var hardwareAtuador = _hardwareDeSalaService.GetById(equipamento.HardwareDeSala.GetValueOrDefault(0));
+                    var hardwareDeSala = _hardwareDeSalaService.GetControladorByIdSala(equipamento.Sala);
 
                     var mensagem = JsonConvert.SerializeObject(
                           new
                           {
                               type = tipoEquipamento,
-                              acting = solicitacao.Estado.ToString(),
+                              acting = monitoramento.Estado.ToString(),
                               code = operacao,
-                              uuid = hardwareDeSala.Uuid
+                              uuid = hardwareAtuador.Uuid
                           });
 
-                    clienteSocket.AbrirConexao();
-                    var status = clienteSocket.EnviarComando(mensagem);
-                    clienteSocket.FecharConexao();
+                    var solicitacaoModel = new SolicitacaoModel
+                    {
+                        DataSolicitacao = DateTime.Now,
+                        IdHardware = hardwareDeSala.Id,
+                        Payload = mensagem,
+                        TipoSolicitacao = GetTipoSolicitacao(tipoEquipamento)
+                    };
 
-                    if (NOT_AVALIABLE.Equals(status))
+                    var _solicitacaService = new SolicitacacaoService(_context);
+
+                    var solicitacao = _solicitacaService.GetByIdHardware(hardwareDeSala.Id, GetTipoSolicitacao(tipoEquipamento)).FirstOrDefault();
+
+                    if (solicitacao != null)
                     {
-                        modelDesatualizado = GetById(solicitacao.Id);
-                        comandoEnviadoComSucesso = (solicitacao.Estado == modelDesatualizado.Estado);
-                        solicitacao.Estado = modelDesatualizado.Estado;
+                        solicitacao.DataFinalizacao = DateTime.UtcNow;
+                        _solicitacaService.Update(solicitacao);
                     }
-                    else
-                    {
-                        solicitacao.Estado = status.Contains(retornoEsperado);
-                        comandoEnviadoComSucesso = status != null;
-                    }
+
+                    comandoEnviadoComSucesso = _solicitacaService.Insert(solicitacaoModel);
                 }
 
                 return comandoEnviadoComSucesso;
@@ -223,6 +235,16 @@ namespace Service
                 Console.WriteLine(e.Message);
                 return false;
             }
+        }
+
+        public string GetTipoSolicitacao(string operacao)
+        {
+            return operacao switch
+            {
+                EquipamentoModel.TIPO_CONDICIONADOR => SolicitacaoModel.MONITORAMENTO_AR_CONDICIONADO,
+                EquipamentoModel.TIPO_LUZES => SolicitacaoModel.MONITORAMENTO_LUZES,
+                _ => SolicitacaoModel.ATUALIZAR_RESERVAS,
+            };
         }
 
         private Monitoramento SetEntity(MonitoramentoModel model)

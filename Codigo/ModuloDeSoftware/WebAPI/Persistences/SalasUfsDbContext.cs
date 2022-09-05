@@ -1,12 +1,9 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
     public partial class SalasUfsDbContext : DbContext
     {
-        private const string _dbName = "str_db";
         public SalasUfsDbContext()
         {
         }
@@ -21,17 +18,18 @@ namespace Persistence
         public virtual DbSet<Equipamento> Equipamento { get; set; }
         public virtual DbSet<Hardwaredesala> Hardwaredesala { get; set; }
         public virtual DbSet<Horariosala> Horariosala { get; set; }
+        public virtual DbSet<Logrequest> Logrequest { get; set; }
         public virtual DbSet<Monitoramento> Monitoramento { get; set; }
         public virtual DbSet<Operacao> Operacao { get; set; }
         public virtual DbSet<Organizacao> Organizacao { get; set; }
         public virtual DbSet<Planejamento> Planejamento { get; set; }
         public virtual DbSet<Sala> Sala { get; set; }
         public virtual DbSet<Salaparticular> Salaparticular { get; set; }
+        public virtual DbSet<Solicitacao> Solicitacao { get; set; }
         public virtual DbSet<Tipohardware> Tipohardware { get; set; }
         public virtual DbSet<Tipousuario> Tipousuario { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
         public virtual DbSet<Usuarioorganizacao> Usuarioorganizacao { get; set; }
-        public virtual DbSet<Logrequest> LogRequest { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -42,24 +40,18 @@ namespace Persistence
         {
             modelBuilder.Entity<Bloco>(entity =>
             {
-                entity.ToTable("bloco", _dbName);
+                entity.ToTable("bloco");
 
-                entity.HasIndex(e => e.Organizacao)
-                    .HasName("fk_Bloco_Organizacao1_idx");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
-
-                entity.Property(e => e.Organizacao)
-                    .HasColumnName("organizacao")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Organizacao).HasColumnName("organizacao");
 
                 entity.Property(e => e.Titulo)
                     .IsRequired()
+                    .HasColumnType("varchar(100)")
                     .HasColumnName("titulo")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.OrganizacaoNavigation)
                     .WithMany(p => p.Bloco)
@@ -70,30 +62,20 @@ namespace Persistence
 
             modelBuilder.Entity<Codigoinfravermelho>(entity =>
             {
-                entity.ToTable("codigoinfravermelho", _dbName);
+                entity.ToTable("codigoinfravermelho");
 
-                entity.HasIndex(e => e.Equipamento)
-                    .HasName("fk_CodigoInfravermelho_Equipamento1_idx");
-
-                entity.HasIndex(e => e.Operacao)
-                    .HasName("fk_CodigoInfravermelho_Operacao1_idx");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11 )");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Codigo)
                     .IsRequired()
+                    .HasColumnType("mediumtext")
                     .HasColumnName("codigo")
-                    .HasColumnType("mediumtext");
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Equipamento)
-                    .HasColumnName("equipamento")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Equipamento).HasColumnName("equipamento");
 
-                entity.Property(e => e.Operacao)
-                    .HasColumnName("operacao")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Operacao).HasColumnName("operacao");
 
                 entity.HasOne(d => d.EquipamentoNavigation)
                     .WithMany(p => p.Codigoinfravermelho)
@@ -110,53 +92,46 @@ namespace Persistence
 
             modelBuilder.Entity<Equipamento>(entity =>
             {
-                entity.ToTable("equipamento", _dbName);
+                entity.ToTable("equipamento");
 
-                entity.HasIndex(e => e.HardwareDeSala)
-                    .HasName("fk_Equipamento_HardwareDeSala_idx");
-
-                entity.HasIndex(e => e.Sala)
-                    .HasName("fk_Equipamento_Sala1_idx");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Descricao)
+                    .HasColumnType("varchar(1000)")
                     .HasColumnName("descricao")
-                    .HasMaxLength(1000)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.HardwareDeSala)
-                    .HasColumnName("hardwareDeSala")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.HardwareDeSala).HasColumnName("hardwareDeSala");
 
                 entity.Property(e => e.Marca)
                     .IsRequired()
+                    .HasColumnType("varchar(100)")
                     .HasColumnName("marca")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Modelo)
                     .IsRequired()
+                    .HasColumnType("varchar(200)")
                     .HasColumnName("modelo")
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Sala)
-                    .HasColumnName("sala")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Sala).HasColumnName("sala");
 
                 entity.Property(e => e.TipoEquipamento)
                     .IsRequired()
-                    .HasColumnName("tipoEquipamento")
                     .HasColumnType("enum('CONDICIONADOR','LUZES')")
-                    .HasDefaultValueSql("_utf8mb4\\'CONDICIONADOR\\'");
+                    .HasColumnName("tipoEquipamento")
+                    .HasDefaultValueSql("'CONDICIONADOR'")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.HardwareDeSalaNavigation)
                     .WithMany(p => p.Equipamento)
                     .HasForeignKey(d => d.HardwareDeSala)
-                    .HasConstraintName("fk_Equipamento_HardwareDeSala");
+                    .HasConstraintName("fk_Equipamento_HardwareDeSala1");
 
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Equipamento)
@@ -167,43 +142,40 @@ namespace Persistence
 
             modelBuilder.Entity<Hardwaredesala>(entity =>
             {
-                entity.ToTable("hardwaredesala", _dbName);
+                entity.ToTable("hardwaredesala");
 
-                entity.HasIndex(e => e.Sala)
-                    .HasName("fk_Hardware_Sala1_idx");
-
-                entity.HasIndex(e => e.TipoHardware)
-                    .HasName("fk_HardwareDeSala_TipoHardware1_idx");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Ip)
+                    .HasColumnType("varchar(15)")
                     .HasColumnName("ip")
-                    .HasMaxLength(15)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Mac)
                     .IsRequired()
+                    .HasColumnType("varchar(45)")
                     .HasColumnName("mac")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Sala).HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Registrado).HasColumnName("registrado");
 
-                entity.Property(e => e.TipoHardware)
-                    .HasColumnName("tipoHardware")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Sala).HasColumnName("sala");
+
+                entity.Property(e => e.TipoHardware).HasColumnName("tipoHardware");
+
+                entity.Property(e => e.Token)
+                    .HasColumnType("varchar(400)")
+                    .HasColumnName("token")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Uuid)
+                    .HasColumnType("varchar(75)")
                     .HasColumnName("uuid")
-                    .HasMaxLength(75)
-                    .IsUnicode(false);
-
-               entity.Property(e => e.Registrado)
-                    .HasColumnName("registrado")
-                    .HasColumnType("tinyint(4)");
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Hardwaredesala)
@@ -220,50 +192,42 @@ namespace Persistence
 
             modelBuilder.Entity<Horariosala>(entity =>
             {
-                entity.ToTable("horariosala", _dbName);
+                entity.ToTable("horariosala");
 
-                entity.HasIndex(e => e.Planejamento)
-                    .HasName("fk_HorarioSala_Planejamento1_idx");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.HasIndex(e => e.Sala)
-                    .HasName("fk_HorarioSala_Sala1_idx");
+                entity.Property(e => e.Data)
+                    .HasColumnType("datetime")
+                    .HasColumnName("data");
 
-                entity.HasIndex(e => e.Usuario)
-                    .HasName("fk_HorarioSala_Usuario1_idx");
+                entity.Property(e => e.HorarioFim)
+                    .HasColumnType("time")
+                    .HasColumnName("horarioFim");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
-
-                entity.Property(e => e.Data).HasColumnName("data");
-
-                entity.Property(e => e.HorarioFim).HasColumnName("horarioFim");
-
-                entity.Property(e => e.HorarioInicio).HasColumnName("horarioInicio");
+                entity.Property(e => e.HorarioInicio)
+                    .HasColumnType("time")
+                    .HasColumnName("horarioInicio");
 
                 entity.Property(e => e.Objetivo)
                     .IsRequired()
+                    .HasColumnType("varchar(500)")
                     .HasColumnName("objetivo")
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Planejamento)
-                    .HasColumnName("planejamento")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Planejamento).HasColumnName("planejamento");
 
-                entity.Property(e => e.Sala)
-                    .HasColumnName("sala")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Sala).HasColumnName("sala");
 
                 entity.Property(e => e.Situacao)
                     .IsRequired()
-                    .HasColumnName("situacao")
                     .HasColumnType("enum('PENDENTE','APROVADA','REPROVADA','CANCELADA')")
-                    .HasDefaultValueSql("APROVADA");
+                    .HasColumnName("situacao")
+                    .HasDefaultValueSql("'APROVADA'")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Usuario)
-                    .HasColumnName("usuario")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.PlanejamentoNavigation)
                     .WithMany(p => p.Horariosala)
@@ -283,24 +247,66 @@ namespace Persistence
                     .HasConstraintName("fk_HorarioSala_Usuario1");
             });
 
+            modelBuilder.Entity<Logrequest>(entity =>
+            {
+                entity.ToTable("logrequest");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Date)
+                    .HasColumnType("datetime")
+                    .HasColumnName("date");
+
+                entity.Property(e => e.Input)
+                    .IsRequired()
+                    .HasColumnType("text")
+                    .HasColumnName("input")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Ip)
+                    .IsRequired()
+                    .HasColumnType("varchar(150)")
+                    .HasColumnName("ip")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Origin)
+                    .IsRequired()
+                    .HasColumnType("enum('API','ESP32')")
+                    .HasColumnName("origin")
+                    .HasDefaultValueSql("'API'")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.StatusCode)
+                    .IsRequired()
+                    .HasColumnType("varchar(50)")
+                    .HasColumnName("statusCode")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Url)
+                    .IsRequired()
+                    .HasColumnType("varchar(250)")
+                    .HasColumnName("url")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
+            });
+
             modelBuilder.Entity<Monitoramento>(entity =>
             {
-                entity.ToTable("monitoramento", _dbName);
+                entity.ToTable("monitoramento");
 
-                entity.HasIndex(e => e.Equipamento)
-                    .HasName("fk_Equipamento_Id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Equipamento).HasColumnName("equipamento");
 
-                entity.Property(e => e.Equipamento)
-                    .HasColumnName("equipamento")
-                    .HasColumnType("int(11)");
-
-                entity.Property(e => e.Estado)
-                    .HasColumnName("estado")
-                    .HasColumnType("tinyint(4)");
+                entity.Property(e => e.Estado).HasColumnName("estado");
 
                 entity.HasOne(d => d.EquipamentoNavigation)
                     .WithMany(p => p.Monitoramento)
@@ -309,132 +315,89 @@ namespace Persistence
                     .HasConstraintName("fk_Equipamento_Id");
             });
 
-            modelBuilder.Entity<Logrequest>(entity =>
-            {
-                entity.ToTable("logrequest", _dbName);
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id");
-
-                entity.Property(e => e.Date)
-                    .HasColumnName("date")
-                    .HasColumnType("date");
-
-                entity.Property(e => e.Input)
-                    .IsRequired()
-                    .HasColumnName("input")
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Ip)
-                    .IsRequired()
-                    .HasColumnName("ip")
-                    .HasMaxLength(150)
-                    .IsUnicode(false);              
-                
-                entity.Property(e => e.StatusCode)
-                    .IsRequired()
-                    .HasColumnName("statusCode")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Url)
-                    .IsRequired()
-                    .HasColumnName("url")
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Origin)
-                    .HasColumnName("origin")
-                    .HasColumnType("enum('API','ESP32')")
-                    .HasDefaultValueSql("_utf8mb4\\'API\\'");
-            });
-
             modelBuilder.Entity<Operacao>(entity =>
             {
-                entity.ToTable("operacao", _dbName);
+                entity.ToTable("operacao");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Descricao)
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
+                    .HasColumnType("varchar(200)")
+                    .HasColumnName("descricao")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Titulo)
                     .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .HasColumnType("varchar(50)")
+                    .HasColumnName("titulo")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<Organizacao>(entity =>
             {
-                entity.ToTable("organizacao", _dbName);
+                entity.ToTable("organizacao");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Cnpj)
                     .IsRequired()
+                    .HasColumnType("varchar(15)")
                     .HasColumnName("cnpj")
-                    .HasMaxLength(15)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.RazaoSocial)
                     .IsRequired()
+                    .HasColumnType("varchar(45)")
                     .HasColumnName("razaoSocial")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<Planejamento>(entity =>
             {
-                entity.ToTable("planejamento", _dbName);
+                entity.ToTable("planejamento");
 
-                entity.HasIndex(e => e.Sala)
-                    .HasName("fk_Planejamento_Sala1_idx");
-
-                entity.HasIndex(e => e.Usuario)
-                    .HasName("fk_Planejamento_Usuario1_idx");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.DataFim)
-                    .HasColumnName("dataFim")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .HasColumnName("dataFim");
 
                 entity.Property(e => e.DataInicio)
-                    .HasColumnName("dataInicio")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .HasColumnName("dataInicio");
 
                 entity.Property(e => e.DiaSemana)
                     .IsRequired()
+                    .HasColumnType("enum('SEG','TER','QUA','QUI','SEX','SAB','DOM')")
                     .HasColumnName("diaSemana")
-                    .HasColumnType("enum('SEG','TER','QUA','QUI','SEX','SAB','DOM')");
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.HorarioFim).HasColumnName("horarioFim");
+                entity.Property(e => e.HorarioFim)
+                    .HasColumnType("time")
+                    .HasColumnName("horarioFim");
 
-                entity.Property(e => e.HorarioInicio).HasColumnName("horarioInicio");
+                entity.Property(e => e.HorarioInicio)
+                    .HasColumnType("time")
+                    .HasColumnName("horarioInicio");
 
                 entity.Property(e => e.Objetivo)
                     .IsRequired()
+                    .HasColumnType("varchar(500)")
                     .HasColumnName("objetivo")
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Sala)
-                    .HasColumnName("sala")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Sala).HasColumnName("sala");
 
-                entity.Property(e => e.Usuario)
-                    .HasColumnName("usuario")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.SalaNavigation)
-                    .WithMany(p => p.Planejamento)
+                    .WithMany(p => p.Planejamento )
                     .HasForeignKey(d => d.Sala)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Planejamento_Sala1");
@@ -448,24 +411,18 @@ namespace Persistence
 
             modelBuilder.Entity<Sala>(entity =>
             {
-                entity.ToTable("sala", _dbName);
+                entity.ToTable("sala");
 
-                entity.HasIndex(e => e.Bloco)
-                    .HasName("fk_Sala_Bloco1_idx");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
-
-                entity.Property(e => e.Bloco)
-                    .HasColumnName("bloco")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Bloco).HasColumnName("bloco");
 
                 entity.Property(e => e.Titulo)
                     .IsRequired()
+                    .HasColumnType("varchar(100)")
                     .HasColumnName("titulo")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.BlocoNavigation)
                     .WithMany(p => p.Sala)
@@ -476,25 +433,14 @@ namespace Persistence
 
             modelBuilder.Entity<Salaparticular>(entity =>
             {
-                entity.ToTable("salaparticular", _dbName);
+                entity.ToTable("salaparticular");
 
-                entity.HasIndex(e => e.Sala)
-                    .HasName("fk_MinhaSala_Sala1_idx");
 
-                entity.HasIndex(e => e.Usuario)
-                    .HasName("fk_MinhaSala_Usuario1_idx");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Sala).HasColumnName("sala");
 
-                entity.Property(e => e.Sala)
-                    .HasColumnName("sala")
-                    .HasColumnType("int(10) unsigned");
-
-                entity.Property(e => e.Usuario)
-                    .HasColumnName("usuario")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.SalaNavigation)
                     .WithMany(p => p.Salaparticular)
@@ -509,76 +455,97 @@ namespace Persistence
                     .HasConstraintName("fk_MinhaSala_Usuario1");
             });
 
+            modelBuilder.Entity<Solicitacao>(entity =>
+            {
+                entity.ToTable("solicitacao");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.DataFinalizacao)
+                    .HasColumnType("datetime")
+                    .HasColumnName("dataFinalizacao");
+
+                entity.Property(e => e.DataSolicitacao)
+                    .HasColumnType("datetime")
+                    .HasColumnName("dataSolicitacao");
+
+                entity.Property(e => e.IdHardware).HasColumnName("idHardware");
+
+                entity.Property(e => e.TipoSolicitacao)
+                    .IsRequired()
+                    .HasColumnName("tipoSolicitacao")
+                    .HasColumnType("enum('MONITORAMENTO_LUZES','MONITORAMENTO_AR_CONDICIONADO','ATUALIZAR_RESERVAS')")
+                    .HasDefaultValueSql("ATUALIZAR_RESERVAS")
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
+
+                entity.HasOne(d => d.IdHardwareNavigation)
+                    .WithMany(p => p.Solicitacao)
+                    .HasForeignKey(d => d.IdHardware)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_Solicitacao_Hardware1");
+            });
+
             modelBuilder.Entity<Tipohardware>(entity =>
             {
-                entity.ToTable("tipohardware", _dbName);
+                entity.ToTable("tipohardware");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Descricao)
                     .IsRequired()
+                    .HasColumnType("varchar(45)")
                     .HasColumnName("descricao")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<Tipousuario>(entity =>
             {
-                entity.ToTable("tipousuario", _dbName);
+                entity.ToTable("tipousuario");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Descricao)
                     .IsRequired()
+                    .HasColumnType("varchar(45)")
                     .HasColumnName("descricao")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
             });
 
             modelBuilder.Entity<Usuario>(entity =>
             {
-                entity.ToTable("usuario", _dbName);
+                entity.ToTable("usuario");
 
-                entity.HasIndex(e => e.Cpf)
-                    .HasName("Cpf_UNIQUE")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.TipoUsuario)
-                    .HasName("fk_Usuario_TipoUsuario1_idx");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Cpf)
                     .IsRequired()
+                    .HasColumnType("varchar(11)")
                     .HasColumnName("cpf")
-                    .HasMaxLength(11)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.DataNascimento)
-                    .HasColumnName("dataNascimento")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .HasColumnName("dataNascimento");
 
                 entity.Property(e => e.Nome)
                     .IsRequired()
+                    .HasColumnType("varchar(45)")
                     .HasColumnName("nome")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Senha)
                     .IsRequired()
+                    .HasColumnType("varchar(100)")
                     .HasColumnName("senha")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .HasCharSet("utf8mb3")
+                    .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.TipoUsuario)
-                    .HasColumnName("tipoUsuario")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.TipoUsuario).HasColumnName("tipoUsuario");
 
                 entity.HasOne(d => d.TipoUsuarioNavigation)
                     .WithMany(p => p.Usuario)
@@ -589,28 +556,19 @@ namespace Persistence
 
             modelBuilder.Entity<Usuarioorganizacao>(entity =>
             {
-                entity.HasKey(e => new { e.Id, e.Organizacao, e.Usuario });
+                entity.HasKey(e => new { e.Id, e.Organizacao, e.Usuario })
+                    .HasName("PRIMARY");
 
-                entity.ToTable("usuarioorganizacao", _dbName);
+                entity.ToTable("usuarioorganizacao");
 
-                entity.HasIndex(e => e.Organizacao)
-                    .HasName("fk_Organizacao_has_Usuario_Organizacao1_idx");
-
-                entity.HasIndex(e => e.Usuario)
-                    .HasName("fk_Organizacao_has_Usuario_Usuario1_idx");
 
                 entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(10) unsigned")
-                    .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("id");
 
-                entity.Property(e => e.Organizacao)
-                    .HasColumnName("organizacao")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Organizacao).HasColumnName("organizacao");
 
-                entity.Property(e => e.Usuario)
-                    .HasColumnName("usuario")
-                    .HasColumnType("int(10) unsigned");
+                entity.Property(e => e.Usuario).HasColumnName("usuario");
 
                 entity.HasOne(d => d.OrganizacaoNavigation)
                     .WithMany(p => p.Usuarioorganizacao)
@@ -624,6 +582,10 @@ namespace Persistence
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Organizacao_has_Usuario_Usuario1");
             });
+
+            OnModelCreatingPartial(modelBuilder);
         }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
