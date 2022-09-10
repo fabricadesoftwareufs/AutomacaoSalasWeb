@@ -112,6 +112,60 @@ namespace WebAPI.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Put Atualiza a solicitação
+        /// </summary>
+        /// <param name="solicitacao"></param>
+        /// <returns></returns>
+        [HttpPut("finalizar-solicitacao-by-id/{id}")]
+        public ActionResult FinalizarSolicitacaoById(int id)
+        {
+            try
+            {
+                var solicitacaoDB = _solicitacaoService.GetById(id);
+                if (solicitacaoDB.DataFinalizacao.HasValue)
+                {
+                    return Ok(new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.OK,
+                        message = "A soliciação já foi finalizada anteriormente.",
+                    });
+                }
+                solicitacaoDB.DataFinalizacao = DateTime.UtcNow;
+
+                var updated = _solicitacaoService.Update(solicitacaoDB);
+                if (updated)
+                {
+                    return Ok(new
+                    {
+                        result = updated,
+                        httpCode = (int)HttpStatusCode.OK,
+                        message = "Solicitação foi finalizada com sucesso.",
+                    });
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.BadRequest,
+                        message = "Erro ao atualizar solicitação.",
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.BadRequest,
+                    message = e.Message,
+                });
+            }
+        }
+
         /// <summary>
         /// Put Atualiza a solicitação
         /// </summary>
