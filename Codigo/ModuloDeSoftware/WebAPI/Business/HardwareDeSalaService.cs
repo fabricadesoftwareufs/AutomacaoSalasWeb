@@ -324,7 +324,7 @@ namespace Service
         }
 
         public List<HardwareDeSalaModel> GetAllAtuador()
-            => _context.Hardwaredesala.Where(h => h.TipoHardware == 1).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).ToList();
+            => _context.Hardwaredesala.Where(h => h.TipoHardware == TipoHardwareModel.CONTROLADOR_DE_DISPOSITIVO).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).ToList();
 
         public bool Update(HardwareDeSalaModel entity)
         {
