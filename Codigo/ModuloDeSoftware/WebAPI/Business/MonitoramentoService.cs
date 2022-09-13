@@ -140,7 +140,7 @@ namespace Service
             }
 
             if (!EnviarComandosMonitoramento(model))
-                throw new ServiceException("Não foi possível concluir seu monitoramento pois não foi possível estabelecer conexão com a sala!");
+                throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
 
             return Update(model);
         }
@@ -180,7 +180,7 @@ namespace Service
                         var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdEquipamento(equipamento.Id, idOperacao);
 
                         if (codigosInfravermelho == null)
-                            throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
+                            return false;
 
                         tipoEquipamento = EquipamentoModel.TIPO_CONDICIONADOR;
                         operacao = codigosInfravermelho.Codigo;

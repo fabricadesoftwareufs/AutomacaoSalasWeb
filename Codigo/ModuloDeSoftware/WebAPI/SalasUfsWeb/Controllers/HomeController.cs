@@ -48,7 +48,9 @@ namespace SalasUfsWeb.Controllers
         {
             try
             {
-                if (!_monitoramentoService.MonitorarSala(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id, monitoramento))
+                if (_monitoramentoService.MonitorarSala(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id, monitoramento))
+                    TempData["mensagemSucesso"] = "Sua solicitação foi colocada na fila, aguarde alguns instantes até que seja executada!";
+                else
                     TempData["mensagemErro"] = "Não foi possível atender a sua solicitacao, tente novamente!";
             }
             catch (ServiceException se)
