@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace Model
 {
@@ -9,6 +10,6 @@ namespace Model
         public int EquipamentoId { get; set; }
         public bool SalaParticular { get; set; }
 
-        public EquipamentoModel EquipamentoNavigation { get; set; }
+        public EquipamentoModel? EquipamentoNavigation { get; set; }
     }
 }
