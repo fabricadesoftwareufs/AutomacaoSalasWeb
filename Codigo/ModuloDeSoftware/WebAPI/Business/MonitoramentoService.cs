@@ -113,7 +113,7 @@ namespace Service
                 };
 
                 if (!EnviarComandosMonitoramento(monitoramentoModel))
-                    throw new ServiceException("Não foi possível concluir seu monitoramento pois não foi possível estabelecer conexão com a sala!");
+                    throw new ServiceException("Houveram inconsistências no cadastro da solicitação de Monitoramento, confirme os dados do equioamento e hardware responsável e tente novamente!");
 
                 Update(monitoramentoModel);
             }
@@ -183,7 +183,7 @@ namespace Service
                             return false;
 
                         tipoEquipamento = EquipamentoModel.TIPO_CONDICIONADOR;
-                        operacao = codigosInfravermelho.Codigo;
+                        operacao = codigosInfravermelho.Codigo.Replace(" ","");
                         retornoEsperado = monitoramento.Estado ? AC_ON : AC_OFF;
                     }
                     else
