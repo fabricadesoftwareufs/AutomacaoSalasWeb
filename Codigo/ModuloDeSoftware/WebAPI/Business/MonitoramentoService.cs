@@ -6,21 +6,25 @@ using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Options;
+using Model.MqttOptions;
 
 namespace Service
 {
     public class MonitoramentoService : IMonitoramentoService
     {
         private readonly SalasUfsDbContext _context;
+        private readonly IOptions<MqttOptions> _mqttOptions;
         private const string AC_ON = "AC-ON";
         private const string L_ON = "LZ-ON";
         private const string AC_OFF = "AC-OFF";
         private const string L_OFF = "LZ-OFF";
         private const string NOT_AVALIABLE = "NOT-AVALIABLE";
 
-        public MonitoramentoService(SalasUfsDbContext context)
+        public MonitoramentoService(SalasUfsDbContext context, IOptions<MqttOptions> mqttOptions)
         {
             _context = context;
+            _mqttOptions = mqttOptions;
         }
 
         public List<MonitoramentoModel> GetAll() => _context.Monitoramento.Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.Equipamento, Estado = Convert.ToBoolean(m.Estado) }).ToList();
@@ -43,7 +47,7 @@ namespace Service
                                                                   EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.Sala },
                                                               });
 
-             
+
             return monitoramentos;
         }
 
@@ -53,14 +57,14 @@ namespace Service
             var equip = _context.Equipamento.ToList();
             var monitoramentos = (from m in moni
                                   join e in equip on m.Equipamento equals e.Id
-                                                              where e.Sala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
-                                                              select new MonitoramentoModel
-                                                              {
-                                                                  Id = m.Id,
-                                                                  Estado = Convert.ToBoolean(m.Estado),
-                                                                  EquipamentoId = m.Equipamento,
-                                                                  EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.Sala },
-                                                              }
+                                  where e.Sala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
+                                  select new MonitoramentoModel
+                                  {
+                                      Id = m.Id,
+                                      Estado = Convert.ToBoolean(m.Estado),
+                                      EquipamentoId = m.Equipamento,
+                                      EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.Sala },
+                                  }
                                   ).FirstOrDefault();
 
 
@@ -106,10 +110,10 @@ namespace Service
 
                 var monitoramentoModel = new MonitoramentoModel
                 {
-                     EquipamentoId = monitoramento.EquipamentoId,
-                     Estado = monitoramento.Estado,
-                     Id = monitoramento.Id,
-                     SalaParticular = monitoramento.SalaParticular
+                    EquipamentoId = monitoramento.EquipamentoId,
+                    Estado = monitoramento.Estado,
+                    Id = monitoramento.Id,
+                    SalaParticular = monitoramento.SalaParticular
                 };
 
                 if (!EnviarComandosMonitoramento(monitoramentoModel))
@@ -163,72 +167,66 @@ namespace Service
             try
             {
                 var modelDesatualizado = GetById(monitoramento.Id);
-                bool comandoEnviadoComSucesso = true;
+                if (monitoramento.Estado == modelDesatualizado.Estado)
+                    return true;
 
-                if (monitoramento.Estado != modelDesatualizado.Estado)
+                var _hardwareDeSalaService = new HardwareDeSalaService(_context);
+                var _equipamentoServiceService = new EquipamentoService(_context);
+                var _solicitacaService = new SolicitacacaoService(_context);
+                var _mqttService = new MqttService(_mqttOptions);
+
+                var equipamento = _equipamentoServiceService.GetByIdEquipamento(monitoramento.EquipamentoId);
+                string tipoEquipamento = string.Empty, operacao = string.Empty, retornoEsperado = string.Empty;
+
+                if (equipamento.TipoEquipamento.Equals(EquipamentoModel.TIPO_CONDICIONADOR))
                 {
-                    var _hardwareDeSalaService = new HardwareDeSalaService(_context);
-                    var _equipamentoServiceService = new EquipamentoService(_context);
-                    var equipamento = _equipamentoServiceService.GetByIdEquipamento(monitoramento.EquipamentoId);
+                    var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
+                    var idOperacao = monitoramento.Estado ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
+                    var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdEquipamento(equipamento.Id, idOperacao);
 
-                    string tipoEquipamento = string.Empty, operacao = string.Empty, retornoEsperado = string.Empty;
+                    if (codigosInfravermelho == null)
+                        return false;
 
-                    if (equipamento.TipoEquipamento.Equals(EquipamentoModel.TIPO_CONDICIONADOR))
-                    {
-                        var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
-                        var idOperacao = monitoramento.Estado ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
-                        var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdEquipamento(equipamento.Id, idOperacao);
-
-                        if (codigosInfravermelho == null)
-                            return false;
-
-                        tipoEquipamento = EquipamentoModel.TIPO_CONDICIONADOR;
-                        operacao = codigosInfravermelho.Codigo.Replace(" ","");
-                        retornoEsperado = monitoramento.Estado ? AC_ON : AC_OFF;
-                    }
-                    else
-                    {
-                        tipoEquipamento = EquipamentoModel.TIPO_LUZES;
-                        operacao = monitoramento.Estado.ToString();
-                        retornoEsperado = monitoramento.Estado ? L_ON : L_OFF;
-                    }
-
-                 
-
-                    var hardwareAtuador = _hardwareDeSalaService.GetById(equipamento.HardwareDeSala.GetValueOrDefault(0));
-                    var hardwareDeSala = _hardwareDeSalaService.GetControladorByIdSala(equipamento.Sala);
-
-                    var mensagem = JsonConvert.SerializeObject(
-                          new
-                          {
-                              type = tipoEquipamento,
-                              acting = monitoramento.Estado.ToString(),
-                              code = operacao,
-                              uuid = hardwareAtuador.Uuid
-                          });
-
-                    var solicitacaoModel = new SolicitacaoModel
-                    {
-                        DataSolicitacao = DateTime.Now,
-                        IdHardware = hardwareDeSala.Id,
-                        Payload = mensagem,
-                        TipoSolicitacao = GetTipoSolicitacao(tipoEquipamento)
-                    };
-
-                    var _solicitacaService = new SolicitacacaoService(_context);
-
-                    var solicitacao = _solicitacaService.GetByIdHardware(hardwareDeSala.Id, GetTipoSolicitacao(tipoEquipamento)).FirstOrDefault();
-
-                    if (solicitacao != null)
-                    {
-                        solicitacao.DataFinalizacao = DateTime.UtcNow;
-                        _solicitacaService.Update(solicitacao);
-                    }
-
-                    comandoEnviadoComSucesso = _solicitacaService.Insert(solicitacaoModel);
+                    tipoEquipamento = EquipamentoModel.TIPO_CONDICIONADOR;
+                    operacao = codigosInfravermelho.Codigo.Replace(" ", "");
+                    retornoEsperado = monitoramento.Estado ? AC_ON : AC_OFF;
+                }
+                else
+                {
+                    tipoEquipamento = EquipamentoModel.TIPO_LUZES;
+                    operacao = monitoramento.Estado.ToString();
+                    retornoEsperado = monitoramento.Estado ? L_ON : L_OFF;
                 }
 
-                return comandoEnviadoComSucesso;
+                var hardwareAtuador = _hardwareDeSalaService.GetById(equipamento.HardwareDeSala.GetValueOrDefault(0));
+                var hardwareDeSala = _hardwareDeSalaService.GetControladorByIdSala(equipamento.Sala);
+
+                var solicitacaoModel = new SolicitacaoModel
+                {
+                    DataSolicitacao = DateTime.Now,
+                    IdHardware = hardwareDeSala.Id,
+                    Payload = JsonConvert.SerializeObject(new
+                    {
+                        type = tipoEquipamento,
+                        acting = monitoramento.Estado.ToString(),
+                        code = operacao,
+                        uuid = hardwareAtuador.Uuid
+                    }),
+                    TipoSolicitacao = GetTipoSolicitacao(tipoEquipamento)
+                };
+
+                var solicitacao = _solicitacaService.GetByIdHardware(hardwareDeSala.Id, GetTipoSolicitacao(tipoEquipamento)).FirstOrDefault();
+
+                if (solicitacao != null)
+                {
+                    solicitacao.DataFinalizacao = DateTime.UtcNow;
+                    _solicitacaService.Update(solicitacao);
+                }
+
+                _mqttService.PublishMessage(hardwareDeSala.Uuid, JsonConvert.SerializeObject(solicitacaoModel));
+                _solicitacaService.Insert(solicitacaoModel);
+
+                return true;
             }
             catch (Exception e)
             {

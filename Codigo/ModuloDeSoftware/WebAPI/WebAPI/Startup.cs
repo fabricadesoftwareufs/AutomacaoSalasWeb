@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Middlewares;
 using Utils;
+using Model.MqttOptions;
 
 namespace WebAPI
 {
@@ -32,7 +32,6 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<SalasUfsDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
-
             // Configuração da barreira
             services.AddAuthentication(options =>
             {
@@ -85,8 +84,10 @@ namespace WebAPI
                 });
             });
 
-            // Injections
+            services.AddOptions<MqttOptions>().Bind(Configuration.GetSection("MqttOptions"));
             services.AddAuthorization();
+
+            // Injections
             services.AddScoped<IOrganizacaoService, OrganizacaoService>();
             services.AddScoped<IBlocoService, BlocoService>();
             services.AddScoped<ISalaService, SalaService>();
@@ -103,6 +104,7 @@ namespace WebAPI
             services.AddScoped<ICodigoInfravermelhoService, CodigoInfravermelhoService>();
             services.AddScoped<IEquipamentoService, EquipamentoService>();
             services.AddScoped<ILogRequestService, LogRequestService>();
+            services.AddSingleton<IMqttService, MqttService>();
 
             services.AddMvcCore(options =>
             {

@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Model.MqttOptions;
 using Persistence;
 using SalasUfsWeb.Middlewares;
 using Service;
@@ -42,8 +42,9 @@ namespace SalasUfsWeb
                     options.AccessDeniedPath = "/Login/AcessoNegado";
                 });
 
-            services.AddDbContext<SalasUfsDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
 
+            services.AddOptions<MqttOptions>().Bind(Configuration.GetSection("MqttOptions"));
+            services.AddDbContext<SalasUfsDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
             services.AddScoped<IOrganizacaoService, OrganizacaoService>();
             services.AddScoped<IBlocoService, BlocoService>();
             services.AddScoped<ISalaService, SalaService>();
@@ -62,6 +63,8 @@ namespace SalasUfsWeb
             services.AddScoped<ICodigoInfravermelhoService, CodigoInfravermelhoService>();
             services.AddScoped<IEquipamentoService, EquipamentoService>();
             services.AddScoped<ILogRequestService, LogRequestService>();
+            services.AddSingleton<IMqttService, MqttService>();
+
             services.AddMvc();
         }
 

@@ -2,9 +2,11 @@
 using Model.ViewModel;
 using Persistence;
 using Service.Interface;
+using Model.MqttOptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Options;
 
 namespace Service
 {
@@ -68,7 +70,7 @@ namespace Service
             try
             {
                 ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
-                IMonitoramentoService monitoramentoService = new MonitoramentoService(_context);
+                IMonitoramentoService monitoramentoService = new MonitoramentoService(_context, Options.Create(new MqttOptions()));
 
                 var equip = SetEntity(entity.EquipamentoModel);
 
