@@ -24,8 +24,8 @@ namespace Service.Connections
             if (connected != SUCCESS_CODE)
                 return false;
             
-            var published = Publish(topic, Encoding.UTF8.GetBytes(message), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
-
+            var published = Publish($"esp/{topic}", Encoding.UTF8.GetBytes(message), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
+            
             Disconnect();
 
             return (published == SUCCESS_CODE);
