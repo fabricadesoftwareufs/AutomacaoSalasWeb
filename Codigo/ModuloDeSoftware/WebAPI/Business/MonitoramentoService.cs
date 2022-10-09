@@ -172,7 +172,6 @@ namespace Service
 
                 var _hardwareDeSalaService = new HardwareDeSalaService(_context);
                 var _equipamentoServiceService = new EquipamentoService(_context);
-                var _solicitacaService = new SolicitacacaoService(_context);
                 var _mqttService = new MqttService(_mqttOptions);
 
                 var equipamento = _equipamentoServiceService.GetByIdEquipamento(monitoramento.EquipamentoId);
@@ -215,18 +214,9 @@ namespace Service
                     TipoSolicitacao = GetTipoSolicitacao(tipoEquipamento)
                 };
 
-                var solicitacao = _solicitacaService.GetByIdHardware(hardwareDeSala.Id, GetTipoSolicitacao(tipoEquipamento)).FirstOrDefault();
+                var comandoEnviado = _mqttService.PublishMessage(hardwareDeSala.Uuid, JsonConvert.SerializeObject(solicitacaoModel));
 
-                if (solicitacao != null)
-                {
-                    solicitacao.DataFinalizacao = DateTime.UtcNow;
-                    _solicitacaService.Update(solicitacao);
-                }
-
-                _mqttService.PublishMessage(hardwareDeSala.Uuid, JsonConvert.SerializeObject(solicitacaoModel));
-                _solicitacaService.Insert(solicitacaoModel);
-
-                return true;
+                return comandoEnviado;
             }
             catch (Exception e)
             {

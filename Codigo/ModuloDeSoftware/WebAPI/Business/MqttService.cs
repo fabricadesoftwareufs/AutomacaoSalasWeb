@@ -20,9 +20,9 @@ namespace Service
             _mqttConnector = new MqttConnector(_mqttOptions.Value);
         }
 
-        public void PublishMessage(string topic, string payload)
+        public bool PublishMessage(string topic, string payload)
         {
-            _mqttConnector.PublishMessage(topic, payload);
+            return _mqttConnector.PublishMessage(topic, payload);
         }
     }
 }
