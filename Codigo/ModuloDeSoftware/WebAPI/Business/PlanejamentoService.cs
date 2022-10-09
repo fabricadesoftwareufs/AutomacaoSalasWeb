@@ -1,5 +1,7 @@
-﻿using Model;
+﻿using Microsoft.Extensions.Options;
+using Model;
 using Model.AuxModel;
+using Model.MqttOptions;
 using Model.ViewModel;
 using Persistence;
 using Service.Interface;
@@ -151,7 +153,7 @@ namespace Service
             {
                 try
                 {
-                    var _reservaContext = new HorarioSalaService(_context);
+                    var _reservaContext = new HorarioSalaService(_context, Options.Create(new MqttOptions()));
 
                     if (excluiReservas) _reservaContext.RemoveByIdPlanejamento(id);
                     else _reservaContext.UpdateColumnPlanejamentoForNull(id);
@@ -279,7 +281,7 @@ namespace Service
         {
             try
             {
-                var _horarioSalaService = new HorarioSalaService(_context);
+                var _horarioSalaService = new HorarioSalaService(_context, Options.Create(new MqttOptions()));
                 var dataCorrente = planejamento.DataInicio;
                 var addDays = 1;
 

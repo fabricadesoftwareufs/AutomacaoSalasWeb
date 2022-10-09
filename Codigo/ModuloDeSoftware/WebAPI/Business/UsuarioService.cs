@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Model;
+using Model.MqttOptions;
 using Model.ViewModel;
 using Persistence;
 using Service.Interface;
@@ -124,7 +126,7 @@ namespace Service
 
             var plan = new PlanejamentoService(_context);
             var particular = new SalaParticularService(_context);
-            var horarios = new HorarioSalaService(_context);
+            var horarios = new HorarioSalaService(_context, Options.Create(new MqttOptions()));
             var usuarioOrg = new UsuarioOrganizacaoService(_context);
 
 

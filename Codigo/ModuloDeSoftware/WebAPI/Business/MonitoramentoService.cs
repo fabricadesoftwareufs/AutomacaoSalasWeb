@@ -103,7 +103,7 @@ namespace Service
                 }
                 else
                 {
-                    var _horarioSalaService = new HorarioSalaService(_context);
+                    var _horarioSalaService = new HorarioSalaService(_context, Options.Create(new MqttOptions()));
                     if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, equipamento.Sala))
                         throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
                 }
@@ -138,7 +138,7 @@ namespace Service
             }
             else
             {
-                var _horarioSalaService = new HorarioSalaService(_context);
+                var _horarioSalaService = new HorarioSalaService(_context, Options.Create(new MqttOptions()));
                 if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, equipamento.Sala))
                     throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
             }
