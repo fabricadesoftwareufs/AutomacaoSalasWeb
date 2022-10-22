@@ -63,12 +63,14 @@ namespace WebAPI.Controllers
                 var monitoramento = _service.GetByIdSalaAndTipoEquipamento(idSala, tipoEquipamento);
 
                 if (monitoramento == null)
+                {
                     return Ok(new
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum Monitoramento encontrado!"
                     });
+                }
 
                 return Ok(new
                 {

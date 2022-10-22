@@ -47,21 +47,24 @@ namespace Service
             return monitoramentos;
         }
 
-        public MonitoramentoModel GetByIdSalaAndTipoEquipamento(int idSala, string tipoEquipamento)
+        public List<MonitoramentoViewModel> GetByIdSalaAndTipoEquipamento(int idSala, string tipoEquipamento)
         {
             var moni = _context.Monitoramento.ToList();
             var equip = _context.Equipamento.ToList();
+            var hard = _context.Hardwaredesala.ToList();
+
             var monitoramentos = (from m in moni
                                   join e in equip on m.Equipamento equals e.Id
-                                                              where e.Sala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
-                                                              select new MonitoramentoModel
-                                                              {
-                                                                  Id = m.Id,
-                                                                  Estado = Convert.ToBoolean(m.Estado),
-                                                                  EquipamentoId = m.Equipamento,
-                                                                  EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.Sala },
-                                                              }
-                                  ).FirstOrDefault();
+                                  join h in hard on e.HardwareDeSala.Value equals h.Id
+                                  where e.Sala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
+                                  select new MonitoramentoViewModel
+                                  {
+                                      Id = m.Id,
+                                      Estado = Convert.ToBoolean(m.Estado),
+                                      EquipamentoId = m.Equipamento,
+                                      Uuid = h.Uuid,
+                                      ModeloEquipamento = e.Modelo
+                                  }).ToList();
 
 
             return monitoramentos;

@@ -104,6 +104,7 @@ namespace SalasUfsWeb.Controllers
                     Bloco = bloco,
                     MonitoramentoLuzes = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_LUZES),
                     MonitoramentoCondicionadores = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_CONDICIONADOR)
+
                 });
             }
 

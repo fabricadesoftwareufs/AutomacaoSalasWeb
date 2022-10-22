@@ -14,7 +14,7 @@ namespace Service.Interface
         List<MonitoramentoModel> GetByIdSala(int idSala);
         bool MonitorarSala(int idUsuario, MonitoramentoViewModel monitoramento);
         bool MonitorarEquipamento(int idUsuario, MonitoramentoModel model);
-        MonitoramentoModel GetByIdSalaAndTipoEquipamento(int idSala, string tipoEquipamento);
+        List<MonitoramentoViewModel> GetByIdSalaAndTipoEquipamento(int idSala, string tipoEquipamento);
 
     }
 }
