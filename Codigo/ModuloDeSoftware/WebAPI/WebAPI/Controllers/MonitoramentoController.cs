@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 using Model;
 using Service;
 using Service.Interface;
@@ -62,7 +63,7 @@ namespace WebAPI.Controllers
             {
                 var monitoramento = _service.GetByIdSalaAndTipoEquipamento(idSala, tipoEquipamento);
 
-                if (monitoramento == null)
+                if (monitoramento == null || !monitoramento.Any())
                 {
                     return Ok(new
                     {
