@@ -1,4 +1,6 @@
-﻿using Model;
+﻿using Microsoft.Extensions.Options;
+using Model;
+using Model.MqttOptions;
 using Model.ViewModel;
 using Newtonsoft.Json;
 using Persistence;
@@ -12,10 +14,12 @@ namespace Service
     public class HorarioSalaService : IHorarioSalaService
     {
         private readonly SalasUfsDbContext _context;
-        private const string ATUALIZAR_HORARIOS = "ATUALIZAR_HORARIOS";
-        public HorarioSalaService(SalasUfsDbContext context)
+        private readonly IOptions<MqttOptions> _mqttOptions;
+
+        public HorarioSalaService(SalasUfsDbContext context, IOptions<MqttOptions> mqttOptions)
         {
             _context = context;
+            _mqttOptions = mqttOptions;
         }
         public List<HorarioSalaModel> GetAll()
             => _context.Horariosala
@@ -366,17 +370,13 @@ namespace Service
                     TipoSolicitacao = SolicitacaoModel.ATUALIZAR_RESERVAS
                 };
 
-                var _solicitacaService = new SolicitacacaoService(_context);
+                var _mqttService = new MqttService(_mqttOptions);
+                var _hardwareDeSalaService = new HardwareDeSalaService(_context);
 
-                var solicitacao = _solicitacaService.GetByIdHardware(idHardware, SolicitacaoModel.ATUALIZAR_RESERVAS).FirstOrDefault();
+                var hardware = _hardwareDeSalaService.GetById(idHardware);
 
-                if (solicitacao != null)
-                {
-                    solicitacao.DataFinalizacao = DateTime.Now;
-                    _solicitacaService.Update(solicitacao);
-                }
-
-                resultado = _solicitacaService.Insert(solicitacaoModel);
+                if(hardware != null)
+                    resultado = _mqttService.PublishMessage(hardware.Uuid, JsonConvert.SerializeObject(solicitacaoModel));
             }
 
             return resultado;

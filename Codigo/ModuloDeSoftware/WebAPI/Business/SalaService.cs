@@ -1,5 +1,7 @@
-﻿using Model;
+﻿using Microsoft.Extensions.Options;
+using Model;
 using Model.AuxModel;
+using Model.MqttOptions;
 using Persistence;
 using Service.Interface;
 using System;
@@ -88,7 +90,7 @@ namespace Service
         {
             var _hardwareSalaService = new HardwareDeSalaService(_context);
             var _minhaSalaService = new SalaParticularService(_context);
-            var _horarioSalaService = new HorarioSalaService(_context);
+            var _horarioSalaService = new HorarioSalaService(_context, Options.Create(new MqttOptions()));
             var _planejamentoService = new PlanejamentoService(_context);
 
             try
