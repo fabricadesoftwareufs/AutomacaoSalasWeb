@@ -470,6 +470,8 @@ namespace Persistence
                     .HasColumnName("dataSolicitacao");
 
                 entity.Property(e => e.IdHardware).HasColumnName("idHardware");
+                
+                entity.Property(e => e.IdHardwareAtuador).HasColumnName("idHardwareAtuador");
 
                 entity.Property(e => e.TipoSolicitacao)
                     .IsRequired()
@@ -484,6 +486,12 @@ namespace Persistence
                     .HasForeignKey(d => d.IdHardware)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Solicitacao_Hardware1");
+
+                entity.HasOne(d => d.IdHardwareNavigation)
+                   .WithMany(p => p.Solicitacao)
+                   .HasForeignKey(d => d.IdHardwareAtuador)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("fk_Solicitacao_Hardware_Atuador1");
             });
 
             modelBuilder.Entity<Tipohardware>(entity =>

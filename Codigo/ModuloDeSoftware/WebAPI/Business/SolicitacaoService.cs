@@ -21,6 +21,7 @@ namespace Service
                 {
                     Id = s.Id,
                     IdHardware = s.IdHardware,
+                    IdHardwareAtuador = s.IdHardwareAtuador,
                     Payload = s.Payload,
                     DataSolicitacao = s.DataSolicitacao,
                     DataFinalizacao = s.DataFinalizacao,
@@ -35,6 +36,7 @@ namespace Service
                 {
                     Id = s.Id,
                     IdHardware = s.IdHardware,
+                    IdHardwareAtuador = s.IdHardwareAtuador,
                     Payload = s.Payload,
                     DataSolicitacao = s.DataSolicitacao,
                     DataFinalizacao = s.DataFinalizacao,
@@ -48,6 +50,7 @@ namespace Service
                 Id = model.Id,
                 Payload = model.Payload,
                 IdHardware = model.IdHardware,
+                IdHardwareAtuador = model.IdHardwareAtuador,
                 DataFinalizacao = model.DataFinalizacao,
                 DataSolicitacao = model.DataSolicitacao,
                 TipoSolicitacao = model.TipoSolicitacao
@@ -63,12 +66,27 @@ namespace Service
             {
                 Id = s.Id,
                 IdHardware = s.IdHardware,
+                IdHardwareAtuador = s.IdHardwareAtuador,
                 Payload = s.Payload,
                 DataSolicitacao = s.DataSolicitacao,
                 DataFinalizacao = s.DataFinalizacao,
                 TipoSolicitacao = s.TipoSolicitacao
             }).ToList();
         }
+
+        public List<SolicitacaoModel> GetByIdHardwareAtuador(int idHardwareAtuador)
+        => _context.Solicitacao
+                .Where(s => s.IdHardwareAtuador == idHardwareAtuador && !s.DataFinalizacao.HasValue)
+                .Select(s => new SolicitacaoModel
+                {
+                    Id = s.Id,
+                    IdHardware = s.IdHardware,
+                    IdHardwareAtuador = s.IdHardwareAtuador,
+                    Payload = s.Payload,
+                    DataSolicitacao = s.DataSolicitacao,
+                    DataFinalizacao = s.DataFinalizacao,
+                    TipoSolicitacao = s.TipoSolicitacao
+                }).ToList();
 
         public bool Insert(SolicitacaoModel entity)
         {
