@@ -188,12 +188,14 @@ CREATE TABLE IF NOT EXISTS `solicitacao` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `payload` json NOT NULL,
   `idHardware` int unsigned NOT NULL,
+  `idHardwareAtuador` int unsigned NOT NULL,
   `dataSolicitacao` datetime NOT NULL,
   `dataFinalizacao` datetime DEFAULT NULL,
   `tipoSolicitacao` enum('MONITORAMENTO_LUZES','MONITORAMENTO_AR_CONDICIONADO','ATUALIZAR_RESERVAS') CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL DEFAULT 'ATUALIZAR_RESERVAS',
   PRIMARY KEY (`id`),
   KEY `fk_Solicitacao_Hardware1` (`idHardware`),
-  CONSTRAINT `fk_Solicitacao_Hardware1` FOREIGN KEY (`idHardware`) REFERENCES `hardwaredesala` (`id`)
+  CONSTRAINT `fk_Solicitacao_Hardware1` FOREIGN KEY (`idHardware`) REFERENCES `hardwaredesala` (`id`),
+   CONSTRAINT `fk_Solicitacao_Hardware_Atuador1` FOREIGN KEY (`idHardwareAtuador`) REFERENCES `hardwaredesala` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb3;
 
 -- Copiando estrutura para tabela str_db.usuarioorganizacao
