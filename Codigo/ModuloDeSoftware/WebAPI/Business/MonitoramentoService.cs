@@ -208,13 +208,14 @@ namespace Service
                     {
                         DataSolicitacao = DateTime.Now,
                         IdHardware = hardwareDeSala.Id,
+                        IdHardwareAtuador = hardwareAtuador.Id,
                         Payload = mensagem,
                         TipoSolicitacao = GetTipoSolicitacao(tipoEquipamento)
                     };
 
                     var _solicitacaService = new SolicitacacaoService(_context);
 
-                    var solicitacao = _solicitacaService.GetByIdHardware(hardwareDeSala.Id, GetTipoSolicitacao(tipoEquipamento)).FirstOrDefault();
+                    var solicitacao = _solicitacaService.GetByIdHardwareAtuador(hardwareAtuador.Id).FirstOrDefault();
 
                     if (solicitacao != null)
                     {
