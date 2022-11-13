@@ -129,13 +129,7 @@ namespace SalasUfsWeb.Controllers
                         UsuarioId = idUsuario
                     }))
                     {
-                       
                         TempData["mensagemSucesso"] = "Reserva feita com sucesso!";
-
-                        var hardwareDeSala = _hardwareDeSalaService.GetControladorByIdSala(reservaModel.HorarioSalaModel.SalaId);
-
-                        if(hardwareDeSala != null)
-                            _horarioSalaService.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Id, reservaModel.HorarioSalaModel.Data);
                     }
                     else
                     {
@@ -219,11 +213,6 @@ namespace SalasUfsWeb.Controllers
                     }))
                     {
                         TempData["mensagemSucesso"] = "Reserva editada com sucesso!";
-
-                        var hardwareDeSala = _hardwareDeSalaService.GetControladorByIdSala(reservaModel.HorarioSalaModel.SalaId);
-
-                        if(hardwareDeSala != null)
-                            _horarioSalaService.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Id, reservaModel.HorarioSalaModel.Data);
                     }
                     else
                     {
