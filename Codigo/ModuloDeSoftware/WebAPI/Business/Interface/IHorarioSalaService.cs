@@ -1,7 +1,6 @@
 ﻿using Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Service.Interface
 {
@@ -25,6 +24,5 @@ namespace Service.Interface
         bool RemoveByUsuario(int id);
         bool ConcelarReserva(int idReserva);
         bool Update(HorarioSalaModel entity);
-        bool SolicitaAtualizacaoHorarioESP(int idSala, DateTime dataHorario);
     }
 }
