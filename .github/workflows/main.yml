@@ -1,16 +1,44 @@
-on: push
-name: 🚀 Deploy website on push
+name: AutomacaoSalas-WEB CI
+
+on:
+  push:
+    branches: [ feature/deploy-automatico ]
+  pull_request:
+    branches: [ main ]
+
 jobs:
-  web-deploy:
-    name: 🎉 Deploy
+  build:
     runs-on: ubuntu-latest
+    env:
+      work-directory: AutomacaoSalas/Codigo/ModuloDeSoftware/WebAPI
+
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
     
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@4.1.0
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
       with:
-        server: ftp.samkirkland.com
-        username: myFtpUserName
-        password: ${{ secrets.ftp_password }}
+        dotnet-version: 3.1
+      
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: './${{env.work-directory}}/'
+
+    - name: Build Application
+      run: dotnet build --no-restore
+      working-directory: './${{env.work-directory}}/'
+      
+    - name: Publish Application
+      run:  dotnet publish './${{env.work-directory}}/WebAPI.sln' --configuration Release --no-restore --output ./publish 
+      
+#    - name: Upload via FTP
+#      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+#      with:
+#        server: ${{ secrets.FTP_SERVER }}
+#        username: ${{ secrets.FTP_USER }}
+#        password: ${{ secrets.FTP_PASS }}
+#        local-dir: publish/
+#        remote-dir: ./
+#        exclude: |
+#          **/.git*
+#          **/.git*/**
