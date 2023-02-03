@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      work-directory: AutomacaoSalas/Codigo/ModuloDeSoftware/WebAPI
 
     steps:
     - uses: actions/checkout@v2
@@ -19,15 +21,19 @@ jobs:
         dotnet-version: 3.1
       
     - name: Restore dependencies
-      run: dotnet restore
-      working-directory: /WebAPI
+      run: |
+        cd ${{env.work-directory}}
+        dotnet restore
 
     - name: Build Application
-      run: dotnet build --no-restore
-      working-directory: /WebAPI
+      run: |
+        cd ${{env.work-directory}}
+        dotnet build --no-restore
       
     - name: Publish Application
-      run:  dotnet publish /WebAPI.sln --configuration Release --no-restore --output ./publish 
+      run: |
+        cd ${{env.work-directory}}
+        dotnet publish /WebAPI.sln --configuration Release --no-restore --output ./publish 
       
 #    - name: Upload via FTP
 #      uses: SamKirkland/FTP-Deploy-Action@4.3.0
