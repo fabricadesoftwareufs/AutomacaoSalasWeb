@@ -14,6 +14,7 @@
                     </div>
                     <form asp-action="Edit">
                         <div class="card-body">
+                            <input type="hidden" asp-for="UsuarioModel.Id" />
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group col-md-6">
                                 <label asp-for="UsuarioModel.Nome" class="control-label"></label>
@@ -39,6 +40,10 @@
                                 <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control" />
                                 <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
                             </div>
+                            <input type="hidden" asp-for="UsuarioModel.Senha" />
+                            <input type="hidden" asp-for="@Model.OrganizacaoModel.Id" />
+                            <input type="hidden" asp-for="@Model.OrganizacaoModel.Cnpj" />
+                            <input type="hidden" asp-for="@Model.OrganizacaoModel.RazaoSocial" />
                         </div>
                         <div class="card-footer">
                             <div class=" col-md-4">
