@@ -22,11 +22,9 @@ jobs:
       
     - name: Restore dependencies
       run: dotnet restore
-      working-directory: './${{env.work-directory}}/'
 
     - name: Build Application
       run: dotnet build --no-restore
-      working-directory: './${{env.work-directory}}/'
       
     - name: Publish Application
       run:  dotnet publish WebAPI.sln --configuration Release --no-restore --output ./publish 
