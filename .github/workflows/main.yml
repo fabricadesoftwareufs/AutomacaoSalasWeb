@@ -33,7 +33,7 @@ jobs:
     - name: Publish Application
       run: |
         cd ${{env.work-directory}}
-        dotnet publish /WebAPI.sln --configuration Release --no-restore --output ./publish 
+        dotnet publish -c --configuration Release --no-restore --output ./publish 
       
 #    - name: Upload via FTP
 #      uses: SamKirkland/FTP-Deploy-Action@4.3.0
