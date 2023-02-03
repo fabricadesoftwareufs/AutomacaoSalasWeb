@@ -22,14 +22,14 @@ jobs:
       
     - name: Restore dependencies
       run: dotnet restore
-      working-directory: /WebAPI
+      working-directory: './${{env.work-directory}}/'
 
     - name: Build Application
       run: dotnet build --no-restore
-      working-directory: /WebAPI
+      working-directory: './${{env.work-directory}}/'
       
     - name: Publish Application
-      run:  dotnet publish WebAPI/WebAPI.sln --configuration Release --no-restore --output ./publish 
+      run:  dotnet publish WebAPI.sln --configuration Release --no-restore --output ./publish 
       
 #    - name: Upload via FTP
 #      uses: SamKirkland/FTP-Deploy-Action@4.3.0
