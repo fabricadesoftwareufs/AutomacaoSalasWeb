@@ -13,9 +13,10 @@ jobs:
       work-directory: Codigo/ModuloDeSoftware/WebAPI/WebAPI
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Execute checkout in repository
+      uses: actions/checkout@v2
     
-    - name: Setup .NET
+    - name: Configure .NET version
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1
