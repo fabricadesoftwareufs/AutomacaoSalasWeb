@@ -170,7 +170,7 @@ namespace Service
 
         public bool Update(UsuarioModel entity)
         {
-            var usuario = _context.Usuario.FirstOrDefault(u => u.Id == entity.Id);
+            var usuario = _context.Usuario.AsNoTracking().FirstOrDefault(u => u.Id == entity.Id);
             if (usuario == null)
                 return false;
 
