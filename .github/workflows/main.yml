@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      work-directory: Codigo/ModuloDeSoftware/WebAPI
+      work-directory: Codigo/ModuloDeSoftware/WebAPI/SalasUfsWeb
 
     steps:
     - uses: actions/checkout@v2
