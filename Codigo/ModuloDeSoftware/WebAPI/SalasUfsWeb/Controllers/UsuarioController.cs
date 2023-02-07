@@ -48,7 +48,7 @@ namespace SalasUfsWeb.Controllers
             int idLog = 0;
 
             if (claimsIdentity != null)
-                idLog = Convert.ToInt32(claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.NameIdentifier).Select(s => s.Value).FirstOrDefault());
+                idLog = Convert.ToInt32(claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
             
             var usuarios = _usuarioService.GetUserNotLog(idLog);
             List<UsuarioAuxModel> lista = new List<UsuarioAuxModel>();
