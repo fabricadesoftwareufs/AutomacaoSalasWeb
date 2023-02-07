@@ -29,6 +29,19 @@ namespace Service
                     TipoUsuarioId = u.TipoUsuario
                 }).ToList();
 
+        public List<UsuarioModel> GetUserNotLog(int idLog)
+            => _context.Usuario
+                .Where(u => u.Id != idLog)
+                .Select(u => new UsuarioModel
+                {
+                    Id = u.Id,
+                    Cpf = u.Cpf,
+                    Nome = u.Nome,
+                    DataNascimento = Convert.ToDateTime(u.DataNascimento),
+                    Senha = u.Senha,
+                    TipoUsuarioId = u.TipoUsuario
+                }).ToList();
+
         public UsuarioModel GetById(int id)
             => _context.Usuario
                 .Where(u => u.Id == id)
@@ -225,5 +238,6 @@ namespace Service
                 }).FirstOrDefault();
 
         public List<UsuarioModel> GetAllByIdsOrganizacao(List<int> ids) => _context.Usuario.Where(u => ids.Contains(u.Id)).Select(u => new UsuarioModel { Id = u.Id, Cpf = u.Cpf, DataNascimento = (DateTime)u.DataNascimento, Nome = u.Nome, TipoUsuarioId = u.TipoUsuario, Senha = u.Senha }).ToList();
+
     }
 }

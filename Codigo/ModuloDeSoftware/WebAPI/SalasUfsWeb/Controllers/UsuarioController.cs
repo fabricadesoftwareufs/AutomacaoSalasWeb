@@ -7,6 +7,7 @@ using Model.AuxModel;
 using Model.ViewModel;
 using Service;
 using Service.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -43,7 +44,13 @@ namespace SalasUfsWeb.Controllers
         // GET: Usuario
         public ActionResult Index()
         {
-            var usuarios = _usuarioService.GetAll();
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            int idLog = 0;
+
+            if (claimsIdentity != null)
+                idLog = Convert.ToInt32(claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.NameIdentifier).Select(s => s.Value).FirstOrDefault());
+            
+            var usuarios = _usuarioService.GetUserNotLog(idLog);
             List<UsuarioAuxModel> lista = new List<UsuarioAuxModel>();
 
             usuarios.ForEach(s => lista.Add(new UsuarioAuxModel { UsuarioModel = s, TipoUsuarioModel = _tipoUsuarioService.GetById(s.TipoUsuarioId), OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.Id) }));

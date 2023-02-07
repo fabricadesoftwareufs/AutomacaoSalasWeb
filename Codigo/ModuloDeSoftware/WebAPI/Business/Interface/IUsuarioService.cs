@@ -8,6 +8,7 @@ namespace Service.Interface
     public interface IUsuarioService
     {
         List<UsuarioModel> GetAll();
+        List<UsuarioModel> GetUserNotLog(int idLog);
         UsuarioModel GetById(int id);
         UsuarioModel GetByCpf(string cpf);
         List<UsuarioModel> GetByIdOrganizacao(int id);
