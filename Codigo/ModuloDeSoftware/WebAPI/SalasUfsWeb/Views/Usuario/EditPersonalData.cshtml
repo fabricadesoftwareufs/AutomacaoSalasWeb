@@ -12,8 +12,9 @@
                     <div class="card-header">
                         <h2 class="card-title">Editar Usuário</h2>
                     </div>
-                    <form asp-action="Edit">
+                    <form asp-action="EditPersonalData">
                         <div class="card-body">
+                            <input type="hidden" asp-for="UsuarioModel.Id" />
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group col-md-6">
                                 <label asp-for="UsuarioModel.Nome" class="control-label"></label>
@@ -26,13 +27,22 @@
                                 <label asp-for="UsuarioModel.Cpf" class="control-label"></label>
                                 <input asp-for="UsuarioModel.Cpf" class="form-control" disabled />
                                 <span asp-validation-for="UsuarioModel.Cpf" class="text-danger"></span>
+                                <input type="hidden" asp-for="UsuarioModel.Senha" />
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label asp-for="OrganizacaoModel" class="control-label"></label>
+                                <input asp-for="OrganizacaoModel.RazaoSocial" disabled class="form-control" />
+                                <input type="hidden" asp-for="@Model.OrganizacaoModel.Id" />
+                                <input type="hidden" asp-for="@Model.OrganizacaoModel.Cnpj" />
+                                <input type="hidden" asp-for="@Model.OrganizacaoModel.RazaoSocial" />
                             </div>
 
                             <div class="form-group col-md-4">
                                 <label asp-for="TipoUsuarioModel.Id" class="control-label"></label>
-                                @Html.DropDownListFor(model => model.TipoUsuarioModel.Id, ViewBag.TiposUsuario as SelectList, new
-             { @class = "form-control", @id = "select-tipoUsuario", @disabled = "true" })
-                                <span asp-validation-for="TipoUsuarioModel.Id" class="text-danger"></span>
+                                <input asp-for="TipoUsuarioModel.Descricao" class="form-control" disabled/>
+                                <input type="hidden" asp-for="@Model.TipoUsuarioModel.Id" />
+                                <input type="hidden" asp-for="@Model.TipoUsuarioModel.Descricao" />
                             </div>
                             <div class="form-group col-md-4">
                                 <label asp-for="UsuarioModel.DataNascimento" class="control-label"></label>

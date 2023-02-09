@@ -124,8 +124,9 @@ namespace SalasUfsWeb.Controllers
             ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
 
             var usuario = _usuarioService.GetById(id);
-            var organizacao = _organizacaoService.GetById(id);
-            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = _tipoUsuarioService.GetById(usuario.TipoUsuarioId), OrganizacaoModel = organizacao };
+            var tipoUsuario = _tipoUsuarioService.GetById(usuario.TipoUsuarioId);
+            var organizacao = _organizacaoService.GetByIdUsuario(id);
+            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = tipoUsuario, OrganizacaoModel = organizacao.FirstOrDefault() };
 
             return View(usuarioView);
         }
@@ -165,15 +166,45 @@ namespace SalasUfsWeb.Controllers
         [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
         public ActionResult EditPersonalData()
         {
-            ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
-
             var usuarioId = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity)?.UsuarioModel?.Id ?? 0;
 
-            var usuario = _usuarioService.GetById(usuarioId); 
-
-            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = _tipoUsuarioService.GetById(usuario.TipoUsuarioId) };
+            var usuario = _usuarioService.GetById(usuarioId);
+            var tipoUsuario = _tipoUsuarioService.GetById(usuario.TipoUsuarioId);
+            var organizacao = _organizacaoService.GetByIdUsuario(usuarioId);
+            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = tipoUsuario, OrganizacaoModel = organizacao.FirstOrDefault() };
 
             return View(usuarioView);
+        }
+
+        // POST: Usuario/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
+        public ActionResult EditPersonalData(int id, UsuarioViewModel usuarioView)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    usuarioView.UsuarioModel.TipoUsuarioId = usuarioView.TipoUsuarioModel.Id;
+                    if (_usuarioService.Update(usuarioView.UsuarioModel))
+                    {
+                        TempData["mensagemSucesso"] = "Dados pessoais salvos com sucesso!";
+                    }
+                    else
+                    {
+                        TempData["mensagemErro"] = "Houve um problema ao editar seus dados, tente novamente em alguns minutos.";
+                        return View(usuarioView);
+                    }
+                }
+            }
+            catch (ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
+                return View(usuarioView);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         // POST: Usuario/Delete/5
