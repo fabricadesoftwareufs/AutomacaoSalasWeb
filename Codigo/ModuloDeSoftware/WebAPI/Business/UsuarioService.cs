@@ -170,14 +170,13 @@ namespace Service
 
         public bool Update(UsuarioModel entity)
         {
-            var x = _context.Usuario.Where(th => th.Id == entity.Id).FirstOrDefault();
-            if (x != null)
-            {
-                _context.Update(SetEntity(entity));
-                return _context.SaveChanges() == 1 ? true : false;
-            }
+            var usuario = _context.Usuario.AsNoTracking().FirstOrDefault(u => u.Id == entity.Id);
+            if (usuario == null)
+                return false;
 
-            return false;
+            _context.Update(SetEntity(entity));
+            return _context.SaveChanges() == 1;
+
         }
 
         public UsuarioViewModel RetornLoggedUser(ClaimsIdentity claimsIdentity)
