@@ -134,7 +134,7 @@ namespace SalasUfsWeb.Controllers
         // POST: Usuario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
+        [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
         public ActionResult Edit(int id, UsuarioViewModel usuarioView)
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
