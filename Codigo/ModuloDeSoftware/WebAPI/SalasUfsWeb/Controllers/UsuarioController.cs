@@ -116,9 +116,11 @@ namespace SalasUfsWeb.Controllers
         public ActionResult Edit(int id)
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
+            ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
 
             var usuario = _usuarioService.GetById(id);
-            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = _tipoUsuarioService.GetById(usuario.TipoUsuarioId) };
+            var organizacao = _organizacaoService.GetById(id);
+            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = _tipoUsuarioService.GetById(usuario.TipoUsuarioId), OrganizacaoModel = organizacao };
 
             return View(usuarioView);
         }

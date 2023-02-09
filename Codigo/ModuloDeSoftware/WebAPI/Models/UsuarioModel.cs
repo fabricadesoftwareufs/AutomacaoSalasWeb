@@ -21,8 +21,8 @@ namespace Model
         public DateTime DataNascimento { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Senha")]
-        [MinLength(8), MaxLength(16)]
-        [StringLength(16, ErrorMessage = "A senha deve ter entre 8 e 16 caracteres")]
+        /* [MinLength(8), MaxLength(16)]
+        [StringLength(16, ErrorMessage = "A senha deve ter entre 8 e 16 caracteres")] */
         public string Senha { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Tipo")]
