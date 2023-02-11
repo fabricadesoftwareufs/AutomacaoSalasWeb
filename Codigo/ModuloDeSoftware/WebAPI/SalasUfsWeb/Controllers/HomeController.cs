@@ -48,7 +48,7 @@ namespace SalasUfsWeb.Controllers
         {
             try
             {
-                if (_monitoramentoService.MonitorarSala(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id, monitoramento))
+                if (_monitoramentoService.MonitorarSala(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id, monitoramento))
                     TempData["mensagemSucesso"] = "Sua solicitação foi colocada na fila, aguarde alguns instantes até que seja executada!";
                 else
                     TempData["mensagemErro"] = "Não foi possível atender a sua solicitacao, tente novamente!";
@@ -89,7 +89,7 @@ namespace SalasUfsWeb.Controllers
 
         public SalaUsuarioViewModel GetSalasUsuario()
         {
-            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
+            var usuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity);
 
             var salas = new SalaUsuarioViewModel();
             foreach (var item in _salaParticularService.GetByIdUsuario(usuario.UsuarioModel.Id))
@@ -112,7 +112,7 @@ namespace SalasUfsWeb.Controllers
 
         public SalaUsuarioViewModel GetReservasUsuario(string diaSemana)
         {
-            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
+            var usuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity);
             var salas = new SalaUsuarioViewModel();
 
             foreach (var item in _horarioSalaService.GetProximasReservasByIdUsuarioAndDiaSemana(usuario.UsuarioModel.Id, diaSemana))

@@ -29,6 +29,24 @@ namespace Service
                     TipoUsuarioId = u.TipoUsuario
                 }).ToList();
 
+        /// <summary>
+        /// Obtém todos os usuários com execção do usuário logado
+        /// </summary>
+        /// <param name="idUser">Id do usuário logado</param>
+        /// <returns>Uma lista de usuários</returns>
+        public List<UsuarioModel> GetAllExceptAuthenticatedUser(int idUser)
+            => _context.Usuario
+                .Where(u => u.Id != idUser)
+                .Select(u => new UsuarioModel
+                {
+                    Id = u.Id,
+                    Cpf = u.Cpf,
+                    Nome = u.Nome,
+                    DataNascimento = Convert.ToDateTime(u.DataNascimento),
+                    Senha = u.Senha,
+                    TipoUsuarioId = u.TipoUsuario
+                }).ToList();
+
         public UsuarioModel GetById(int id)
             => _context.Usuario
                 .Where(u => u.Id == id)
@@ -179,7 +197,7 @@ namespace Service
 
         }
 
-        public UsuarioViewModel RetornLoggedUser(ClaimsIdentity claimsIdentity)
+        public UsuarioViewModel GetAuthenticatedUser(ClaimsIdentity claimsIdentity)
         {
             var usuario = new UsuarioViewModel
             {
@@ -224,5 +242,6 @@ namespace Service
                 }).FirstOrDefault();
 
         public List<UsuarioModel> GetAllByIdsOrganizacao(List<int> ids) => _context.Usuario.Where(u => ids.Contains(u.Id)).Select(u => new UsuarioModel { Id = u.Id, Cpf = u.Cpf, DataNascimento = (DateTime)u.DataNascimento, Nome = u.Nome, TipoUsuarioId = u.TipoUsuario, Senha = u.Senha }).ToList();
+
     }
 }
