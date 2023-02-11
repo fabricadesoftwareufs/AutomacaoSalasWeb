@@ -2,9 +2,9 @@ name: AutomacaoSalas-API CI
 
 on:
   push:
-    branches: [ feature/deploy-automatico ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build:
