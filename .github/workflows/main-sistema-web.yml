@@ -2,7 +2,7 @@ name: AutomacaoSalas-WEB CI
 
 on:
   push:
-    branches: [ feature/deploy-automatico ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
