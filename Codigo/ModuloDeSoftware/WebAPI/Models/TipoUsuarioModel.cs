@@ -1,4 +1,7 @@
-﻿namespace Model
+﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
+
+namespace Model
 {
     public class TipoUsuarioModel
     {
@@ -8,6 +11,7 @@
         public const string ALL_ROLES = "ADMIN, GESTOR, COLABORADOR";
         public const string ADMINISTRATIVE_ROLES = "ADMIN, GESTOR";
 
+        [Display(Name = "Tipo")]
         public int Id { get; set; }
         public string? Descricao { get; set; }
     }
