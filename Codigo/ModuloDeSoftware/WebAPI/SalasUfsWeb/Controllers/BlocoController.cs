@@ -60,7 +60,7 @@ namespace SalasUfsWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (_blocoService.InsertBlocoWithHardware(blocoModel, _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id))
+                    if (_blocoService.InsertBlocoWithHardware(blocoModel, _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id))
                     {
                         TempData["mensagemSucesso"] = "Bloco adicionado com sucesso!"; return View();
                     }
@@ -132,7 +132,7 @@ namespace SalasUfsWeb.Controllers
 
         private List<OrganizacaoModel> GetOrganizacaos()
         {
-            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
 
             var organizacoesLotadas = new List<OrganizacaoModel>();
             usuarioOrg.ForEach(uo => organizacoesLotadas.Add(_organizacaoService.GetById(uo.OrganizacaoId)));
@@ -142,7 +142,7 @@ namespace SalasUfsWeb.Controllers
 
         private List<BlocoViewModel> ReturnAllViewModels()
         {
-            var bs = _blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var bs = _blocoService.GetAllByIdUsuarioOrganizacao(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             List<BlocoViewModel> bvm = new List<BlocoViewModel>();
             bs.ForEach(b => bvm.Add(Cast(b)));
 

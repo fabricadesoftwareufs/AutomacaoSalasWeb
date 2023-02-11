@@ -83,7 +83,7 @@ namespace SalasUfsWeb.Controllers
         {
             string[] tiposEquipamento = { EquipamentoModel.TIPO_CONDICIONADOR, EquipamentoModel.TIPO_LUZES };
 
-            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
             var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();
@@ -105,7 +105,7 @@ namespace SalasUfsWeb.Controllers
         {
             string[] tiposEquipamento = { EquipamentoModel.TIPO_CONDICIONADOR, EquipamentoModel.TIPO_LUZES };
 
-            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
             var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();
@@ -164,7 +164,7 @@ namespace SalasUfsWeb.Controllers
 
             string[] tiposEquipamento = { EquipamentoModel.TIPO_CONDICIONADOR, EquipamentoModel.TIPO_LUZES };
 
-            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var operacoes = _operacaoService.GetAll().ToList();
             var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();
@@ -187,7 +187,7 @@ namespace SalasUfsWeb.Controllers
         {
             string[] tiposEquipamento = { EquipamentoModel.TIPO_CONDICIONADOR, EquipamentoModel.TIPO_LUZES };
 
-            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var operacoes = _operacaoService.GetAll().ToList();
             var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();

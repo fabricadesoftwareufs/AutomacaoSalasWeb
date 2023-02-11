@@ -7,6 +7,7 @@ using Model.AuxModel;
 using Model.ViewModel;
 using Service;
 using Service.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -40,15 +41,19 @@ namespace SalasUfsWeb.Controllers
             _planejamentoService = planejamentoService;
             _horarioSalaService = horarioSalaService;
         }
+
         // GET: Usuario
         public ActionResult Index()
         {
-            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
-            var orgsUsuario = _usuarioOrganizacaoService.GetByIdUsuario(usuario.UsuarioModel.Id).Select((o) => o.OrganizacaoId).ToList();
-            var usuarios = _usuarioService.GetAllByIdsOrganizacao(orgsUsuario).GroupBy(u => u.Id).ToList();
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            
+            var usuarioLogado = _usuarioService.GetAuthenticatedUser(claimsIdentity);
+            
+            var usuarios = _usuarioService.GetAllExceptAuthenticatedUser(usuarioLogado.UsuarioModel.Id);
+            
             List<UsuarioAuxModel> lista = new List<UsuarioAuxModel>();
 
-            usuarios.ForEach(s => lista.Add(new UsuarioAuxModel { UsuarioModel = s.FirstOrDefault(), TipoUsuarioModel = _tipoUsuarioService.GetById(s.FirstOrDefault().TipoUsuarioId), OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.FirstOrDefault().Id) }));
+            usuarios.ForEach(s => lista.Add(new UsuarioAuxModel { UsuarioModel = s, TipoUsuarioModel = _tipoUsuarioService.GetById(s.TipoUsuarioId), OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.Id) }));
 
             return View(lista);
         }
