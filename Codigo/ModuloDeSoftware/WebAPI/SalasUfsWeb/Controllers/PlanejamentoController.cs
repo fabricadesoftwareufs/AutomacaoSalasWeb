@@ -44,7 +44,7 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Create()
         {
-            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
 
             ViewBag.Organizacoes = organizacoes;
@@ -59,7 +59,7 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(PlanejamentoAuxModel planejamentoModel)
         {
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id); ;
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id); ;
             ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(planejamentoModel.Organizacao);
             ViewBag.Salas = _salaService.GetByIdBloco(planejamentoModel.Bloco);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(planejamentoModel.Organizacao);
@@ -90,7 +90,7 @@ namespace SalasUfsWeb.Controllers
             var planejamento = _planejamentoService.GetById(id);
             var bloco = _blocoService.GetById(_salaService.GetById(planejamento.SalaId).BlocoId);
 
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(bloco.OrganizacaoId);
             ViewBag.Salas = _salaService.GetByIdBloco(bloco.Id);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(bloco.OrganizacaoId);
@@ -108,7 +108,7 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, PlanejamentoAuxModel planejamentoModel)
         {
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id); ;
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id); ;
             ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(planejamentoModel.Organizacao);
             ViewBag.Salas = _salaService.GetByIdBloco(planejamentoModel.Bloco);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(planejamentoModel.Organizacao);
@@ -158,7 +158,7 @@ namespace SalasUfsWeb.Controllers
 
         private List<PlanejamentoViewModel> GetAllPlanejamentosViewModels()
         {
-            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
+            var usuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity);
             var orgs = _usuarioOrganizacaoService.GetByIdUsuario(usuario.UsuarioModel.Id);
 
             var planejamentos = new List<PlanejamentoViewModel>();

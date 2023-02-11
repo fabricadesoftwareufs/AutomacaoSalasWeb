@@ -33,7 +33,7 @@ namespace SalasUfsWeb.Controllers
         {
 
             var organizacoes = new List<OrganizacaoModel>();
-            _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id).
+            _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id).
                 ForEach(ex => organizacoes.Add(_organizacaoService.GetById(ex.OrganizacaoId)));
 
             return organizacoes;

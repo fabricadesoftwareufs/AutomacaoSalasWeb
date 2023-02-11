@@ -8,7 +8,7 @@ namespace Service.Interface
     public interface IUsuarioService
     {
         List<UsuarioModel> GetAll();
-        List<UsuarioModel> GetUserNotLog(int idLog);
+        List<UsuarioModel> GetAllExceptAuthenticatedUser(int idUser);
         UsuarioModel GetById(int id);
         UsuarioModel GetByCpf(string cpf);
         List<UsuarioModel> GetByIdOrganizacao(int id);
@@ -17,6 +17,6 @@ namespace Service.Interface
         UsuarioViewModel Insert(UsuarioViewModel entity);
         bool Remove(int id);
         bool Update(UsuarioModel entity);
-        UsuarioViewModel RetornLoggedUser(ClaimsIdentity claimsIdentity);
+        UsuarioViewModel GetAuthenticatedUser(ClaimsIdentity claimsIdentity);
     }
 }

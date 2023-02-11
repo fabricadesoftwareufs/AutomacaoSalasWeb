@@ -55,7 +55,7 @@ namespace SalasUfsWeb.Controllers
         // GET: Sala/Create
         public ActionResult Create()
         {
-            var orgs = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var orgs = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
 
             ViewBag.Organizacoes = orgs;
             ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(orgs.FirstOrDefault().Id);
@@ -69,7 +69,7 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(SalaAuxModel salaModel)
         {
-            var usuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity);
+            var usuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity);
             ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(usuario.UsuarioModel.Id);
             ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
             ViewBag.TipoHardware = _tipoHardwareService.GetAll();
@@ -101,7 +101,7 @@ namespace SalasUfsWeb.Controllers
             var idOrganizacao = _blocoService.GetById(salaModel.BlocoId).OrganizacaoId;
 
             ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(idOrganizacao);
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
 
             return View(new SalaAuxModel { Sala = new SalaModel { Id = salaModel.Id, Titulo = salaModel.Titulo, BlocoId = salaModel.BlocoId }, OrganizacaoId = idOrganizacao });
         }
@@ -112,7 +112,7 @@ namespace SalasUfsWeb.Controllers
         public ActionResult Edit(int id, SalaAuxModel salaModel)
         {
             ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             try
             {
                 if (ModelState.IsValid)

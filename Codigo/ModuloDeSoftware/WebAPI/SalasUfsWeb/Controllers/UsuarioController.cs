@@ -41,16 +41,16 @@ namespace SalasUfsWeb.Controllers
             _planejamentoService = planejamentoService;
             _horarioSalaService = horarioSalaService;
         }
+
         // GET: Usuario
         public ActionResult Index()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            int idLog = 0;
-
-            if (claimsIdentity != null)
-                idLog = Convert.ToInt32(claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
             
-            var usuarios = _usuarioService.GetUserNotLog(idLog);
+            var usuarioLogado = _usuarioService.GetAuthenticatedUser(claimsIdentity);
+            
+            var usuarios = _usuarioService.GetAllExceptAuthenticatedUser(usuarioLogado.UsuarioModel.Id);
+            
             List<UsuarioAuxModel> lista = new List<UsuarioAuxModel>();
 
             usuarios.ForEach(s => lista.Add(new UsuarioAuxModel { UsuarioModel = s, TipoUsuarioModel = _tipoUsuarioService.GetById(s.TipoUsuarioId), OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.Id) }));

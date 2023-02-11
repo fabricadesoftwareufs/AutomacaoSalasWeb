@@ -29,9 +29,14 @@ namespace Service
                     TipoUsuarioId = u.TipoUsuario
                 }).ToList();
 
-        public List<UsuarioModel> GetUserNotLog(int idLog)
+        /// <summary>
+        /// Obtém todos os usuários com execção do usuário logado
+        /// </summary>
+        /// <param name="idUser">Id do usuário logado</param>
+        /// <returns>Uma lista de usuários</returns>
+        public List<UsuarioModel> GetAllExceptAuthenticatedUser(int idUser)
             => _context.Usuario
-                .Where(u => u.Id != idLog)
+                .Where(u => u.Id != idUser)
                 .Select(u => new UsuarioModel
                 {
                     Id = u.Id,
@@ -193,7 +198,7 @@ namespace Service
             return false;
         }
 
-        public UsuarioViewModel RetornLoggedUser(ClaimsIdentity claimsIdentity)
+        public UsuarioViewModel GetAuthenticatedUser(ClaimsIdentity claimsIdentity)
         {
             var usuario = new UsuarioViewModel
             {
