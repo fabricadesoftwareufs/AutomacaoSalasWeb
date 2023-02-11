@@ -166,7 +166,7 @@ namespace SalasUfsWeb.Controllers
         [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
         public ActionResult EditPersonalData()
         {
-            var usuarioId = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity)?.UsuarioModel?.Id ?? 0;
+            var usuarioId = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity)?.UsuarioModel?.Id ?? 0;
 
             var usuario = _usuarioService.GetById(usuarioId);
             var tipoUsuario = _tipoUsuarioService.GetById(usuario.TipoUsuarioId);
