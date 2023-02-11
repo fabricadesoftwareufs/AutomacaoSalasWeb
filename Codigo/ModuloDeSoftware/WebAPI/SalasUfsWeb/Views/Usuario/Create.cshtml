@@ -120,16 +120,16 @@
                             <input hidden asp-for="OrganizacaoModel.Cnpj" class="form-control" value="@cnpj" />
                             <input hidden asp-for="OrganizacaoModel.RazaoSocial" class="form-control" value="@razaoSocial" />
                         </div>
+                        <div class="card-footer">
+                            <row>
+                                <div class="col-md-16">
+                                    <input type="submit" value="Criar" class="btn btn-success" /> |
+                                    <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                                    <a href="@Url.Action("Index", "Login")" class="text-center float-right">Já possui cadastrado?</a>
+                                </div>
+                            </row>
+                        </div>
                     </form>
-                    <div class="card-footer">
-                        <row>
-                            <div class="col-md-16">
-                                <input type="submit" value="Criar" class="btn btn-success" /> |
-                                <a class="btn btn-primary" asp-action="Index">Voltar</a>
-                                <a href="@Url.Action("Index", "Login")" class="text-center float-right">Já possui cadastrado?</a>
-                            </div>
-                        </row>
-                    </div>
                 </div>
             </div>
         </div>
