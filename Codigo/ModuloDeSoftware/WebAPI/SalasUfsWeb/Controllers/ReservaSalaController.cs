@@ -80,7 +80,7 @@ namespace SalasUfsWeb.Controllers
         public ActionResult Create()
         {
 
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
@@ -101,7 +101,7 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(ReservaSalaViewModel reservaModel)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
@@ -151,7 +151,7 @@ namespace SalasUfsWeb.Controllers
         [Authorize(Roles = "GESTOR, ADMIN")]
         public ActionResult Edit(int id)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
@@ -183,7 +183,7 @@ namespace SalasUfsWeb.Controllers
         [Authorize(Roles = "GESTOR, ADMIN")]
         public  ActionResult Edit(ReservaSalaViewModel reservaModel)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
