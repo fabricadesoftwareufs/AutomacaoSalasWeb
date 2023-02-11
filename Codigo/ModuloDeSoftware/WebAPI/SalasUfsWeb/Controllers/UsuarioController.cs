@@ -15,7 +15,6 @@ using Utils;
 
 namespace SalasUfsWeb.Controllers
 {
-    [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class UsuarioController : Controller
     {
         private readonly IUsuarioService _usuarioService;
@@ -43,6 +42,7 @@ namespace SalasUfsWeb.Controllers
         }
 
         // GET: Usuario
+        [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
         public ActionResult Index()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
@@ -59,6 +59,7 @@ namespace SalasUfsWeb.Controllers
         }
 
         // GET: Usuario/Details/5
+        [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
         public ActionResult Details(int id)
         {
             var usuario = _usuarioService.GetById(id);
@@ -67,6 +68,7 @@ namespace SalasUfsWeb.Controllers
         }
 
         // GET: Usuario/Create
+        [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
         public ActionResult Create()
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
@@ -77,6 +79,7 @@ namespace SalasUfsWeb.Controllers
         // POST: Usuario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
         public ActionResult Create(UsuarioViewModel usuarioViewModel)
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
@@ -109,23 +112,21 @@ namespace SalasUfsWeb.Controllers
 
                 return RedirectToAction("Authenticate", "Login", sucesso);
             }
-            // Se nao inserir, vem pra cá e sai.
-            /*var erros = ModelState.Values.SelectMany(m => m.Errors)
-                                  .Select(e => e.ErrorMessage)
-                                  .ToList();
-           */
+
             return View(usuarioViewModel);
         }
 
         // GET: Usuario/Edit/5
+        [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
         public ActionResult Edit(int id)
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
             ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
 
             var usuario = _usuarioService.GetById(id);
-            var organizacao = _organizacaoService.GetById(id);
-            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = _tipoUsuarioService.GetById(usuario.TipoUsuarioId), OrganizacaoModel = organizacao };
+            var tipoUsuario = _tipoUsuarioService.GetById(usuario.TipoUsuarioId);
+            var organizacao = _organizacaoService.GetByIdUsuario(id);
+            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = tipoUsuario, OrganizacaoModel = organizacao.FirstOrDefault() };
 
             return View(usuarioView);
         }
@@ -133,6 +134,7 @@ namespace SalasUfsWeb.Controllers
         // POST: Usuario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
         public ActionResult Edit(int id, UsuarioViewModel usuarioView)
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
@@ -161,9 +163,54 @@ namespace SalasUfsWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
+        public ActionResult EditPersonalData()
+        {
+            var usuarioId = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity)?.UsuarioModel?.Id ?? 0;
+
+            var usuario = _usuarioService.GetById(usuarioId);
+            var tipoUsuario = _tipoUsuarioService.GetById(usuario.TipoUsuarioId);
+            var organizacao = _organizacaoService.GetByIdUsuario(usuarioId);
+            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = tipoUsuario, OrganizacaoModel = organizacao.FirstOrDefault() };
+
+            return View(usuarioView);
+        }
+
+        // POST: Usuario/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
+        public ActionResult EditPersonalData(int id, UsuarioViewModel usuarioView)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    usuarioView.UsuarioModel.TipoUsuarioId = usuarioView.TipoUsuarioModel.Id;
+                    if (_usuarioService.Update(usuarioView.UsuarioModel))
+                    {
+                        TempData["mensagemSucesso"] = "Dados pessoais salvos com sucesso!";
+                    }
+                    else
+                    {
+                        TempData["mensagemErro"] = "Houve um problema ao editar seus dados, tente novamente em alguns minutos.";
+                        return View(usuarioView);
+                    }
+                }
+            }
+            catch (ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
+                return View(usuarioView);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
         // POST: Usuario/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try
@@ -180,17 +227,6 @@ namespace SalasUfsWeb.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        public bool HasPlanOrReserv(int idUsuario)
-        {
-            var plan = _planejamentoService.GetByIdUsuario(idUsuario);
-            if (plan != null)
-                return true;
-            else
-            {
-                return _horarioSalaService.GetByIdUsuario(idUsuario) != null ? true : false;
-            }
         }
     }
 }
