@@ -2,7 +2,7 @@ name: AutomacaoSalas-WEB CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ feature/deploy-automatico ]
   pull_request:
     branches: [ master ]
 
@@ -21,6 +21,13 @@ jobs:
       with:
         dotnet-version: 3.1
       
+    - name: Replace variables
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: '${{env.work-directory}}/appsettings.json'
+      env:
+        AppSettings.ConnectionStrings.MySqlConnection: "${{secrets.DATABASE_CONNECTION}}"
+
     - name: Restore dependencies
       run: |
         cd ${{env.work-directory}}
