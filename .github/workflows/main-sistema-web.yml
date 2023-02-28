@@ -1,14 +1,20 @@
 name: AutomacaoSalas-WEB CI
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        type: environment
+        required: true
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
+    
+    environment:
+      name: ${{ github.event.inputs.environment }}
+    
     env:
       work-directory: Codigo/ModuloDeSoftware/WebAPI/SalasUfsWeb
 
@@ -21,6 +27,13 @@ jobs:
       with:
         dotnet-version: 3.1
       
+    - name: Replace variables
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: '${{env.work-directory}}/appsettings.json'
+      env:
+        ConnectionStrings.MySqlConnection: ${{secrets.CONNECTION_STRING}}
+
     - name: Restore dependencies
       run: |
         cd ${{env.work-directory}}
@@ -34,16 +47,17 @@ jobs:
     - name: Publish Application
       run: |
         cd ${{env.work-directory}}
-        dotnet publish -c --configuration Release --no-restore --output ./publish 
-      
-#    - name: Upload via FTP
-#      uses: SamKirkland/FTP-Deploy-Action@4.3.0
-#      with:
-#        server: ${{ secrets.FTP_SERVER }}
-#        username: ${{ secrets.FTP_USER }}
-#        password: ${{ secrets.FTP_PASS }}
-#        local-dir: publish/
-#        remote-dir: ./
-#        exclude: |
-#          **/.git*
-#          **/.git*/**
+        dotnet publish -c --configuration Release --no-restore --output ./publishWEB
+    
+    - name: Upload via FTP
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USER_WEB }}
+        password: ${{ secrets.FTP_PASS_WEB }}
+        local-dir: '${{env.work-directory}}/publishWEB/'
+        remote-dir: ./
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/AnaliseProjeto

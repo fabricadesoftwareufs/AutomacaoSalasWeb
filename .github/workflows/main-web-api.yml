@@ -1,14 +1,20 @@
 name: AutomacaoSalas-API CI
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        type: environment
+        required: true
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ github.event.inputs.environment }}
+
     env:
       work-directory: Codigo/ModuloDeSoftware/WebAPI/WebAPI
 
@@ -20,12 +26,19 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1
-      
+
+    - name: Replace variables
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: '${{env.work-directory}}/appsettings.json'
+      env:
+        ConnectionStrings.MySqlConnection: ${{secrets.CONNECTION_STRING}}
+
     - name: Restore dependencies
       run: |
         cd ${{env.work-directory}}
         dotnet restore
-
+  
     - name: Build Application
       run: |
         cd ${{env.work-directory}}
@@ -34,16 +47,17 @@ jobs:
     - name: Publish Application
       run: |
         cd ${{env.work-directory}}
-        dotnet publish -c --configuration Release --no-restore --output ./publish 
+        dotnet publish -c --configuration Release --no-restore --output ./publishAPI 
       
 #    - name: Upload via FTP
-#      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+#      uses: SamKirkland/FTP-Deploy-Action@4.3.3
 #      with:
 #        server: ${{ secrets.FTP_SERVER }}
 #        username: ${{ secrets.FTP_USER }}
 #        password: ${{ secrets.FTP_PASS }}
-#        local-dir: publish/
+#        local-dir: '${{env.work-directory}}/publishAPI/'
 #        remote-dir: ./
 #        exclude: |
 #          **/.git*
 #          **/.git*/**
+#          **/AnaliseProjeto
