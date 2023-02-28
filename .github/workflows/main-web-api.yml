@@ -2,13 +2,17 @@ name: AutomacaoSalas-API CI
 
 on:
   push:
-    branches: [ feature/deploy-automatico ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
+
+    environment:
+      name: PROD
+
     env:
       work-directory: Codigo/ModuloDeSoftware/WebAPI/WebAPI
 
@@ -26,7 +30,7 @@ jobs:
       with:
         files: '${{env.work-directory}}/appsettings.json'
       env:
-        AppSettings.ConnectionStrings.MySqlConnection: "${{secrets.DATABASE_CONNECTION}}"
+        ConnectionStrings.MySqlConnection: ${{secrets.CONNECTION_STRING}}
 
     - name: Restore dependencies
       run: |
@@ -41,16 +45,17 @@ jobs:
     - name: Publish Application
       run: |
         cd ${{env.work-directory}}
-        dotnet publish -c --configuration Release --no-restore --output ./publish 
+        dotnet publish -c --configuration Release --no-restore --output ./publishAPI 
       
 #    - name: Upload via FTP
-#      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+#      uses: SamKirkland/FTP-Deploy-Action@4.3.3
 #      with:
 #        server: ${{ secrets.FTP_SERVER }}
 #        username: ${{ secrets.FTP_USER }}
 #        password: ${{ secrets.FTP_PASS }}
-#        local-dir: publish/
+#        local-dir: '${{env.work-directory}}/publishAPI/'
 #        remote-dir: ./
 #        exclude: |
 #          **/.git*
 #          **/.git*/**
+#          **/AnaliseProjeto
