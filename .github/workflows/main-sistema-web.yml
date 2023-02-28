@@ -1,17 +1,19 @@
 name: AutomacaoSalas-WEB CI
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        type: environment
+        required: true
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     
     environment:
-      name: PROD
+      name: ${{ github.event.inputs.environment }}
     
     env:
       work-directory: Codigo/ModuloDeSoftware/WebAPI/SalasUfsWeb

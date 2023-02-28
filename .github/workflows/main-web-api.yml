@@ -3,17 +3,8 @@ name: AutomacaoSalas-API CI
 on:
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-        type: choice
-        options:
-        - info
-        - warning
-        - debug
       environment:
-        description: 'Environment to run tests against'
+        description: 'Environment to deploy'
         type: environment
         required: true
 
@@ -22,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     environment:
-      name: PROD
+      name: ${{ github.event.inputs.environment }}
 
     env:
       work-directory: Codigo/ModuloDeSoftware/WebAPI/WebAPI
