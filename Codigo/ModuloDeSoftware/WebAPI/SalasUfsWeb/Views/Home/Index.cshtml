@@ -47,7 +47,7 @@
                                                                         <input class="form-control" name="SalaParticular" value="True" />
                                                                     </div>
 
-                                                                    <h5 class="card-text">@monitoramento.ModeloEquipamento</h5>
+                                                                    <h5 class="card-text">@monitoramento.Descricao</h5>
                                                                     <label class="switch" onchange="submitForm('form-@monitoramento.Id',@item.SalaExclusiva.Id,true)">
                                                                         @if (monitoramento.Estado)
                                                                         {
@@ -85,7 +85,7 @@
                                                                         <input class="form-control" name="SalaParticular" value="True" />
                                                                     </div>
 
-                                                                    <h5 class="card-text">@monitoramento.ModeloEquipamento</h5>
+                                                                    <h5 class="card-text">@monitoramento.Descricao</h5>
                                                                     <label class="switch" onchange="submitForm('form-@monitoramento.Id',@item.SalaExclusiva.Id,true)">
                                                                         @if (monitoramento.Estado)
                                                                         {
@@ -102,7 +102,7 @@
                                                         }
                                                         @if (!item.MonitoramentoCondicionadores.Any())
                                                         {
-                                                            <h5 class="card-text">Sem ares-condicionados</h5>
+                                                            <h5 class="card-text">Sem Ares-Condicionados</h5>
                                                         }
                                                     </div>
                                                 </div>

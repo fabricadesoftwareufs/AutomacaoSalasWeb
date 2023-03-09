@@ -10,7 +10,7 @@ namespace Model.ViewModel
 
         public string? Uuid { get; set; } = string.Empty;
         public string? ModeloEquipamento { get; set; } = string.Empty;
-
+        public string? Descricao { get; set; } = string.Empty;
 
         public bool SalaParticular { get; set; }
     }

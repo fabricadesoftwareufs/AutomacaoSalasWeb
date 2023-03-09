@@ -63,7 +63,8 @@ namespace Service
                                       Estado = Convert.ToBoolean(m.Estado),
                                       EquipamentoId = m.Equipamento,
                                       Uuid = h.Uuid,
-                                      ModeloEquipamento = e.Modelo
+                                      ModeloEquipamento = e.Modelo,
+                                      Descricao= e.Descricao,
                                   }).ToList();
 
 

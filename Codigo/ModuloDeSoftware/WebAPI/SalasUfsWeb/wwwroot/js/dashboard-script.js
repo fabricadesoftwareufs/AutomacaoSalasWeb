@@ -77,6 +77,14 @@ function addReserva(data, indice, dia) {
 }
 
 function createFormsByMonitoring(data, monitoring, indice, type) {
+    
+    if (monitoring?.length == 0) {
+        if (type === "luzes")
+            return '<h5 class="card-text">Sem Luzes</h5>';
+        else
+            return '<h5 class="card-text">Sem Ares-Condicionados</h5>';
+    }
+
     var forms = '';
 
     monitoring?.forEach(item => {
@@ -90,7 +98,7 @@ function createFormsByMonitoring(data, monitoring, indice, type) {
             '</div>' +
 
             '<div class="align-element">' +
-            '<h5 class="card-text">' + item.modeloEquipamento + '</h5>' +
+            '<h5 class="card-text">' + item.descricao + '</h5>' +
             '<label class="switch" onchange="submitForm(\'form-' + indice + "-" + item.id + "-" + data.horarioSala.id + '\',\'' + indice + "-" + item.id + "-" + data.horarioSala.id + '\',false)">' +
             '<input type="checkbox" name="Estado" id="' + type + "-" + indice + "-" + item.id + "-" + data.horarioSala.id + '" value="' + item.estado + '"' + new String(item.estado ? "checked" : "") + '/>' +
             '<span class="slider round"></span>' +
