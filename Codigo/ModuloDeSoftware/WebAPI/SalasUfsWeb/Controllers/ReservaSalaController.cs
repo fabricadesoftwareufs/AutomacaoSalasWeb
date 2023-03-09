@@ -80,7 +80,7 @@ namespace SalasUfsWeb.Controllers
         public ActionResult Create()
         {
 
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
@@ -101,7 +101,7 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(ReservaSalaViewModel reservaModel)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
@@ -129,13 +129,7 @@ namespace SalasUfsWeb.Controllers
                         UsuarioId = idUsuario
                     }))
                     {
-                       
                         TempData["mensagemSucesso"] = "Reserva feita com sucesso!";
-
-                        var hardwareDeSala = _hardwareDeSalaService.GetControladorByIdSala(reservaModel.HorarioSalaModel.SalaId);
-
-                        if(hardwareDeSala != null)
-                            _horarioSalaService.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Id, reservaModel.HorarioSalaModel.Data);
                     }
                     else
                     {
@@ -157,7 +151,7 @@ namespace SalasUfsWeb.Controllers
         [Authorize(Roles = "GESTOR, ADMIN")]
         public ActionResult Edit(int id)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
@@ -189,7 +183,7 @@ namespace SalasUfsWeb.Controllers
         [Authorize(Roles = "GESTOR, ADMIN")]
         public  ActionResult Edit(ReservaSalaViewModel reservaModel)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
             var organizacoes = _organizacaoService.GetInList(usuarioOrg);
 
@@ -219,11 +213,6 @@ namespace SalasUfsWeb.Controllers
                     }))
                     {
                         TempData["mensagemSucesso"] = "Reserva editada com sucesso!";
-
-                        var hardwareDeSala = _hardwareDeSalaService.GetControladorByIdSala(reservaModel.HorarioSalaModel.SalaId);
-
-                        if(hardwareDeSala != null)
-                            _horarioSalaService.SolicitaAtualizacaoHorarioESP(hardwareDeSala.Id, reservaModel.HorarioSalaModel.Data);
                     }
                     else
                     {

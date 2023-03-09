@@ -45,7 +45,7 @@ namespace SalasUfsWeb.Controllers
 
         public IActionResult Create()
         {
-            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
 
             ViewBag.Organizacoes = organizacoes;
@@ -60,7 +60,7 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(HardwareDeSalaModel hardware)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
 
             ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(idUsuario);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(hardware.Organizacao);
@@ -96,7 +96,7 @@ namespace SalasUfsWeb.Controllers
         {
             var hardware = _hardwareService.GetById(id);
             var bloco = _blocoService.GetById(_salaService.GetById(hardware.SalaId).BlocoId);
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
 
             ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(idUsuario);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(bloco.OrganizacaoId);
@@ -111,7 +111,7 @@ namespace SalasUfsWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, HardwareDeSalaModel hardware)
         {
-            var idUsuario = _usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
 
             ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(idUsuario);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(hardware.Organizacao);
@@ -167,7 +167,7 @@ namespace SalasUfsWeb.Controllers
 
         private List<HardwareDeSalaViewModel> GetAllViewModels()
         {
-            var hardwares = _hardwareService.GetAllHardwaresSalaByUsuarioOrganizacao(_usuarioService.RetornLoggedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var hardwares = _hardwareService.GetAllHardwaresSalaByUsuarioOrganizacao(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var hardwaresViewModel = new List<HardwareDeSalaViewModel>();
 
             hardwares.ForEach(h => hardwaresViewModel.Add(Cast(h)));

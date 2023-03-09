@@ -8,84 +8,133 @@
     var razaoSocial = "Razao Social";
 }
 
-<div class="card">
-    <div class="card-body register-card-body">
-        <p class="login-box-msg">Criar Novo Usuário</p>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Criar Novo Usuário</h2>
+                    </div>
+                    <form asp-action="Create" asp-controller="Usuario">
+                        <div class="card-body">
+                            <div class="row col-md-2">
+                                <label asp-for="UsuarioModel.Nome" class="control-label select-label">Nome</label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-8">
+                                    <input asp-for="UsuarioModel.Nome" class="form-control" placeholder="Nome" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
 
-        <form asp-action="Create" asp-controller="Usuario">
-            <div class="input-group mb-3">
-                <input asp-for="UsuarioModel.Nome" class="form-control" placeholder="Nome" />
-                <div class="input-group-append">
-                    <div class="input-group-text">
-                        <span class="fas fa-user"></span>
-                    </div>
-                </div>
-            </div>
-            <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
-            <div class="input-group mb-3">
-                <input id="login_auth" asp-for="UsuarioModel.Cpf" class="form-control" placeholder="CPF" oninput="validaCpf()">
-                <div class="input-group-append">
-                    <div class="input-group-text">
-                        <span class="fas fa-id-card"></span>
-                    </div>
-                </div>
-            </div>
-            <span id="span_cpf" asp-validation-for="UsuarioModel.Cpf" class="invalid-msg invalid-feedback"></span>
-            <div class="input-group mb-3">
-                <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control" placeholder="Data de nascimento" />
-                <div class="input-group-append">
-                    <div class="input-group-text">
-                        <span class="fas fa-birthday-cake"></span>
-                    </div>
-                </div>
-            </div>
-            <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
-            <div class="input-group mb-3">
-                <input id="senha_auth" asp-for="UsuarioModel.Senha" class="form-control" placeholder="Senha" />
-                <div class="input-group-append">
-                    <div class="input-group-text">
-                        <span class="fas fa-lock"></span>
-                    </div>
-                </div>
-                <span asp-validation-for="UsuarioModel.Senha" class="text-danger"></span>
-            </div>
-            <div class="input-group mb-3">
-                <label asp-for="TipoUsuarioModel.Id" class="control-label select-label">Tipo de usuário</label>
-                @Html.DropDownListFor(model => model.TipoUsuarioModel.Id, ViewBag.TiposUsuario as SelectList, new
-                { @class = "form-control", @id = "select-tipoUsuario" })
-            </div>
-            <span asp-validation-for="TipoUsuarioModel.Id" class="text-danger"></span>
-            <div class="input-group mb-3">
-                <label asp-for="TipoUsuarioModel.Id" class="control-label select-label">Organização</label>
-                @Html.DropDownListFor(model => model.OrganizacaoModel.Id, ViewBag.Organizacoes as SelectList, new
-                { @class = "form-control select2", @id = "select-organizacoes" })
-            </div>
-            <span asp-validation-for="OrganizacaoModel.Id" class="text-danger"></span>
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="UsuarioModel.Cpf" class="control-label select-label">Cpf</label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-6">
+                                    <input id="login_auth" asp-for="UsuarioModel.Cpf" class="form-control" placeholder="CPF" oninput="validaCpf()">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-id-card"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span id="span_cpf" asp-validation-for="UsuarioModel.Cpf" class="invalid-msg invalid-feedback"></span>
 
-            <input hidden asp-for="OrganizacaoModel.Cnpj" class="form-control" value="@cnpj" />
-            <input hidden asp-for="OrganizacaoModel.RazaoSocial" class="form-control" value="@razaoSocial" />
-            <div class="row">
-                <div class="col-8">
-                    <div class="icheck-primary">
-                        <input type="checkbox" id="show_pass" onchange="showPass(this)">
-                        <label for="show_pass">
-                            Mostrar Senha
-                        </label>
-                    </div>
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="TipoUsuarioModel.Id" class="control-label select-label">Organização</label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-6">
+                                    @Html.DropDownListFor(model => model.OrganizacaoModel.Id, ViewBag.Organizacoes as SelectList, new
+                                    { @class = "form-control select2", @id = "select-organizacoes" })
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fa fa-university"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="OrganizacaoModel.Id" class="text-danger"></span>
+
+                            <div class="row col-md-4 mt-3">
+                                <label asp-for="UsuarioModel.DataNascimento" class="control-label select-label">Data de Nascimento</label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-4">
+                                    <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control" placeholder="Data de nascimento" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-birthday-cake"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
+
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="UsuarioModel.Senha" class="control-label select-label">Senha</label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-4">
+                                    <input id="senha_auth" asp-for="UsuarioModel.Senha" class="form-control" placeholder="Senha" minlength="8" maxlength="16" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fa fa-users"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="icheck-primary d-inline-block">
+                                    <input type="checkbox" id="show_pass" onchange="showPass(this)">
+                                    <label for="show_pass">
+                                        Mostrar Senha
+                                    </label>
+                                </div>
+                            </div>
+                            <span asp-validation-for="UsuarioModel.Senha" class="text-danger"></span>
+
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="TipoUsuarioModel.Id" class="control-label select-label">Tipo de usuário</label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-4">
+                                    @Html.DropDownListFor(model => model.TipoUsuarioModel.Id, ViewBag.TiposUsuario as SelectList, new
+                                    { @class = "form-control", @id = "select-tipoUsuario" })
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="TipoUsuarioModel.Id" class="text-danger"></span>
+
+                            <input hidden asp-for="OrganizacaoModel.Cnpj" class="form-control" value="@cnpj" />
+                            <input hidden asp-for="OrganizacaoModel.RazaoSocial" class="form-control" value="@razaoSocial" />
+                        </div>
+                        <div class="card-footer">
+                            <row>
+                                <div class="col-md-16">
+                                    <input type="submit" value="Criar" class="btn btn-success" /> |
+                                    <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                                    <a href="@Url.Action("Index", "Login")" class="text-center float-right">Já possui cadastrado?</a>
+                                </div>
+                            </row>
+                        </div>
+                    </form>
                 </div>
-                <!-- /.col -->
-                <div class="col-4">
-                    <input type="submit" value="Criar" class="btn btn-primary btn-block" />
-                </div>
-                <!-- /.col -->
             </div>
-        </form>
-        <hr />
-        <a href="@Url.Action("Index", "Login")" class="text-center">Já possui cadastrado?</a>
+        </div>
     </div>
-    <!-- /.form-box -->
-</div><!-- /.card -->
-
+</section>
 
 @if (TempData["mensagemSucesso"] != null)
 {
@@ -98,6 +147,12 @@ else if (TempData["mensagemErro"] != null)
 
 @section Scripts {
     <!-- Scripts -->
+    <script>
+        $(document).ready(function () {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+        });
+    </script>
     <script src="~/plugins/jquery/jquery.min.js"></script>
     <script src="~/plugins/inputmask/min/inputmask/inputmask.min.js"></script>
     <script src="~/plugins/inputmask/min/inputmask/jquery.inputmask.min.js"></script>

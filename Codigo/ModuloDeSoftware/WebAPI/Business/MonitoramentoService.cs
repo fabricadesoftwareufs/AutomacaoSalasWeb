@@ -16,7 +16,6 @@ namespace Service
         private const string L_ON = "LZ-ON";
         private const string AC_OFF = "AC-OFF";
         private const string L_OFF = "LZ-OFF";
-        private const string NOT_AVALIABLE = "NOT-AVALIABLE";
 
         public MonitoramentoService(SalasUfsDbContext context)
         {
@@ -197,8 +196,6 @@ namespace Service
                         retornoEsperado = monitoramento.Estado ? L_ON : L_OFF;
                     }
 
-                 
-
                     var hardwareAtuador = _hardwareDeSalaService.GetById(equipamento.HardwareDeSala.GetValueOrDefault(0));
                     var hardwareDeSala = _hardwareDeSalaService.GetControladorByIdSala(equipamento.Sala);
 
@@ -215,13 +212,14 @@ namespace Service
                     {
                         DataSolicitacao = DateTime.Now,
                         IdHardware = hardwareDeSala.Id,
+                        IdHardwareAtuador = hardwareAtuador.Id,
                         Payload = mensagem,
                         TipoSolicitacao = GetTipoSolicitacao(tipoEquipamento)
                     };
 
                     var _solicitacaService = new SolicitacacaoService(_context);
 
-                    var solicitacao = _solicitacaService.GetByIdHardware(hardwareDeSala.Id, GetTipoSolicitacao(tipoEquipamento)).FirstOrDefault();
+                    var solicitacao = _solicitacaService.GetByIdHardwareAtuador(hardwareAtuador.Id).FirstOrDefault();
 
                     if (solicitacao != null)
                     {

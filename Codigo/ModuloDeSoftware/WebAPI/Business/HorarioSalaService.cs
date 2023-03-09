@@ -1,6 +1,5 @@
 ﻿using Model;
 using Model.ViewModel;
-using Newtonsoft.Json;
 using Persistence;
 using Service.Interface;
 using System;
@@ -12,11 +11,12 @@ namespace Service
     public class HorarioSalaService : IHorarioSalaService
     {
         private readonly SalasUfsDbContext _context;
-        private const string ATUALIZAR_HORARIOS = "ATUALIZAR_HORARIOS";
+
         public HorarioSalaService(SalasUfsDbContext context)
         {
             _context = context;
         }
+
         public List<HorarioSalaModel> GetAll()
             => _context.Horariosala
                 .Select(hs => new HorarioSalaModel
@@ -349,37 +349,6 @@ namespace Service
             }
 
             return false;
-        }
-
-        public bool SolicitaAtualizacaoHorarioESP(int idHardware, DateTime dataHorario)
-        {
-            DateTime dataAtual = DateTime.Now;
-            bool resultado = false;
-
-            if (dataHorario.Date == dataAtual.Date)
-            {
-                var solicitacaoModel = new SolicitacaoModel
-                {
-                    DataSolicitacao = DateTime.Now,
-                    IdHardware = idHardware,
-                    Payload = "{}",
-                    TipoSolicitacao = SolicitacaoModel.ATUALIZAR_RESERVAS
-                };
-
-                var _solicitacaService = new SolicitacacaoService(_context);
-
-                var solicitacao = _solicitacaService.GetByIdHardware(idHardware, SolicitacaoModel.ATUALIZAR_RESERVAS).FirstOrDefault();
-
-                if (solicitacao != null)
-                {
-                    solicitacao.DataFinalizacao = DateTime.Now;
-                    _solicitacaService.Update(solicitacao);
-                }
-
-                resultado = _solicitacaService.Insert(solicitacaoModel);
-            }
-
-            return resultado;
         }
     }
 }

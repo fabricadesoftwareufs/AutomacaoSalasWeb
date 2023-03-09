@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -7,7 +9,10 @@ namespace Utils
 {
     public class Methods
     {
-        public const string TOKEN_PADRAO = "594ac3eb82b5080393ad5c426f61c1ed5ac53f90e1abebc15316888cf1c8f5fe"; 
+        public const string TOKEN_PADRAO = "594ac3eb82b5080393ad5c426f61c1ed5ac53f90e1abebc15316888cf1c8f5fe";
+
+        private static List<string> InvalidCpfs = new List<string>{ "11111111111", "22222222222", "33333333333", "44444444444", "55555555555",
+                                                                    "66666666666", "66666666666", "77777777777", "88888888888", "99999999999" };
 
         /// <summary>
         /// Recebe uma string e retorna a mesma sem caracteres especiais.
@@ -18,9 +23,12 @@ namespace Utils
 
         public static bool ValidarCpf(string cpf)
         {
-            cpf = CleanString(cpf);
+                cpf = CleanString(cpf);
 
             if (string.IsNullOrEmpty(cpf))
+                return false;
+
+            if(InvalidCpfs.Any(x => x.Equals(cpf)))
                 return false;
 
             var multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
