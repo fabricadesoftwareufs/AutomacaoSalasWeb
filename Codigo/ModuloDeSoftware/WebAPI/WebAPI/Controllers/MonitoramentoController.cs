@@ -1,32 +1,80 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using Model.ViewModel;
 using Service;
 using Service.Interface;
 using System.Net;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
+    [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
     public class MonitoramentoController : ControllerBase
     {
 
-        private readonly IMonitoramentoService _service;
-        public MonitoramentoController(IMonitoramentoService service)
+        private readonly IMonitoramentoService _monitoramentoService;
+        private readonly IUsuarioService _usuarioService;
+
+        public MonitoramentoController(IMonitoramentoService service, IUsuarioService usuarioService)
         {
-            _service = service;
+            _monitoramentoService = service;
+            _usuarioService = usuarioService;
+        }
+
+        /// <summary>
+        /// Atualiza o estado de um equipamento (ligado/desligadi)
+        /// </summary>
+        /// <param name="monitoramento"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("MonitorarSala/")]
+        public ActionResult MonitorarSala(MonitoramentoViewModel monitoramento)
+        {
+            try
+            {
+               var monitoramentoRealizado = _monitoramentoService.MonitorarSala(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id, monitoramento);
+
+                if (!monitoramentoRealizado)
+                {
+                    return BadRequest(new
+                    {
+                        result = monitoramentoRealizado.ToString(),
+                        httpCode = (int)HttpStatusCode.BadRequest,
+                        message = "Houve um problema ao realizar monitoramento!"
+                    });
+                }
+
+                return Ok(new
+                {
+                    result = monitoramentoRealizado.ToString(),
+                    httpCode = (int)HttpStatusCode.OK,
+                    message = "Monitoramento realizado com sucesso!"
+                });
+
+            }
+            catch (ServiceException ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.InternalServerError,
+                    message = ex.Message
+                });
+            }
         }
 
         // GET: api/Monitoramento/5
         [HttpGet]
         [Route("ObterPorSala/{idSala}")]
+        [AllowAnonymous]
         public ActionResult Get(int idEquipamento)
         {
             try
             {
-                var monitoramento = _service.GetByIdEquipamento(idEquipamento);
+                var monitoramento = _monitoramentoService.GetByIdEquipamento(idEquipamento);
                 if (monitoramento == null)
                     return Ok(new
                     {
@@ -56,11 +104,12 @@ namespace WebAPI.Controllers
         // GET: api/Monitoramento/5
         [HttpGet]
         [Route("obter-por-sala-tipo-equipamento/{idSala}/{tipoEquipamento}")]
+        [AllowAnonymous]
         public ActionResult GetMonitoramentoByIdSala([FromRoute] int idSala, [FromRoute] string tipoEquipamento)
         {
             try
             {
-                var monitoramento = _service.GetByIdSalaAndTipoEquipamento(idSala, tipoEquipamento);
+                var monitoramento = _monitoramentoService.GetByIdSalaAndTipoEquipamento(idSala, tipoEquipamento);
 
                 if (monitoramento == null)
                     return Ok(new
@@ -91,11 +140,12 @@ namespace WebAPI.Controllers
 
         // PUT: api/Monitoramento/5
         [HttpPut]
+        [AllowAnonymous]
         public ActionResult Atualizar([FromBody] MonitoramentoModel monitoramento)
         {
             try
             {
-                if (_service.Update(monitoramento))
+                if (_monitoramentoService.Update(monitoramento))
                     return Ok(new {
                         result = monitoramento,
                         httpCode = (int)HttpStatusCode.OK,
