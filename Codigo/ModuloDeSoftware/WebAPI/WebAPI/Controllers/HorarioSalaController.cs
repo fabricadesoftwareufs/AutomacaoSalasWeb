@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using Model.AuxModel;
+using Model.ViewModel;
+using Persistence;
 using Service;
 using Service.Interface;
+using System;
 using System.Net;
+using System.Security.Claims;
 using Utils;
 
 namespace WebAPI.Controllers
@@ -15,11 +20,98 @@ namespace WebAPI.Controllers
     {
         private readonly IHorarioSalaService _service;
         private readonly IHardwareDeSalaService _hardwareService;
-        public HorarioSalaController(IHorarioSalaService service, IHardwareDeSalaService hardwareService)
+        private readonly ISalaService _salaService;
+        private readonly IBlocoService _blocoService;
+        private readonly IMonitoramentoService _monitoramentoService;
+        public HorarioSalaController(IHorarioSalaService service, 
+                                    IHardwareDeSalaService hardwareService, 
+                                    ISalaService salaService, 
+                                    IBlocoService blocoService, 
+                                    IMonitoramentoService monitoramentoService)
         {
             _service = service;
             _hardwareService = hardwareService;
+            _salaService = salaService;
+            _blocoService = blocoService;
+            _monitoramentoService = monitoramentoService;
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("getReservasByUsuario/{diaSemana}/{idUsuario}")]
+        public ActionResult GetReservasUsuario(string diaSemana, int idUsuario)
+        {
+            try
+            {
+
+                var salas = new SalaUsuarioViewModel();
+
+                foreach (var item in _service.GetProximasReservasByIdUsuarioAndDiaSemana(idUsuario, diaSemana))
+                {
+                    var sala = _salaService.GetById(item.SalaId);
+                    var bloco = _blocoService.GetById(sala.BlocoId);
+
+                    salas.SalasUsuario.Add(new SalaUsuarioAuxModel
+                    {
+                        HorarioSala = item,
+                        Sala = sala,
+                        Bloco = bloco,
+                        MonitoramentoLuzes = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_LUZES),
+                        MonitoramentoCondicionadores = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_CONDICIONADOR)
+                    });
+                }
+
+                return Ok(new {
+                    result = salas,
+                    httpCode = (int)HttpStatusCode.OK,
+                    message = "Consulta realizada com sucesso"
+                });
+            } 
+            catch (ServiceException e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.InternalServerError,
+                    message = e.Message
+                });
+            }
+        }
+
+        [HttpDelete]
+        [AllowAnonymous]
+        [Route("cancelarReserva/{idReserva}")]
+        public ActionResult CancelarReserva(int idReserva)
+        {
+            try
+            {
+                if (!_service.ConcelarReserva(idReserva))
+                {
+                    return BadRequest(new
+                    {
+                        result = false,
+                        httpCode = (int)HttpStatusCode.BadRequest,
+                        message = "Sua requisição não pode ser processada"
+                    });
+                }
+                return Ok(new
+                {
+                    result = true,
+                    httpCode = (int)HttpStatusCode.OK,
+                    message = "Reserva cancelada com sucesso"
+                });
+            }
+            catch (ServiceException se)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.InternalServerError,
+                    message = se.Message
+                });
+            }
+        }
+
         // GET: api/HorarioSala
         [HttpGet]
         [AllowAnonymous]

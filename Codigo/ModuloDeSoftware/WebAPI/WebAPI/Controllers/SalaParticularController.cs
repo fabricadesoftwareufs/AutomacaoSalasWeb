@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using Model.AuxModel;
+using Model.ViewModel;
 using Service;
 using Service.Interface;
 using System.Net;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
@@ -13,9 +16,18 @@ namespace WebAPI.Controllers
     public class SalaParticularController : ControllerBase
     {
         private readonly ISalaParticularService _service;
-        public SalaParticularController(SalaParticularService service)
+        private readonly ISalaService _salaService;
+        private readonly IBlocoService _blocoService;
+        private readonly IMonitoramentoService _monitoramentoService;
+        public SalaParticularController(ISalaParticularService service,
+                                    ISalaService salaService,
+                                    IBlocoService blocoService,
+                                    IMonitoramentoService monitoramentoService)
         {
             _service = service;
+            _salaService = salaService;
+            _blocoService = blocoService;
+            _monitoramentoService = monitoramentoService;
         }
         // GET: api/SalaParticular
         [HttpGet]
@@ -34,6 +46,47 @@ namespace WebAPI.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }  
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("getSalasExclusivasByUsuario/{idUsuario}")]
+        public ActionResult GetSalasUsuario(int idUsuario)
+        {
+            try
+            {
+                var salas = new SalaUsuarioViewModel();
+                foreach (var item in _service.GetByIdUsuario(idUsuario))
+                {
+                    var sala = _salaService.GetById(item.SalaId);
+                    var bloco = _blocoService.GetById(sala.BlocoId);
+
+                    salas.SalasUsuario.Add(new SalaUsuarioAuxModel
+                    {
+                        SalaExclusiva = item,
+                        Sala = sala,
+                        Bloco = bloco,
+                        MonitoramentoLuzes = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_LUZES),
+                        MonitoramentoCondicionadores = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_CONDICIONADOR)
+                    });
+                }
+
+                return Ok(new
+                {
+                    result = salas,
+                    httpCode = (int)HttpStatusCode.OK,
+                    message = "Consulta realizada com sucesso"
+                });
+            }
+            catch (ServiceException se)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.InternalServerError,
+                    message = se.Message
+                });
+            }
         }
 
         // GET: api/SalaParticular/5
