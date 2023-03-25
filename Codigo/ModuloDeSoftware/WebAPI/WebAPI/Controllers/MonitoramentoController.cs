@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 using Model;
 using Model.ViewModel;
 using Service;
@@ -111,13 +112,15 @@ namespace WebAPI.Controllers
             {
                 var monitoramento = _monitoramentoService.GetByIdSalaAndTipoEquipamento(idSala, tipoEquipamento);
 
-                if (monitoramento == null)
+                if (monitoramento == null || !monitoramento.Any())
+                {
                     return Ok(new
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum Monitoramento encontrado!"
                     });
+                }
 
                 return Ok(new
                 {

@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace Model
 {
     public class MonitoramentoModel
