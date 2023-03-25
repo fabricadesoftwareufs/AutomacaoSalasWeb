@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Atualiza o estado de um equipamento (ligado/desligadi)
+        /// Atualiza o estado de um equipamento (ligado/desligado) e sincroniza com o hardware
         /// </summary>
         /// <param name="monitoramento"></param>
         /// <returns></returns>
