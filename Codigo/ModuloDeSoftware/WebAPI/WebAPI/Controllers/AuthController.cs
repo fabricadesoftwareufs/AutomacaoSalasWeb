@@ -68,7 +68,10 @@ namespace WebAPI.Controllers
 
                 return Ok(new
                 {
-                    token = new JwtSecurityTokenHandler().WriteToken(token)
+                    user.Id,
+                    user.Cpf,
+                    user.Nome,
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
                 });
             }
 

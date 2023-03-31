@@ -49,7 +49,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         [Route("getSalasExclusivasByUsuario/{idUsuario}")]
         public ActionResult GetSalasUsuario(int idUsuario)
         {
