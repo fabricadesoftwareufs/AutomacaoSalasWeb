@@ -37,7 +37,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         [Route("getReservasByUsuario/{diaSemana}/{idUsuario}")]
         public ActionResult GetReservasUsuario(string diaSemana, int idUsuario)
         {
@@ -79,7 +78,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete]
-        [AllowAnonymous]
         [Route("cancelarReserva/{idReserva}")]
         public ActionResult CancelarReserva(int idReserva)
         {
