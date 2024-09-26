@@ -30,37 +30,41 @@
                                                     @item.Bloco.Titulo <br />
                                                     @item.Sala.Titulo
                                                 </h4>
-                                            </div>                                          
+                                            </div>
                                             <div class="float-right">
                                                 <div class="float-right text-center">
                                                     <div class="align-element">
-                                                        @if (@item.MonitoramentoLuzes?.Id > 0)
+                                                        @foreach (var monitoramento in item.MonitoramentoLuzes)
                                                         {
-                                                            <form asp-controller="Home" asp-action="MonitorarSala" id="form-@item.MonitoramentoLuzes.Id">
+                                                            @if (monitoramento.Id > 0)
+                                                            {
+                                                                <form asp-controller="Home" asp-action="MonitorarSala" id="form-@monitoramento.Id">
 
-                                                                <div class="form-control" hidden>
-                                                                    <input class="form-control" name="SalaId" value="@item.Sala.Id" />
-                                                                    <input class="form-control" name="EquipamentoId" value="@item.MonitoramentoLuzes.EquipamentoId" />
-                                                                    <input class="form-control" name="Id" value="@item.MonitoramentoLuzes.Id" />
-                                                                    <input class="form-control" name="SalaParticular" value="True" />
-                                                                </div>
+                                                                    <div class="form-control" hidden>
+                                                                        <input class="form-control" name="SalaId" value="@item.Sala.Id" />
+                                                                        <input class="form-control" name="EquipamentoId" value="@monitoramento.EquipamentoId" />
+                                                                        <input class="form-control" name="Id" value="@monitoramento.Id" />
+                                                                        <input class="form-control" name="SalaParticular" value="True" />
+                                                                    </div>
 
-                                                                <h5 class="card-text">Luzes</h5>
-                                                                <label class="switch" onchange="submitForm('form-@item.MonitoramentoLuzes.Id',@item.SalaExclusiva.Id,true)">
-                                                                    @if (item.MonitoramentoLuzes.Estado)
-                                                                    {
-                                                                        <input type="checkbox" name="Estado" id="luzes-@item.SalaExclusiva.Id" value="@item.MonitoramentoLuzes.Estado" checked />
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <input type="checkbox" name="Estado" id="luzes-@item.SalaExclusiva.Id" value="@item.MonitoramentoLuzes.Estado" />
-                                                                    }
-                                                                    <span class="slider round"></span>
-                                                                </label>
+                                                                    <h5 class="card-text">@monitoramento.ModeloEquipamento</h5>
+                                                                    <label class="switch" onchange="submitForm('form-@monitoramento.Id',@item.SalaExclusiva.Id,true)">
+                                                                        @if (monitoramento.Estado)
+                                                                        {
+                                                                            <input type="checkbox" name="Estado" id="luzes-@item.SalaExclusiva.Id" value="@monitoramento.Estado" checked />
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <input type="checkbox" name="Estado" id="luzes-@item.SalaExclusiva.Id" value="@monitoramento.Estado" />
+                                                                        }
+                                                                        <span class="slider round"></span>
+                                                                    </label>
 
-                                                            </form>
+                                                                </form>
+                                                            }
                                                         }
-                                                        else
+
+                                                        @if (!item.MonitoramentoLuzes.Any())
                                                         {
                                                             <h5 class="card-text">Sem Luzes</h5>
                                                         }
@@ -68,32 +72,35 @@
                                                 </div>
                                                 <div class="float-right text-center">
                                                     <div class="align-element">
-                                                        @if (@item.MonitoramentoCondicionadores?.Id > 0)
+                                                        @foreach (var monitoramento in item.MonitoramentoCondicionadores)
                                                         {
-                                                            <form asp-controller="Home" asp-action="MonitorarSala" id="form-@item.MonitoramentoCondicionadores.Id">
+                                                            @if (@monitoramento.Id > 0)
+                                                            {
+                                                                <form asp-controller="Home" asp-action="MonitorarSala" id="form-@monitoramento.Id">
 
-                                                                <div class="form-control" hidden>
-                                                                    <input class="form-control" name="SalaId" value="@item.Sala.Id" />
-                                                                    <input class="form-control" name="EquipamentoId" value="@item.MonitoramentoCondicionadores.EquipamentoId" />
-                                                                    <input class="form-control" name="Id" value="@item.MonitoramentoCondicionadores.Id" />
-                                                                    <input class="form-control" name="SalaParticular" value="True" />
-                                                                </div>
+                                                                    <div class="form-control" hidden>
+                                                                        <input class="form-control" name="SalaId" value="@item.Sala.Id" />
+                                                                        <input class="form-control" name="EquipamentoId" value="@monitoramento.EquipamentoId" />
+                                                                        <input class="form-control" name="Id" value="@monitoramento.Id" />
+                                                                        <input class="form-control" name="SalaParticular" value="True" />
+                                                                    </div>
 
-                                                                <h5 class="card-text">Condicionadores</h5>
-                                                                <label class="switch" onchange="submitForm('form-@item.MonitoramentoCondicionadores.Id',@item.SalaExclusiva.Id,true)">
-                                                                    @if (item.MonitoramentoCondicionadores.Estado)
-                                                                    {
-                                                                        <input type="checkbox" name="Estado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.MonitoramentoCondicionadores.Estado" checked />
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <input type="checkbox" name="Estado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.MonitoramentoCondicionadores.Estado" />
-                                                                    }
-                                                                    <span class="slider round"></span>
-                                                                </label>
-                                                            </form>
+                                                                    <h5 class="card-text">@monitoramento.ModeloEquipamento</h5>
+                                                                    <label class="switch" onchange="submitForm('form-@monitoramento.Id',@item.SalaExclusiva.Id,true)">
+                                                                        @if (monitoramento.Estado)
+                                                                        {
+                                                                            <input type="checkbox" name="Estado" id="arCondicionado-@item.SalaExclusiva.Id" value="@monitoramento.Estado" checked />
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <input type="checkbox" name="Estado" id="arCondicionado-@item.SalaExclusiva.Id" value="@monitoramento.Estado" />
+                                                                        }
+                                                                        <span class="slider round"></span>
+                                                                    </label>
+                                                                </form>
+                                                            }
                                                         }
-                                                        else
+                                                        @if (!item.MonitoramentoCondicionadores.Any())
                                                         {
                                                             <h5 class="card-text">Sem ares-condicionados</h5>
                                                         }
@@ -158,8 +165,6 @@
                         <br />
 
                         <div id="container-reservas">
-
-
                         </div>
                     </div>
                 </div>
@@ -190,5 +195,7 @@ else if (TempData["mensagemErro"] != null)
     <script src="~/js/sweet-alert.js"></script>
     <script type="text/javascript" src="~/js/moment.js"></script>
     <script type="text/javascript" src="~/js/dashboard-script.js"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

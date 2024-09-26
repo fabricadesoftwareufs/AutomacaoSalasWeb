@@ -92,20 +92,23 @@ namespace WebAPI.Controllers
 
         // GET api/<InfravermelhoController>/5
         [HttpGet]
-        [Route("CodigosPorUuid/{uuid}")]
-        public ActionResult Get(string uuid)
+        [Route("CodigosPorUuid/{uuid}/{operacao}")]
+        public ActionResult Get(string uuid, int operacao)
         {
 
             try
             {
-                var codigos = _service.GetAllByUuidHardware(uuid);
-                if (codigos == null || codigos.Count == 0)
+                var codigos = _service.GetAllByUuidHardware(uuid, operacao);
+
+                if (codigos == null)
+                {
                     return Ok(new
                     {
                         result = "null",
                         httpCode = (int)HttpStatusCode.NoContent,
                         message = "Nenhum código foi encontrado para a requisição!"
                     });
+                }
 
                 return Ok(new
                 {

@@ -12,6 +12,6 @@ namespace Service.Interface
         bool AddAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels);
         bool UpdateAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels);
         bool RemoveAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels);
-        List<CodigoInfravermelhoModel> GetAllByUuidHardware(string uuid);
+        CodigoInfravermelhoModel GetAllByUuidHardware(string uuid, int operacao);
     }
 }
