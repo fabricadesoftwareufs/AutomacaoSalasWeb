@@ -1,22 +1,22 @@
 ﻿using Model;
-using Persistence;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Persistence;
 
 namespace Service
 {
     public class BlocoService : IBlocoService
     {
-        private readonly SalasUfsDbContext _context;
-        public BlocoService(SalasUfsDbContext context)
+        private readonly SalasDBContext _context;
+        public BlocoService(SalasDBContext context)
         {
             _context = context;
         }
-        public List<BlocoModel> GetAll() => _context.Bloco.Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).ToList();
+        public List<BlocoModel> GetAll() => _context.Blocos.Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).ToList();
 
-        public BlocoModel GetById(int id) => _context.Bloco.Where(b => b.Id == id).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).FirstOrDefault();
+        public BlocoModel GetById(int id) => _context.Blocos.Where(b => b.Id == id).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).FirstOrDefault();
 
         public List<BlocoModel> GetByIdOrganizacao(int id) => _context.Bloco.Where(b => b.Organizacao == id).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).ToList();
 

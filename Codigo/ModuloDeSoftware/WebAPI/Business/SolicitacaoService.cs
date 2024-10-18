@@ -9,8 +9,8 @@ namespace Service
 {
     public class SolicitacacaoService : ISolicitacaoService
     {
-        private readonly SalasUfsDbContext _context;
-        public SolicitacacaoService(SalasUfsDbContext context)
+        private readonly SalasDBContext _context;
+        public SolicitacacaoService(SalasDBContext context)
         {
             _context = context;
         }

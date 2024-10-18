@@ -8,14 +8,14 @@ namespace Service
 {
     public class ClienteSocketService
     {
-        private readonly SalasUfsDbContext _context;
+        private readonly SalasDBContext _context;
         private string Ip { get; set; }
         private const int PORTA = 8088;
         private const int NR_TENTATIVAS_CONEXAO = 5;
         public TcpClient Client { get; set; }
         public Logrequest LogRequest { get; set; }
 
-        public ClienteSocketService(SalasUfsDbContext context, string ip)
+        public ClienteSocketService(SalasDBContext context, string ip)
         {
             Ip = ip;
             Client = new TcpClient();

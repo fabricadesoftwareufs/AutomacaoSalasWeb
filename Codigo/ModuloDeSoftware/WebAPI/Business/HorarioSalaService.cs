@@ -10,9 +10,9 @@ namespace Service
 {
     public class HorarioSalaService : IHorarioSalaService
     {
-        private readonly SalasUfsDbContext _context;
+        private readonly SalasDBContext _context;
 
-        public HorarioSalaService(SalasUfsDbContext context)
+        public HorarioSalaService(SalasDBContext context)
         {
             _context = context;
         }

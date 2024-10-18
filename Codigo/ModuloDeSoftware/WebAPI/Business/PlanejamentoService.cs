@@ -11,8 +11,8 @@ namespace Service
 {
     public class PlanejamentoService : IPlanejamentoService
     {
-        private readonly SalasUfsDbContext _context;
-        public PlanejamentoService(SalasUfsDbContext context)
+        private readonly SalasDBContext _context;
+        public PlanejamentoService(SalasDBContext context)
         {
             _context = context;
         }

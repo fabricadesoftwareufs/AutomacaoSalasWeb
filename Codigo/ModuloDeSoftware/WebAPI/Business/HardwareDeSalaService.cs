@@ -11,8 +11,8 @@ namespace Service
 {
     public class HardwareDeSalaService : IHardwareDeSalaService
     {
-        private readonly SalasUfsDbContext _context;
-        public HardwareDeSalaService(SalasUfsDbContext context)
+        private readonly SalasDBContext _context;
+        public HardwareDeSalaService(SalasDBContext context)
         {
             _context = context;
         }

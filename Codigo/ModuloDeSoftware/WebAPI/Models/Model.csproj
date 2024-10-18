@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 	
   <PropertyGroup>
 	<Nullable>enable</Nullable>
 	<LangVersion>8.0</LangVersion>
   </PropertyGroup>
-
-	<ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 </Project>

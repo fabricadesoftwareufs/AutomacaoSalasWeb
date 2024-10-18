@@ -8,8 +8,8 @@ namespace Service
 {
     public class CodigoInfravermelhoService : ICodigoInfravermelhoService
     {
-        private readonly SalasUfsDbContext _context;
-        public CodigoInfravermelhoService(SalasUfsDbContext context)
+        private readonly SalasDBContext _context;
+        public CodigoInfravermelhoService(SalasDBContext context)
         {
             _context = context;
         }
