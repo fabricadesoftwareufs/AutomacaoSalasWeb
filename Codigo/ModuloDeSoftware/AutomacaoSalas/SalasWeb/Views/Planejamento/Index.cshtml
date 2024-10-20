@@ -1,0 +1,156 @@
+﻿@model IEnumerable<Model.ViewModel.PlanejamentoViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2 class="card-title">
+                                    Planejamentos Cadastrados
+                                </h2>
+                                <a class="btn btn-primary" style="float:right" asp-controller="Planejamento" asp-action="Create">Adicionar Planejamento</a>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="table-search" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Código
+                                    </th>
+
+                                    <th>
+                                        Sala
+                                    </th>
+                                    <th>
+                                        Usuario
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Periodo)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Horario)
+                                    </th>
+                                    <th>
+                                        Dia
+                                    </th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Id)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.SalaId.Titulo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.UsuarioId.Nome)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Periodo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Horario)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.DiaSemana)
+                                        </td>
+
+                                        <td>
+                                            <a href="@Url.Action("Details", "Planejamento", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
+                                            <a href="@Url.Action("Edit", "Planejamento", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
+                                            <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
+
+                                            <div class="modal fade" id="modal-remover-@item.Id">
+                                                <div class="modal-dialog modal-sm">
+                                                    <div class="modal-content card card-secondary">
+                                                        <div class="modal-header card-header">
+                                                            <h5 class="modal-title">Confirmar Remoção do planejamento ?</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true" class="text-white">&times;</span>
+                                                            </button>
+                                                        </div>
+
+                                                        <form asp-controller="Planejamento" asp-action="Delete">
+                                                            <div class="modal-body text-center">
+                                                                <h5>Código</h5><p>@item.Id</p>
+                                                                <h5>Sala</h5> <p>@item.SalaId.Titulo </p>
+                                                                <h5>Período de Tempo</h5> <p>@item.Periodo</p>
+                                                                <h5>Horário</h5> <p>@item.Horario</p>
+
+                                                                <div>
+                                                                    <div class="form-group" hidden>
+                                                                        <input class="form-control" name="id" value="@item.Id" />
+                                                                    </div>
+                                                                    <div class="form-group form-check">
+                                                                        <h5>
+                                                                            <label class="form-check-label" for="excluir-reservas-@item.Id">
+                                                                                Excluir Reservas Associadas ?
+                                                                            </label>
+                                                                        </h5>
+                                                                       
+
+                                                                        <input class="form-control" name="excluirReservas" type="checkbox" checked value="true" id="excluir-reservas-@item.Id" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <br />
+                                                            <div class="modal-footer justify-content-between">
+                                                                <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
+                                                                <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!','@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

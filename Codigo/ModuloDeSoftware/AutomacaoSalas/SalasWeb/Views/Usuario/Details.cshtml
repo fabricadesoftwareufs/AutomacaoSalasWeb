@@ -1,0 +1,56 @@
+﻿@model Model.ViewModel.UsuarioViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    string tipo = "Tipo do Usuário";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Detalhes do Usuário</h2>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="col-md-10">
+                            <dl class="dl-horizontal">
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.UsuarioModel.Nome)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.UsuarioModel.Nome)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.UsuarioModel.Cpf)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.UsuarioModel.Cpf)</p>
+                                </dd>
+                                <dt>
+                                    @tipo
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.TipoUsuarioModel.Descricao)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.UsuarioModel.DataNascimento)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.UsuarioModel.DataNascimento)</p>
+                                </dd>
+       
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="@Url.Action("Edit", "Usuario", new { id = @Model.UsuarioModel.Id })" class="btn btn-info"> Editar </a> |
+                        <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

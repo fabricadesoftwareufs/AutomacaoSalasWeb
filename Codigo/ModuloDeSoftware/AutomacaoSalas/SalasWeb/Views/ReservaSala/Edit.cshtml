@@ -1,0 +1,101 @@
+﻿@model Model.ViewModel.ReservaSalaViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Editar Reserva de Sala</h2>
+                    </div>
+
+                    <form asp-action="Edit">
+                        <div class="card-body">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="ocupation col-md-5">
+                                <input hidden asp-for="HorarioSalaModel.Id" class="form-control" />
+                                <input hidden asp-for="HorarioSalaModel.SalaId" class="form-control" />
+                                <input hidden asp-for="HorarioSalaModel.UsuarioId" class="form-control" />
+                                <div class="form-group">
+                                    <label class="form-control-label" for="select-bloco">Organização</label>
+                                    @Html.DropDownListFor(model => model.OrganizacaoModel, ViewBag.organizacoes as SelectList, new
+                               { @class = "form-control", @id = "select-org", @disabled = "disabled" })
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-control-label" for="select-bloco">Filtrar Salas por Bloco</label>
+                                    @Html.DropDownListFor(model => model.BlocoModel, ViewBag.blocos as SelectList, new
+                               { @class = "form-control", @id = "select-bloco", @disabled = "disabled" })
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="HorarioSalaModel" class="form-control-label" for="select-sala">Selecionar Sala</label>
+                                    @Html.DropDownListFor(model => model.HorarioSalaModel.SalaId, ViewBag.salas as SelectList, new
+                               { @class = "form-control", @id = "select-sala", @disabled = "disabled" })
+                                    <span asp-validation-for="HorarioSalaModel" class="text-danger"></span>
+                                </div>
+                                <div class="ocupation col-md-10">
+                                    <div class="form-group align-element ">
+                                        <label asp-for="HorarioSalaModel.Data" class="control-label"></label>
+                                        <input asp-for="HorarioSalaModel.Data" class="form-control" />
+                                        <span asp-validation-for="HorarioSalaModel.Data" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="ocupation col-md-10">
+                                    <div class="form-group align-element">
+                                        <label asp-for="HorarioSalaModel.HorarioInicio" class="control-label"></label>
+                                        <input asp-for="HorarioSalaModel.HorarioInicio" class="form-control" />
+                                        <span asp-validation-for="HorarioSalaModel.HorarioInicio" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group align-element ">
+                                        <label asp-for="HorarioSalaModel.HorarioFim" class="control-label"></label>
+                                        <input asp-for="HorarioSalaModel.HorarioFim" class="form-control" />
+                                        <span asp-validation-for="HorarioSalaModel.HorarioFim" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="HorarioSalaModel.Objetivo" class="control-label"></label>
+                                    <input asp-for="HorarioSalaModel.Objetivo" class="form-control" />
+                                    <span asp-validation-for="HorarioSalaModel.Objetivo" class="text-danger"></span>
+                                </div>
+                                <input hidden asp-for="HorarioSalaModel.Situacao" value="RESERVADO" />
+                                <input hidden asp-for="HorarioSalaModel.Planejamento"/>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="col-md-4">
+                                <input type="submit" id="btn-create-sala-exclusiva" value="Salvar" class="btn btn-success" /> |
+                                <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+        });
+    </script>
+    <script src="~/js/reservaSala.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

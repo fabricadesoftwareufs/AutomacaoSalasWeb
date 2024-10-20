@@ -1,0 +1,65 @@
+﻿@model Model.OrganizacaoModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Atualizar Organizacao</h2>
+                    </div>
+                    <form asp-action="Edit">
+                        <div class="card-body">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group col-md-7">
+                                <label asp-for="RazaoSocial" class="control-label"></label>
+                                <input asp-for="RazaoSocial" class="form-control" />
+                                <span asp-validation-for="RazaoSocial" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label asp-for="Cnpj" class="control-label"></label>
+                                <input asp-for="Cnpj" class="form-control" />
+                                <span asp-validation-for="Cnpj" class="text-danger"></span>
+                            </div>
+
+
+                        </div>
+                        <div class="card-footer">
+                            <div class=" col-md-4">
+                                <input type="submit" value="Salvar" class="btn btn-success" /> |
+                                <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlertRedirectIndex('success','Parabéns!', '@TempData["mensagemSucesso"]','/Organizacao/Index')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,59 @@
+﻿@model Model.ViewModel.PlanejamentoViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Detalhes do Planejamento</h2>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="col-md-10">
+                            <dl class="dl-horizontal">
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Id)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.Id)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Periodo)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.Periodo)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Horario)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.Horario)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.DiaSemana)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.DiaSemana)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Objetivo)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.Objetivo)</p>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="@Url.Action("Edit", "Planjemaneto", new { id = @Model.Id })" class="btn btn-info"> Editar </a> |
+                        <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

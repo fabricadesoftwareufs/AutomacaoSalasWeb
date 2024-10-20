@@ -1,0 +1,62 @@
+﻿@model Model.AuxModel.ReservaAuxModel
+
+@{
+    string sala = "Sala";
+    string responsavel = "Servidor Responsável";
+    string horario = "Horário";
+    ViewData["Title"] = "Details";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Detalhes da Reserva de Sala</h2>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="col-md-10">
+                            <dl class="dl-horizontal">
+                                <dt>
+                                    @sala
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.HorarioSalaModel.SalaId) - @Html.DisplayFor(model => model.SalaModel.Titulo)</p>
+                                </dd>
+                                <dt>
+                                    @responsavel
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.UsuarioModel.Nome)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.HorarioSalaModel.Data)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.HorarioSalaModel.Data)</p>
+                                </dd>
+                                <dt>
+                                    @horario
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.HorarioSalaModel.HorarioInicio) às @Html.DisplayFor(model => model.HorarioSalaModel.HorarioFim)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.HorarioSalaModel.Objetivo)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.HorarioSalaModel.Objetivo)</p>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="@Url.Action("Edit", "ReservaSala", new { id = @Model.HorarioSalaModel.Id })" class="btn btn-info"> Editar </a> |
+                        <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

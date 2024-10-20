@@ -1,0 +1,194 @@
+﻿@model Model.ViewModel.SalaUsuarioViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Minhas Salas Exclusivas</h2>
+                    </div>
+                    <div class="card-body col-xl-12">
+                        <div class="overlay-wrapper" id="tela-carregamento" hidden>
+                            <div class="overlay dark">
+                                <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+                            </div>
+                        </div>
+                        <div class="container-salas-exclusivas">
+                            @if (Model.SalasUsuario.Count > 0)
+                            {
+                                @foreach (var item in Model.SalasUsuario)
+                                {
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-title">
+                                                <h4>
+                                                    @item.Bloco.Titulo <br />
+                                                    @item.Sala.Titulo
+                                                </h4>
+                                            </div>                                          
+                                            <div class="float-right">
+                                                <div class="float-right text-center">
+                                                    <div class="align-element">
+                                                        @if (@item.MonitoramentoLuzes?.Id > 0)
+                                                        {
+                                                            <form asp-controller="Home" asp-action="MonitorarSala" id="form-@item.MonitoramentoLuzes.Id">
+
+                                                                <div class="form-control" hidden>
+                                                                    <input class="form-control" name="SalaId" value="@item.Sala.Id" />
+                                                                    <input class="form-control" name="EquipamentoId" value="@item.MonitoramentoLuzes.EquipamentoId" />
+                                                                    <input class="form-control" name="Id" value="@item.MonitoramentoLuzes.Id" />
+                                                                    <input class="form-control" name="SalaParticular" value="True" />
+                                                                </div>
+
+                                                                <h5 class="card-text">Luzes</h5>
+                                                                <label class="switch" onchange="submitForm('form-@item.MonitoramentoLuzes.Id',@item.SalaExclusiva.Id,true)">
+                                                                    @if (item.MonitoramentoLuzes.Estado)
+                                                                    {
+                                                                        <input type="checkbox" name="Estado" id="luzes-@item.SalaExclusiva.Id" value="@item.MonitoramentoLuzes.Estado" checked />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <input type="checkbox" name="Estado" id="luzes-@item.SalaExclusiva.Id" value="@item.MonitoramentoLuzes.Estado" />
+                                                                    }
+                                                                    <span class="slider round"></span>
+                                                                </label>
+
+                                                            </form>
+                                                        }
+                                                        else
+                                                        {
+                                                            <h5 class="card-text">Sem Luzes</h5>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="float-right text-center">
+                                                    <div class="align-element">
+                                                        @if (@item.MonitoramentoCondicionadores?.Id > 0)
+                                                        {
+                                                            <form asp-controller="Home" asp-action="MonitorarSala" id="form-@item.MonitoramentoCondicionadores.Id">
+
+                                                                <div class="form-control" hidden>
+                                                                    <input class="form-control" name="SalaId" value="@item.Sala.Id" />
+                                                                    <input class="form-control" name="EquipamentoId" value="@item.MonitoramentoCondicionadores.EquipamentoId" />
+                                                                    <input class="form-control" name="Id" value="@item.MonitoramentoCondicionadores.Id" />
+                                                                    <input class="form-control" name="SalaParticular" value="True" />
+                                                                </div>
+
+                                                                <h5 class="card-text">Condicionadores</h5>
+                                                                <label class="switch" onchange="submitForm('form-@item.MonitoramentoCondicionadores.Id',@item.SalaExclusiva.Id,true)">
+                                                                    @if (item.MonitoramentoCondicionadores.Estado)
+                                                                    {
+                                                                        <input type="checkbox" name="Estado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.MonitoramentoCondicionadores.Estado" checked />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <input type="checkbox" name="Estado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.MonitoramentoCondicionadores.Estado" />
+                                                                    }
+                                                                    <span class="slider round"></span>
+                                                                </label>
+                                                            </form>
+                                                        }
+                                                        else
+                                                        {
+                                                            <h5 class="card-text">Sem ares-condicionados</h5>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-center"> Não há nenhuma sala exclusiva associada a você! </p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Minhas Reservas</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="overlay-wrapper" id="tela-carregamento-reserva" hidden>
+                            <div class="overlay dark">
+                                <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="btn-group btn-group-toggle col-md-12" data-toggle="buttons" style="overflow: auto">
+                                <label class="btn btn-primary active">
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('DOM')" id="option_dom" autocomplete="off"> Domingo
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('SEG')" id="option_seg" autocomplete="off"> Segunda
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('TER')" id="option_ter" autocomplete="off"> Terça
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('QUA')" id="option_qua" autocomplete="off"> Quarta
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('QUI')" id="option_qui" autocomplete="off"> Quinta
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('SEX')" id="option_sex" autocomplete="off"> Sexta
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('SAB')" id="option_sab" autocomplete="off"> Sábado
+                                </label>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div id="container-reservas">
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!','@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+    <script type="text/javascript" src="~/js/moment.js"></script>
+    <script type="text/javascript" src="~/js/dashboard-script.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

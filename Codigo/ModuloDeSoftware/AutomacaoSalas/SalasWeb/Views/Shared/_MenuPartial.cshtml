@@ -1,0 +1,223 @@
+﻿@using System.Security.Claims;
+@using Model;
+@{
+    ViewData["Title"] = "_MenuPartial";
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    string nome = "";
+    string role = "";
+
+    if (claimsIdentity != null)
+    {
+        nome = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.NameIdentifier).Select(s => s.Value).FirstOrDefault();
+        role = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault();
+    }
+}
+<!-- Navbar -->
+<div class="top_nav">
+    <div class="nav_menu main-header">
+        <nav class="navbar navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+
+            <ul class="nav nav-pills navbar-right">
+                <li role="presentation" class="nav-item dropdown">
+                    <a class="nav-link user-profile dropdown-toggle user-panel pb-sm-3" data-toggle="dropdown" aria-expanded="false">
+                        <img src="/img/user.jpg" class="img-circle elevation-2" alt="...">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" asp-controller="Usuario" asp-action="EditPersonalData" role="button">
+                            <i class="fa fa-user pull-right"></i> 
+                            Meus Dados
+                        </a>
+                        <a class="dropdown-item" asp-controller="Home" asp-action="Index">
+                            <i class="nav-icon fa fa-lock "></i>
+                            Alterar Senha
+                        </a>
+                        <div role="separator" class="dropdown-divider"></div>
+                        <a class="dropdown-item" asp-controller="login" asp-action="logout">
+                            <i class="nav-icon fa fa-power-off"></i>
+                            Sair
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- /.navbar -->
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a asp-controller="Home" asp-action="Index" class="brand-link">
+        <img src="~/img/knuth.png" alt="Knuth" class="brand-image img-circle elevation-3"
+             style="opacity: .8">
+        <span class="brand-text font-weight-light">Knuth</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="~/img/user.jpg" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">@nome</a>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
+                @if (role.Equals(TipoUsuarioModel.ROLE_COLABORADOR))
+                {
+                    <li class="nav-header">MINHAS SALAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">
+                            <i class="nav-icon fa fa-temperature-high"></i>
+                            <p>
+                                Monitorar Salas
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-header">RESERVAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="ReservaSala" asp-action="Create">
+                            <i class="nav-icon fas fa-ticket-alt"></i>
+                            <p>
+                                Reservar Sala
+                            </p>
+                        </a>
+                    </li>
+                }
+                else if (role.Equals(TipoUsuarioModel.ROLE_GESTOR))
+                {
+                    <li class="nav-header">MINHAS SALAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">
+                            <i class="nav-icon fa fa-temperature-high"></i>
+                            <p>
+                                Monitorar Salas
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-header">RESERVAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="ReservaSala" asp-action="Index">
+                            <i class="nav-icon fas fa-ticket-alt"></i>
+                            <p>
+                                Reservar Sala
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Planejamento" asp-action="Index">
+                            <i class="nav-icon far fa-calendar-alt"></i>
+                            <p>
+                                Planejamento
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="SalaParticular" asp-action="Index">
+                            <i class="nav-icon  fa fa-lock"></i>
+                            <p>
+                                Sala Particular
+                            </p>
+                        </a>
+                    </li>
+                }
+                else if (role.Equals(TipoUsuarioModel.ROLE_ADMIN))
+                {
+                    <li class="nav-header">MINHAS SALAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">
+                            <i class="nav-icon fa fa-temperature-high"></i>
+                            <p>
+                                Monitorar Salas
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-header">COMPARTIMENTOS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Organizacao" asp-action="Index">
+                            <i class="nav-icon fa fa-industry"></i>
+                            <p>
+                                Organização
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Sala" asp-action="Index">
+                            <i class="nav-icon fa fa-home"></i>
+                            <p>
+                                Sala
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Bloco" asp-action="Index">
+                            <i class="nav-icon fa fa-building"></i>
+                            <p>
+                                Bloco
+                            </p>
+                        </a>
+                    </li>
+
+                    <li class="nav-header">RESERVAS</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="ReservaSala" asp-action="Index">
+                            <i class="nav-icon fas fa-ticket-alt"></i>
+                            <p>
+                                Reservar Sala
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Planejamento" asp-action="Index">
+                            <i class="nav-icon far fa-calendar-alt"></i>
+                            <p>
+                                Planejamento
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="SalaParticular" asp-action="Index">
+                            <i class="nav-icon  fa fa-lock"></i>
+                            <p>
+                                Sala Particular
+                            </p>
+                        </a>
+                    </li>
+
+                    <li class="nav-header">HARDWARES</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="HardwareDeSala" asp-action="Index">
+                            <i class="nav-icon fa fa-microchip"></i>
+                            <p>Hardwares</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Equipamento" asp-action="Index">
+                            <i class="nav-icon fa fa-tools"></i>
+                            <p>Equipamento de Sala</p>
+                        </a>
+                    </li>
+                    <li class="nav-header">COLABORADORES</li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Usuario" asp-action="Index">
+                            <i class="nav-icon fa fa-users"></i>
+                            <p>Usuários</p>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</aside>

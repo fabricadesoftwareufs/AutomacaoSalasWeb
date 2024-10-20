@@ -1,0 +1,89 @@
+﻿@model Model.ViewModel.EquipamentoViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Detalhes do Equipamento</h2>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="col-md-10">
+                            <dl class="dl-horizontal">
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.EquipamentoModel.Id)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.EquipamentoModel.Id)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.EquipamentoModel.Marca)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.EquipamentoModel.Marca)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.EquipamentoModel.Modelo)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.EquipamentoModel.Modelo)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.EquipamentoModel.Descricao)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.EquipamentoModel.Descricao)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.EquipamentoModel.TipoEquipamento)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.EquipamentoModel.TipoEquipamento)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.BlocoModel.Titulo)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.BlocoModel.Titulo)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.SalaModel.Titulo)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.SalaModel.Titulo)</p>
+                                </dd>
+                                <dt>
+                                   Atuador Associado @Html.DisplayNameFor(model => model.HardwareDeSalaModel.MAC)
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.HardwareDeSalaModel.MAC)</p>
+                                </dd>
+                                @if (Model.Codigos != null)
+                                {
+                                    <dt>
+                                        Códigos Infravermelhos
+                                    </dt>
+                                    foreach (var item in Model.Codigos)
+                                    {
+                                        <dd>
+                                            <p class="form-control no-height">Operação: @item.Operacao <br />Código: @item.Codigo</p>
+                                        </dd>
+                                    }
+                                }
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="@Url.Action("Edit", "Equipamento", new { id = @Model.EquipamentoModel.Id })" class="btn btn-info"> Editar </a> |
+                        <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

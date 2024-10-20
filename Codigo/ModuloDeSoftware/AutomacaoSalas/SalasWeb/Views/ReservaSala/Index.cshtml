@@ -1,0 +1,124 @@
+﻿@model IEnumerable<Model.AuxModel.ReservaAuxModel>
+
+@{
+    ViewData["Title"] = "Index";
+    string sala = "Salas";
+    string horario = "Horário";
+    string servidor = "Servidor Responsável";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2 class="card-title">
+                                    Salas Reservadas
+                                </h2>
+                                <a class="btn btn-primary" style="float:right" asp-controller="ReservaSala" asp-action="Create">Nova Reserva de Sala</a>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="table-search" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @sala
+                                    </th>
+                                    <th>
+                                        @servidor
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HorarioSalaModel.Data)
+                                    </th>
+                                    <th>
+                                        @horario
+                                    </th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.SalaModel.Titulo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.UsuarioModel.Nome)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.HorarioSalaModel.Data)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.HorarioSalaModel.HorarioInicio) às @Html.DisplayFor(modelItem => item.HorarioSalaModel.HorarioFim)
+                                        </td>
+
+                                        <td>
+                                            <a href="@Url.Action("Details", "ReservaSala", new { id = item.HorarioSalaModel.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
+                                            <a href="@Url.Action("Edit", "ReservaSala", new { id = item.HorarioSalaModel.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
+                                            <a data-toggle="modal" data-target="#modal-remover-@item.HorarioSalaModel.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
+
+                                            <div class="modal fade" id="modal-remover-@item.HorarioSalaModel.Id">
+                                                <div class="modal-dialog modal-sm">
+                                                    <div class="modal-content card card-secondary">
+                                                        <div class="modal-header card-header">
+                                                            <h5 class="modal-title">Confirmar Remoção da Reserva ?</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true" class="text-white">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body text-center">
+                                                            <h5>Sala</h5><p>@item.HorarioSalaModel.SalaId - @item.SalaModel.Titulo</p>
+                                                            <h5>@servidor</h5> <p>@item.UsuarioModel.Nome</p>
+                                                            <h5>Data</h5> <p>@item.HorarioSalaModel.Data</p>
+                                                            <h5>Horário</h5> <p>@item.HorarioSalaModel.HorarioInicio às @item.HorarioSalaModel.HorarioFim</p>
+                                                            <h5>Objetivo</h5> <p>@item.HorarioSalaModel.Objetivo</p>
+                                                        </div>
+
+                                                        @using (Html.BeginForm("Delete", "ReservaSala", new { id = item.HorarioSalaModel.Id }, FormMethod.Post))
+                                                        {
+                                                            <div class="modal-footer justify-content-between">
+                                                                <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
+                                                                <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if (document.querySelector('#mensagem-retorno'))
+                document.getElementById("mensagem-retorno").click();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+}

@@ -1,0 +1,187 @@
+﻿@model Model.AuxModel.PlanejamentoAuxModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Cadastrar Novo Planejamento</h2>
+                    </div>
+                    <form asp-action="Create" id="form" name="form">
+                        <div class="card-body">
+
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group col-md-7">
+                                <label class="control-label">Selecione a Organização</label>
+                                <select class="form-control" asp-for="Organizacao" id="select-organizacao" onchange="loadBlocosAndUsuarios()">
+                                    @foreach (var item in ViewBag.Organizacoes)
+                                    {
+                                        <option value="@item.Id"> @item.Cnpj | @item.RazaoSocial </option>
+                                    }
+                                </select>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="ocupation col-md-5">
+                                <div class="form-group" id="ListElements">
+                                    <label asp-for="Bloco" class="control-label">Selecione o Bloco</label>
+                                    <select class="form-control" asp-for="Bloco" onchange="loadSalas()" id="select-bloco">
+                                        @foreach (var item in ViewBag.Blocos)
+                                        {
+                                            <option value="@item.Id"> @item.Id | @item.Titulo </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Bloco" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Planejamento.SalaId" class="control-label"></label>
+                                    <select class="form-control" asp-for="Planejamento.SalaId" id="select-sala">
+                                        @foreach (var item in ViewBag.Salas)
+                                        {
+                                            <option value="@item.Id"> @item.Id | @item.Titulo </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Planejamento.SalaId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Planejamento.UsuarioId" class="control-label"></label>
+                                    <select class="form-control" asp-for="Planejamento.UsuarioId" id="select-usuario">
+                                        @foreach (var item in ViewBag.Usuarios)
+                                        {
+                                            <option value="@item.Id"> @item.Cpf | @item.Nome </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Planejamento.UsuarioId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Planejamento.Objetivo" class="control-label"></label>
+                                    <input asp-for="Planejamento.Objetivo" id="objetivo" class="form-control" />
+                                    <span asp-validation-for="Planejamento.Objetivo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="ocupation col-md-10">
+                                <div class="form-group align-element">
+                                    <label asp-for="Planejamento.DataInicio" class="control-label"></label>
+                                    <input asp-for="Planejamento.DataInicio" id="dataInicio" class="form-control" />
+                                    <span asp-validation-for="Planejamento.DataInicio" class="text-danger"></span>
+                                </div>
+                                <div class="form-group align-element">
+                                    <label asp-for="Planejamento.DataFim" class="control-label"></label>
+                                    <input asp-for="Planejamento.DataFim" id="dataFim" class="form-control" />
+                                    <span asp-validation-for="Planejamento.DataFim" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="ocupation col-md-10">
+                                <div class="form-group align-element">
+                                    <label asp-for="Planejamento.HorarioInicio" class="control-label"></label>
+                                    <input asp-for="Planejamento.HorarioInicio" id="horarioInicio" class="form-control" />
+                                    <span asp-validation-for="Planejamento.HorarioInicio" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group align-element">
+                                    <label asp-for="Planejamento.HorarioFim" class="control-label"></label>
+                                    <input asp-for="Planejamento.HorarioFim" id="horarioFim" class="form-control" />
+                                    <span asp-validation-for="Planejamento.HorarioFim" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group align-element">
+                                    <label asp-for="Planejamento.DiaSemana" class="control-label"></label>
+                                    <select asp-for="Planejamento.DiaSemana" id="input-dia-semana" class="select2_single form-control" tabindex="-1">
+                                        <option value="SEG" selected> Segunda </option>
+                                        <option value="TER"> Terça   </option>
+                                        <option value="QUA"> Quarta  </option>
+                                        <option value="QUI"> Quinta  </option>
+                                        <option value="SEX"> Sexta   </option>
+                                        <option value="SAB"> Sábado  </option>
+                                        <option value="DOM"> Domingo </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group align-element">
+                                    <a id="add-novo-horario" onclick="AdicionarNovoHorario()" class="btn btn-primary text-white"><i class="nav-icon fa fa-plus"></i> </a>
+                                </div>
+                                <br />
+                                <span class="text-danger" id="mensagem-erro-horarios" hidden></span>
+                            </div>
+
+                            <section class="content">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">Horários Adicionados</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="container-horarios">
+                                                            @if (Model != null)
+                                                            {
+                                                                @for (var i = 0; i < Model.Horarios.Count; i++)
+                                                                {
+                                                                    <tr id="novo-horario-@i" class="horarios-planejamento">
+                                                                        <td>
+                                                                            <input class="form-control" type="time" name="Horarios[@i].HorarioInicio" hidden readonly value="@Model.Horarios[i].HorarioInicio" />
+                                                                            <input class="form-control" type="time" name="Horarios[@i].HorarioFim" hidden readonly value="@Model.Horarios[i].HorarioFim" />
+                                                                            <input class="form-control" name="Horarios[@i].DiaSemana" hidden readonly value="@Model.Horarios[i].DiaSemana" />
+
+                                                                            <p class="text-overflow form-control"> @Model.Horarios[i].HorarioInicio / @Model.Horarios[i].HorarioFim - @Model.Horarios[i].DiaSemana</p>
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <a id="remove-novo-horario" onclick="RemoveNovoHorario('novo-horario-@i')" class="btn btn-danger"><i class="nav-icon fa fa-trash text-white"></i> </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="col-md-4">
+                                <input type="submit" id="btn-create-planejamento" value="Salvar" class="btn btn-success" /> |
+                                <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@if (TempData["mensagemSucesso"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
+}
+else if (TempData["mensagemErro"] != null)
+{
+    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+}
+
+@section Scripts {
+
+    <script src="~/js/load-itens-script.js"></script>
+    <script src="~/js/planejamento-script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
