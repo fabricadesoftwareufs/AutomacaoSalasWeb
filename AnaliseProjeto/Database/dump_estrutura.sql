@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS `str_db` /*!40100 DEFAULT CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `str_db`;
+CREATE DATABASE IF NOT EXISTS `automacaosalas` /*!40100 DEFAULT CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `automacaosalas`;
 
 -- Copiando estrutura para tabela str_db.organizacao
 CREATE TABLE IF NOT EXISTS `organizacao` (

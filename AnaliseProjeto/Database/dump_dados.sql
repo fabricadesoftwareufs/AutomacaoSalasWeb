@@ -1,5 +1,5 @@
 
-USE `str_db`;
+USE `automacaosalas`;
 
 -- Copiando dados para a tabela str_db.organizacao: ~4 rows (aproximadamente)
 INSERT INTO `organizacao` (`id`, `cnpj`, `razaoSocial`) VALUES
