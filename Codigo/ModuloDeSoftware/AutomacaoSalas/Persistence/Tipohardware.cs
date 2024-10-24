@@ -5,7 +5,7 @@ namespace Persistence;
 
 public partial class Tipohardware
 {
-    public int Id { get; set; }
+    public uint Id { get; set; }
 
     public string Descricao { get; set; } = null!;
 
