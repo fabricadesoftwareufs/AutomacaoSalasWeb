@@ -34,8 +34,7 @@ namespace SalasWeb.Controllers
                 if (ValidaCpf(loginViewModel.Login))
                 {
                     // Obtendo o usuario baseado nas informações passadas.
-                    //var user = _usuarioService.GetByLoginAndPass(Methods.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));
-                    var user = _usuarioService.GetByCpf(Methods.CleanString(loginViewModel.Login));
+                    var user = _usuarioService.GetByLoginAndPass(Methods.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));
                     if (user != null)
                     {
 
