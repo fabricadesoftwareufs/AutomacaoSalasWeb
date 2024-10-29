@@ -17,7 +17,7 @@ public partial class Hardwaredesala
 
     public string? Uuid { get; set; }
 
-    public string Token { get; set; } = null!;
+    public string? Token { get; set; }
 
     public sbyte Registrado { get; set; }
 

@@ -250,7 +250,7 @@ namespace Service
             return new Monitoramento
             {
                 Id = model.Id,
-                Estado = Convert.ToSByte(model.Estado),
+                Estado = Convert.ToSByte(model.Estado).ToString(),
                 Equipamento = model.EquipamentoId
             };
         }
