@@ -46,7 +46,8 @@
                                     @Html.DisplayNameFor(model => model.HorarioSalaModel.Objetivo)
                                 </dt>
                                 <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.HorarioSalaModel.Objetivo)</p>
+                                <dd>
+                                    <textarea class="form-control bg-white" readonly rows="4">@Model.HorarioSalaModel.Objetivo</textarea>
                                 </dd>
                             </dl>
                         </div>

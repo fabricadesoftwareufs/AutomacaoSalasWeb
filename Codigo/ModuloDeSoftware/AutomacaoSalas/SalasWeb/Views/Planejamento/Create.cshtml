@@ -60,7 +60,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="Planejamento.Objetivo" class="control-label"></label>
-                                    <input asp-for="Planejamento.Objetivo" id="objetivo" class="form-control" />
+                                    <textarea asp-for="Planejamento.Objetivo" id="objetivo" class="form-control" maxlength="500" rows="4"></textarea>
                                     <span asp-validation-for="Planejamento.Objetivo" class="text-danger"></span>
                                 </div>
                             </div>
@@ -183,5 +183,7 @@ else if (TempData["mensagemErro"] != null)
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
 
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

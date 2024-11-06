@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace Model
 {
     public class EquipamentoModel
@@ -9,6 +11,8 @@ namespace Model
         public int Id { get; set; }
         public string Modelo { get; set; }
         public string Marca { get; set; }
+
+        [Display(Name = "Descrição")]
         public string Descricao { get; set; }
         public uint Sala { get; set; }
         public string TipoEquipamento { get; set; }
