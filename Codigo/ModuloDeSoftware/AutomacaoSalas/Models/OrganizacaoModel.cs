@@ -9,7 +9,7 @@ namespace Model
         public uint Id { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Cnpj")]
-        [StringLength(15, ErrorMessage = "Máximo são 15 caracteres")]
+        [StringLength(14, ErrorMessage = "Máximo são 14 caracteres")]
         public string Cnpj { get; set; }
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Razão Social")]

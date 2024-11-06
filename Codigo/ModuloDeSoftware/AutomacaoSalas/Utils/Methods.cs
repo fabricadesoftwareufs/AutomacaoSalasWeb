@@ -23,12 +23,12 @@ namespace Utils
 
         public static bool ValidarCpf(string cpf)
         {
-                cpf = CleanString(cpf);
+            cpf = CleanString(cpf);
 
             if (string.IsNullOrEmpty(cpf))
                 return false;
 
-            if(InvalidCpfs.Any(x => x.Equals(cpf)))
+            if (InvalidCpfs.Any(x => x.Equals(cpf)))
                 return false;
 
             var multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -72,6 +72,56 @@ namespace Utils
             digito += resto.ToString();
             return cpf.EndsWith(digito);
         }
+
+        public static bool ValidarCnpj(string cnpj)
+        {
+            // Remove caracteres não numéricos
+            cnpj = CleanString(cnpj);
+
+            // CNPJ deve ter 14 dígitos
+            if (cnpj.Length != 14)
+                return false;
+
+            // Verifica se todos os dígitos são iguais, o que é inválido
+            if (new string(cnpj[0], cnpj.Length) == cnpj)
+                return false;
+
+            int[] multiplicador1 = { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplicador2 = { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
+
+            string tempCnpj = cnpj.Substring(0, 12);
+            int soma = 0;
+
+            // Calcula o primeiro dígito verificador
+            for (int i = 0; i < 12; i++)
+                soma += int.Parse(tempCnpj[i].ToString()) * multiplicador1[i];
+
+            int resto = (soma % 11);
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+
+            string digito = resto.ToString();
+            tempCnpj += digito;
+            soma = 0;
+
+            // Calcula o segundo dígito verificador
+            for (int i = 0; i < 13; i++)
+                soma += int.Parse(tempCnpj[i].ToString()) * multiplicador2[i];
+
+            resto = (soma % 11);
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+
+            digito += resto.ToString();
+
+            // Retorna verdadeiro se o CNPJ termina com os dois dígitos verificadores calculados
+            return cnpj.EndsWith(digito);
+        }
+
 
         public static string GenerateUUID()
         {
