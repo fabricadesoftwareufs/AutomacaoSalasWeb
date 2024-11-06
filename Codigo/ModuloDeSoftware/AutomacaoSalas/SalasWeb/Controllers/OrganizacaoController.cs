@@ -45,24 +45,31 @@ namespace SalasWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    if (!Utils.Methods.ValidarCnpj(organizacaoModel.Cnpj))
+                    {
+                        TempData["mensagemErro"] = "CNPJ inválido!";
+                        return View(organizacaoModel);
+                    }
+
                     if (_organizacaoService.Insert(organizacaoModel))
                     {
                         TempData["mensagemSucesso"] = "Organização inserida com sucesso!";
                         return View();
                     }
                     else
+                    {
                         TempData["mensagemErro"] = "Houve um problema ao inserir essa organização, tente novamente em alguns minutos!";
-
+                    }
                 }
             }
             catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
-
             }
 
             return View(organizacaoModel);
         }
+
 
         // GET: Organizacao/Edit/5
         public ActionResult Edit(uint id)
@@ -78,13 +85,19 @@ namespace SalasWeb.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                // Valida o CNPJ antes de prosseguir com a atualização
+                if (!Utils.Methods.ValidarCnpj(organizacaoModel.Cnpj))  // Supondo que o campo Cnpj esteja presente no model
+                {
+                    ModelState.AddModelError("Cnpj", "CNPJ inválido.");  // Adiciona erro no CNPJ caso seja inválido
+                    return View(organizacaoModel);  // Retorna a view com o erro
+                }
+
+                if (ModelState.IsValid)  // Continua apenas se o modelo for válido
                 {
                     if (_organizacaoService.Update(organizacaoModel))
                         TempData["mensagemSucesso"] = "Organização atualizada com sucesso!";
                     else
                         TempData["mensagemErro"] = "Houve um problema ao atualizar essa organização, tente novamente em alguns minutos!";
-
                 }
             }
             catch (ServiceException se)
@@ -94,6 +107,7 @@ namespace SalasWeb.Controllers
 
             return View(organizacaoModel);
         }
+
 
         // POST: Organizacao/Delete/5
         [HttpPost]
