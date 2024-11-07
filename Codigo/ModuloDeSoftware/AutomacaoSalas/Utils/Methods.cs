@@ -122,6 +122,30 @@ namespace Utils
             return cnpj.EndsWith(digito);
         }
 
+        public static bool ValidarDataNascimento(DateTime data)
+        {
+            int idade = DateTime.Now.Year - data.Year;
+
+            // Verifica se a data de aniversário já ocorreu este ano
+            if (DateTime.Now.Month < data.Month || (DateTime.Now.Month == data.Month && DateTime.Now.Day < data.Day))
+            {
+                idade--;  // Se o aniversário ainda não ocorreu, subtrai 1 da idade
+            }
+
+            const int idadeMax = 100;
+            const int idadeMin = 5;
+
+            if (idade >= idadeMin && idade <= idadeMax)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
 
         public static string GenerateUUID()
         {
