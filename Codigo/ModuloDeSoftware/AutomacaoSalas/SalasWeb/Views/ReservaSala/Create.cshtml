@@ -20,17 +20,17 @@
                                 <div class="form-group">
                                     <label class="form-control-label" for="select-bloco">Organização</label>
                                     @Html.DropDownListFor(model => model.OrganizacaoModel, ViewBag.organizacoes as SelectList, new
-                                    { @class = "form-control", @id = "select-org", @onchange = "loadBlocosSalas()" })
+                                        { @class = "form-control", @id = "select-org", @onchange = "loadBlocosSalas()" })
                                 </div>
                                 <div class="form-group">
                                     <label class="form-control-label" for="select-bloco">Filtrar Salas por Bloco</label>
                                     @Html.DropDownListFor(model => model.BlocoModel, ViewBag.blocos as SelectList, new
-                               { @class = "form-control", @id = "select-bloco", @onchange = "loadSalas()" })
+                                        { @class = "form-control", @id = "select-bloco", @onchange = "loadSalas()" })
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="HorarioSalaModel.SalaId" class="form-control-label" for="select-sala">Selecionar Sala</label>
                                     @Html.DropDownListFor(model => model.HorarioSalaModel.SalaId, ViewBag.salas as SelectList, new
-                                    { @class = "form-control", @id = "select-sala" })
+                                        { @class = "form-control", @id = "select-sala" })
                                     <span asp-validation-for="HorarioSalaModel.SalaId" class="text-danger"></span>
                                 </div>
                                 <div class="ocupation col-md-10">
@@ -52,11 +52,11 @@
                                         <span asp-validation-for="HorarioSalaModel.HorarioFim" class="text-danger"></span>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label asp-for="HorarioSalaModel.Objetivo" class="control-label"></label>
-                                    <input asp-for="HorarioSalaModel.Objetivo" class="form-control" />
-                                    <span asp-validation-for="HorarioSalaModel.Objetivo" class="text-danger"></span>
-                                </div>
+                                    <div class="form-group">
+                                        <label asp-for="HorarioSalaModel.Objetivo" class="control-label"></label>
+                                        <textarea asp-for="HorarioSalaModel.Objetivo" id="horarioObjetivo" class="form-control" maxlength="500" rows="4"></textarea>
+                                        <span asp-validation-for="HorarioSalaModel.Objetivo" class="text-danger"></span>
+                                    </div>
                                 <input hidden asp-for="HorarioSalaModel.Situacao" value="RESERVADO" />
                             </div>
                         </div>
@@ -75,23 +75,25 @@
 
 @if (TempData["mensagemSucesso"] != null)
 {
-    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
+        <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
 }
 else if (TempData["mensagemErro"] != null)
 {
-    <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
+        <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
 }
 
 @section Scripts {
-    <script>
-        $(document).ready(function () {
-            if (document.querySelector('#mensagem-retorno'))
-                document.getElementById("mensagem-retorno").click();
-        });
-    </script>
-    <script src="~/js/reservaSala.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script src="~/js/sweet-alert.js"></script>
+        <script>
+            $(document).ready(function () {
+                if (document.querySelector('#mensagem-retorno'))
+                    document.getElementById("mensagem-retorno").click();
+            });
+        </script>
+        <script src="~/js/reservaSala.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+        <script src="~/js/sweet-alert.js"></script>
 
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

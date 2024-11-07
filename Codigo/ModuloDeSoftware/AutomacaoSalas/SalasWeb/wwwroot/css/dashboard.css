@@ -57,3 +57,7 @@ input:checked + .slider:before {
     .slider.round:before {
         border-radius: 50%;
     }
+
+#objetivo,#horarioObjetivo,.form-control.bg-white[readonly] {
+    resize: none;
+}

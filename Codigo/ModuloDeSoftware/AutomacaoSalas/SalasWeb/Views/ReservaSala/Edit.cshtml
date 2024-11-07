@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="HorarioSalaModel.Objetivo" class="control-label"></label>
-                                    <input asp-for="HorarioSalaModel.Objetivo" class="form-control" />
+                                    <textarea asp-for="HorarioSalaModel.Objetivo" id="horarioObjetivo" class="form-control" maxlength="500" rows="4"></textarea>
                                     <span asp-validation-for="HorarioSalaModel.Objetivo" class="text-danger"></span>
                                 </div>
                                 <input hidden asp-for="HorarioSalaModel.Situacao" value="RESERVADO" />
