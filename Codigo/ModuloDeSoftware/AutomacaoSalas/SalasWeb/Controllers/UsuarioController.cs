@@ -88,7 +88,13 @@ namespace SalasWeb.Controllers
             usuarioViewModel.OrganizacaoModel = _organizacaoService.GetById(usuarioViewModel.OrganizacaoModel.Id);
 
             if (ModelState.IsValid)
-            {
+            {                
+                if (!Methods.ValidarDataNascimento(usuarioViewModel.UsuarioModel.DataNascimento))
+                {
+                    ModelState.AddModelError("UsuarioModel.DataNascimento", "Data de nascimento inválida.");
+                    return View(usuarioViewModel);
+                }
+
                 if (!Methods.ValidarCpf(usuarioViewModel.UsuarioModel.Cpf))
                     return RedirectToAction("Create", "Usuario", new { msg = "invalidCpf" });
 
@@ -109,8 +115,8 @@ namespace SalasWeb.Controllers
                     TempData["mensagemErro"] = se.Message;
                     return View(usuarioViewModel);
                 }
-
-                return RedirectToAction("Authenticate", "Login", sucesso);
+                            
+                return RedirectToAction("Index", "Usuario");
             }
 
             return View(usuarioViewModel);

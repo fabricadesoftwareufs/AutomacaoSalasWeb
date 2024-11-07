@@ -12,7 +12,7 @@
                     <div class="card-header">
                         <h2 class="card-title">Editar Usuário</h2>
                     </div>
-                    <form asp-action="EditPersonalData">
+                    <form asp-action="EditPersonalData" onsubmit="return validarDataNascimento()">
                         <div class="card-body">
                             <input type="hidden" asp-for="UsuarioModel.Id" />
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -40,16 +40,23 @@
 
                             <div class="form-group col-md-4">
                                 <label asp-for="TipoUsuarioModel.Id" class="control-label"></label>
-                                <input asp-for="TipoUsuarioModel.Descricao" class="form-control" disabled/>
+                                <input asp-for="TipoUsuarioModel.Descricao" class="form-control" disabled />
                                 <input type="hidden" asp-for="@Model.TipoUsuarioModel.Id" />
                                 <input type="hidden" asp-for="@Model.TipoUsuarioModel.Descricao" />
                             </div>
+
                             <div class="form-group col-md-4">
                                 <label asp-for="UsuarioModel.DataNascimento" class="control-label"></label>
-                                <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control" value="@if(@Model.UsuarioModel.DataNascimento != null){@Model.UsuarioModel.DataNascimento.ToString("yyyy-MM-dd")}else{@Model.UsuarioModel.DataNascimento}"/>
+                                <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control"
+                                       value="@if(@Model.UsuarioModel.DataNascimento != null){
+                                @Model.UsuarioModel.DataNascimento.ToString("yyyy-MM-dd")
+}else{
+                                @Model.UsuarioModel.DataNascimento
+}" />
                                 <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
                             </div>
                         </div>
+
                         <div class="card-footer">
                             <div class=" col-md-4">
                                 <input type="submit" value="Salvar" class="btn btn-success" /> |
@@ -79,8 +86,32 @@ else if (TempData["mensagemErro"] != null)
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
         });
+
+        function validarDataNascimento() {
+            var dataNascimento = document.getElementById("UsuarioModel_DataNascimento").value;
+
+            if (dataNascimento) {
+                var data = new Date(dataNascimento);
+                var hoje = new Date();
+                var idade = hoje.getFullYear() - data.getFullYear();
+                var mes = hoje.getMonth() - data.getMonth();
+
+                if (mes < 0 || (mes === 0 && hoje.getDate() < data.getDate())) {
+                    idade--;
+                }
+
+                if (idade < 5 || idade > 100) {
+                    alert("A data de nascimento deve resultar em uma idade entre 5 e 100 anos.");
+                    return false; // Impede o envio do formulário
+                }
+            }
+
+            return true; // Permite o envio do formulário
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
