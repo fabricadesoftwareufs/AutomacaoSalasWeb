@@ -26,9 +26,13 @@ namespace Model
         [Display(Name = "Tipo de Hardware")]
         public uint TipoHardwareId { get; set; }
         [Display(Name = "Uuid")]
+        [StringLength(75, ErrorMessage = "Máximo são 75 caracteres")]
         public string Uuid { get; set; }
 
+        [StringLength(15, ErrorMessage = "Máximo são 15 caracteres")]
         public string Ip { get; set; }
+
+        [StringLength(400, ErrorMessage = "Máximo são 400 caracteres")]
         public string Token { get; set; }
         public bool Registrado { get; set; }
 
