@@ -76,23 +76,29 @@ namespace SalasWeb.Controllers
 
             try
             {
-                    if (ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
+                    bool salaInserida = _salaService.InsertSalaWithHardwares(salaModel, usuario.UsuarioModel.Id);
 
-                    if (_salaService.InsertSalaWithHardwares(salaModel, usuario.UsuarioModel.Id))
+                    if (salaInserida)
                     {
-                        TempData["mensagemSucesso"] = "Sala inserida com sucesso!"; return View();
+                        TempData["mensagemSucesso"] = "Sala inserida com sucesso!";
+                        return View();
                     }
-                    else TempData["mensagemErro"] = "Houve um problema ao inserir sala!";
-
+                    else
+                    {
+                        TempData["mensagemErro"] = "Houve um problema ao inserir a sala!";
+                    }
                 }
             }
             catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
             }
+
             return View(salaModel);
         }
+
 
         // GET: Sala/Edit/5
         public ActionResult Edit(uint id)
