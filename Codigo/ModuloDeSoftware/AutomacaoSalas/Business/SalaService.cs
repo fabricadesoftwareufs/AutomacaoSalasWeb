@@ -28,30 +28,30 @@ namespace Service
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
-                {
+                {                    
                     var salaInserida = Insert(new SalaModel { Id = sala.Sala.Id, Titulo = sala.Sala.Titulo, BlocoId = sala.Sala.BlocoId });
                     if (salaInserida == null)
                         throw new ServiceException("Houve um problema ao cadastrar sala, tente novamente em alguns minutos!");
-
+                                        
                     if (sala.HardwaresSala.Count > 0)
                     {
                         var _hardwareDeSalaService = new HardwareDeSalaService(_context);
 
                         foreach (var item in sala.HardwaresSala)
                         {
+                           
                             if (_hardwareDeSalaService.GetByMAC(item.MAC, idUsuario) != null)
-                                throw new ServiceException("Já existe um dispositivos com o endereço MAC " + item.MAC + " informado, corrija e tente novamente!");
+                                throw new ServiceException("Já existe um dispositivo com o endereço MAC " + item.MAC + " informado, corrija e tente novamente!");
 
                             if (item.TipoHardwareId.Id == TipoHardwareModel.CONTROLADOR_DE_SALA && _hardwareDeSalaService.GetByIp(item.Ip, idUsuario) != null)
-                                throw new ServiceException("Já existe um dispositivos com o endereço IP  " + item.Ip + "  informado, corrija e tente novamente!");
-
+                                throw new ServiceException("Já existe um dispositivo com o endereço IP " + item.Ip + " informado, corrija e tente novamente!");
+                                                       
                             _hardwareDeSalaService.Insert(new HardwareDeSalaModel { MAC = item.MAC, SalaId = salaInserida.Id, TipoHardwareId = item.TipoHardwareId.Id, Ip = item.Ip }, idUsuario);
                         }
-
-                        transaction.Commit();
-                        return true;
-
                     }
+                                        
+                    transaction.Commit();
+                    return true;
                 }
                 catch (Exception)
                 {
@@ -59,9 +59,8 @@ namespace Service
                     throw;
                 }
             }
-
-            return true;
         }
+
 
         public SalaModel Insert(SalaModel salaModel)
         {

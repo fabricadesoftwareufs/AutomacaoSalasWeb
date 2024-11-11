@@ -67,7 +67,7 @@ namespace SalasWeb.Controllers
                 TempData["mensagemErro"] = se.Message;
             }
 
-            return View(organizacaoModel);
+            return RedirectToAction("Index", "Organizacao");
         }
 
 
