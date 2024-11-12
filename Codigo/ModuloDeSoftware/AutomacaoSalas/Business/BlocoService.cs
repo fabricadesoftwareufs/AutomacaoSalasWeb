@@ -16,7 +16,22 @@ namespace Service
         }
         public List<BlocoModel> GetAll() => _context.Blocos.Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).ToList();
 
-        public BlocoModel GetById(uint id) => _context.Blocos.Where(b => b.Id == id).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).FirstOrDefault();
+        public BlocoModel GetById(uint id)
+        {
+            var blocoModel = (from b in _context.Blocos
+                              join o in _context.Organizacaos on b.Organizacao equals o.Id
+                              where b.Id == id
+                              select new BlocoModel
+                              {
+                                  Id = b.Id,
+                                  OrganizacaoId = b.Organizacao,
+                                  Titulo = b.Titulo,
+                                  NomeOrganizacao = o.RazaoSocial 
+                              }).FirstOrDefault();
+
+            return blocoModel;
+        }
+
 
         public List<BlocoModel> GetByIdOrganizacao(uint id) => _context.Blocos.Where(b => b.Organizacao == id).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).ToList();
 
