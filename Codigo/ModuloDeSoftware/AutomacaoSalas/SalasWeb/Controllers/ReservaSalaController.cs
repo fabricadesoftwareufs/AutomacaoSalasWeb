@@ -9,6 +9,7 @@ using Model.AuxModel;
 using Model.ViewModel;
 using Service;
 using Service.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -118,6 +119,12 @@ namespace SalasWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    if (reservaModel.HorarioSalaModel.Data < DateTime.Today)
+                    {
+                        TempData["mensagemErro"] = "Não é possível reservar uma sala para uma data que já passou.";
+                        return View(reservaModel);
+                    }
+
                     if (_horarioSalaService.Insert(new HorarioSalaModel
                     {
                         HorarioInicio = reservaModel.HorarioSalaModel.HorarioInicio,
@@ -181,7 +188,7 @@ namespace SalasWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "GESTOR, ADMIN")]
-        public  ActionResult Edit(ReservaSalaViewModel reservaModel)
+        public ActionResult Edit(ReservaSalaViewModel reservaModel)
         {
             var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(idUsuario).Select((o) => o.OrganizacaoId).ToList();
@@ -200,6 +207,12 @@ namespace SalasWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    if (reservaModel.HorarioSalaModel.Data < DateTime.Today)
+                    {
+                        TempData["mensagemErro"] = "Não é possível editar uma reserva para uma data que já passou.";
+                        return View(reservaModel);
+                    }
+
                     if (_horarioSalaService.Update(new HorarioSalaModel
                     {
                         HorarioInicio = reservaModel.HorarioSalaModel.HorarioInicio,
@@ -228,6 +241,7 @@ namespace SalasWeb.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
 
         // GET: ReservaSalaController/Delete/5
         [Authorize(Roles = "GESTOR, ADMIN")]
