@@ -48,13 +48,13 @@
                                 </select>
                                 <span asp-validation-for="SalaId" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-2">
                                 <label asp-for="MAC" class="control-label"></label>
                                 <input asp-for="MAC" id="input-mac" class="form-control" />
                                 <span asp-validation-for="MAC" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-4" id="div-input-ip" hidden>
-                                <label asp-for="Ip" class="control-label"></label>
+                            <div class="form-group col-md-2" id="div-input-ip" hidden>
+                                <label asp-for="Ip" class="control-label">IP</label>
                                 <input asp-for="Ip" id="input-ip" ip-mask class="form-control" placeholder="000.000.000.000" />
                                 <span asp-validation-for="Ip" class="text-danger"></span>
                             </div>

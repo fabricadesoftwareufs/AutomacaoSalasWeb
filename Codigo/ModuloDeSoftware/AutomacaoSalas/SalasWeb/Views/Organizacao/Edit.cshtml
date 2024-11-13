@@ -16,18 +16,30 @@
                     <form asp-action="Edit">
                         <div class="card-body">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group col-md-7">
+                            <div class="form-group col-md-6">
                                 <label asp-for="RazaoSocial" class="control-label"></label>
-                                <input asp-for="RazaoSocial" class="form-control" />
+                                <div class="input-group">
+                                    <input asp-for="RazaoSocial" class="form-control" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-briefcase"></span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <span asp-validation-for="RazaoSocial" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-4">
-                                <label asp-for="Cnpj" class="control-label"></label>
-                                <input asp-for="Cnpj" class="form-control" />
+                            <div class="form-group col-md-3">
+                                <label asp-for="Cnpj" class="control-label">CNPJ</label>
+                                <div class="input-group">
+                                    <input asp-for="Cnpj" class="form-control" placeholder="00.000.000/0000-00" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-building"></span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <span asp-validation-for="Cnpj" class="text-danger"></span>
                             </div>
-
-
                         </div>
                         <div class="card-footer">
                             <div class=" col-md-4">
@@ -60,6 +72,7 @@ else if (TempData["mensagemErro"] != null)
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/customCPNJ.js"></script>
     <script src="~/js/sweet-alert.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

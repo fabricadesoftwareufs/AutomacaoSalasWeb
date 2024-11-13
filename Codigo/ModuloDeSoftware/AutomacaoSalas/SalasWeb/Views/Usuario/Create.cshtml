@@ -22,7 +22,7 @@
                                 <label asp-for="UsuarioModel.Nome" class="control-label select-label">Nome</label>
                             </div>
                             <div class="row">
-                                <div class="input-group col-md-8">
+                                <div class="input-group col-md-5">
                                     <input asp-for="UsuarioModel.Nome" class="form-control" placeholder="Nome" />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
@@ -34,10 +34,10 @@
                             <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
 
                             <div class="row col-md-2 mt-3">
-                                <label asp-for="UsuarioModel.Cpf" class="control-label select-label">Cpf</label>
+                                <label asp-for="UsuarioModel.Cpf" class="control-label select-label">CPF</label>
                             </div>
                             <div class="row">
-                                <div class="input-group col-md-6">
+                                <div class="input-group col-md-3">
                                     <input id="login_auth" asp-for="UsuarioModel.Cpf" class="form-control" placeholder="CPF" oninput="validaCpf()">
                                     <div class="input-group-append">
                                         <div class="input-group-text">
@@ -46,7 +46,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <span id="span_cpf" asp-validation-for="UsuarioModel.Cpf" class="invalid-msg invalid-feedback"></span>
+                            <span id="span_cpf" asp-validation-for="UsuarioModel.Cpf" class="invalid-msg invalid-feedback" style="margin-top: 10px; color: red;"></span>
 
                             <div class="row col-md-2 mt-3">
                                 <label asp-for="TipoUsuarioModel.Id" class="control-label select-label">Organização</label>
@@ -54,7 +54,7 @@
                             <div class="row">
                                 <div class="input-group col-md-6">
                                     @Html.DropDownListFor(model => model.OrganizacaoModel.Id, ViewBag.Organizacoes as SelectList, new
-                                    { @class = "form-control select2", @id = "select-organizacoes" })
+                                        { @class = "form-control select2", @id = "select-organizacoes" })
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fa fa-university"></span>
@@ -68,7 +68,7 @@
                                 <label asp-for="UsuarioModel.DataNascimento" class="control-label select-label">Data de Nascimento</label>
                             </div>
                             <div class="row">
-                                <div class="input-group col-md-4">
+                                <div class="input-group col-md-3">
                                     <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control" placeholder="Data de nascimento" />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
@@ -83,7 +83,7 @@
                                 <label asp-for="UsuarioModel.Senha" class="control-label select-label">Senha</label>
                             </div>
                             <div class="row">
-                                <div class="input-group col-md-4">
+                                <div class="input-group col-md-3">
                                     <input id="senha_auth" asp-for="UsuarioModel.Senha" class="form-control" placeholder="Senha" minlength="8" maxlength="16" />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
@@ -107,7 +107,7 @@
                             <div class="row">
                                 <div class="input-group col-md-4">
                                     @Html.DropDownListFor(model => model.TipoUsuarioModel.Id, ViewBag.TiposUsuario as SelectList, new
-                                    { @class = "form-control", @id = "select-tipoUsuario" })
+                                        { @class = "form-control", @id = "select-tipoUsuario" })
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-lock"></span>
