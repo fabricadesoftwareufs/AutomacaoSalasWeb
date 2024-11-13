@@ -62,7 +62,7 @@ namespace SalasWeb.Controllers
                 {
                     if (_blocoService.InsertBlocoWithHardware(blocoModel, _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id))
                     {
-                        TempData["mensagemSucesso"] = "Bloco adicionado com sucesso!"; return View();
+                        TempData["mensagemSucesso"] = "Bloco adicionado com sucesso!"; return RedirectToAction(nameof(Index));
                     }
                     else TempData["mensagemErro"] = "Houve um problema ao adicionar bloco, tente novamente em alguns minutos!";
                 }
@@ -95,7 +95,10 @@ namespace SalasWeb.Controllers
                 if (ModelState.IsValid)
                 {
                     if (_blocoService.Update(blocoModel))
-                        TempData["mensagemSuceso"] = "Bloco atualizado com sucesso!";
+                    {
+                        TempData["mensagemSucesso"] = "Bloco atualizado com sucesso!";
+                        return RedirectToAction(nameof(Index));
+                    }
                     else
                         TempData["mensagemErro"] = "Houve um problema ao atualizar bloco, tente novamente em alguns minutos!";
 
