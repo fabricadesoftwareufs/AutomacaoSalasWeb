@@ -23,6 +23,6 @@ namespace Model
         public string Titulo { get; set; }
 
         [Display(Name = "Nome da Organização")]
-        public string NomeOrganizacao { get; set; }
+        public string? NomeOrganizacao { get; set; }
     }
 }
