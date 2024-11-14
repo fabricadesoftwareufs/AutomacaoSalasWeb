@@ -10,7 +10,7 @@ namespace Model
        
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "CNPJ")]
-        [StringLength(18, ErrorMessage = "Máximo são 14 caracteres")]
+        [StringLength(14, ErrorMessage = "Máximo são 14 caracteres")]
         public string Cnpj { get; set; }
         
         [Required(ErrorMessage = "Campo obrigatório")]
