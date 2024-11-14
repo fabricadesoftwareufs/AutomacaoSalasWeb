@@ -63,7 +63,7 @@
 											"top": 55,
 											"width": 799,
 											"height": 13,
-											"text": "SalasUfs - Sofware"
+											"text": "ProjetoSalas - Sofware"
 										},
 										{
 											"_type": "LabelView",
@@ -8274,7 +8274,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFElm6BOFNpegQ="
 					},
-					"name": "SalasUfs - Sofware"
+					"name": "ProjetoSalas - Sofware"
 				},
 				{
 					"_type": "UMLActor",
@@ -9022,7 +9022,7 @@
 											"top": 63,
 											"width": 671,
 											"height": 13,
-											"text": "SalasUfs - Hardware"
+											"text": "ProjetoSalas - Hardware"
 										},
 										{
 											"_type": "LabelView",
@@ -16748,7 +16748,8 @@
 					"_parent": {
 						"$ref": "AAAAAAFElm6BOFNpegQ="
 					},
-					"name": "SalasUfs - Hardware"
+					"name": "ProjetoSalas - Hardware",
+					"visibility": "private"
 				},
 				{
 					"_type": "UMLActor",
