@@ -24,10 +24,7 @@
                     <div class="card-body">
                         <table id="table-search" class="table table-bordered table-striped">
                             <thead>
-                                <tr>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.Sala.Id)
-                                    </th>
+                                <tr>                                   
                                     <th>
                                         @Html.DisplayNameFor(model => model.Sala.Titulo)
                                     </th>
@@ -40,10 +37,7 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Sala.Id)
-                                        </td>
+                                    <tr>                                        
                                         <td>
                                             @Html.DisplayFor(modelItem => item.Sala.Titulo)
                                         </td>
