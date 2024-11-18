@@ -83,7 +83,7 @@ namespace SalasWeb.Controllers
                     if (salaInserida)
                     {
                         TempData["mensagemSucesso"] = "Sala inserida com sucesso!";
-                        return View();
+                        return RedirectToAction(nameof(Index)); ;
                     }
                     else
                     {
@@ -124,7 +124,10 @@ namespace SalasWeb.Controllers
                 if (ModelState.IsValid)
                 {
                     if (_salaService.Update(new SalaModel { Id = salaModel.Sala.Id, BlocoId = salaModel.Sala.BlocoId, Titulo = salaModel.Sala.Titulo }))
+                    {
                         TempData["mensagemSucesso"] = "Sala atualizada com sucesso!";
+                        return RedirectToAction(nameof(Index));
+                    }
                     else
                         TempData["mensagemErro"] = "Houve um problema ao atualizar sala, tente novamente em alguns minutos!";
                 }
