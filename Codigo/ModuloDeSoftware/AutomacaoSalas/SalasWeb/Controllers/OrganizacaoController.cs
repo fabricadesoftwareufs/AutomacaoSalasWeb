@@ -54,13 +54,14 @@ namespace SalasWeb.Controllers
                     if (_organizacaoService.Insert(organizacaoModel))
                     {
                         TempData["mensagemSucesso"] = "Organização inserida com sucesso!";
-                        return View();
+                        return RedirectToAction(nameof(Index));
                     }
                     else
                     {
                         TempData["mensagemErro"] = "Houve um problema ao inserir essa organização, tente novamente em alguns minutos!";
                     }
                 }
+                return View(organizacaoModel);
             }
             catch (ServiceException se)
             {
@@ -85,17 +86,19 @@ namespace SalasWeb.Controllers
         {
             try
             {
-                // Valida o CNPJ antes de prosseguir com a atualização
-                if (!Utils.Methods.ValidarCnpj(organizacaoModel.Cnpj))  // Supondo que o campo Cnpj esteja presente no model
+                if (!Utils.Methods.ValidarCnpj(organizacaoModel.Cnpj))
                 {
-                    ModelState.AddModelError("Cnpj", "CNPJ inválido.");  // Adiciona erro no CNPJ caso seja inválido
-                    return View(organizacaoModel);  // Retorna a view com o erro
+                    ModelState.AddModelError("Cnpj", "CNPJ inválido.");
+                    return View(organizacaoModel);
                 }
 
-                if (ModelState.IsValid)  // Continua apenas se o modelo for válido
+                if (ModelState.IsValid)
                 {
                     if (_organizacaoService.Update(organizacaoModel))
+                    {
                         TempData["mensagemSucesso"] = "Organização atualizada com sucesso!";
+                        return RedirectToAction(nameof(Index));
+                    }
                     else
                         TempData["mensagemErro"] = "Houve um problema ao atualizar essa organização, tente novamente em alguns minutos!";
                 }
