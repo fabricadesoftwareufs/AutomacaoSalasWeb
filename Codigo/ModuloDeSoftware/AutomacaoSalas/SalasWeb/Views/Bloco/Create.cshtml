@@ -16,18 +16,18 @@
                         <div class="card-body">
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="col-md-7">
+                            <div class="col-md-5">
                                 <div class="form-group" id="ListElements">
-                                    <label asp-for="OrganizacaoId" class="control-label"></label>
+                                    <label asp-for="OrganizacaoId" class="control-label">Organização</label>
                                     @Html.DropDownListFor(model => model.OrganizacaoId, ViewBag.OrgList as SelectList, new
-                                    { @class = "form-control" })
+                                        { @class = "form-control" })
                                     <span asp-validation-for="OrganizacaoId" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-7">
                                 <div class="form-group">
                                     <label asp-for="Titulo" class="control-label"></label>
-                                    <input asp-for="Titulo" class="form-control" />
+                                    <textarea asp-for="Titulo" class="form-control" maxlength="100" rows="2" style="width: 80%;"></textarea>
                                     <span asp-validation-for="Titulo" class="text-danger"></span>
                                 </div>
                             </div>
@@ -69,5 +69,7 @@ else if (TempData["mensagemErro"] != null)
     <script src="~/js/custom.js"></script>
     <script src="~/plugins/inputmask/inputmask/jquery.mask.js"></script>
 
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

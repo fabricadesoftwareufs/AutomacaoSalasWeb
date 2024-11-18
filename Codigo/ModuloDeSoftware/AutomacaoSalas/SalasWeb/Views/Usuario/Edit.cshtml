@@ -16,45 +16,88 @@
                         <div class="card-body">
                             <input type="hidden" asp-for="UsuarioModel.Id" />
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="UsuarioModel.Nome" class="control-label"></label>
-                                <input asp-for="UsuarioModel.Nome" class="form-control" />
-                                <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
-                                <input type="hidden" asp-for="UsuarioModel.Senha" />
-                            </div>
 
-                            <input hidden asp-for="UsuarioModel.Cpf" class="form-control" />
-                            <div class="form-group col-md-6">
-                                <label asp-for="UsuarioModel.Cpf" class="control-label"></label>
-                                <input asp-for="UsuarioModel.Cpf" class="form-control" disabled />
-                                <span asp-validation-for="UsuarioModel.Cpf" class="text-danger"></span>
+                            <div class="row col-md-2">
+                                <label asp-for="UsuarioModel.Nome" class="control-label select-label">Nome</label>
                             </div>
+                            <div class="row">
+                                <div class="input-group col-md-5">
+                                    <input asp-for="UsuarioModel.Nome" class="form-control" placeholder="Nome" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
 
-                            <div class="form-group col-md-4">
-                                <label asp-for="OrganizacaoModel" class="control-label"></label>
-                                @Html.DropDownListFor(model => model.OrganizacaoModel.Id, ViewBag.Organizacoes as SelectList, new
-                                    { @class = "form-control", @id = "select-organizacao" })
-                                <span asp-validation-for="OrganizacaoModel.Id" class="text-danger"></span>
-                                <input type="hidden" asp-for="@Model.OrganizacaoModel.Cnpj" />
-                                <input type="hidden" asp-for="@Model.OrganizacaoModel.RazaoSocial" />
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="UsuarioModel.Cpf" class="control-label select-label">CPF</label>
                             </div>
+                            <div class="row">
+                                <div class="input-group col-md-3">
+                                    <input asp-for="UsuarioModel.Cpf" class="form-control" placeholder="CPF" disabled />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-id-card"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="UsuarioModel.Cpf" class="text-danger"></span>
 
-                            <div class="form-group col-md-4">
-                                <label asp-for="TipoUsuarioModel.Id" class="control-label"></label>
-                                @Html.DropDownListFor(model => model.TipoUsuarioModel.Id, ViewBag.TiposUsuario as SelectList, new
-                                    { @class = "form-control", @id = "select-tipoUsuario" })
-                                <span asp-validation-for="TipoUsuarioModel.Id" class="text-danger"></span>
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="OrganizacaoModel.Id" class="control-label select-label">Organização</label>
                             </div>
+                            <div class="row">
+                                <div class="input-group col-md-6">
+                                    @Html.DropDownListFor(model => model.OrganizacaoModel.Id, ViewBag.Organizacoes as SelectList, new { @class = "form-control", @id = "select-organizacao" })
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fa fa-university"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="OrganizacaoModel.Id" class="text-danger"></span>
 
-                            <div class="form-group col-md-4">
-                                <label asp-for="UsuarioModel.DataNascimento" class="control-label"></label>
-                                <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control"
-                                       value="@Model.UsuarioModel.DataNascimento.ToString("yyyy-MM-dd")" />
-                                <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="UsuarioModel.DataNascimento" class="control-label select-label">Data de Nascimento</label>
                             </div>
+                            <div class="row">
+                                <div class="input-group col-md-3">
+                                    <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control" placeholder="Data de nascimento" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-birthday-cake"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
+
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="TipoUsuarioModel.Id" class="control-label select-label">Tipo de usuário</label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-4">
+                                    @Html.DropDownListFor(model => model.TipoUsuarioModel.Id, ViewBag.TiposUsuario as SelectList, new { @class = "form-control", @id = "select-tipoUsuario" })
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="TipoUsuarioModel.Id" class="text-danger"></span>
+
+                            <input hidden asp-for="OrganizacaoModel.Cnpj" class="form-control" />
+                            <input hidden asp-for="OrganizacaoModel.RazaoSocial" class="form-control" />
                         </div>
+
                         <div class="card-footer">
-                            <div class=" col-md-4">
+                            <div class="col-md-4">
                                 <input type="submit" value="Salvar" class="btn btn-success" /> |
                                 <a class="btn btn-primary" asp-action="Index">Voltar</a>
                             </div>
@@ -74,6 +117,7 @@ else if (TempData["mensagemErro"] != null)
 {
     <div id="mensagem-retorno" onclick="swtAlert('warning','Falha!', '@TempData["mensagemErro"]')"></div>
 }
+
 
 @section Scripts {
     <script type="text/javascript">

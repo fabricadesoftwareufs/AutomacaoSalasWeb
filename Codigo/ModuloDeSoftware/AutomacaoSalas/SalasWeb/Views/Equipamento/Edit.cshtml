@@ -17,24 +17,25 @@
                             <div class="form-group" hidden>
                                 <input asp-for="EquipamentoModel.Id" class="form-control" />
                             </div>
-                            <div class="form-group col-md-4">
-                                <label asp-for="SalaModel.Titulo" class="control-label"></label>
-                                <input asp-for="SalaModel.Titulo" class="form-control" />
+                            <div class="form-group col-md-8">
+                                <label asp-for="SalaModel.Titulo" class="control-label">Título</label>
+                                <textarea asp-for="SalaModel.Titulo" class="form-control" rows="2"></textarea>
                                 <span asp-validation-for="SalaModel.Titulo" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-4">
+
+                            <div class="form-group col-md-8">
                                 <label asp-for="EquipamentoModel.Modelo" class="control-label"></label>
-                                <input asp-for="EquipamentoModel.Modelo" class="form-control" />
+                                <textarea asp-for="EquipamentoModel.Modelo" class="form-control" maxlength="200" rows="2"></textarea>
                                 <span asp-validation-for="EquipamentoModel.Modelo" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-8">
                                 <label asp-for="EquipamentoModel.Marca" class="control-label"></label>
-                                <input asp-for="EquipamentoModel.Marca" class="form-control" />
+                                <textarea asp-for="EquipamentoModel.Marca" class="form-control" maxlength="100" rows="2"></textarea>
                                 <span asp-validation-for="EquipamentoModel.Marca" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-8">
                                 <label asp-for="EquipamentoModel.Descricao" class="control-label"></label>
-                                <input asp-for="EquipamentoModel.Descricao" class="form-control" />
+                                <textarea asp-for="EquipamentoModel.Descricao" class="form-control" maxlength="1000" rows="3"></textarea>
                                 <span asp-validation-for="EquipamentoModel.Descricao" class="text-danger"></span>
                             </div>
 

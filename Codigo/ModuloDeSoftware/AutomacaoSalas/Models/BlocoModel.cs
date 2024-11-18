@@ -14,7 +14,7 @@ namespace Model
         public uint Id { get; set; }
 
         [Required(ErrorMessage = "Campo obrigatório")]
-        [Display(Name = "Organizacao")]
+        [Display(Name = "Organização")]
         public uint OrganizacaoId { get; set; }
 
         [Required(ErrorMessage = "Campo obrigatório")]
