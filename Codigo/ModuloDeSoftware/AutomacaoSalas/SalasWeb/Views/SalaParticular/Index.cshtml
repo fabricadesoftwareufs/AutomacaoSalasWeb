@@ -23,10 +23,7 @@
                     <div class="card-body">
                         <table id="table-search" class="table table-bordered table-striped">
                             <thead>
-                                <tr>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.Id)
-                                    </th>
+                                <tr>                                    
                                     <th>
                                         @Html.DisplayNameFor(model => model.Responsavel)
                                     </th>
@@ -39,12 +36,9 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr>
+                                    <tr>                                        
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Id)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Responsavel.Cpf) | @Html.DisplayFor(modelItem => item.Responsavel.Nome)
+                                            @Html.DisplayFor(modelItem => item.Responsavel.Nome)
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.SalaId.Titulo)
