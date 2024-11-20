@@ -16,5 +16,7 @@ namespace Model
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Bloco")]
         public uint BlocoId { get; set; }
+
+        public string BlocoTitulo { get; set; } = string.Empty; 
     }
 }

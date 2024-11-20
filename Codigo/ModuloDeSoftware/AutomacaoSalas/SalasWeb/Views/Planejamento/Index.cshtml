@@ -24,14 +24,15 @@
                     <div class="card-body">
                         <table id="table-search" class="table table-bordered table-striped">
                             <thead>
-                                <tr>
-                                    
-
+                                <tr>                                    
+                                    <th>
+                                        Usuario
+                                    </th>
                                     <th>
                                         Sala
                                     </th>
                                     <th>
-                                        Usuario
+                                        Bloco
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.Periodo)
@@ -48,13 +49,15 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr>
-                                        
+                                    <tr>                                                                                
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.UsuarioId.Nome)
+                                        </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.SalaId.Titulo)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.UsuarioId.Nome)
+                                            @Html.DisplayFor(modelItem => item.SalaId.BlocoTitulo) 
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.Periodo)
@@ -98,7 +101,7 @@
                                                                                 Excluir Reservas Associadas ?
                                                                             </label>
                                                                         </h5>
-                                                                       
+
 
                                                                         <input class="form-control" name="excluirReservas" type="checkbox" checked value="true" id="excluir-reservas-@item.Id" />
                                                                     </div>
@@ -148,5 +151,7 @@ else if (TempData["mensagemErro"] != null)
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

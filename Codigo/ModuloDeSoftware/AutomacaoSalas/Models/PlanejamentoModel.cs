@@ -49,6 +49,6 @@ namespace Model
         [Display(Name = "Responsável")]
         public uint UsuarioId { get; set; }
 
-
+        public string BlocoNome { get; set; } = string.Empty;
     }
 }

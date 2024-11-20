@@ -27,11 +27,12 @@
                         <table id="table-search" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>
-                                        @sala
-                                    </th>
+                                    
                                     <th>
                                         @servidor
+                                    </th>
+                                    <th>
+                                        @sala
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.HorarioSalaModel.Data)
@@ -46,11 +47,12 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.SalaModel.Titulo)
-                                        </td>
+                                       
                                         <td>
                                             @Html.DisplayFor(modelItem => item.UsuarioModel.Nome)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.SalaModel.Titulo)
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.HorarioSalaModel.Data)
