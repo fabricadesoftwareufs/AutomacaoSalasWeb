@@ -55,6 +55,9 @@
                                             @Html.DisplayFor(modelItem => item.SalaModel.Titulo)
                                         </td>
                                         <td>
+                                            @Html.DisplayFor(modelItem => item.SalaModel.BlocoTitulo)
+                                        </td>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.HorarioSalaModel.Data)
                                         </td>
                                         <td>
@@ -77,6 +80,7 @@
                                                         </div>
                                                         <div class="modal-body text-center">
                                                             <h5>Sala</h5><p>@item.HorarioSalaModel.SalaId - @item.SalaModel.Titulo</p>
+                                                            <h5>Bloco</h5><p>@item.SalaModel.BlocoTitulo - @item.SalaModel.BlocoTitulo</p>
                                                             <h5>@servidor</h5> <p>@item.UsuarioModel.Nome</p>
                                                             <h5>Data</h5> <p>@item.HorarioSalaModel.Data</p>
                                                             <h5>Horário</h5> <p>@item.HorarioSalaModel.HorarioInicio às @item.HorarioSalaModel.HorarioFim</p>
