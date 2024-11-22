@@ -71,7 +71,7 @@ namespace SalasWeb.Controllers
                     if (_planejamentoService.InsertPlanejamentoWithListHorarios(planejamentoModel))
                     {
                         TempData["mensagemSucesso"] = "Planejamento cadastrado com sucesso!";
-                        return View();
+                        return RedirectToAction(nameof(Index));
                     }
                     else TempData["mensagemErro"] = "Houve um problema ao inserir novo planejamento, tente novamente em alguns minutos.";
                 }
@@ -117,7 +117,10 @@ namespace SalasWeb.Controllers
                 if (ModelState.IsValid)
                 {
                     if (_planejamentoService.Update(planejamentoModel.Planejamento))
+                    {
                         TempData["mensagemSucesso"] = "Planejamento Atualizado com sucesso!";
+                        return RedirectToAction(nameof(Index));
+                    }
                     else
                         TempData["mensagemErro"] = "Houve um problema ao inserir novo planejamento, tente novamente em alguns minutos.";
                 }

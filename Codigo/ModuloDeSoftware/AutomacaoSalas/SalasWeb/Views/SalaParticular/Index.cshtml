@@ -23,12 +23,15 @@
                     <div class="card-body">
                         <table id="table-search" class="table table-bordered table-striped">
                             <thead>
-                                <tr>                                    
+                                <tr>
                                     <th>
                                         @Html.DisplayNameFor(model => model.Responsavel)
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.SalaId)
+                                    </th>
+                                    <th>
+                                        Bloco
                                     </th>
                                     <th>Ações</th>
                                 </tr>
@@ -36,12 +39,15 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr>                                        
+                                    <tr>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.Responsavel.Nome)
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.SalaId.Titulo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.SalaId.BlocoTitulo)
                                         </td>
                                         <td>
                                             <a href="@Url.Action("Details", "SalaParticular", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
@@ -86,7 +92,8 @@
     </div>
 </section>
 @if (TempData["mensagemSucesso"] != null)
-{<div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
+{
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
 }
 else if (TempData["mensagemErro"] != null)
 {
@@ -101,10 +108,12 @@ else if (TempData["mensagemErro"] != null)
                 document.getElementById("mensagem-retorno").click();
         });
     </script>
-    
+
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
 
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

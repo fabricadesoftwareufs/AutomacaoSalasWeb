@@ -35,6 +35,9 @@
                                         @sala
                                     </th>
                                     <th>
+                                        Bloco
+                                    </th>
+                                    <th>
                                         @Html.DisplayNameFor(model => model.HorarioSalaModel.Data)
                                     </th>
                                     <th>
@@ -57,8 +60,8 @@
                                         <td>
                                             @Html.DisplayFor(modelItem => item.SalaModel.BlocoTitulo)
                                         </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.HorarioSalaModel.Data)
+                                        <td class="data-format">
+                                            @item.HorarioSalaModel.Data.ToString("yyyy-MM-ddTHH:mm:ss") <!-- Formato ISO para manipulação -->
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.HorarioSalaModel.HorarioInicio) às @Html.DisplayFor(modelItem => item.HorarioSalaModel.HorarioFim)
@@ -127,4 +130,5 @@ else if (TempData["mensagemErro"] != null)
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
+    <script src="~/js/formatData.js"></script>
 }

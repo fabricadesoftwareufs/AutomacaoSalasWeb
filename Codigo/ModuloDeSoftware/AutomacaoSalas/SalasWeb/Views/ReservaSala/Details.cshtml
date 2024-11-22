@@ -4,6 +4,7 @@
     string sala = "Sala";
     string responsavel = "Servidor Responsável";
     string horario = "Horário";
+    string bloco = "Bloco";
     ViewData["Title"] = "Details";
 }
 <section class="content">
@@ -22,7 +23,13 @@
                                     @sala
                                 </dt>
                                 <dd>
-                                    <p class="form-control">@Html.DisplayFor(model => model.HorarioSalaModel.SalaId) - @Html.DisplayFor(model => model.SalaModel.Titulo)</p>
+                                    <p class="form-control">@Html.DisplayFor(model => model.SalaModel.Titulo)</p>
+                                </dd>
+                                <dt>
+                                    @bloco
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.SalaModel.BlocoTitulo)</p>
                                 </dd>
                                 <dt>
                                     @responsavel
@@ -34,7 +41,7 @@
                                     @Html.DisplayNameFor(model => model.HorarioSalaModel.Data)
                                 </dt>
                                 <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.HorarioSalaModel.Data)</p>
+                                    <input class="form-control" value="@Model.HorarioSalaModel.Data.ToString("yyyy-MM-dd")" readonly style="background-color: #fff; border-color: #ced4da; cursor: default;" />
                                 </dd>
                                 <dt>
                                     @horario
@@ -61,3 +68,7 @@
         </div>
     </div>
 </section>
+
+@section Scripts {    
+    <script src="~/js/formatData.js"></script>
+}
