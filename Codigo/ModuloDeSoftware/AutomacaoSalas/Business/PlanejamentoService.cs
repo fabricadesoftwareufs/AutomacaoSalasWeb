@@ -81,7 +81,9 @@ namespace Service
                              HorarioFim = pl.HorarioFim,
                              HorarioInicio = pl.HorarioInicio,
                              SalaId = pl.SalaId,
-                             UsuarioId = pl.UsuarioId
+                             UsuarioId = pl.UsuarioId,
+                             BlocoNome = bl.Titulo
+
                          }).ToList();
 
             return query;

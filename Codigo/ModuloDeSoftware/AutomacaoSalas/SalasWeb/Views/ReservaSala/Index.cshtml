@@ -27,11 +27,15 @@
                         <table id="table-search" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    
+                                    <th>
+                                        @servidor
+                                    </th>
                                     <th>
                                         @sala
                                     </th>
                                     <th>
-                                        @servidor
+                                        Bloco
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.HorarioSalaModel.Data)
@@ -46,14 +50,18 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.SalaModel.Titulo)
-                                        </td>
+                                       
                                         <td>
                                             @Html.DisplayFor(modelItem => item.UsuarioModel.Nome)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.HorarioSalaModel.Data)
+                                            @Html.DisplayFor(modelItem => item.SalaModel.Titulo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.SalaModel.BlocoTitulo)
+                                        </td>
+                                        <td class="data-format">
+                                            @item.HorarioSalaModel.Data.ToString("yyyy-MM-ddTHH:mm:ss") <!-- Formato ISO para manipulação -->
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.HorarioSalaModel.HorarioInicio) às @Html.DisplayFor(modelItem => item.HorarioSalaModel.HorarioFim)
@@ -75,6 +83,7 @@
                                                         </div>
                                                         <div class="modal-body text-center">
                                                             <h5>Sala</h5><p>@item.HorarioSalaModel.SalaId - @item.SalaModel.Titulo</p>
+                                                            <h5>Bloco</h5><p>@item.SalaModel.BlocoTitulo - @item.SalaModel.BlocoTitulo</p>
                                                             <h5>@servidor</h5> <p>@item.UsuarioModel.Nome</p>
                                                             <h5>Data</h5> <p>@item.HorarioSalaModel.Data</p>
                                                             <h5>Horário</h5> <p>@item.HorarioSalaModel.HorarioInicio às @item.HorarioSalaModel.HorarioFim</p>
@@ -121,4 +130,5 @@ else if (TempData["mensagemErro"] != null)
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
+    <script src="~/js/formatData.js"></script>
 }

@@ -73,7 +73,7 @@ namespace SalasWeb.Controllers
                     if (_salaParticularService.InsertListSalasParticulares(salaParticularModel))
                     {
                         TempData["mensagemSucesso"] = "Sala Exclusiva associada com sucesso!.";
-                        return View();
+                        return RedirectToAction(nameof(Index));
                     }
                     else
                         TempData["mensagemErro"] = "Houve um problema ao inserir novo registro, tente novamente em alguns minutos.";
@@ -122,6 +122,7 @@ namespace SalasWeb.Controllers
                     if (_salaParticularService.Update(new SalaParticularModel { Id = salaParticularModel.SalaParticular.Id, SalaId = salaParticularModel.SalaParticular.SalaId, UsuarioId = salaParticularModel.SalaParticular.UsuarioId }))
                     {
                         TempData["mensagemSucesso"] = "Registro atualizado com sucesso!.";
+                        return RedirectToAction(nameof(Index));
                     }
                     else
                     {

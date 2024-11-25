@@ -17,7 +17,7 @@ namespace Service
         }
         public List<SalaModel> GetAll() => _context.Salas.Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).ToList();
 
-        public SalaModel GetById(uint id) => _context.Salas.Where(s => s.Id == id).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).FirstOrDefault();
+        public SalaModel GetById(uint id) => _context.Salas.Where(s => s.Id == id).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco,BlocoTitulo = s.BlocoNavigation.Titulo}).FirstOrDefault();
 
         public List<SalaModel> GetByIdBloco(uint id) => _context.Salas.Where(s => s.Bloco == id).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).ToList();
         public SalaModel GetByTitulo(string titulo) => _context.Salas.Where(s => s.Titulo.ToUpper().Equals(titulo.ToUpper())).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).FirstOrDefault();
