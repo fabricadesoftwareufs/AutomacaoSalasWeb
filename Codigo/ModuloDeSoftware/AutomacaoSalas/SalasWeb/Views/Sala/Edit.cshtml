@@ -23,7 +23,7 @@
                                     <select class="form-control" asp-for="OrganizacaoId" id="select-organizacao" onchange="loadBlocos()">
                                         @foreach (var item in ViewBag.Organizacoes)
                                         {
-                                            <option value="@item.Id"> @item.Cnpj | @item.RazaoSocial </option>
+                                            <option value="@item.Id"> @item.RazaoSocial </option>
                                         }
                                     </select>
                                     <span class="text-danger"></span>
@@ -33,7 +33,7 @@
                                     <select class="form-control" asp-for="Sala.BlocoId" id="select-bloco">
                                         @foreach (var item in ViewBag.BlocoList)
                                         {
-                                            <option value="@item.Id"> @item.Id | @item.Titulo </option>
+                                            <option value="@item.Id"> @item.Titulo </option>
                                         }
                                     </select>
                                     <span asp-validation-for="Sala.BlocoId" class="text-danger"></span>
