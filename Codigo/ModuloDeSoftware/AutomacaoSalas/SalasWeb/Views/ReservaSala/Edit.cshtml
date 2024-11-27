@@ -21,32 +21,20 @@
                                 <input hidden asp-for="HorarioSalaModel.SalaId" class="form-control" />
                                 <input hidden asp-for="HorarioSalaModel.UsuarioId" class="form-control" />
                                 <div class="form-group">
-                                    <label class="form-control-label" for="select-org">Organização</label>
-                                    <select class="form-control" id="select-org" asp-for="OrganizacaoModel">
-                                        @foreach (var item in ViewBag.organizacoes as SelectList)
-                                        {
-                                            <option value="@item.Value"> @item.Text </option>
-                                        }
-                                    </select>
+                                    <label class="form-control-label" for="select-bloco">Organização</label>
+                                    @Html.DropDownListFor(model => model.OrganizacaoModel, ViewBag.organizacoes as SelectList, new
+                                        { @class = "form-control", @id = "select-org", @disabled = "disabled" })
                                 </div>
                                 <div class="form-group">
                                     <label class="form-control-label" for="select-bloco">Filtrar Salas por Bloco</label>
-                                    <select class="form-control" id="select-bloco" asp-for="BlocoModel">
-                                        @foreach (var item in ViewBag.blocos as SelectList)
-                                        {
-                                            <option value="@item.Value"> @item.Text </option>
-                                        }
-                                    </select>
+                                    @Html.DropDownListFor(model => model.BlocoModel, ViewBag.blocos as SelectList, new
+                                        { @class = "form-control", @id = "select-bloco", @disabled = "disabled" })
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="HorarioSalaModel.SalaId" class="form-control-label" for="select-sala">Selecionar Sala</label>
-                                    <select class="form-control" id="select-sala" asp-for="HorarioSalaModel.SalaId">
-                                        @foreach (var item in ViewBag.salas as SelectList)
-                                        {
-                                            <option value="@item.Value"> @item.Text </option>
-                                        }
-                                    </select>
-                                    <span asp-validation-for="HorarioSalaModel.SalaId" class="text-danger"></span>
+                                    <label asp-for="HorarioSalaModel" class="form-control-label" for="select-sala">Selecionar Sala</label>
+                                    @Html.DropDownListFor(model => model.HorarioSalaModel.SalaId, ViewBag.salas as SelectList, new
+                                        { @class = "form-control", @id = "select-sala", @disabled = "disabled" })
+                                    <span asp-validation-for="HorarioSalaModel" class="text-danger"></span>
                                 </div>
                                 <div class="ocupation col-md-10">
                                     <div class="form-group align-element ">
@@ -73,7 +61,7 @@
                                     <span asp-validation-for="HorarioSalaModel.Objetivo" class="text-danger"></span>
                                 </div>
                                 <input hidden asp-for="HorarioSalaModel.Situacao" value="RESERVADO" />
-                                <input hidden asp-for="HorarioSalaModel.Planejamento"/>
+                                <input hidden asp-for="HorarioSalaModel.Planejamento" />
                             </div>
                         </div>
                         <div class="card-footer">
@@ -109,5 +97,7 @@ else if (TempData["mensagemErro"] != null)
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
 
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
