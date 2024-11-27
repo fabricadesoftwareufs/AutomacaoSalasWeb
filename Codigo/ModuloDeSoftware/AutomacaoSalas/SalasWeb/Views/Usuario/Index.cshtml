@@ -13,7 +13,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <h2 class="card-title">
-                                   Usuários
+                                    Usuários
                                 </h2>
                                 <a class="btn btn-primary" style="float:right" asp-controller="Usuario" asp-action="Create">Adicionar Usuário</a>
                             </div>
@@ -51,8 +51,32 @@
                                         <td>
                                             @Html.DisplayFor(modelItem => item.TipoUsuarioModel.Descricao)
                                         </td>
+                                        @{
+                                            string org;
+                                            var nomeCompleto = item.OrganizacaoModels[0].RazaoSocial;
+
+                                            if (nomeCompleto.Contains("-"))
+                                            {
+                                                org = nomeCompleto.Split('-')[1].Trim();
+                                            }
+                                            else if (nomeCompleto.Contains(" "))
+                                            {
+                                                var palavrasIgnoradas = new[] { "de", "da", "do", "das", "dos", "e" };
+
+                                                org = string.Concat(
+                                                nomeCompleto
+                                                .Split(' ') 
+                                                .Where(palavra => !palavrasIgnoradas.Contains(palavra.ToLower())) 
+                                                .Select(palavra => palavra[0]) 
+                                                ).ToUpper(); 
+                                            }
+                                            else
+                                            {                                                
+                                                org = nomeCompleto.Substring(0, Math.Min(4, nomeCompleto.Length)).ToUpper();
+                                            }
+                                        }
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.OrganizacaoModels)
+                                            @Html.DisplayFor(modelItem => org)
                                         </td>
                                         <td>
                                             <a href="@Url.Action("Details", "Usuario", new { id = item.UsuarioModel.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
@@ -121,5 +145,7 @@ else if (TempData["mensagemErro"] != null)
     <script src="~/js/usuario-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
