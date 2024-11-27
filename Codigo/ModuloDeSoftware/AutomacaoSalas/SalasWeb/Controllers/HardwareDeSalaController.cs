@@ -77,7 +77,7 @@ namespace SalasWeb.Controllers
                     if (_hardwareService.Insert(hardware, idUsuario))
                     {
                         TempData["mensagemSucesso"] = "Hardware adicionado com sucesso!";
-                        return View();
+                        return RedirectToAction(nameof(Index));
                     }
                     else
                         TempData["mensagemErro"] = "Houve um problema ao tentar inserir o hardware, tente novamente em alguns minutos!";
@@ -130,7 +130,10 @@ namespace SalasWeb.Controllers
                 if (ModelState.IsValid)
                 {
                     if (_hardwareService.Update(hardware, idUsuario))
+                    {
                         TempData["mensagemSucesso"] = "Hardware atualizado com sucesso";
+                        return RedirectToAction(nameof(Index));
+                    }
                     else
                         TempData["mensagemErro"] = "Houve um problema ao atualizar hardware, tente novamente em alguns minutos!";
                 }

@@ -14,12 +14,18 @@
 
                     <div class="card-body">
                         <div class="col-md-10">
-                            <dl class="dl-horizontal">
+                            <dl class="dl-horizontal">                                
                                 <dt>
-                                    @Html.DisplayNameFor(model => model.EquipamentoModel.Id)
+                                    Sala 
                                 </dt>
                                 <dd>
-                                    <p class="form-control">@Html.DisplayFor(model => model.EquipamentoModel.Id)</p>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.SalaModel.Titulo)</p>
+                                </dd>
+                                <dt>
+                                    Bloco
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.BlocoModel.Titulo)</p>                                    
                                 </dd>
                                 <dt>
                                     @Html.DisplayNameFor(model => model.EquipamentoModel.Marca)
@@ -46,22 +52,17 @@
                                     <p class="form-control"> @Html.DisplayFor(model => model.EquipamentoModel.TipoEquipamento)</p>
                                 </dd>
                                 <dt>
-                                    @Html.DisplayNameFor(model => model.BlocoModel.Titulo)
+                                    Atuador Associado MAC
                                 </dt>
                                 <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.BlocoModel.Titulo)</p>
-                                </dd>
-                                <dt>
-                                    @Html.DisplayNameFor(model => model.SalaModel.Titulo)
-                                </dt>
-                                <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.SalaModel.Titulo)</p>
-                                </dd>
-                                <dt>
-                                   Atuador Associado @Html.DisplayNameFor(model => model.HardwareDeSalaModel.MAC)
-                                </dt>
-                                <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.HardwareDeSalaModel.MAC)</p>
+                                    @if (Model.HardwareDeSalaModel != null)
+                                    {
+                                        <p class="form-control">@Html.DisplayFor(model => model.HardwareDeSalaModel.MAC)</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="form-control"><b>Nenhum Associado</b></p>
+                                    }
                                 </dd>
                                 @if (Model.Codigos != null)
                                 {
