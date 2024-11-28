@@ -21,21 +21,22 @@
                                 <input hidden asp-for="HorarioSalaModel.SalaId" class="form-control" />
                                 <input hidden asp-for="HorarioSalaModel.UsuarioId" class="form-control" />
                                 <div class="form-group">
-                                    <label class="form-control-label" for="select-bloco">Organização</label>
+                                    <label class="form-control-label" for="select-org">Organização</label>
                                     @Html.DropDownListFor(model => model.OrganizacaoModel, ViewBag.organizacoes as SelectList, new
-                                        { @class = "form-control", @id = "select-org", @disabled = "disabled" })
+                                        { @class = "form-control", @id = "select-org", @disabled = "disabled", style = "appearance: none; -webkit-appearance: none; -moz-appearance: none;" })
                                 </div>
                                 <div class="form-group">
                                     <label class="form-control-label" for="select-bloco">Filtrar Salas por Bloco</label>
                                     @Html.DropDownListFor(model => model.BlocoModel, ViewBag.blocos as SelectList, new
-                                        { @class = "form-control", @id = "select-bloco", @disabled = "disabled" })
+                                        { @class = "form-control", @id = "select-bloco", @disabled = "disabled", style = "appearance: none; -webkit-appearance: none; -moz-appearance: none;" })
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="HorarioSalaModel" class="form-control-label" for="select-sala">Selecionar Sala</label>
                                     @Html.DropDownListFor(model => model.HorarioSalaModel.SalaId, ViewBag.salas as SelectList, new
-                                        { @class = "form-control", @id = "select-sala", @disabled = "disabled" })
+                                        { @class = "form-control", @id = "select-sala", @disabled = "disabled", style = "appearance: none; -webkit-appearance: none; -moz-appearance: none;" })
                                     <span asp-validation-for="HorarioSalaModel" class="text-danger"></span>
                                 </div>
+
                                 <div class="ocupation col-md-10">
                                     <div class="form-group align-element ">
                                         <label asp-for="HorarioSalaModel.Data" class="control-label"></label>
