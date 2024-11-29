@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Details";
     string tipo = "Tipo do Usuário";
+    string org = "Organização";
 }
 
 <section class="content">
@@ -27,7 +28,19 @@
                                     @Html.DisplayNameFor(model => model.UsuarioModel.Cpf)
                                 </dt>
                                 <dd>
-                                    <p class="form-control">@Html.DisplayFor(model => model.UsuarioModel.Cpf)</p>
+                                    <p class="form-control">@($"***.{Model.UsuarioModel.Cpf.Substring(3, 3)}.{Model.UsuarioModel.Cpf.Substring(6, 3)}-**")</p>
+                                </dd>
+                                <dt>
+                                    @org
+                                </dt>
+                                <dd>
+                                    <p class="form-control"> @Html.DisplayFor(model => model.OrganizacaoModel.RazaoSocial)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.UsuarioModel.DataNascimento)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Model.UsuarioModel.DataNascimento.ToString("dd/MM/yyyy")</p>
                                 </dd>
                                 <dt>
                                     @tipo
@@ -35,13 +48,6 @@
                                 <dd>
                                     <p class="form-control"> @Html.DisplayFor(model => model.TipoUsuarioModel.Descricao)</p>
                                 </dd>
-                                <dt>
-                                    @Html.DisplayNameFor(model => model.UsuarioModel.DataNascimento)
-                                </dt>
-                                <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.UsuarioModel.DataNascimento)</p>
-                                </dd>
-
                             </dl>
                         </div>
                     </div>
