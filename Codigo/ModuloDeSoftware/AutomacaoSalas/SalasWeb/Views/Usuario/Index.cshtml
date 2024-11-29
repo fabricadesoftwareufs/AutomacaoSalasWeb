@@ -46,7 +46,7 @@
                                             @Html.DisplayFor(modelItem => item.UsuarioModel.Nome)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.UsuarioModel.Cpf)
+                                            @("***." + item.UsuarioModel.Cpf.Substring(3, 3) + "." + item.UsuarioModel.Cpf.Substring(6, 3) + "-**")
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.TipoUsuarioModel.Descricao)
@@ -65,18 +65,18 @@
 
                                                 org = string.Concat(
                                                 nomeCompleto
-                                                .Split(' ') 
-                                                .Where(palavra => !palavrasIgnoradas.Contains(palavra.ToLower())) 
-                                                .Select(palavra => palavra[0]) 
-                                                ).ToUpper(); 
+                                                .Split(' ')
+                                                .Where(palavra => !palavrasIgnoradas.Contains(palavra.ToLower()))
+                                                .Select(palavra => palavra[0])
+                                                ).ToUpper();
                                             }
                                             else
-                                            {                                                
-                                                org = nomeCompleto.Substring(0, Math.Min(4, nomeCompleto.Length)).ToUpper();
+                                            {
+                                                org = new string(nomeCompleto.Take(4).ToArray()).ToUpper();
                                             }
                                         }
                                         <td>
-                                            @Html.DisplayFor(modelItem => org)
+                                            <acronym title="@nomeCompleto">@org</acronym>
                                         </td>
                                         <td>
                                             <a href="@Url.Action("Details", "Usuario", new { id = item.UsuarioModel.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
@@ -96,7 +96,7 @@
                                                         </div>
                                                         <div class="modal-body text-center">
                                                             <h5>Nome</h5><p>@item.UsuarioModel.Nome</p>
-                                                            <h5>CPF</h5> <p>@item.UsuarioModel.Cpf</p>
+                                                            <h5>CPF</h5><p>***.@item.UsuarioModel.Cpf.Substring(3, 3).@item.UsuarioModel.Cpf.Substring(6, 3)-**</p>
                                                             <h5>Tipo Usuário</h5> <p>@item.TipoUsuarioModel.Descricao</p>
                                                             <h5>Obs: </h5><p class="obs"></p>
                                                         </div>

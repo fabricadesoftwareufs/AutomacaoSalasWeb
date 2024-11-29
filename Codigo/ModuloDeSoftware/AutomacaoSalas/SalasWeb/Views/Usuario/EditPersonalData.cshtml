@@ -22,10 +22,11 @@
                                 <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
                             </div>
 
-                            <input hidden asp-for="UsuarioModel.Cpf" class="form-control" />
                             <div class="form-group col-md-4">
-                                <label asp-for="UsuarioModel.Cpf" class="control-label"></label>
-                                <input asp-for="UsuarioModel.Cpf" class="form-control" disabled />
+                                <input hidden asp-for="UsuarioModel.Cpf" class="form-control" />
+                                <label asp-for="UsuarioModel.Cpf" class="control-label">CPF</label>
+                                <input asp-for="UsuarioModel.Cpf" class="form-control" disabled
+                                       value="@($"***.{Model.UsuarioModel.Cpf.Substring(3, 3)}.{Model.UsuarioModel.Cpf.Substring(6, 3)}-**")" />
                                 <span asp-validation-for="UsuarioModel.Cpf" class="text-danger"></span>
                                 <input type="hidden" asp-for="UsuarioModel.Senha" />
                             </div>
