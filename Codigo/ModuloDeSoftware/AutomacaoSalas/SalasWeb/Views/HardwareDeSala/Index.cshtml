@@ -26,15 +26,15 @@
                     <div class="card-body">
                         <table id="table-search" class="table table-bordered table-striped">
                             <thead>
-                                <tr>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.Id)
-                                    </th>
+                                <tr>                                    
                                     <th>
                                         @Html.DisplayNameFor(model => model.MAC)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.SalaId.Titulo)
+                                        Sala
+                                    </th>
+                                    <th>
+                                        Bloco
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.TipoHardwareId.Descricao)
@@ -49,15 +49,15 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Id)
-                                        </td>
+                                    <tr>                                        
                                         <td>
                                             @Html.DisplayFor(modelItem => item.MAC)
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.SalaId.Titulo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.SalaId.BlocoTitulo)
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.TipoHardwareId.Descricao)

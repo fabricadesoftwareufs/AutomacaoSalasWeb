@@ -32,6 +32,9 @@
                                     <th>
                                         @Html.DisplayNameFor(model => model.FirstOrDefault().TipoUsuarioModel.Descricao)
                                     </th>
+                                    <th>
+                                        Organização
+                                    </th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
@@ -47,6 +50,9 @@
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.TipoUsuarioModel.Descricao)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.OrganizacaoModels)
                                         </td>
                                         <td>
                                             <a href="@Url.Action("Details", "Usuario", new { id = item.UsuarioModel.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>

@@ -66,13 +66,22 @@ namespace SalasWeb.Controllers
             var equipamentoViewModel = new EquipamentoViewModel
             {
                 EquipamentoModel = equipamentoModel,
-                SalaModel = _salaService.GetById(equipamentoModel.Sala)
+                SalaModel = _salaService.GetById(equipamentoModel.Sala),
+                HardwareDeSalaModel = equipamentoModel.HardwareDeSala.HasValue
+                    ? _hardwareDeSalaService.GetById(equipamentoModel.HardwareDeSala.Value)
+                    : null
             };
-
 
             equipamentoViewModel.BlocoModel = _blocoService.GetById(equipamentoViewModel.SalaModel.BlocoId);
             List<CodigoInfravermelhoViewModel> codigosView = new List<CodigoInfravermelhoViewModel>();
-            codigos.ForEach(c => codigosView.Add(new CodigoInfravermelhoViewModel { Codigo = c.Codigo, Id = c.Id, IdEquipamento = c.IdEquipamento, IdOperacao = c.IdOperacao, Operacao = _operacaoService.GetById(c.IdOperacao).Titulo }));
+            codigos.ForEach(c => codigosView.Add(new CodigoInfravermelhoViewModel
+            {
+                Codigo = c.Codigo,
+                Id = c.Id,
+                IdEquipamento = c.IdEquipamento,
+                IdOperacao = c.IdOperacao,
+                Operacao = _operacaoService.GetById(c.IdOperacao).Titulo
+            }));
             equipamentoViewModel.Codigos = codigosView;
 
             return View(equipamentoViewModel);
