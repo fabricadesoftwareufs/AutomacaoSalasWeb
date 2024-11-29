@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Model.ViewModel.EquipamentoViewModel>
+@model IEnumerable<Model.ViewModel.EquipamentoViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -83,6 +83,7 @@
                                             <a data-toggle="modal" data-target="#modal-remover-@item.EquipamentoModel.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
 
 
+
                                             <div class="modal fade" id="modal-remover-@item.EquipamentoModel.Id">
                                                 <div class="modal-dialog modal-sm">
                                                     <div class="modal-content card card-secondary">
@@ -92,8 +93,7 @@
                                                                 <span aria-hidden="true" class="text-white">&times;</span>
                                                             </button>
                                                         </div>
-                                                        <div class="modal-body text-center">
-                                                            <h5>Código</h5><p>@item.EquipamentoModel.Id</p>
+                                                        <div class="modal-body text-center">                                                            
                                                             <h5>Marca</h5><p>@item.EquipamentoModel.Marca</p>
                                                             <h5>Modelo</h5> <p>@item.EquipamentoModel.Modelo</p>
                                                             <h5>Descrição</h5> <p>@item.EquipamentoModel.Descricao</p>

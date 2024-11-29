@@ -61,9 +61,8 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body text-center">
-                                                            <h5>Código</h5><p>@item.Sala.Id</p>
                                                             <h5>Titulo</h5> <p>@item.Sala.Titulo</p>
-                                                            <h5>Bloco</h5> <p>@item.Sala.BlocoId</p>
+                                                            <h5>Bloco</h5> <p>@item.BlocoSala.Titulo</p>
                                                         </div>
 
                                                         @using (Html.BeginForm("Delete", "Sala", new { id = item.Sala.Id }, FormMethod.Post))

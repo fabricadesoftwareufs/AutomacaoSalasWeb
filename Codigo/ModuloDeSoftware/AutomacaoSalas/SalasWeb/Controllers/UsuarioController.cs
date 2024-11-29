@@ -63,7 +63,16 @@ namespace SalasWeb.Controllers
         public ActionResult Details(uint id)
         {
             var usuario = _usuarioService.GetById(id);
-            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = _tipoUsuarioService.GetById(usuario.TipoUsuarioId) };
+            var tipoUsuario = _tipoUsuarioService.GetById(usuario.TipoUsuarioId);
+            var organizacao = _organizacaoService.GetByIdUsuario(id).FirstOrDefault();
+
+            var usuarioView = new UsuarioViewModel
+            {
+                UsuarioModel = usuario,
+                TipoUsuarioModel = tipoUsuario,
+                OrganizacaoModel = organizacao
+            };
+
             return View(usuarioView);
         }
 

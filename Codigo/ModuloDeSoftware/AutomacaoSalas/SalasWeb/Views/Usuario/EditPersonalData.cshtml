@@ -1,4 +1,4 @@
-﻿@model Model.ViewModel.UsuarioViewModel
+@model Model.ViewModel.UsuarioViewModel
 
 @{
     ViewData["Title"] = "EditPersonalData";
@@ -29,7 +29,6 @@
                                 </div>
                                 <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
                             </div>
-
                             <div class="form-group col-md-3">
                                 <input hidden asp-for="UsuarioModel.Cpf" class="form-control" />
                                 <label asp-for="UsuarioModel.Cpf" class="control-label">CPF</label>

@@ -166,10 +166,11 @@ namespace SalasWeb.Controllers
             var salas = _salaService.GetAllByIdUsuarioOrganizacao(idUsuario);
             var usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
 
-            ViewBag.organizacoes = new SelectList(organizacoes.Select(s => new OrganizacaoModel { Id = s.Id, RazaoSocial = string.Format("{0} | {1}", s.Cnpj, s.RazaoSocial) }), "Id", "RazaoSocial");
-            ViewBag.usuarios = new SelectList(usuarios.Select(s => new UsuarioModel { Id = s.Id, Nome = string.Format("{0} | {1}", s.Cpf, s.Nome) }), "Id", "Nome");
-            ViewBag.salas = new SelectList(salas.Select(s => new SalaModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
-            ViewBag.blocos = new SelectList(blocos.Select(s => new BlocoModel { Id = s.Id, Titulo = string.Format("{0} | {1}", s.Id, s.Titulo) }), "Id", "Titulo");
+            ViewBag.organizacoes = new SelectList(organizacoes.Select(s => new OrganizacaoModel { Id = s.Id, RazaoSocial = s.RazaoSocial }), "Id", "RazaoSocial");
+            ViewBag.usuarios = new SelectList(usuarios.Select(s => new UsuarioModel { Id = s.Id, Nome = s.Nome }), "Id", "Nome");
+            ViewBag.salas = new SelectList(salas.Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo }), "Id", "Titulo");
+            ViewBag.blocos = new SelectList(blocos.Select(s => new BlocoModel { Id = s.Id, Titulo = s.Titulo }), "Id", "Titulo");
+
 
             var horarioSala = _horarioSalaService.GetById(id);
             var sala = _salaService.GetById(horarioSala.SalaId);

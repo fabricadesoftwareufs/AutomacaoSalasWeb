@@ -6,6 +6,6 @@ namespace Model.AuxModel
     {
         public UsuarioModel UsuarioModel { get; set; }
         public TipoUsuarioModel TipoUsuarioModel { get; set; }
-        public List<OrganizacaoModel> OrganizacaoModels;
+        public List<OrganizacaoModel> OrganizacaoModels { get; set; }
     }
 }
