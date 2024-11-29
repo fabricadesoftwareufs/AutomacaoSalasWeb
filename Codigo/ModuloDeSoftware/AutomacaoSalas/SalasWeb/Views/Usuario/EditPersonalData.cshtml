@@ -16,78 +16,86 @@
                         <div class="card-body">
                             <input type="hidden" asp-for="UsuarioModel.Id" />
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="row col-md-2">
-                                <label asp-for="UsuarioModel.Nome" class="control-label select-label">Nome</label>
-                            </div>
-                            <div class="row">
-                                <div class="input-group col-md-6">
-                                    <input asp-for="UsuarioModel.Nome" class="form-control" placeholder="Nome" />
+
+                            <div class="form-group col-md-6">
+                                <label asp-for="UsuarioModel.Nome" class="control-label"></label>
+                                <div class="input-group">
+                                    <input asp-for="UsuarioModel.Nome" class="form-control" />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-user"></span>
                                         </div>
                                     </div>
                                 </div>
+                                <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
                             </div>
-                            <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
-                            <div class="row col-md-2 mt-3">
-                                <label asp-for="UsuarioModel.Cpf" class="control-label select-label">CPF</label>
-                            </div>
-                            <div class="row">
-                                <div class="input-group col-md-3">
-                                    <input asp-for="UsuarioModel.Cpf" class="form-control" placeholder="CPF" disabled />
+
+                            <div class="form-group col-md-3">
+                                <input hidden asp-for="UsuarioModel.Cpf" class="form-control" />
+                                <label asp-for="UsuarioModel.Cpf" class="control-label">CPF</label>
+                                <div class="input-group">
+                                    <input asp-for="UsuarioModel.Cpf" class="form-control" disabled
+                                           value="@($"***.{Model.UsuarioModel.Cpf.Substring(3, 3)}.{Model.UsuarioModel.Cpf.Substring(6, 3)}-**")" />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-id-card"></span>
                                         </div>
                                     </div>
                                 </div>
+                                <span asp-validation-for="UsuarioModel.Cpf" class="text-danger"></span>
+                                <input type="hidden" asp-for="UsuarioModel.Senha" />
                             </div>
-                            <span asp-validation-for="UsuarioModel.Cpf" class="text-danger"></span>
-                            <div class="row col-md-2 mt-3">
-                                <label asp-for="OrganizacaoModel.RazaoSocial" class="control-label select-label">Organização</label>
-                            </div>
-                            <div class="row">
-                                <div class="input-group col-md-6">
-                                    <input asp-for="OrganizacaoModel.RazaoSocial" class="form-control" placeholder="Organização" disabled />
+
+                            <div class="form-group col-md-6">
+                                <label asp-for="OrganizacaoModel" class="control-label"></label>
+                                <div class="input-group">
+                                    <input asp-for="OrganizacaoModel.RazaoSocial" disabled class="form-control" />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fa fa-university"></span>
                                         </div>
                                     </div>
                                 </div>
+                                <input type="hidden" asp-for="@Model.OrganizacaoModel.Id" />
+                                <input type="hidden" asp-for="@Model.OrganizacaoModel.Cnpj" />
+                                <input type="hidden" asp-for="@Model.OrganizacaoModel.RazaoSocial" />
                             </div>
-                            <div class="row col-md-2 mt-3">
-                                <label asp-for="TipoUsuarioModel.Descricao" class="control-label select-label">Tipo de Usuário</label>
-                            </div>
-                            <div class="row">
-                                <div class="input-group col-md-4">
-                                    <input asp-for="TipoUsuarioModel.Descricao" class="form-control" placeholder="Tipo de Usuário" disabled />
+
+                            <div class="form-group col-md-4">
+                                <label asp-for="TipoUsuarioModel.Id" class="control-label"></label>
+                                <div class="input-group">
+                                    <input asp-for="TipoUsuarioModel.Descricao" class="form-control" disabled />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-lock"></span>
                                         </div>
                                     </div>
                                 </div>
+                                <input type="hidden" asp-for="@Model.TipoUsuarioModel.Id" />
+                                <input type="hidden" asp-for="@Model.TipoUsuarioModel.Descricao" />
                             </div>
-                            <div class="row col-md-2 mt-3">
-                                <label asp-for="UsuarioModel.DataNascimento" class="control-label select-label">Data de Nascimento</label>
-                            </div>
-                            <div class="row">
-                                <div class="input-group col-md-3">
-                                    <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control" />
+
+                            <div class="form-group col-md-3">
+                                <label asp-for="UsuarioModel.DataNascimento" class="control-label"></label>
+                                <div class="input-group">
+                                    <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control"
+                                           value="@if(@Model.UsuarioModel.DataNascimento != null){
+                                @Model.UsuarioModel.DataNascimento.ToString("yyyy-MM-dd")
+}else{
+                                @Model.UsuarioModel.DataNascimento
+}" />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-birthday-cake"></span>
                                         </div>
                                     </div>
                                 </div>
+                                <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
                             </div>
-                            <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
                         </div>
 
                         <div class="card-footer">
-                            <div class="col-md-4">
+                            <div class=" col-md-4">
                                 <input type="submit" value="Salvar" class="btn btn-success" /> |
                                 <a class="btn btn-primary" asp-action="Index">Voltar</a>
                             </div>
@@ -130,11 +138,11 @@ else if (TempData["mensagemErro"] != null)
 
                 if (idade < 5 || idade > 100) {
                     alert("A data de nascimento deve resultar em uma idade entre 5 e 100 anos.");
-                    return false;
+                    return false; // Impede o envio do formulário
                 }
             }
 
-            return true;
+            return true; // Permite o envio do formulário
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
