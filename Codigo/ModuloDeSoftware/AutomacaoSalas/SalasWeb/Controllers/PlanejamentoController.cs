@@ -6,6 +6,7 @@ using Model.AuxModel;
 using Model.ViewModel;
 using Service;
 using Service.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -66,6 +67,13 @@ namespace SalasWeb.Controllers
 
             try
             {
+
+                if (planejamentoModel.Planejamento.DataInicio < DateTime.Today)
+                {
+                    TempData["mensagemErro"] = "Não é possível reservar uma sala para uma data que já passou.";
+                    return View(planejamentoModel);
+                }
+
                 if (ModelState.IsValid)
                 {
                     if (_planejamentoService.InsertPlanejamentoWithListHorarios(planejamentoModel))
@@ -114,6 +122,11 @@ namespace SalasWeb.Controllers
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(planejamentoModel.Organizacao);
             try
             {
+                if (planejamentoModel.Planejamento.DataInicio < DateTime.Today)
+                {
+                    TempData["mensagemErro"] = "Não é possível reservar uma sala para uma data que já passou.";
+                    return View(planejamentoModel);
+                }
                 if (ModelState.IsValid)
                 {
                     if (_planejamentoService.Update(planejamentoModel.Planejamento))
@@ -146,7 +159,7 @@ namespace SalasWeb.Controllers
             try
             {
                 if (_planejamentoService.Remove(id, excluirReservas))
-                    TempData["mensagemSucesso"] = "Planejmento removido com sucesso!";
+                    TempData["mensagemSucesso"] = "Planejamento removido com sucesso!";
                 else
                     TempData["mensagemErro"] = "Houve um problema ou remover o Planejamento, tente novamente em alguns minutos";
 
