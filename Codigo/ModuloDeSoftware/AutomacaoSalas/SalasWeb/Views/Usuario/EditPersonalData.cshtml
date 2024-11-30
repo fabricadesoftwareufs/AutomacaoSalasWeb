@@ -1,4 +1,4 @@
-﻿@model Model.ViewModel.UsuarioViewModel
+@model Model.ViewModel.UsuarioViewModel
 
 @{
     ViewData["Title"] = "EditPersonalData";
@@ -16,24 +16,45 @@
                         <div class="card-body">
                             <input type="hidden" asp-for="UsuarioModel.Id" />
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                             <div class="form-group col-md-6">
                                 <label asp-for="UsuarioModel.Nome" class="control-label"></label>
-                                <input asp-for="UsuarioModel.Nome" class="form-control" />
+                                <div class="input-group">
+                                    <input asp-for="UsuarioModel.Nome" class="form-control" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
                             </div>
-
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <input hidden asp-for="UsuarioModel.Cpf" class="form-control" />
                                 <label asp-for="UsuarioModel.Cpf" class="control-label">CPF</label>
-                                <input asp-for="UsuarioModel.Cpf" class="form-control" disabled
-                                       value="@($"***.{Model.UsuarioModel.Cpf.Substring(3, 3)}.{Model.UsuarioModel.Cpf.Substring(6, 3)}-**")" />
+                                <div class="input-group">
+                                    <input asp-for="UsuarioModel.Cpf" class="form-control" disabled
+                                           value="@($"***.{Model.UsuarioModel.Cpf.Substring(3, 3)}.{Model.UsuarioModel.Cpf.Substring(6, 3)}-**")" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-id-card"></span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <span asp-validation-for="UsuarioModel.Cpf" class="text-danger"></span>
                                 <input type="hidden" asp-for="UsuarioModel.Senha" />
                             </div>
 
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label asp-for="OrganizacaoModel" class="control-label"></label>
-                                <input asp-for="OrganizacaoModel.RazaoSocial" disabled class="form-control" />
+                                <div class="input-group">
+                                    <input asp-for="OrganizacaoModel.RazaoSocial" disabled class="form-control" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fa fa-university"></span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <input type="hidden" asp-for="@Model.OrganizacaoModel.Id" />
                                 <input type="hidden" asp-for="@Model.OrganizacaoModel.Cnpj" />
                                 <input type="hidden" asp-for="@Model.OrganizacaoModel.RazaoSocial" />
@@ -41,19 +62,33 @@
 
                             <div class="form-group col-md-4">
                                 <label asp-for="TipoUsuarioModel.Id" class="control-label"></label>
-                                <input asp-for="TipoUsuarioModel.Descricao" class="form-control" disabled />
+                                <div class="input-group">
+                                    <input asp-for="TipoUsuarioModel.Descricao" class="form-control" disabled />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <input type="hidden" asp-for="@Model.TipoUsuarioModel.Id" />
                                 <input type="hidden" asp-for="@Model.TipoUsuarioModel.Descricao" />
                             </div>
 
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label asp-for="UsuarioModel.DataNascimento" class="control-label"></label>
-                                <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control"
-                                       value="@if(@Model.UsuarioModel.DataNascimento != null){
+                                <div class="input-group">
+                                    <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control"
+                                           value="@if(@Model.UsuarioModel.DataNascimento != null){
                                 @Model.UsuarioModel.DataNascimento.ToString("yyyy-MM-dd")
 }else{
                                 @Model.UsuarioModel.DataNascimento
 }" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-birthday-cake"></span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
                             </div>
                         </div>
@@ -81,7 +116,6 @@ else if (TempData["mensagemErro"] != null)
 }
 
 @section Scripts {
-
     <script>
         $(document).ready(function () {
             if (document.querySelector('#mensagem-retorno'))

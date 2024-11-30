@@ -19,17 +19,17 @@
                         <div class="col-md-10">
                             <dl class="dl-horizontal">
                                 <dt>
-                                    Sala
-                                </dt>
-                                <dd>
-                                    <p class="form-control">@Html.DisplayFor(model => model.SalaId.Titulo)</p>
-                                </dd>
-                                <dt>
                                     Bloco
                                 </dt>
                                 <dd>
                                     <p class="form-control">@Html.DisplayFor(model => model.SalaId.BlocoTitulo)</p>
                                 </dd>                                
+                                <dt>
+                                    Sala
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.SalaId.Titulo)</p>
+                                </dd>
                                 <dt>
                                     @Html.DisplayNameFor(model => model.MAC)
                                 </dt>
@@ -46,7 +46,7 @@
                                     </dd>
                                 }
                                 <dt>
-                                    @Html.DisplayNameFor(model => model.TipoHardwareId.Descricao)
+                                    Tipo de Hardware
                                 </dt>
                                 <dd>
                                     <p class="form-control">@Html.DisplayFor(model => model.TipoHardwareId.Descricao)</p>

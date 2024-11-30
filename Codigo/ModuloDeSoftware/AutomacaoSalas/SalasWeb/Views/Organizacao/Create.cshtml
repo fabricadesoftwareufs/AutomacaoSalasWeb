@@ -15,19 +15,27 @@
 
                     <form asp-action="Create">
                         <div class="card-body">
-
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group col-md-7">
                                 <label asp-for="RazaoSocial" class="control-label"></label>
-                                <input asp-for="RazaoSocial" class="form-control" />
+                                <div class="input-group">
+                                    <input asp-for="RazaoSocial" class="form-control" />
+                                    <span class="input-group-text">
+                                        <i class="fas fa-building"></i> 
+                                    </span>
+                                </div>
                                 <span asp-validation-for="RazaoSocial" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-4">
                                 <label asp-for="Cnpj" class="control-label"></label>
-                                <input asp-for="Cnpj" class="form-control" placeholder="Apenas os Digitos"/>
+                                <div class="input-group">
+                                    <input asp-for="Cnpj" class="form-control" placeholder="Apenas os Dígitos" />
+                                    <span class="input-group-text">
+                                        <i class="fas fa-briefcase"></i> 
+                                    </span>
+                                </div>
                                 <span asp-validation-for="Cnpj" class="text-danger"></span>
                             </div>
-
                         </div>
                         <div class="card-footer">
                             <div class="col-md-4">
