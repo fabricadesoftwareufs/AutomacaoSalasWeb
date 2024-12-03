@@ -12,7 +12,6 @@
                     <div class="card-header">
                         <h2 class="card-title">Cadastrar Nova Organização</h2>
                     </div>
-
                     <form asp-action="Create">
                         <div class="card-body">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -29,7 +28,7 @@
                             <div class="form-group col-md-4">
                                 <label asp-for="Cnpj" class="control-label"></label>
                                 <div class="input-group">
-                                    <input asp-for="Cnpj" class="form-control" placeholder="Apenas os Dígitos" />
+                                    <input asp-for="Cnpj" class="form-control" placeholder="CNPJ" />
                                     <span class="input-group-text">
                                         <i class="fas fa-briefcase"></i> 
                                     </span>
@@ -69,6 +68,7 @@ else if (TempData["mensagemErro"] != null)
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/customCPNJ.js"></script>
     <script src="~/js/sweet-alert.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
