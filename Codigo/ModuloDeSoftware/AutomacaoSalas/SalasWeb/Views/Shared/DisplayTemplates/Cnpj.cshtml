@@ -1,0 +1,13 @@
+﻿@model string
+
+@{
+    if (!string.IsNullOrWhiteSpace(Model) && Model.Length == 14)
+    {
+        var cnpjFormatado = $"{Model.Substring(0, 2)}.{Model.Substring(2, 3)}.{Model.Substring(5, 3)}/{Model.Substring(8, 4)}-{Model.Substring(12, 2)}";
+        @cnpjFormatado
+    }
+    else
+    {
+        @Model
+    }
+}
