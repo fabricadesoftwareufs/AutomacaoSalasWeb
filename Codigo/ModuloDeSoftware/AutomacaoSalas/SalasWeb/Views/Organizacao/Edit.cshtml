@@ -20,7 +20,7 @@
                                 <div class="input-group">
                                     <input asp-for="RazaoSocial" class="form-control" />
                                     <span class="input-group-text">
-                                        <i class="fas fa-building"></i> 
+                                        <i class="fas fa-building"></i>
                                     </span>
                                 </div>
                                 <span asp-validation-for="RazaoSocial" class="text-danger"></span>
@@ -28,9 +28,9 @@
                             <div class="form-group col-md-4">
                                 <label asp-for="Cnpj" class="control-label"></label>
                                 <div class="input-group">
-                                    <input asp-for="Cnpj" class="form-control" />
+                                    <input asp-for="Cnpj" class="form-control" id="cnpj" />
                                     <span class="input-group-text">
-                                        <i class="fas fa-briefcase"></i> 
+                                        <i class="fas fa-briefcase"></i>
                                     </span>
                                 </div>
                                 <span asp-validation-for="Cnpj" class="text-danger"></span>
@@ -59,9 +59,13 @@ else if (TempData["mensagemErro"] != null)
 }
 
 @section Scripts {
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
     <script>
         $(document).ready(function () {
+            $('#cnpj').mask('00.000.000/0000-00');
+            if ($('#cnpj').val()) {
+                $('#cnpj').trigger('input');
+            }
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
         });

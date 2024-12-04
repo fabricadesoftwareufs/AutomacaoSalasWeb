@@ -38,7 +38,7 @@
                                 {
                                     <tr>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Cnpj)
+                                            @Html.DisplayFor(modelItem => item.Cnpj, "Cnpj") 
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.RazaoSocial)
@@ -48,8 +48,6 @@
                                             <a href="@Url.Action("Edit", "Organizacao", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
 
                                             <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
-
-
 
                                             <div class="modal fade" id="modal-remover-@item.Id">
                                                 <div class="modal-dialog modal-sm">
