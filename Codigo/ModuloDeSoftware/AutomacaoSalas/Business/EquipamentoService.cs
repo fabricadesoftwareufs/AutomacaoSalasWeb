@@ -141,28 +141,32 @@ namespace Service
             {
                 try
                 {
-                    var equipamento = _context.Equipamentos.Where(e => e.Id == id).FirstOrDefault();
+                    var equipamento = _context.Equipamentos.FirstOrDefault(e => e.Id == id);
+                    if (equipamento == null)
+                        throw new ServiceException("Equipamento não encontrado.");
+
+                    var monitoramentos = _context.Monitoramentos.Where(m => m.Equipamento == id).ToList();
+                    if (monitoramentos.Any())
+                    {
+                        _context.Monitoramentos.RemoveRange(monitoramentos);
+                        _context.SaveChanges(); 
+                    }
+
                     var codigoService = new CodigoInfravermelhoService(_context);
                     var codigos = codigoService.GetAllByEquipamento(id);
                     if (codigos != null)
                         codigoService.RemoveAll(codigos);
-                    if (equipamento != null)
-                    {
-                        _context.Equipamentos.Remove(equipamento);
-                        var save = _context.SaveChanges() == 1 ? true : false;
-                        transaction.Commit();
-                        return save;
-                    }
-                    else
-                    {
-                        throw new ServiceException("Algo deu errado, tente novamente em alguns minutos.");
-                    }
+
+                    _context.Equipamentos.Remove(equipamento);
+                    var save = _context.SaveChanges() > 0;
+
+                    transaction.Commit();
+                    return save;
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
                     transaction.Rollback();
-                    throw e;
-
+                    throw new ServiceException("Erro ao remover o equipamento.", ex);
                 }
             }
         }
