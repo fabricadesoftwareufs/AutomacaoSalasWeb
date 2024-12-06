@@ -7,7 +7,7 @@ public partial class Monitoramento
 {
     public int Id { get; set; }
 
-    public string Estado { get; set; } = null!;
+    public sbyte Estado { get; set; }
 
     public int Equipamento { get; set; }
 

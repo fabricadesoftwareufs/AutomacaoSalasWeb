@@ -141,28 +141,39 @@ namespace Service
             {
                 try
                 {
-                    var equipamento = _context.Equipamentos.Where(e => e.Id == id).FirstOrDefault();
-                    var codigoService = new CodigoInfravermelhoService(_context);
-                    var codigos = codigoService.GetAllByEquipamento(id);
-                    if (codigos != null)
-                        codigoService.RemoveAll(codigos);
-                    if (equipamento != null)
+                    var equipamento = _context.Equipamentos.FirstOrDefault(e => e.Id == id);
+
+                    if (equipamento == null)
                     {
-                        _context.Equipamentos.Remove(equipamento);
-                        var save = _context.SaveChanges() == 1 ? true : false;
-                        transaction.Commit();
-                        return save;
+                        throw new ServiceException("Equipamento não encontrado.");
                     }
-                    else
+
+                    var monitoramentos = _context.Monitoramentos.Where(m => m.Equipamento == id).ToList();
+
+                    if (monitoramentos.Any())
                     {
-                        throw new ServiceException("Algo deu errado, tente novamente em alguns minutos.");
+                        _context.Monitoramentos.RemoveRange(monitoramentos);
+                        _context.SaveChanges(); 
                     }
+
+                    var codigosInfravermelho = _context.Codigoinfravermelhos.Where(ci => ci.Equipamento == id).ToList();
+
+                    if (codigosInfravermelho.Any())
+                    {
+                        _context.Codigoinfravermelhos.RemoveRange(codigosInfravermelho);
+                        _context.SaveChanges(); 
+                    }
+
+                    _context.Equipamentos.Remove(equipamento);
+                    var save = _context.SaveChanges() > 0;
+
+                    transaction.Commit();
+                    return save;
                 }
                 catch (Exception e)
                 {
                     transaction.Rollback();
                     throw e;
-
                 }
             }
         }
