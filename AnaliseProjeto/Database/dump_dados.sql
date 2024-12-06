@@ -113,7 +113,8 @@ INSERT INTO `usuarioorganizacao` (`id`, `organizacao`, `usuario`) VALUES
 	(1, 1, 1),
 	(3, 1, 3),
 	(2, 1, 2),
-	(4, 1, 4);
+	(4, 1, 4),
+	(5, 1, 5);
 
 
 -- Copiando dados para a tabela automacaosalas.horariosala: ~0 rows (aproximadamente)
