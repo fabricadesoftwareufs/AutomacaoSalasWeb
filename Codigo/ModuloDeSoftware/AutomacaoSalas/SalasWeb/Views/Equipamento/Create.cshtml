@@ -109,7 +109,9 @@
 
 
                                 <div id="cbotao" class="form-group align-element">
-                                    <a id="add-novo-horario" onclick="AdicionarNovoCodigo()" class="btn btn-primary text-white"><i class="nav-icon fa fa-plus"></i> </a>
+                                    <a id="add-novo-horario" onclick="AdicionarNovoCodigo();document.getElementById('codigo').value=''; " class="btn btn-primary text-white">
+                                        <i class="nav-icon fa fa-plus"></i>
+                                    </a>
                                 </div>
 
                             </div>
@@ -174,5 +176,7 @@ else if (TempData["mensagemErro"] != null)
     <script src="~/js/equipamento-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
