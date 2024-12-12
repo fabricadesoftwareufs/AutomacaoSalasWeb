@@ -38,7 +38,11 @@
                             </div>
                             <div class="row">
                                 <div class="input-group col-md-3">
-                                    <input id="login_auth" asp-for="UsuarioModel.Cpf" class="form-control" placeholder="CPF" oninput="validaCpf()">
+                                    <input id="login_auth"
+                                           asp-for="UsuarioModel.Cpf"
+                                           class="form-control"
+                                           placeholder="CPF"
+                                           oninput="validaCpf()">
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-id-card"></span>
@@ -46,7 +50,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <span id="span_cpf" asp-validation-for="UsuarioModel.Cpf" class="invalid-msg invalid-feedback" style="margin-top: 10px; color: red;"></span>
+                            <span id="span_cpf"
+                                  asp-validation-for="UsuarioModel.Cpf"
+                                  class="invalid-feedback"
+                                  style="color: red;">
+                            </span>
+                            <span asp-validation-for="UsuarioModel.Cpf" class="text-danger"> </span>
 
                             <div class="row col-md-2 mt-3">
                                 <label asp-for="TipoUsuarioModel.Id" class="control-label select-label">Organização</label>
