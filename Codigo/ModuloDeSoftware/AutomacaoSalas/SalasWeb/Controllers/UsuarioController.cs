@@ -103,7 +103,7 @@ namespace SalasWeb.Controllers
                     return View(usuarioViewModel);
                 }
 
-                if (string.IsNullOrEmpty(usuarioViewModel.UsuarioModel.Cpf) || !Methods.ValidarCpf(usuarioViewModel.UsuarioModel.Cpf))
+                if (!Methods.ValidarCpf(usuarioViewModel.UsuarioModel.Cpf))
                 {
                     TempData["mensagemErro"] = "CPF inválido!";
                     return View(usuarioViewModel);
