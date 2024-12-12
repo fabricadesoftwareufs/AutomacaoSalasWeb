@@ -2,7 +2,6 @@
     const input = document.querySelector('#Cnpj');
     const errorSpan = document.querySelector('#span_cnpj');
 
-    // Máscara ao perder o foco
     input.addEventListener('blur', function () {
         if (input.value.replace(/\D/g, '').length === 0) {
             input.value = '__.___.___/____-__';
@@ -17,7 +16,6 @@
         }
     });
 
-    // Limpa o valor ao focar no campo
     input.addEventListener('focus', function () {
         if (input.dataset.empty === 'true') {
             input.value = '';
@@ -25,9 +23,8 @@
         }
     });
 
-    // Aplica a formatação conforme o usuário digita
     input.addEventListener('input', function () {
-        let value = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+        let value = input.value.replace(/\D/g, '');
         let formattedValue = '';
 
         if (value.length > 0) {
@@ -47,12 +44,11 @@
         input.value = formattedValue;
     });
 
-    // Função para validar o CNPJ
     function validaCnpjLocal(cnpj) {
-        cnpj = cnpj.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
+        cnpj = cnpj.replace(/[^\d]+/g, ''); 
 
-        if (cnpj.length !== 14) return false; // Verifica se tem 14 dígitos
-        if (/^(\d)\1+$/.test(cnpj)) return false; // Elimina CNPJs inválidos conhecidos
+        if (cnpj.length !== 14) return false; 
+        if (/^(\d)\1+$/.test(cnpj)) return false; 
 
         let tamanho = cnpj.length - 2;
         let numeros = cnpj.substring(0, tamanho);
