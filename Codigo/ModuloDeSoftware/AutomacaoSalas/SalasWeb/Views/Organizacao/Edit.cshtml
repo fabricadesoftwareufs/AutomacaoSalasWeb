@@ -28,11 +28,12 @@
                             <div class="form-group col-md-4">
                                 <label asp-for="Cnpj" class="control-label"></label>
                                 <div class="input-group">
-                                    <input asp-for="Cnpj" class="form-control" id="cnpj" />
+                                    <input asp-for="Cnpj" class="form-control" id="Cnpj" placeholder="CNPJ" />
                                     <span class="input-group-text">
                                         <i class="fas fa-briefcase"></i>
                                     </span>
                                 </div>
+                                <span id="span_cnpj" class="text-danger" style="display: none;"></span>
                                 <span asp-validation-for="Cnpj" class="text-danger"></span>
                             </div>
                         </div>
