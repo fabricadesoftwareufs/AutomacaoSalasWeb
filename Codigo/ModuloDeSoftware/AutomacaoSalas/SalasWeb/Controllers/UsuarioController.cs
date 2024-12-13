@@ -85,7 +85,6 @@ namespace SalasWeb.Controllers
             return View();
         }
 
-        // POST: Usuario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
@@ -97,7 +96,7 @@ namespace SalasWeb.Controllers
             usuarioViewModel.OrganizacaoModel = _organizacaoService.GetById(usuarioViewModel.OrganizacaoModel.Id);
 
             if (ModelState.IsValid)
-            {                
+            {
                 if (!Methods.ValidarDataNascimento(usuarioViewModel.UsuarioModel.DataNascimento))
                 {
                     ModelState.AddModelError("UsuarioModel.DataNascimento", "Data de nascimento inválida.");
@@ -105,12 +104,13 @@ namespace SalasWeb.Controllers
                 }
 
                 if (!Methods.ValidarCpf(usuarioViewModel.UsuarioModel.Cpf))
-                    return RedirectToAction("Create", "Usuario", new { msg = "invalidCpf" });
+                {
+                    TempData["mensagemErro"] = "CPF inválido!";
+                    return View(usuarioViewModel);
+                }
 
-                // Criando usuario que será passado para a autenticação.
                 var sucesso = new LoginViewModel { Login = usuarioViewModel.UsuarioModel.Cpf, Senha = usuarioViewModel.UsuarioModel.Senha };
 
-                // Informações do objeto
                 usuarioViewModel.UsuarioModel.Cpf = Methods.CleanString(usuarioViewModel.UsuarioModel.Cpf);
                 usuarioViewModel.UsuarioModel.Senha = Criptography.GeneratePasswordHash(usuarioViewModel.UsuarioModel.Senha);
 
@@ -124,12 +124,13 @@ namespace SalasWeb.Controllers
                     TempData["mensagemErro"] = se.Message;
                     return View(usuarioViewModel);
                 }
-                            
+
                 return RedirectToAction("Index", "Usuario");
             }
 
             return View(usuarioViewModel);
         }
+
 
         // GET: Usuario/Edit/5
         [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]

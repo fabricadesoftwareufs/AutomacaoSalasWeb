@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     const input = document.querySelector('#Cnpj');
     const errorSpan = document.querySelector('#span_cnpj');
 
