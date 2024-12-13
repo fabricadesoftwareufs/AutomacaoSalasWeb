@@ -30,7 +30,7 @@ input.addEventListener('input', function () {
     }
 
     input.value = formattedValue;
-}); 
+});
 
 input.addEventListener('blur', function () {
     if (input.value.replace(/\D/g, '').length === 0) {
