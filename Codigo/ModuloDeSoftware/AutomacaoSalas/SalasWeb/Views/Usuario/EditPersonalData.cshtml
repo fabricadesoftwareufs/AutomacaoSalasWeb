@@ -34,7 +34,7 @@
                                 <label asp-for="UsuarioModel.Cpf" class="control-label">CPF</label>
                                 <div class="input-group">
                                     <input asp-for="UsuarioModel.Cpf" class="form-control" disabled
-                                           value="@($"***.{Model.UsuarioModel.Cpf.Substring(3, 3)}.{Model.UsuarioModel.Cpf.Substring(6, 3)}-**")" />
+                                           value="@($"{Model.UsuarioModel.Cpf.Substring(0, 3)}.{Model.UsuarioModel.Cpf.Substring(3, 3)}.{Model.UsuarioModel.Cpf.Substring(6, 3)}-{Model.UsuarioModel.Cpf.Substring(9, 2)}")" />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-id-card"></span>
