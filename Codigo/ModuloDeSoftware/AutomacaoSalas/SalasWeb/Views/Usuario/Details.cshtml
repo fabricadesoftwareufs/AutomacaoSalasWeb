@@ -28,7 +28,7 @@
                                     @Html.DisplayNameFor(model => model.UsuarioModel.Cpf)
                                 </dt>
                                 <dd>
-                                    <p class="form-control">@($"***.{Model.UsuarioModel.Cpf.Substring(3, 3)}.{Model.UsuarioModel.Cpf.Substring(6, 3)}-**")</p>
+                                    <p class="form-control">@Html.DisplayFor(model => model.UsuarioModel.Cpf, "Cpf")</p>
                                 </dd>
                                 <dt>
                                     @org

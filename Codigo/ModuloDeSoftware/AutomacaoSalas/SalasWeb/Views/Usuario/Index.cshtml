@@ -46,7 +46,7 @@
                                             @Html.DisplayFor(modelItem => item.UsuarioModel.Nome)
                                         </td>
                                         <td>
-                                            @("***." + item.UsuarioModel.Cpf.Substring(3, 3) + "." + item.UsuarioModel.Cpf.Substring(6, 3) + "-**")
+                                            @Html.DisplayFor(modelItem => item.UsuarioModel.Cpf,"Cpf")
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.TipoUsuarioModel.Descricao)
