@@ -61,3 +61,7 @@
 .select-label {
     margin: auto 5px auto 0;
 }
+
+textarea {
+    resize: none !important;
+}
