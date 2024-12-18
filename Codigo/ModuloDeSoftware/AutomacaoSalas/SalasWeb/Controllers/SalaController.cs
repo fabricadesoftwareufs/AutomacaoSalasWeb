@@ -83,7 +83,7 @@ namespace SalasWeb.Controllers
                     if (salaInserida)
                     {
                         TempData["mensagemSucesso"] = "Sala inserida com sucesso!";
-                        return RedirectToAction(nameof(Index)); ;
+                        return RedirectToAction(nameof(Index)); 
                     }
                     else
                     {
