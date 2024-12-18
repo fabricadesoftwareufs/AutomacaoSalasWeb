@@ -77,18 +77,20 @@ namespace SalasWeb.Controllers
                     if (_hardwareService.Insert(hardware, idUsuario))
                     {
                         TempData["mensagemSucesso"] = "Hardware adicionado com sucesso!";
-                        return RedirectToAction(nameof(Index));
                     }
                     else
+                    {
                         TempData["mensagemErro"] = "Houve um problema ao tentar inserir o hardware, tente novamente em alguns minutos!";
-                }
+                        return View(hardware);
+                    }
+                }               
             }
             catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
+                return View(hardware);
             }
-
-            return View(hardware);
+            return RedirectToAction(nameof(Index));
         }
 
 
