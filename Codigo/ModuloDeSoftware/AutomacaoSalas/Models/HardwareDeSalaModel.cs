@@ -14,6 +14,7 @@ namespace Model
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Código")]
         public uint Id { get; set; }
+
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "MAC")]
         [MinLength(17), MaxLength(17)]
@@ -27,13 +28,12 @@ namespace Model
         public uint TipoHardwareId { get; set; }
         [Display(Name = "Uuid")]
         [StringLength(75, ErrorMessage = "Máximo são 75 caracteres")]
-        public string Uuid { get; set; }
+        public string? Uuid { get; set; } = null;
 
         [StringLength(15, ErrorMessage = "Máximo são 15 caracteres")]
-        public string Ip { get; set; }
-
+        public string? Ip { get; set; } = null;
         [StringLength(400, ErrorMessage = "Máximo são 400 caracteres")]
-        public string Token { get; set; }
+        public string? Token { get; set; } = null;
         public bool Registrado { get; set; }
 
         // Variaveis auxiliares

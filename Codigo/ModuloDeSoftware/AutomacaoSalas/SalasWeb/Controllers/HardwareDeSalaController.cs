@@ -80,14 +80,16 @@ namespace SalasWeb.Controllers
                         return RedirectToAction(nameof(Index));
                     }
                     else
-                        TempData["mensagemErro"] = "Houve um problema ao tentar inserir o hardware, tente novamente em alguns minutos!";
+                    {
+                        TempData["mensagemErro"] = "Houve um problema ao tentar inserir o hardware, tente novamente!";
+                    }
                 }
             }
             catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
+                return View(hardware);
             }
-
             return View(hardware);
         }
 
