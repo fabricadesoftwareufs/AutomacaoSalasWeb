@@ -154,17 +154,15 @@ else if (TempData["mensagemErro"] != null)
         });
 
         function mostraInputIP() {
-
             let texto = $("#select-tipo-hardware option:selected").text();
 
-            if (texto == "CONTROLADOR DE SALA") {
-                document.getElementById('div-input-ip').hidden = false;
+            if (texto === "CONTROLADOR DE SALA") {
+                $('#div-input-ip').show();
             } else {
-                $('#input-ip').val = '';
-                document.getElementById('div-input-ip').hidden = true;
+                $('#input-ip').val(''); 
+                $('#div-input-ip').hide();
             }
         }
-
     </script>
 
     <script src="~/js/load-itens-script.js"></script>
