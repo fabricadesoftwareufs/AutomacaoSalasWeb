@@ -29,40 +29,40 @@ namespace Service
                    {
                        Id = ir.Id,
                        Codigo = ir.Codigo,
-                       IdEquipamento = ir.Equipamento,
-                       IdOperacao = ir.Operacao,
+                       IdEquipamento = ir.IdEquipamento,
+                       IdOperacao = ir.IdOperacao,
                    }).FirstOrDefault();
 
         public CodigoInfravermelhoModel GetByIdOperacaoAndIdEquipamento(int idEquipamento, int idOperacao)
             => _context.Codigoinfravermelhos
-                   .Where(ir => ir.Equipamento == idEquipamento && ir.Operacao == idOperacao)
+                   .Where(ir => ir.IdEquipamento == idEquipamento && ir.IdOperacao == idOperacao)
                    .Select(ir => new CodigoInfravermelhoModel
                    {
                        Id = ir.Id,
                        Codigo = ir.Codigo,
-                       IdEquipamento = ir.Equipamento,
-                       IdOperacao = ir.Operacao,
+                       IdEquipamento = ir.IdEquipamento,
+                       IdOperacao = ir.IdOperacao,
                    }).FirstOrDefault();
 
         public List<CodigoInfravermelhoModel> GetAllByEquipamento(int idEquipamento)
         => _context.Codigoinfravermelhos
-        .Where(cs => cs.Equipamento == idEquipamento)
+        .Where(cs => cs.IdEquipamento == idEquipamento)
         .Select(cs => new CodigoInfravermelhoModel
         {
             Id = cs.Id,
-            IdEquipamento = cs.Equipamento,
+            IdEquipamento = cs.IdEquipamento,
             Codigo = cs.Codigo,
-            IdOperacao = cs.Operacao
+            IdOperacao = cs.IdOperacao
         }).ToList();
 
         public List<CodigoInfravermelhoModel> GetAllByUuidHardware(string uuid)
          => _context.Codigoinfravermelhos
           .Join(_context.Equipamentos,
-             codigo => codigo.Equipamento,
+             codigo => codigo.IdEquipamento,
              equip => equip.Id,
              (codigo, equip) => new { Codigo = codigo, Equipamento = equip })
           .Join(_context.Hardwaredesalas,
-             eq => eq.Equipamento.HardwareDeSala,
+             eq => eq.Equipamento.IdHardwareDeSala,
              hd => hd.Id,
              (eq, hd) => new { Equipamento = eq, Hardware = hd })
           .Where(cs => !string.IsNullOrWhiteSpace(cs.Hardware.Uuid)
@@ -70,9 +70,9 @@ namespace Service
           .Select(cs => new CodigoInfravermelhoModel
           {
              Id = cs.Equipamento.Codigo.Id,
-             IdEquipamento = cs.Equipamento.Codigo.Equipamento,
+             IdEquipamento = cs.Equipamento.Codigo.IdEquipamento,
              Codigo = cs.Equipamento.Codigo.Codigo,
-             IdOperacao = cs.Equipamento.Codigo.Operacao
+             IdOperacao = cs.Equipamento.Codigo.IdOperacao
           }).ToList();
 
        
@@ -106,8 +106,8 @@ namespace Service
         {
             Id = codigo.Id,
             Codigo = codigo.Codigo,
-            Equipamento = codigo.IdEquipamento,
-            Operacao = codigo.IdOperacao
+            IdEquipamento = codigo.IdEquipamento,
+            IdOperacao = codigo.IdOperacao
         };
     }
 }

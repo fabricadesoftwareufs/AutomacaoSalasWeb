@@ -9,25 +9,25 @@ public partial class Hardwaredesala
 
     public string Mac { get; set; } = null!;
 
-    public uint Sala { get; set; }
+    public uint IdSala { get; set; }
 
-    public uint TipoHardware { get; set; }
+    public uint IdTipoHardware { get; set; }
 
     public string? Ip { get; set; }
 
     public string? Uuid { get; set; }
 
-    public string? Token { get; set; }
+    public string Token { get; set; } = null!;
 
     public sbyte Registrado { get; set; }
 
     public virtual ICollection<Equipamento> Equipamentos { get; set; } = new List<Equipamento>();
 
-    public virtual Sala SalaNavigation { get; set; } = null!;
+    public virtual Sala IdSalaNavigation { get; set; } = null!;
+
+    public virtual Tipohardware IdTipoHardwareNavigation { get; set; } = null!;
 
     public virtual ICollection<Solicitacao> SolicitacaoIdHardwareAtuadorNavigations { get; set; } = new List<Solicitacao>();
 
     public virtual ICollection<Solicitacao> SolicitacaoIdHardwareNavigations { get; set; } = new List<Solicitacao>();
-
-    public virtual Tipohardware TipoHardwareNavigation { get; set; } = null!;
 }

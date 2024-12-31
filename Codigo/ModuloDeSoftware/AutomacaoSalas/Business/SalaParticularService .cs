@@ -21,8 +21,8 @@ namespace Service
                 .Select(sp => new SalaParticularModel
                 {
                     Id = sp.Id,
-                    UsuarioId = sp.Usuario,
-                    SalaId = sp.Sala
+                    UsuarioId = sp.IdUsuario,
+                    SalaId = sp.IdSala
 
                 }).ToList();
 
@@ -32,28 +32,28 @@ namespace Service
                 .Select(sp => new SalaParticularModel
                 {
                     Id = sp.Id,
-                    UsuarioId = sp.Usuario,
-                    SalaId = sp.Sala
+                    UsuarioId = sp.IdUsuario,
+                    SalaId = sp.IdSala
                 }).FirstOrDefault();
 
         public List<SalaParticularModel> GetByIdSala(uint id)
             => _context.Salaparticulars
-                .Where(sp => sp.Sala == id)
+                .Where(sp => sp.IdSala == id)
                 .Select(sp => new SalaParticularModel
                 {
                     Id = sp.Id,
-                    UsuarioId = sp.Usuario,
-                    SalaId = sp.Sala
+                    UsuarioId = sp.IdUsuario,
+                    SalaId = sp.IdSala
                 }).ToList();
 
         public SalaParticularModel GetByIdUsuarioAndIdSala(uint idUsuario, uint idSala)
            => _context.Salaparticulars
-               .Where(sp => sp.Usuario == idUsuario && sp.Sala == idSala)
+               .Where(sp => sp.IdUsuario == idUsuario && sp.IdSala == idSala)
                .Select(sp => new SalaParticularModel
                {
                    Id = sp.Id,
-                   UsuarioId = sp.Usuario,
-                   SalaId = sp.Sala
+                   UsuarioId = sp.IdUsuario,
+                   SalaId = sp.IdSala
                }).FirstOrDefault();
 
         public bool InsertListSalasParticulares(SalaParticularAuxModel entity)
@@ -161,20 +161,20 @@ namespace Service
         private static Salaparticular SetEntity(SalaParticularModel model, Salaparticular entity)
         {
             entity.Id = model.Id;
-            entity.Sala = model.SalaId;
-            entity.Usuario = model.UsuarioId;
+            entity.IdSala = model.SalaId;
+            entity.IdUsuario = model.UsuarioId;
 
             return entity;
         }
 
         public List<SalaParticularModel> GetByIdUsuario(uint id)
          => _context.Salaparticulars
-                .Where(sp => sp.Usuario == id)
+                .Where(sp => sp.IdUsuario == id)
                 .Select(sp => new SalaParticularModel
                 {
                     Id = sp.Id,
-                    UsuarioId = sp.Usuario,
-                    SalaId = sp.Sala
+                    UsuarioId = sp.IdUsuario,
+                    SalaId = sp.IdSala
                 }).ToList();
 
         public List<SalaParticularModel> GetByIdOrganizacao(uint idOrganizacao)
@@ -199,7 +199,7 @@ namespace Service
         {
             try
             {
-                var x = _context.Salaparticulars.Where(th => th.Usuario == id);
+                var x = _context.Salaparticulars.Where(th => th.IdUsuario == id);
                 if (x != null)
                 {
                     _context.RemoveRange(x);

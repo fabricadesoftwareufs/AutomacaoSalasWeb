@@ -13,5 +13,7 @@ public partial class Organizacao
 
     public virtual ICollection<Bloco> Blocos { get; set; } = new List<Bloco>();
 
+    public virtual ICollection<Tipohardware> Tipohardwares { get; set; } = new List<Tipohardware>();
+
     public virtual ICollection<Usuarioorganizacao> Usuarioorganizacaos { get; set; } = new List<Usuarioorganizacao>();
 }

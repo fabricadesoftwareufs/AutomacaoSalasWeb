@@ -6,13 +6,13 @@ namespace Service.Interface
     public interface IUsuarioOrganizacaoService
     {
         List<UsuarioOrganizacaoModel> GetAll();
-        UsuarioOrganizacaoModel GetById(uint id);
+        UsuarioOrganizacaoModel GetById(uint idUsuario, uint idOrganicao);
         List<UsuarioOrganizacaoModel> GetByIdUsuario(uint id);
         List<UsuarioOrganizacaoModel> GetByIdOrganizacao(uint id);
         bool Insert(UsuarioOrganizacaoModel entity);
 
-        bool Remove(uint id);
-        bool RemoveByUsuario(uint id);
+        bool Remove(uint idUsuario, uint idOrganizacao);
+        bool RemoveByUsuario(uint idUsuario);
         bool Update(UsuarioOrganizacaoModel entity);
     }
 }

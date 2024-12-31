@@ -14,17 +14,17 @@ namespace Service
         {
             _context = context;
         }
-        public List<BlocoModel> GetAll() => _context.Blocos.Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).ToList();
+        public List<BlocoModel> GetAll() => _context.Blocos.Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.IdOrganizacao, Titulo = b.Titulo }).ToList();
 
         public BlocoModel GetById(uint id)
         {
             var blocoModel = (from b in _context.Blocos
-                              join o in _context.Organizacaos on b.Organizacao equals o.Id
+                              join o in _context.Organizacaos on b.IdOrganizacao equals o.Id
                               where b.Id == id
                               select new BlocoModel
                               {
                                   Id = b.Id,
-                                  OrganizacaoId = b.Organizacao,
+                                  OrganizacaoId = b.IdOrganizacao,
                                   Titulo = b.Titulo,
                                   NomeOrganizacao = o.RazaoSocial 
                               }).FirstOrDefault();
@@ -33,9 +33,9 @@ namespace Service
         }
 
 
-        public List<BlocoModel> GetByIdOrganizacao(uint id) => _context.Blocos.Where(b => b.Organizacao == id).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).ToList();
+        public List<BlocoModel> GetByIdOrganizacao(uint id) => _context.Blocos.Where(b => b.IdOrganizacao == id).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.IdOrganizacao, Titulo = b.Titulo }).ToList();
 
-        public BlocoModel GetByTitulo(string titulo, uint idOrganizacao) => _context.Blocos.Where(b => b.Titulo.ToUpper().Equals(titulo.ToUpper()) && b.Organizacao == idOrganizacao).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.Organizacao, Titulo = b.Titulo }).FirstOrDefault();
+        public BlocoModel GetByTitulo(string titulo, uint idOrganizacao) => _context.Blocos.Where(b => b.Titulo.ToUpper().Equals(titulo.ToUpper()) && b.IdOrganizacao == idOrganizacao).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.IdOrganizacao, Titulo = b.Titulo }).FirstOrDefault();
 
         public bool InsertBlocoWithHardware(BlocoModel blocoModel, uint idUsuario)
         {
@@ -117,7 +117,7 @@ namespace Service
         private static Bloco SetEntity(BlocoModel model, Bloco entity)
         {
             entity.Id = model.Id;
-            entity.Organizacao = model.OrganizacaoId;
+            entity.IdOrganizacao = model.OrganizacaoId;
             entity.Titulo = model.Titulo;
 
             return entity;
@@ -127,17 +127,17 @@ namespace Service
         public List<BlocoModel> GetAllByIdUsuarioOrganizacao(uint idUsuario)
         {
             var queryUser = from usuario in _context.Usuarioorganizacaos
-                            where usuario.Usuario == idUsuario
+                            where usuario.IdUsuario == idUsuario
                             select usuario;
             var usuarioorganizacao = queryUser.FirstOrDefault();
 
             var query = from bloco in _context.Blocos
-                        where bloco.Organizacao == usuarioorganizacao.Organizacao
+                        where bloco.IdOrganizacao == usuarioorganizacao.IdOrganizacao
                         select new BlocoModel
                         {
                             Id = bloco.Id,
                             Titulo = bloco.Titulo,
-                            OrganizacaoId = bloco.Organizacao
+                            OrganizacaoId = bloco.IdOrganizacao
 
                         };
             return query.ToList();

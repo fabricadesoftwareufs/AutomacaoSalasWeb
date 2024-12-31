@@ -23,13 +23,13 @@ namespace Service
                 {
                     Id = hs.Id,
                     Data = hs.Data,
-                    SalaId = hs.Sala,
+                    SalaId = hs.IdSala,
                     HorarioInicio = hs.HorarioInicio,
                     HorarioFim = hs.HorarioFim,
                     Situacao = hs.Situacao,
                     Objetivo = hs.Objetivo,
-                    UsuarioId = hs.Usuario,
-                    Planejamento = hs.Planejamento
+                    UsuarioId = hs.IdUsuario,
+                    Planejamento = hs.IdPlanejamento
 
                 }).ToList();
         public int Id { get; set; }
@@ -41,61 +41,61 @@ namespace Service
                 {
                     Id = hs.Id,
                     Data = hs.Data,
-                    SalaId = hs.Sala,
+                    SalaId = hs.IdSala,
                     HorarioInicio = hs.HorarioInicio,
                     HorarioFim = hs.HorarioFim,
                     Situacao = hs.Situacao,
                     Objetivo = hs.Objetivo,
-                    UsuarioId = hs.Usuario,
-                    Planejamento = hs.Planejamento
+                    UsuarioId = hs.IdUsuario,
+                    Planejamento = hs.IdPlanejamento
                 }).FirstOrDefault();
 
         public List<HorarioSalaModel> GetByIdSala(uint id)
            => _context.Horariosalas
-               .Where(hs => hs.Sala == id)
+               .Where(hs => hs.IdSala == id)
                .Select(hs => new HorarioSalaModel
                {
                    Id = hs.Id,
                    Data = hs.Data,
-                   SalaId = hs.Sala,
+                   SalaId = hs.IdSala,
                    HorarioInicio = hs.HorarioInicio,
                    HorarioFim = hs.HorarioFim,
                    Situacao = hs.Situacao,
                    Objetivo = hs.Objetivo,
-                   UsuarioId = hs.Usuario,
-                   Planejamento = hs.Planejamento
+                   UsuarioId = hs.IdUsuario,
+                   Planejamento = hs.IdPlanejamento
                }).ToList();
 
         public List<HorarioSalaModel> GetByIdUsuario(uint idUsuario)
         => _context.Horariosalas
-            .Where(hs => hs.Usuario == idUsuario)
+            .Where(hs => hs.IdUsuario == idUsuario)
             .Select(hs => new HorarioSalaModel
             {
                 Id = hs.Id,
                 Data = hs.Data,
-                SalaId = hs.Sala,
+                SalaId = hs.IdSala,
                 HorarioInicio = hs.HorarioInicio,
                 HorarioFim = hs.HorarioFim,
                 Situacao = hs.Situacao,
                 Objetivo = hs.Objetivo,
-                UsuarioId = hs.Usuario,
-                Planejamento = hs.Planejamento
+                UsuarioId = hs.IdUsuario,
+                Planejamento = hs.IdPlanejamento
             }).ToList();
 
         public List<HorarioSalaModel> GetByIdUsuarioAndDiaSemana(uint idUsuario, string diaSemana)
         => _context.Horariosalas
-            .Where(hs => hs.Usuario == idUsuario && ((int)hs.Data.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper()))
+            .Where(hs => hs.IdUsuario == idUsuario && ((int)hs.Data.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper()))
             .Select(hs => new HorarioSalaModel
             {
                 Id = hs.Id,
                 Data = hs.Data,
-                SalaId = hs.Sala,
+                SalaId = hs.IdSala,
                 HorarioInicio = hs.HorarioInicio,
                 HorarioFim = hs.HorarioFim,
                 Situacao = hs.Situacao,
                 Objetivo = hs.Objetivo,
-                UsuarioId = hs.Usuario,
-                Planejamento = hs.Planejamento
+                UsuarioId = hs.IdUsuario,
+                Planejamento = hs.IdPlanejamento
             }).ToList();
 
         public List<HorarioSalaModel> GetReservasDaSemanaByIdSala(uint idSala)
@@ -111,36 +111,36 @@ namespace Service
             else proximoDomingo = DateTime.Now.AddDays(7 - nDia).Date;
 
             return _context.Horariosalas
-             .Where(hs => hs.Sala == idSala && hs.Data.Date >= dataAtual.Date && hs.Data.Date <= proximoDomingo.Date && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))
+             .Where(hs => hs.IdSala == idSala && hs.Data.Date >= dataAtual.Date && hs.Data.Date <= proximoDomingo.Date && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))
              .Select(hs => new HorarioSalaModel
              {
                  Id = hs.Id,
                  Data = hs.Data,
-                 SalaId = hs.Sala,
+                 SalaId = hs.IdSala,
                  HorarioInicio = hs.HorarioInicio,
                  HorarioFim = hs.HorarioFim,
                  Situacao = hs.Situacao,
                  Objetivo = hs.Objetivo,
-                 UsuarioId = hs.Usuario,
-                 Planejamento = hs.Planejamento
+                 UsuarioId = hs.IdUsuario,
+                 Planejamento = hs.IdPlanejamento
              }).ToList();
         }
 
         public List<HorarioSalaModel> GetReservasDeHojeByIdSala(uint idSala)
         {
             return _context.Horariosalas
-             .Where(hs => hs.Sala == idSala && hs.Data.Date == DateTime.Now.Date && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))
+             .Where(hs => hs.IdSala == idSala && hs.Data.Date == DateTime.Now.Date && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))
              .Select(hs => new HorarioSalaModel
              {
                  Id = hs.Id,
                  Data = hs.Data,
-                 SalaId = hs.Sala,
+                 SalaId = hs.IdSala,
                  HorarioInicio = hs.HorarioInicio,
                  HorarioFim = hs.HorarioFim,
                  Situacao = hs.Situacao,
                  Objetivo = hs.Objetivo,
-                 UsuarioId = hs.Usuario,
-                 Planejamento = hs.Planejamento
+                 UsuarioId = hs.IdUsuario,
+                 Planejamento = hs.IdPlanejamento
              }).ToList();
         }
 
@@ -149,8 +149,8 @@ namespace Service
 
             var lista =  _context.Horariosalas
              .Join(_context.Hardwaredesalas,
-              horario => horario.Sala,
-              hard => hard.Sala,
+              horario => horario.IdSala,
+              hard => hard.IdSala,
               (horario, hard) => new {Horario = horario, Hardware = hard})
              .Where(hs => hs.Horario.Data.Date == DateTime.Now.Date 
                       && !hs.Horario.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA)
@@ -160,13 +160,13 @@ namespace Service
                  {
                      Id = hs.Horario.Id,
                      Data = hs.Horario.Data,
-                     SalaId = hs.Horario.Sala,
+                     SalaId = hs.Horario.IdSala,
                      HorarioInicio = hs.Horario.HorarioInicio,
                      HorarioFim = hs.Horario.HorarioFim,
                      Situacao = hs.Horario.Situacao,
                      Objetivo = hs.Horario.Objetivo,
-                     UsuarioId = hs.Horario.Usuario,
-                     Planejamento = hs.Horario.Planejamento
+                     UsuarioId = hs.Horario.IdUsuario,
+                     Planejamento = hs.Horario.IdPlanejamento
                  }).ToList();
 
             return lista;
@@ -175,18 +175,18 @@ namespace Service
         public IEnumerable<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(uint idUsuario, string diaSemana)
         {
             var reservas = _context.Horariosalas
-               .Where(hs => hs.Usuario == idUsuario)
+               .Where(hs => hs.IdUsuario == idUsuario)
                .Select(hs => new HorarioSalaModel
                {
                    Id = hs.Id,
                    Data = hs.Data,
-                   SalaId = hs.Sala,
+                   SalaId = hs.IdSala,
                    HorarioInicio = hs.HorarioInicio,
                    HorarioFim = hs.HorarioFim,
                    Situacao = hs.Situacao,
                    Objetivo = hs.Objetivo,
-                   UsuarioId = hs.Usuario,
-                   Planejamento = hs.Planejamento
+                   UsuarioId = hs.IdUsuario,
+                   Planejamento = hs.IdPlanejamento
                }).ToList();
 
             return reservas.Where(hs => hs.Data >= DateTime.Now.Date && ((int)hs.Data.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper())
@@ -210,18 +210,18 @@ namespace Service
 
         public HorarioSalaModel VerificaSalaOcupada(uint idSala, DateTime data, TimeSpan horarioInicio, TimeSpan horarioFim)
             => _context.Horariosalas
-               .Where(hs => hs.Sala == idSala && hs.Data == data && ((hs.HorarioInicio <= horarioInicio && horarioInicio <= hs.HorarioFim) || (hs.HorarioInicio <= horarioFim && horarioFim <= hs.HorarioFim)))
+               .Where(hs => hs.IdSala == idSala && hs.Data == data && ((hs.HorarioInicio <= horarioInicio && horarioInicio <= hs.HorarioFim) || (hs.HorarioInicio <= horarioFim && horarioFim <= hs.HorarioFim)))
                .Select(hs => new HorarioSalaModel
                {
                    Id = hs.Id,
                    Data = hs.Data,
-                   SalaId = hs.Sala,
+                   SalaId = hs.IdSala,
                    HorarioInicio = hs.HorarioInicio,
                    HorarioFim = hs.HorarioFim,
                    Situacao = hs.Situacao,
                    Objetivo = hs.Objetivo,
-                   UsuarioId = hs.Usuario,
-                   Planejamento = hs.Planejamento
+                   UsuarioId = hs.IdUsuario,
+                   Planejamento = hs.IdPlanejamento
                }).FirstOrDefault();
 
 
@@ -232,7 +232,7 @@ namespace Service
 
 
             var query = _context.Horariosalas
-                        .Where(hs => hs.Sala == idSala && hs.Usuario == idUsuario && (horaAtual >= hs.HorarioInicio && horaAtual <= hs.HorarioFim) && date.Date == hs.Data)
+                        .Where(hs => hs.IdSala == idSala && hs.IdUsuario == idUsuario && (horaAtual >= hs.HorarioInicio && horaAtual <= hs.HorarioFim) && date.Date == hs.Data)
                         .Select(hs => new HorarioSalaModel
                         {
                             Id = hs.Id,
@@ -277,7 +277,7 @@ namespace Service
         {
             try
             {
-                var x = _context.Horariosalas.Where(th => th.Planejamento == idPlanejamento).ToList();
+                var x = _context.Horariosalas.Where(th => th.IdPlanejamento == idPlanejamento).ToList();
                 if (x != null)
                 {
                     _context.RemoveRange(x);
@@ -307,10 +307,10 @@ namespace Service
         {
             try
             {
-                var x = _context.Horariosalas.Where(th => th.Planejamento == idPlanejamento).ToList();
+                var x = _context.Horariosalas.Where(th => th.IdPlanejamento == idPlanejamento).ToList();
                 if (x != null)
                 {
-                    x.ForEach(r => r.Planejamento = null);
+                    x.ForEach(r => r.IdPlanejamento = null);
                     _context.UpdateRange(x);
                     return _context.SaveChanges() == 1;
                 }
@@ -327,13 +327,13 @@ namespace Service
         {
             entity.Id = model.Id;
             entity.Data = model.Data;
-            entity.Sala = model.SalaId;
+            entity.IdSala = model.SalaId;
             entity.HorarioInicio = model.HorarioInicio;
             entity.HorarioFim = model.HorarioFim;
             entity.Situacao = model.Situacao;
             entity.Objetivo = model.Objetivo;
-            entity.Usuario = model.UsuarioId;
-            entity.Planejamento = model.Planejamento;
+            entity.IdUsuario = model.UsuarioId;
+            entity.IdPlanejamento = model.Planejamento;
 
 
             return entity;

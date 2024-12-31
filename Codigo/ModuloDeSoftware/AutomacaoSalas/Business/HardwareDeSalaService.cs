@@ -17,7 +17,7 @@ namespace Service
             _context = context;
         }
 
-        public List<HardwareDeSalaModel> GetAll() => _context.Hardwaredesalas.Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).ToList();
+        public List<HardwareDeSalaModel> GetAll() => _context.Hardwaredesalas.Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Token = h.Token }).ToList();
         public List<HardwareDeSalaModel> GetAllHardwaresSalaByUsuarioOrganizacao(uint idUsuario)
         {
             var _salaService = new SalaService(_context);
@@ -39,22 +39,22 @@ namespace Service
             return query;
         }
 
-        public HardwareDeSalaModel GetById(uint id) => _context.Hardwaredesalas.Where(h => h.Id == id).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
+        public HardwareDeSalaModel GetById(uint id) => _context.Hardwaredesalas.Where(h => h.Id == id).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
 
-        public HardwareDeSalaModel GetByIdAndType(int id, int tipo) => _context.Hardwaredesalas.Where(h => h.Id == id && h.TipoHardware == tipo).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token, Registrado = Convert.ToBoolean(h.Registrado) }).FirstOrDefault();
+        public HardwareDeSalaModel GetByIdAndType(int id, int tipo) => _context.Hardwaredesalas.Where(h => h.Id == id && h.IdTipoHardware == tipo).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token, Registrado = Convert.ToBoolean(h.Registrado) }).FirstOrDefault();
 
 
         public List<HardwareDeSalaModel> GetByIdSala(uint id)
         {
             var hardware = _context.Hardwaredesalas
-                                  .Where(hs => hs.Sala == id)
+                                  .Where(hs => hs.IdSala == id)
                                     .Select(h => 
                                         new HardwareDeSalaModel 
                                         { 
                                             Id = h.Id, 
                                             MAC = h.Mac, 
-                                            SalaId = h.Sala, 
-                                            TipoHardwareId = h.TipoHardware, 
+                                            SalaId = h.IdSala, 
+                                            TipoHardwareId = h.IdTipoHardware, 
                                             Ip = h.Ip, 
                                             Uuid = h.Uuid, 
                                             Token = h.Token,
@@ -70,16 +70,16 @@ namespace Service
             var hardwares = _context.Hardwaredesalas
                                   .Join(_context.Equipamentos,
                                      hard => hard.Id,
-                                     equip => equip.HardwareDeSala,
+                                     equip => equip.IdHardwareDeSala,
                                      (hard, equip) => new { Hadware = hard, Equipamento = equip })
-                                  .Where(hs => hs.Equipamento.HardwareDeSala == hs.Hadware.Id && hs.Hadware.Sala == id && hs.Hadware.TipoHardware  == (int)HardwareDeSalaModel.TIPO.MODULO_ATUADOR)
+                                  .Where(hs => hs.Equipamento.IdHardwareDeSala == hs.Hadware.Id && hs.Hadware.IdSala == id && hs.Hadware.IdTipoHardware  == (int)HardwareDeSalaModel.TIPO.MODULO_ATUADOR)
                                     .Select(h =>
                                         new HardwareDeSalaModel
                                         {
                                             Id = h.Hadware.Id,
                                             MAC = h.Hadware.Mac,
-                                            SalaId = h.Hadware.Sala,
-                                            TipoHardwareId = h.Hadware.TipoHardware,
+                                            SalaId = h.Hadware.IdSala,
+                                            TipoHardwareId = h.Hadware.IdTipoHardware,
                                             Ip = h.Hadware.Ip,
                                             Uuid = h.Hadware.Uuid,
                                             Token = h.Hadware.Token,
@@ -87,14 +87,14 @@ namespace Service
                                         }
                                       ).Union(
                                          _context.Hardwaredesalas
-                                        .Where(hs => hs.Sala == id && hs.TipoHardware == (int)HardwareDeSalaModel.TIPO.MODULO_SENSOR)
+                                        .Where(hs => hs.IdSala == id && hs.IdTipoHardware == (int)HardwareDeSalaModel.TIPO.MODULO_SENSOR)
                                           .Select(h =>
                                               new HardwareDeSalaModel
                                               {
                                                   Id = h.Id,
                                                   MAC = h.Mac,
-                                                  SalaId = h.Sala,
-                                                  TipoHardwareId = h.TipoHardware,
+                                                  SalaId = h.IdSala,
+                                                  TipoHardwareId = h.IdTipoHardware,
                                                   Ip = h.Ip,
                                                   Uuid = h.Uuid,
                                                   Token = h.Token,
@@ -110,14 +110,14 @@ namespace Service
 
         public HardwareDeSalaModel GetByMAC(string mac)
         {
-            var hardware = _context.Hardwaredesalas.Where(h => h.Mac.ToLower().Equals(mac.ToLower())).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
+            var hardware = _context.Hardwaredesalas.Where(h => h.Mac.ToLower().Equals(mac.ToLower())).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
 
             return hardware != null ? hardware : null;
         }
 
         public HardwareDeSalaModel GetByUuid(string uuid)
         {
-            var hardware = _context.Hardwaredesalas.Where(h => h.Uuid.Equals(uuid)).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
+            var hardware = _context.Hardwaredesalas.Where(h => h.Uuid.Equals(uuid)).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
 
             return hardware != null ? hardware : null;
         }
@@ -126,7 +126,7 @@ namespace Service
         {
             var hardware = _context
                             .Hardwaredesalas
-                            .Where(h => h.Uuid.Equals(idSala)).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
+                            .Where(h => h.Uuid.Equals(idSala)).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
 
             return hardware != null ? hardware : null;
         }
@@ -137,7 +137,7 @@ namespace Service
             var _blocoService = new BlocoService(_context);
             var _salaService = new SalaService(_context);
 
-            var hardware = _context.Hardwaredesalas.Where(h => h.Mac.ToUpper().Equals(mac.ToUpper())).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
+            var hardware = _context.Hardwaredesalas.Where(h => h.Mac.ToUpper().Equals(mac.ToUpper())).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
 
             if (hardware != null)
             {
@@ -158,7 +158,7 @@ namespace Service
             var _blocoService = new BlocoService(_context);
             var _salaService = new SalaService(_context);
 
-            var hardware = _context.Hardwaredesalas.Where(h => h.Ip == ip).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
+            var hardware = _context.Hardwaredesalas.Where(h => h.Ip == ip).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
 
             if (hardware != null)
             {
@@ -179,7 +179,7 @@ namespace Service
             var _blocoService = new BlocoService(_context);
             var _salaService = new SalaService(_context);
 
-            var hardware = _context.Hardwaredesalas.Where(h => h.Ip == ip).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
+            var hardware = _context.Hardwaredesalas.Where(h => h.Ip == ip).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).FirstOrDefault();
 
             return hardware != null ? hardware : null;
         }
@@ -265,9 +265,9 @@ namespace Service
         {
             entity.Id = model.Id;
             entity.Mac = model.MAC;
-            entity.TipoHardware = model.TipoHardwareId;            
+            entity.IdTipoHardware = model.TipoHardwareId;            
             entity.Registrado = Convert.ToSByte(model.Registrado);
-            entity.Sala = model.SalaId;
+            entity.IdSala = model.SalaId;
             entity.Ip = model.Ip;
             entity.Uuid = model.Uuid;
             entity.Token = model.Token;
@@ -275,13 +275,13 @@ namespace Service
         }
 
         public List<HardwareDeSalaModel> GetByIdSalaAndTipoHardware(uint id, int tipo)
-        => _context.Hardwaredesalas.Where(h => h.Sala == id && h.TipoHardware == tipo).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).ToList();
+        => _context.Hardwaredesalas.Where(h => h.IdSala == id && h.IdTipoHardware == tipo).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Uuid = h.Uuid, Token = h.Token }).ToList();
 
         public List<HardwareDeSalaModel> GetAtuadorByIdSala(uint id)
-            => _context.Hardwaredesalas.Where(h => h.Sala == id && h.TipoHardware == (int)TIPO.MODULO_ATUADOR).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).ToList();
+            => _context.Hardwaredesalas.Where(h => h.IdSala == id && h.IdTipoHardware == (int)TIPO.MODULO_ATUADOR).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Token = h.Token }).ToList();
 
         public HardwareDeSalaModel GetControladorByIdSala(uint idSala)
-            => _context.Hardwaredesalas.Where(h => h.Sala == idSala && h.TipoHardware == (int)TIPO.CONTROLADOR_SALA).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).FirstOrDefault();
+            => _context.Hardwaredesalas.Where(h => h.IdSala == idSala && h.IdTipoHardware == (int)TIPO.CONTROLADOR_SALA).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Token = h.Token }).FirstOrDefault();
 
         /// <summary>
         /// Remove da lista os atuadores que estão sendo usados em outros equipamentos, pois só pode haver um atuador vinculo a um equipamento
@@ -289,15 +289,15 @@ namespace Service
         /// <param name="hardwares">Lista de Todos os hardwares de uma sala especifica</param>
         private List<HardwareDeSalaModel> RemoveHardwaresInUse(List<HardwareDeSalaModel> hardwares)
         {
-            var equipamentos = _context.Equipamentos.Where(e => e.HardwareDeSala != null).Select(e => new EquipamentoModel
+            var equipamentos = _context.Equipamentos.Where(e => e.IdHardwareDeSala != null).Select(e => new EquipamentoModel
             {
                 Id = e.Id,
                 Descricao = e.Descricao,
                 Marca = e.Marca,
                 TipoEquipamento = e.TipoEquipamento,
                 Modelo = e.Modelo,
-                Sala = e.Sala,
-                HardwareDeSala = (uint)e.HardwareDeSala
+                Sala = e.IdSala,
+                HardwareDeSala = (uint)e.IdHardwareDeSala
             }).ToList();
 
             if (equipamentos == null)
@@ -324,7 +324,7 @@ namespace Service
         }
 
         public List<HardwareDeSalaModel> GetAllAtuador()
-            => _context.Hardwaredesalas.Where(h => h.TipoHardware == TipoHardwareModel.CONTROLADOR_DE_DISPOSITIVO).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.Sala, TipoHardwareId = h.TipoHardware, Ip = h.Ip, Token = h.Token }).ToList();
+            => _context.Hardwaredesalas.Where(h => h.IdTipoHardware == TipoHardwareModel.CONTROLADOR_DE_DISPOSITIVO).Select(h => new HardwareDeSalaModel { Id = h.Id, MAC = h.Mac, SalaId = h.IdSala, TipoHardwareId = h.IdTipoHardware, Ip = h.Ip, Token = h.Token }).ToList();
 
         public bool Update(HardwareDeSalaModel entity)
         {

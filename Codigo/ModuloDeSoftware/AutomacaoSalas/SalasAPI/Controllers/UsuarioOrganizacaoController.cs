@@ -41,11 +41,11 @@ namespace SalasAPI.Controllers
         // GET: api/UsuarioOrganizacao/5
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public ActionResult Get(uint id)
+        public ActionResult Get(uint idUsuario, uint idOrganizacao)
         {
             try
             {
-                var usuarioOrganizacao = _service.GetById(id);
+                var usuarioOrganizacao = _service.GetById(idUsuario, idOrganizacao);
                 if (usuarioOrganizacao == null)
                     return NoContent();
 
@@ -95,11 +95,11 @@ namespace SalasAPI.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(uint id)
+        public ActionResult Delete(uint idUsuario, uint idOrganizacao)
         {
             try
             {
-                if (_service.Remove(id))
+                if (_service.Remove(idUsuario, idOrganizacao))
                     return Ok();
 
                 return BadRequest();

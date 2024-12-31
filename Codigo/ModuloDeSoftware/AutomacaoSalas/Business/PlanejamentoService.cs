@@ -28,8 +28,8 @@ namespace Service
                     HorarioFim = pl.HorarioFim,
                     DiaSemana = pl.DiaSemana,
                     Objetivo = pl.Objetivo,
-                    UsuarioId = pl.Usuario,
-                    SalaId = pl.Sala
+                    UsuarioId = pl.IdUsuario,
+                    SalaId = pl.IdSala
 
                 }).ToList();
 
@@ -45,13 +45,13 @@ namespace Service
                     HorarioFim = pl.HorarioFim,
                     DiaSemana = pl.DiaSemana,
                     Objetivo = pl.Objetivo,
-                    UsuarioId = pl.Usuario,
-                    SalaId = pl.Sala
+                    UsuarioId = pl.IdUsuario,
+                    SalaId = pl.IdSala
                 }).FirstOrDefault();
 
         public List<PlanejamentoModel> GetByIdSala(uint id)
             => _context.Planejamentos
-                .Where(pl => pl.Sala == id)
+                .Where(pl => pl.IdSala == id)
                 .Select(pl => new PlanejamentoModel
                 {
                     Id = pl.Id,
@@ -61,8 +61,8 @@ namespace Service
                     HorarioFim = pl.HorarioFim,
                     DiaSemana = pl.DiaSemana,
                     Objetivo = pl.Objetivo,
-                    UsuarioId = pl.Usuario,
-                    SalaId = pl.Sala
+                    UsuarioId = pl.IdUsuario,
+                    SalaId = pl.IdSala
                 }).ToList();
         public List<PlanejamentoModel> GetByIdOrganizacao(uint idOrganizacao)
         {
@@ -202,7 +202,7 @@ namespace Service
 
         public List<PlanejamentoModel> GetByIdUsuario(uint idUsuario)
          => _context.Planejamentos
-                .Where(pl => pl.Usuario == idUsuario)
+                .Where(pl => pl.IdUsuario == idUsuario)
                 .Select(pl => new PlanejamentoModel
                 {
                     Id = pl.Id,
@@ -212,8 +212,8 @@ namespace Service
                     HorarioFim = pl.HorarioFim,
                     DiaSemana = pl.DiaSemana,
                     Objetivo = pl.Objetivo,
-                    UsuarioId = pl.Usuario,
-                    SalaId = pl.Sala
+                    UsuarioId = pl.IdUsuario,
+                    SalaId = pl.IdSala
                 }).ToList();
 
         public bool RemoveByUsuario(uint id)
@@ -222,7 +222,7 @@ namespace Service
             {
                 try
                 {
-                    var x = _context.Planejamentos.Where(th => th.Usuario == id);
+                    var x = _context.Planejamentos.Where(th => th.IdUsuario == id);
                     if (x != null)
                     {
                         _context.RemoveRange(x);
@@ -253,8 +253,8 @@ namespace Service
             entity.HorarioFim = model.HorarioFim;
             entity.DiaSemana = model.DiaSemana;
             entity.Objetivo = model.Objetivo;
-            entity.Sala = model.SalaId;
-            entity.Usuario = model.UsuarioId;
+            entity.IdSala = model.SalaId;
+            entity.IdUsuario = model.UsuarioId;
 
 
             return entity;

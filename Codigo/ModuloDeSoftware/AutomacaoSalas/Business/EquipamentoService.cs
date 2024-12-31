@@ -26,42 +26,42 @@ namespace Service
                       Modelo = eq.Modelo,
                       Marca = eq.Marca,
                       Descricao = eq.Descricao,
-                      Sala = eq.Sala,
+                      Sala = eq.IdSala,
                       TipoEquipamento = eq.TipoEquipamento,
-                      HardwareDeSala = (uint)eq.HardwareDeSala
+                      HardwareDeSala = (uint)eq.IdHardwareDeSala
                   }).FirstOrDefault();
 
 
         public EquipamentoModel GetByIdSalaAndTipoEquipamento(int idSala, string tipo)
        => _context.Equipamentos
-                   .Where(eq => eq.Sala == idSala && eq.TipoEquipamento.ToUpper().Equals(tipo.ToUpper()))
+                   .Where(eq => eq.IdSala == idSala && eq.TipoEquipamento.ToUpper().Equals(tipo.ToUpper()))
                    .Select(eq => new EquipamentoModel
                    {
                        Id = eq.Id,
                        Modelo = eq.Modelo,
                        Marca = eq.Marca,
                        Descricao = eq.Descricao,
-                       Sala = eq.Sala,
+                       Sala = eq.IdSala,
                        TipoEquipamento = eq.TipoEquipamento,
-                       HardwareDeSala = (uint)eq.HardwareDeSala
+                       HardwareDeSala = (uint)eq.IdHardwareDeSala
                    }).FirstOrDefault();
 
 
         public List<EquipamentoModel> GetByIdSala(int idSala)
        => _context.Equipamentos
-                   .Where(eq => eq.Sala == idSala)
+                   .Where(eq => eq.IdSala == idSala)
                    .Select(eq => new EquipamentoModel
                    {
                        Id = eq.Id,
                        Modelo = eq.Modelo,
                        Marca = eq.Marca,
                        Descricao = eq.Descricao,
-                       Sala = eq.Sala,
+                       Sala = eq.IdSala,
                        TipoEquipamento = eq.TipoEquipamento,
-                       HardwareDeSala = (uint)eq.HardwareDeSala
+                       HardwareDeSala = (uint)eq.IdHardwareDeSala
                    }).ToList();
 
-        public List<EquipamentoModel> GetAll() => _context.Equipamentos.Select(e => new EquipamentoModel { Id = e.Id, Modelo = e.Modelo, Descricao = e.Descricao, TipoEquipamento = e.TipoEquipamento, Marca = e.Marca, Sala = e.Sala, HardwareDeSala = e.HardwareDeSala != null ? (uint)e.HardwareDeSala : 0 }).ToList();
+        public List<EquipamentoModel> GetAll() => _context.Equipamentos.Select(e => new EquipamentoModel { Id = e.Id, Modelo = e.Modelo, Descricao = e.Descricao, TipoEquipamento = e.TipoEquipamento, Marca = e.Marca, Sala = e.IdSala, HardwareDeSala = e.IdHardwareDeSala != null ? (uint)e.IdHardwareDeSala : 0 }).ToList();
 
         public bool Insert(EquipamentoViewModel entity)
         {
@@ -129,8 +129,8 @@ namespace Service
                 Marca = model.Marca,
                 Modelo = model.Modelo,
                 TipoEquipamento = model.TipoEquipamento,
-                Sala = model.Sala,
-                HardwareDeSala = model.HardwareDeSala,
+                IdSala = model.Sala,
+                IdHardwareDeSala = model.HardwareDeSala,
             };
             return entity;
         }
@@ -148,7 +148,7 @@ namespace Service
                         throw new ServiceException("Equipamento não encontrado.");
                     }
 
-                    var monitoramentos = _context.Monitoramentos.Where(m => m.Equipamento == id).ToList();
+                    var monitoramentos = _context.Monitoramentos.Where(m => m.IdEquipamento == id).ToList();
 
                     if (monitoramentos.Any())
                     {
@@ -156,7 +156,7 @@ namespace Service
                         _context.SaveChanges(); 
                     }
 
-                    var codigosInfravermelho = _context.Codigoinfravermelhos.Where(ci => ci.Equipamento == id).ToList();
+                    var codigosInfravermelho = _context.Codigoinfravermelhos.Where(ci => ci.IdEquipamento == id).ToList();
 
                     if (codigosInfravermelho.Any())
                     {

@@ -15,12 +15,12 @@ namespace Service
         {
             _context = context;
         }
-        public List<SalaModel> GetAll() => _context.Salas.Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).ToList();
+        public List<SalaModel> GetAll() => _context.Salas.Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.IdBloco }).ToList();
 
-        public SalaModel GetById(uint id) => _context.Salas.Where(s => s.Id == id).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco,BlocoTitulo = s.BlocoNavigation.Titulo}).FirstOrDefault();
+        public SalaModel GetById(uint id) => _context.Salas.Where(s => s.Id == id).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.IdBloco,BlocoTitulo = s.IdBlocoNavigation.Titulo}).FirstOrDefault();
 
-        public List<SalaModel> GetByIdBloco(uint id) => _context.Salas.Where(s => s.Bloco == id).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).ToList();
-        public SalaModel GetByTitulo(string titulo) => _context.Salas.Where(s => s.Titulo.ToUpper().Equals(titulo.ToUpper())).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.Bloco }).FirstOrDefault();
+        public List<SalaModel> GetByIdBloco(uint id) => _context.Salas.Where(s => s.IdBloco == id).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.IdBloco }).ToList();
+        public SalaModel GetByTitulo(string titulo) => _context.Salas.Where(s => s.Titulo.ToUpper().Equals(titulo.ToUpper())).Select(s => new SalaModel { Id = s.Id, Titulo = s.Titulo, BlocoId = s.IdBloco }).FirstOrDefault();
 
 
         public bool InsertSalaWithHardwares(SalaAuxModel sala, uint idUsuario)
@@ -130,7 +130,7 @@ namespace Service
         {
             entity.Id = model.Id;
             entity.Titulo = model.Titulo;
-            entity.Bloco = model.BlocoId;
+            entity.IdBloco = model.BlocoId;
 
             return entity;
         }

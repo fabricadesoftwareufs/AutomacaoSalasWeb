@@ -13,17 +13,17 @@ public partial class Equipamento
 
     public string? Descricao { get; set; }
 
-    public uint Sala { get; set; }
+    public uint IdSala { get; set; }
 
     public string TipoEquipamento { get; set; } = null!;
 
-    public uint? HardwareDeSala { get; set; }
+    public uint? IdHardwareDeSala { get; set; }
 
     public virtual ICollection<Codigoinfravermelho> Codigoinfravermelhos { get; set; } = new List<Codigoinfravermelho>();
 
-    public virtual Hardwaredesala? HardwareDeSalaNavigation { get; set; }
+    public virtual Hardwaredesala? IdHardwareDeSalaNavigation { get; set; }
+
+    public virtual Sala IdSalaNavigation { get; set; } = null!;
 
     public virtual ICollection<Monitoramento> Monitoramentos { get; set; } = new List<Monitoramento>();
-
-    public virtual Sala SalaNavigation { get; set; } = null!;
 }

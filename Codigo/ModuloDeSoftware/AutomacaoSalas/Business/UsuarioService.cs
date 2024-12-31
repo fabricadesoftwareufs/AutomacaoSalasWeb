@@ -25,8 +25,7 @@ namespace Service
                     Cpf = u.Cpf,
                     Nome = u.Nome,
                     DataNascimento = Convert.ToDateTime(u.DataNascimento),
-                    Senha = u.Senha,
-                    TipoUsuarioId = u.TipoUsuario
+                    Senha = u.Senha
                 }).ToList();
 
         /// <summary>
@@ -43,8 +42,7 @@ namespace Service
                     Cpf = u.Cpf,
                     Nome = u.Nome,
                     DataNascimento = Convert.ToDateTime(u.DataNascimento),
-                    Senha = u.Senha,
-                    TipoUsuarioId = u.TipoUsuario
+                    Senha = u.Senha
                 }).ToList();
 
         public UsuarioModel GetById(uint id)
@@ -56,8 +54,7 @@ namespace Service
                     Cpf = u.Cpf,
                     Nome = u.Nome,
                     DataNascimento = Convert.ToDateTime(u.DataNascimento),
-                    Senha = u.Senha,
-                    TipoUsuarioId = u.TipoUsuario
+                    Senha = u.Senha
                 }).FirstOrDefault();
 
 
@@ -92,8 +89,7 @@ namespace Service
                     Cpf = u.Cpf,
                     Nome = u.Nome,
                     DataNascimento = Convert.ToDateTime(u.DataNascimento),
-                    Senha = u.Senha,
-                    TipoUsuarioId = u.TipoUsuario
+                    Senha = u.Senha
                 }).FirstOrDefault();
 
         public UsuarioViewModel Insert(UsuarioViewModel entity)
@@ -224,8 +220,7 @@ namespace Service
             Cpf = model.Cpf,
             Nome = model.Nome,
             DataNascimento = model.DataNascimento,
-            Senha = model.Senha,
-            TipoUsuario = model.TipoUsuarioId
+            Senha = model.Senha
         };
 
         public UsuarioModel GetByCpf(string cpf)
@@ -237,11 +232,10 @@ namespace Service
                     Cpf = u.Cpf,
                     Nome = u.Nome,
                     DataNascimento = Convert.ToDateTime(u.DataNascimento),
-                    Senha = u.Senha,
-                    TipoUsuarioId = u.TipoUsuario
+                    Senha = u.Senha
                 }).FirstOrDefault();
 
-        public List<UsuarioModel> GetAllByIdsOrganizacao(List<uint> ids) => _context.Usuarios.Where(u => ids.Contains(u.Id)).Select(u => new UsuarioModel { Id = u.Id, Cpf = u.Cpf, DataNascimento = (DateTime)u.DataNascimento, Nome = u.Nome, TipoUsuarioId = u.TipoUsuario, Senha = u.Senha }).ToList();
+        public List<UsuarioModel> GetAllByIdsOrganizacao(List<uint> ids) => _context.Usuarios.Where(u => ids.Contains(u.Id)).Select(u => new UsuarioModel { Id = u.Id, Cpf = u.Cpf, DataNascimento = (DateTime)u.DataNascimento, Nome = u.Nome, Senha = u.Senha }).ToList();
 
     }
 }

@@ -9,7 +9,7 @@ public partial class Monitoramento
 
     public sbyte Estado { get; set; }
 
-    public int Equipamento { get; set; }
+    public int IdEquipamento { get; set; }
 
-    public virtual Equipamento EquipamentoNavigation { get; set; } = null!;
+    public virtual Equipamento IdEquipamentoNavigation { get; set; } = null!;
 }

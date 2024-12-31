@@ -22,24 +22,24 @@ namespace Service
             _context = context;
         }
 
-        public List<MonitoramentoModel> GetAll() => _context.Monitoramentos.Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.Equipamento, Estado = Convert.ToBoolean(m.Estado) }).ToList();
+        public List<MonitoramentoModel> GetAll() => _context.Monitoramentos.Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.IdEquipamento, Estado = Convert.ToBoolean(m.Estado) }).ToList();
 
-        public MonitoramentoModel GetById(int id) => _context.Monitoramentos.Where(m => m.Id == id).Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.Equipamento, Estado = Convert.ToBoolean(m.Estado) }).FirstOrDefault();
+        public MonitoramentoModel GetById(int id) => _context.Monitoramentos.Where(m => m.Id == id).Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.IdEquipamento, Estado = Convert.ToBoolean(m.Estado) }).FirstOrDefault();
 
-        public MonitoramentoModel GetByIdEquipamento(int idEquipamento) => _context.Monitoramentos.Where(m => m.Equipamento == idEquipamento).Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.Equipamento, Estado = Convert.ToBoolean(m.Estado) }).FirstOrDefault();
+        public MonitoramentoModel GetByIdEquipamento(int idEquipamento) => _context.Monitoramentos.Where(m => m.IdEquipamento == idEquipamento).Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.IdEquipamento, Estado = Convert.ToBoolean(m.Estado) }).FirstOrDefault();
 
         public List<MonitoramentoModel> GetByIdSala(uint idSala)
         {
 
             var monitoramentos = new List<MonitoramentoModel>(from m in _context.Monitoramentos
-                                                              join e in _context.Equipamentos on m.Equipamento equals e.Id
-                                                              where e.Sala == idSala
+                                                              join e in _context.Equipamentos on m.IdEquipamento equals e.Id
+                                                              where e.IdSala == idSala
                                                               select new MonitoramentoModel
                                                               {
                                                                   Id = m.Id,
                                                                   Estado = Convert.ToBoolean(m.Estado),
-                                                                  EquipamentoId = m.Equipamento,
-                                                                  EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.Sala },
+                                                                  EquipamentoId = m.IdEquipamento,
+                                                                  EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.IdSala },
                                                               });
 
              
@@ -51,14 +51,14 @@ namespace Service
             var moni = _context.Monitoramentos.ToList();
             var equip = _context.Equipamentos.ToList();
             var monitoramentos = (from m in moni
-                                  join e in equip on m.Equipamento equals e.Id
-                                                              where e.Sala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
+                                  join e in equip on m.IdEquipamento equals e.Id
+                                                              where e.IdSala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
                                                               select new MonitoramentoModel
                                                               {
                                                                   Id = m.Id,
                                                                   Estado = Convert.ToBoolean(m.Estado),
-                                                                  EquipamentoId = m.Equipamento,
-                                                                  EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.Sala },
+                                                                  EquipamentoId = m.IdEquipamento,
+                                                                  EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.IdSala },
                                                               }
                                   ).FirstOrDefault();
 
@@ -251,7 +251,7 @@ namespace Service
             {
                 Id = model.Id,
                 Estado = Convert.ToSByte(model.Estado), 
-                Equipamento = model.EquipamentoId
+                IdEquipamento = model.EquipamentoId
             };
         }
     }

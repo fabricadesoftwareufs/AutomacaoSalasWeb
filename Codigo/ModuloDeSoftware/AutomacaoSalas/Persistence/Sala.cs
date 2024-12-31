@@ -9,15 +9,17 @@ public partial class Sala
 
     public string Titulo { get; set; } = null!;
 
-    public uint Bloco { get; set; }
+    public uint IdBloco { get; set; }
 
-    public virtual Bloco BlocoNavigation { get; set; } = null!;
+    public virtual ICollection<Conexaointernetsala> Conexaointernetsalas { get; set; } = new List<Conexaointernetsala>();
 
     public virtual ICollection<Equipamento> Equipamentos { get; set; } = new List<Equipamento>();
 
     public virtual ICollection<Hardwaredesala> Hardwaredesalas { get; set; } = new List<Hardwaredesala>();
 
     public virtual ICollection<Horariosala> Horariosalas { get; set; } = new List<Horariosala>();
+
+    public virtual Bloco IdBlocoNavigation { get; set; } = null!;
 
     public virtual ICollection<Planejamento> Planejamentos { get; set; } = new List<Planejamento>();
 

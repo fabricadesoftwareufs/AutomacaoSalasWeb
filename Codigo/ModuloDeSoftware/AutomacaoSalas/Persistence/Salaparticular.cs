@@ -7,11 +7,11 @@ public partial class Salaparticular
 {
     public uint Id { get; set; }
 
-    public uint Usuario { get; set; }
+    public uint IdUsuario { get; set; }
 
-    public uint Sala { get; set; }
+    public uint IdSala { get; set; }
 
-    public virtual Sala SalaNavigation { get; set; } = null!;
+    public virtual Sala IdSalaNavigation { get; set; } = null!;
 
-    public virtual Usuario UsuarioNavigation { get; set; } = null!;
+    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 }

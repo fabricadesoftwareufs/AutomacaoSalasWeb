@@ -7,13 +7,13 @@ public partial class Codigoinfravermelho
 {
     public int Id { get; set; }
 
-    public int Equipamento { get; set; }
+    public int IdEquipamento { get; set; }
 
-    public int Operacao { get; set; }
+    public int IdOperacao { get; set; }
 
     public string Codigo { get; set; } = null!;
 
-    public virtual Equipamento EquipamentoNavigation { get; set; } = null!;
+    public virtual Equipamento IdEquipamentoNavigation { get; set; } = null!;
 
-    public virtual Operacao OperacaoNavigation { get; set; } = null!;
+    public virtual Operacao IdOperacaoNavigation { get; set; } = null!;
 }
