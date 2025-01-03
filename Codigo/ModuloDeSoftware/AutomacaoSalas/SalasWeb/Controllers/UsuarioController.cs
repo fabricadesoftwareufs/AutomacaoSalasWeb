@@ -46,14 +46,17 @@ namespace SalasWeb.Controllers
         public ActionResult Index()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            
             var usuarioLogado = _usuarioService.GetAuthenticatedUser(claimsIdentity);
-            
             var usuarios = _usuarioService.GetAllExceptAuthenticatedUser(usuarioLogado.UsuarioModel.Id);
-            
+
             List<UsuarioAuxModel> lista = new List<UsuarioAuxModel>();
 
-            usuarios.ForEach(s => lista.Add(new UsuarioAuxModel { UsuarioModel = s, TipoUsuarioModel = _tipoUsuarioService.GetById(s.TipoUsuarioId), OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.Id) }));
+            usuarios.ForEach(s => lista.Add(new UsuarioAuxModel
+            {
+                UsuarioModel = s,
+                TipoUsuarioModel = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(s.Id),
+                OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.Id)
+            }));
 
             return View(lista);
         }
@@ -63,7 +66,7 @@ namespace SalasWeb.Controllers
         public ActionResult Details(uint id)
         {
             var usuario = _usuarioService.GetById(id);
-            var tipoUsuario = _tipoUsuarioService.GetById(usuario.TipoUsuarioId);
+            var tipoUsuario = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(id);
             var organizacao = _organizacaoService.GetByIdUsuario(id).FirstOrDefault();
 
             var usuarioView = new UsuarioViewModel
@@ -131,7 +134,6 @@ namespace SalasWeb.Controllers
             return View(usuarioViewModel);
         }
 
-
         // GET: Usuario/Edit/5
         [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
         public ActionResult Edit(uint id)
@@ -140,7 +142,7 @@ namespace SalasWeb.Controllers
             ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
 
             var usuario = _usuarioService.GetById(id);
-            var tipoUsuario = _tipoUsuarioService.GetById(usuario.TipoUsuarioId);
+            var tipoUsuario = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(id);
             var organizacao = _organizacaoService.GetByIdUsuario(id);
             var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = tipoUsuario, OrganizacaoModel = organizacao.FirstOrDefault() };
 
@@ -185,7 +187,7 @@ namespace SalasWeb.Controllers
             var usuarioId = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity)?.UsuarioModel?.Id ?? 0;
 
             var usuario = _usuarioService.GetById(usuarioId);
-            var tipoUsuario = _tipoUsuarioService.GetById(usuario.TipoUsuarioId);
+            var tipoUsuario = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(usuarioId);
             var organizacao = _organizacaoService.GetByIdUsuario(usuarioId);
             var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = tipoUsuario, OrganizacaoModel = organizacao.FirstOrDefault() };
 
