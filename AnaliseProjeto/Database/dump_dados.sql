@@ -1,140 +1,155 @@
 USE `automacaosalas`;
 
 -- Copiando dados para a tabela automacaosalas.organizacao: ~4 rows (aproximadamente)
-INSERT INTO `organizacao` (`id`, `cnpj`, `razaoSocial`) VALUES
-	(1, '08735240000146', 'FUNDAÇÃO UNIVERSIDADE FEDERAL DE SERGIPE'),
-	(2, '57838165000154', 'UNIVERSIDADE TIRADENTES - UNIT'),
-	(3, '30056954000187', 'MINISTÉRIO PÚBLICO DE SERGIPE'),
-	(4, '50618535000107', 'PREFEITURA MUNICIPAL DE ARACAJU');
+INSERT INTO `organizacao` (`cnpj`, `razaoSocial`) VALUES
+	('08735240000146', 'UNIVERSIDADE FEDERAL DE SERGIPE - UFS'),
+	('57838165000154', 'UNIVERSIDADE TIRADENTES - UNIT'),
+	('30056954000187', 'MINISTÉRIO PÚBLICO DE SERGIPE - MPSE'),
+	('50618535000107', 'PREFEITURA MUNICIPAL DE ARACAJU');
 
 -- Copiando dados para a tabela automacaosalas.bloco: ~13 rows (aproximadamente)
-INSERT INTO `bloco` (`id`, `organizacao`, `titulo`) VALUES
-	(1, 1, 'Bloco A'),
-	(2, 1, 'Bloco B'),
-	(3, 1, 'Bloco C'),
-	(4, 1, 'Bloco D'),
-	(5, 1, 'Bloco E'),
-	(6, 2, 'Bloco SI'),
-	(7, 2, 'Bloco ADM'),
-	(8, 2, 'Bloco SAUDE'),
-	(9, 2, 'Bloco BIO'),
-	(10, 3, 'Bloco X'),
-	(11, 3, 'Bloco Y'),
-	(12, 3, 'Bloco Z'),
-	(13, 4, 'Bloco Unico');
+INSERT INTO `bloco` (`idOrganizacao`, `titulo`) VALUES
+	(1, 'Bloco A'),
+	(1, 'Bloco B'),
+	(1, 'Bloco C'),
+	(1, 'Bloco D'),
+	(1, 'Bloco E'),
+	(2, 'Bloco SI'),
+	(2, 'Bloco ADM'),
+	(2, 'Bloco SAUDE'),
+	(2, 'Bloco BIO'),
+	(3, 'Bloco X'),
+	(3, 'Bloco Y'),
+	(3, 'Bloco Z'),
+	(4, 'Bloco Unico');
 
 -- Copiando dados para a tabela automacaosalas.sala: ~13 rows (aproximadamente)
-INSERT INTO `sala` (`id`, `titulo`, `bloco`) VALUES
-	(1, 'Sala 01', 1),
-	(2, 'Sala 02', 2),
-	(3, 'Sala 03', 3),
-	(4, 'Sala 04', 4),
-	(5, 'Sala 05', 5),
-	(6, 'Sala 06', 6),
-	(7, 'Sala 07', 7),
-	(8, 'Sala 08', 8),
-	(9, 'Sala 09', 9),
-	(10, 'Sala 10', 10),
-	(11, 'Sala 11', 11),
-	(12, 'Sala 12', 12),
-	(13, 'Sala 13', 13),
-	(14, 'Sala 106', 4);
-
+INSERT INTO `sala` (`titulo`, `idBloco`) VALUES
+	('Sala 01', 1),
+	('Sala 02', 2),
+	('Sala 03', 3),
+	('Sala 04', 4),
+	('Sala 05', 5),
+	('Sala 06', 6),
+	('Sala 07', 7),
+	('Sala 08', 8),
+	('Sala 09', 9),
+	('Sala 10', 10),
+	('Sala 11', 11),
+	('Sala 12', 12),
+	('Sala 13', 13),
+	('Sala 106', 4);
 
 
 -- Copiando dados para a tabela automacaosalas.tipohardware: ~3 rows (aproximadamente)
-INSERT INTO `tipohardware` (`id`, `descricao`) VALUES
-	(3, 'MODULO DE DISPOSITIVO'),
-	(1, 'CONTROLADOR DE SALA'),
-	(2, 'MODULO DE SENSORIAMENTO');
+INSERT INTO `tipohardware` (`descricao`,`idOrganizacao`) VALUES
+	('CONTROLADOR DE SALA',1),
+	('MODULO DE SENSORIAMENTO',1),
+	('MODULO DE DISPOSITIVO',1),
+	('CONTROLADOR DE SALA',2),
+	('MODULO DE SENSORIAMENTO',2),
+	('MODULO DE DISPOSITIVO',2),
+	('CONTROLADOR DE SALA',3),
+	('MODULO DE SENSORIAMENTO',3),
+	('MODULO DE DISPOSITIVO',3),
+	('CONTROLADOR DE SALA',4),
+	('MODULO DE SENSORIAMENTO',4),
+	('MODULO DE DISPOSITIVO',4);
 
     -- (1, 'MODULO DE DISPOSITIVO'),
 	-- (2, 'CONTROLADOR DE SALA'),
 	-- (3, 'MODULO DE SENSORIAMENTO');
 
-	-- Copiando dados para a tabela automacaosalas.hardwaredesala: ~39 rows (aproximadamente)
-INSERT INTO `hardwaredesala` (`id`, `mac`,`ip`, `sala`, `tipoHardware`,`uuid`, `token`) VALUES
-	(1, '00:E0:4C:27:56:96','192.168.15.233',  1, 1,NULL,NULL),
-	(2, '00:E0:4C:5A:D1:DD', '192.168.15.233', 1, 2,NULL,NULL),
-	(3, '00:E0:4C:50:B0:3E','192.168.15.233',  2, 1,NULL,NULL),
-	(4, '00:E0:4C:50:B0:3E','192.168.15.233', 2, 2,NULL,NULL),
-	(5, '00:E0:4C:66:82:0A', '192.168.15.233', 3, 1,NULL,NULL),
-	(6, '00:E0:4C:59:A4:20','192.168.15.233',  3, 2,NULL,NULL),
-	(7, '00:E0:4C:15:F6:A0', '192.168.15.233', 4, 1,NULL,NULL),
-	(8, '00:E0:4C:1B:B5:35', '192.168.15.233', 4, 2,NULL,NULL),
-	(9, '00:E0:4C:4E:A9:64', '192.168.15.233', 5, 1,NULL,NULL),
-	(10, '00:E0:4C:04:B6:9E','192.168.15.233',  5, 2,NULL,NULL),
-	(11, '00:E0:4C:3A:E1:F0','192.168.15.233',  6, 1,NULL,NULL),
-	(12, '00:E0:4C:46:B6:13', '192.168.15.233', 6, 2,NULL,NULL),
-	(13, '00:E0:4C:15:AA:D1', '192.168.15.233', 7, 1,NULL,NULL),
-	(14, '00:E0:4C:71:5B:0B', '192.168.15.233', 7, 2,NULL,NULL),
-	(15, '00:E0:4C:3B:3F:9F','192.168.15.233',  8, 1,NULL,NULL),
-	(16, '00:E0:4C:31:19:0B', '192.168.15.233', 8, 2,NULL,NULL),
-	(17, '00:E0:4C:5A:D1:DD', '192.168.15.233', 1, 3,NULL,NULL),
-	(18, '00:E0:4C:32:A1:93', '192.168.15.233', 2, 3,NULL,NULL),
-	(19, '00:E0:4C:04:56:7B', '192.168.15.233', 3, 3,NULL,NULL),
-	(20, '00:E0:4C:32:F0:A6', '192.168.15.233', 4, 3,NULL,NULL),
-	(21, '00:E0:4C:43:7C:3E', '192.168.15.233', 5, 3,NULL,NULL),
-	(22, '00:E0:4C:7B:D9:3E', '192.168.15.233', 6, 3,NULL,NULL),
-	(23, '00:E0:4C:7A:3A:A4', '192.168.15.233', 7, 3,NULL,NULL),
-	(24, '00:E0:4C:5B:DD:23', '192.168.15.233', 8, 3,NULL,NULL),
-	(25, '00:E0:4C:08:72:05', '192.168.15.233', 9, 1,NULL,NULL),
-	(26, '00:E0:4C:33:61:87', '192.168.15.233', 9, 2,NULL,NULL),
-	(27, '00:E0:4C:39:C1:CC', '192.168.15.233', 9, 3,NULL,NULL),
-	(28, '00:E0:4C:44:06:E4', '192.168.15.233', 10, 1,NULL,NULL),
-	(29, '00:E0:4C:1B:38:1F', '192.168.15.233', 10, 2,NULL,NULL),
-	(30, '00:E0:4C:1C:C2:42', '192.168.15.233', 10, 3,NULL,NULL),
-	(31, '00:E0:4C:26:F7:80', '192.168.15.233', 11, 1,NULL,NULL),
-	(32, '00:E0:4C:7B:75:7F', '192.168.15.233', 11, 2,NULL,NULL),
-	(33, '00:E0:4C:41:AA:BD', '192.168.15.233', 11, 3,NULL,NULL),
-	(34, '00:E0:4C:7A:16:3A', '192.168.15.233', 12, 1,NULL,NULL),
-	(35, '00:E0:4C:4B:8A:65', '192.168.15.233', 12, 2,NULL,NULL),
-	(36, '00:E0:4C:43:85:71', '192.168.15.233', 12, 3,NULL,NULL),
-	(37, '00:E0:4C:5F:B4:08', '192.168.15.233', 13, 1,NULL,NULL),
-	(38, '00:E0:4C:21:50:B0', '192.168.15.233', 13, 2,NULL,NULL),
-	(39, '00:E0:4C:28:5F:41', '192.168.15.233', 13, 3,NULL,NULL);
+
+
+
 
 -- Copiando dados para a tabela automacaosalas.tipousuario: ~2 rows (aproximadamente)
-INSERT INTO `tipousuario` (`id`, `descricao`) VALUES
-	(1, 'ADMIN'),
-	(2, 'GESTOR'),
-	(3, 'CLIENTE');
+INSERT INTO `tipousuario` (`descricao`) VALUES
+	('ADMIN'),
+	('GESTOR'),
+	('COLABORADOR');
 
 -- Copiando dados para a tabela automacaosalas.usuario: ~2 rows (aproximadamente)
-INSERT INTO `usuario` (`id`, `cpf`, `nome`, `dataNascimento`, `senha`, `tipoUsuario`) VALUES
-	(1, '42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2),
-	(2, '57377766387', 'Rafael Kevin Teixeira', '1996-07-22', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2),
-	(3, '07852892590', 'Igor bruno dos santos nascimento', '1996-07-22', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 2),
-	(4, '07334824571', 'Abraao Alves', '1998-06-06', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3', 1),
-    (5,	'12345678909',	'ADM Genérico',	'2001-01-01',	'071DC0F5B464E97A913E769863ECD11BE79533568ABF3212E15972308D35BE65',	1);
+INSERT INTO `usuario` (`cpf`, `nome`, `dataNascimento`, `senha`) VALUES
+	('42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3'),
+	('57377766387', 'Rafael Kevin Teixeira', '1996-07-22', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3'),
+	('07852892590', 'Igor bruno dos santos nascimento', '1996-07-22', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3'),
+	('07334824571', 'Abraao Alves', '1998-06-06', '60BFAA61E12B4FD3DAD35586B11387689E35645279C6103495F019AAA0C1FCF3'),
+    ('12345678909',	'ADM Genérico',	'2001-01-01',	'071DC0F5B464E97A913E769863ECD11BE79533568ABF3212E15972308D35BE65');
 
 -- Copiando dados para a tabela automacaosalas.usuarioorganizacao: ~0 rows (aproximadamente)
-INSERT INTO `usuarioorganizacao` (`id`, `organizacao`, `usuario`) VALUES
-	(1, 1, 1),
-	(3, 1, 3),
-	(2, 1, 2),
-	(4, 1, 4),
-	(5, 1, 5);
+INSERT INTO `usuarioorganizacao` (`idOrganizacao`, `idUsuario`,`idTipoUsuario`) VALUES
+	(1, 1, 2),
+	(1, 3, 2),
+	(1, 2, 2),
+	(1, 4, 1),
+	(1, 5, 1);
 
 
 -- Copiando dados para a tabela automacaosalas.horariosala: ~0 rows (aproximadamente)
-INSERT INTO `horariosala` (`id`, `data`, `horarioInicio`,`horarioFim`,`objetivo`,`usuario`,`sala`,`planejamento`) VALUES
-							(1, '2020-08-24', '07:00','09:00','Palestra sobre Engenharia de Software',1,4,null),
-							(2, '2020-09-20', '07:00','09:00','Palestra sobre Engenharia de Software',2,4,null);
+INSERT INTO `horariosala` (`data`, `horarioInicio`,`horarioFim`,`objetivo`,`idUsuario`,`idSala`,`idPlanejamento`) VALUES
+							('2020-08-24', '07:00','09:00','Palestra sobre Engenharia de Software',1,4,null),
+							('2020-09-20', '07:00','09:00','Palestra sobre Engenharia de Software',2,4,null);
 
 -- Copiando dados para a tabela automacaosalas.planejamento: ~0 rows (aproximadamente)
-INSERT INTO `planejamento` (`id`, `dataInicio`, `dataFim`,`horarioInicio`,`horarioFim`,`diaSemana`,`objetivo`,`usuario`,`sala`) VALUES
-	(1, '2020-08-24', '2020-12-24','07:00','09:00','SEG','Planejamento de LFT',1,5),
-	(2, '2020-08-24', '2020-12-24','07:00','09:00','QUA','Planejamento de LFT',1,5),
-	(3, '2020-08-24', '2020-12-24','07:00','09:00','SEX','Planejamento de LFT',1,5);
+INSERT INTO `planejamento` (`dataInicio`, `dataFim`,`horarioInicio`,`horarioFim`,`diaSemana`,`objetivo`,`idUsuario`,`idSala`) VALUES
+	('2020-08-24', '2020-12-24','07:00','09:00','SEG','Planejamento de LFT',1,5),
+	('2020-08-24', '2020-12-24','07:00','09:00','QUA','Planejamento de LFT',1,5),
+	('2020-08-24', '2020-12-24','07:00','09:00','SEX','Planejamento de LFT',1,5);
 
 -- Copiando dados para a tabela automacaosalas.salaparticular: ~0 rows (aproximadamente)
-INSERT INTO `salaparticular` (`id`, `usuario`,`sala`) VALUES
-				(1,1,1),
-				(2,2,2),
-				(3,2,4),
-				(4,2,1),
-				(5,1,3);
+INSERT INTO `salaparticular` (`idUsuario`,`idSala`) VALUES
+				(1,1),
+				(2,2),
+				(2,4),
+				(2,1),
+				(1,3);
+
+
+-- DAQUI PRA BAIXO NÃO ESTÁ PRONTO AINDA!
+
+	-- Copiando dados para a tabela automacaosalas.hardwaredesala: ~39 rows (aproximadamente)
+INSERT INTO `hardwaredesala` (`mac`,`ip`, `idSala`, `idTipoHardware`,`uuid`, `token`) VALUES
+	('00:E0:4C:27:56:96','192.168.15.233',  1, 1,NULL,NULL),
+	('00:E0:4C:5A:D1:DD', '192.168.15.233', 1, 2,NULL,NULL),
+	('00:E0:4C:50:B0:3E','192.168.15.233',  2, 1,NULL,NULL),
+	('00:E0:4C:50:B0:3E','192.168.15.233', 2, 2,NULL,NULL),
+	('00:E0:4C:66:82:0A', '192.168.15.233', 3, 1,NULL,NULL),
+	('00:E0:4C:59:A4:20','192.168.15.233',  3, 2,NULL,NULL),
+	('00:E0:4C:15:F6:A0', '192.168.15.233', 4, 1,NULL,NULL),
+	('00:E0:4C:1B:B5:35', '192.168.15.233', 4, 2,NULL,NULL),
+	('00:E0:4C:4E:A9:64', '192.168.15.233', 5, 1,NULL,NULL),
+	('00:E0:4C:04:B6:9E','192.168.15.233',  5, 2,NULL,NULL),
+	('00:E0:4C:3A:E1:F0','192.168.15.233',  6, 1,NULL,NULL),
+	('00:E0:4C:46:B6:13', '192.168.15.233', 6, 2,NULL,NULL),
+	('00:E0:4C:15:AA:D1', '192.168.15.233', 7, 1,NULL,NULL),
+	('00:E0:4C:71:5B:0B', '192.168.15.233', 7, 2,NULL,NULL),
+	('00:E0:4C:3B:3F:9F','192.168.15.233',  8, 1,NULL,NULL),
+	('00:E0:4C:31:19:0B', '192.168.15.233', 8, 2,NULL,NULL),
+	('00:E0:4C:5A:D1:DD', '192.168.15.233', 1, 3,NULL,NULL),
+	('00:E0:4C:32:A1:93', '192.168.15.233', 2, 3,NULL,NULL),
+	('00:E0:4C:04:56:7B', '192.168.15.233', 3, 3,NULL,NULL),
+	('00:E0:4C:32:F0:A6', '192.168.15.233', 4, 3,NULL,NULL),
+	('00:E0:4C:43:7C:3E', '192.168.15.233', 5, 3,NULL,NULL),
+	('00:E0:4C:7B:D9:3E', '192.168.15.233', 6, 3,NULL,NULL),
+	('00:E0:4C:7A:3A:A4', '192.168.15.233', 7, 3,NULL,NULL),
+	('00:E0:4C:5B:DD:23', '192.168.15.233', 8, 3,NULL,NULL),
+	('00:E0:4C:08:72:05', '192.168.15.233', 9, 1,NULL,NULL),
+	('00:E0:4C:33:61:87', '192.168.15.233', 9, 2,NULL,NULL),
+	('00:E0:4C:39:C1:CC', '192.168.15.233', 9, 3,NULL,NULL),
+	('00:E0:4C:44:06:E4', '192.168.15.233', 10, 1,NULL,NULL),
+	('00:E0:4C:1B:38:1F', '192.168.15.233', 10, 2,NULL,NULL),
+	('00:E0:4C:1C:C2:42', '192.168.15.233', 10, 3,NULL,NULL),
+	('00:E0:4C:26:F7:80', '192.168.15.233', 11, 1,NULL,NULL),
+	('00:E0:4C:7B:75:7F', '192.168.15.233', 11, 2,NULL,NULL),
+	('00:E0:4C:41:AA:BD', '192.168.15.233', 11, 3,NULL,NULL),
+	('00:E0:4C:7A:16:3A', '192.168.15.233', 12, 1,NULL,NULL),
+	('00:E0:4C:4B:8A:65', '192.168.15.233', 12, 2,NULL,NULL),
+	('00:E0:4C:43:85:71', '192.168.15.233', 12, 3,NULL,NULL),
+	('00:E0:4C:5F:B4:08', '192.168.15.233', 13, 1,NULL,NULL),
+	('00:E0:4C:21:50:B0', '192.168.15.233', 13, 2,NULL,NULL),
+	('00:E0:4C:28:5F:41', '192.168.15.233', 13, 3,NULL,NULL);
 
 INSERT INTO `equipamento` (`id`, `marca`,`modelo`,`descricao`,`sala`,`hardwareDeSala`) VALUES
 				(1,'SAMSUNG','220TT','Condicionador SAMSUNG 110V classe de consumo E',1,1),
