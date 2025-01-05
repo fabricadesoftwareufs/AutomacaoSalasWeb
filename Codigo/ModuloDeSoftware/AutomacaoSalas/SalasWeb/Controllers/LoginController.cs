@@ -28,15 +28,34 @@ namespace SalasWeb.Controllers
 
         public async Task<IActionResult> Authenticate(LoginViewModel loginViewModel)
         {
+            if (loginViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(loginViewModel), "LoginViewModel não pode ser nulo");
+            }
 
             if (ModelState.IsValid)
             {
                 if (ValidaCpf(loginViewModel.Login))
                 {
-                    // Obtendo o usuario baseado nas informações passadas.
+                    if (_usuarioService == null)
+                    {
+                        throw new InvalidOperationException("Serviço de usuário não foi inicializado");
+                    }
+
                     var user = _usuarioService.GetByLoginAndPass(Methods.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));
                     if (user != null)
                     {
+                        if (_tipoUsuarioService == null)
+                        {
+                            throw new InvalidOperationException("Serviço de tipo de usuário não foi inicializado");
+                        }
+
+                        // Busca o tipo de usuário usando o novo método
+                        var tipoUsuario = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(user.Id);
+                        if (tipoUsuario == null || tipoUsuario.Descricao == null)
+                        {
+                            throw new InvalidOperationException("Tipo de usuário não encontrado");
+                        }
 
                         var claims = new List<Claim>
                         {
@@ -44,28 +63,23 @@ namespace SalasWeb.Controllers
                             new Claim(ClaimTypes.UserData, user.Cpf),
                             new Claim(ClaimTypes.NameIdentifier, user.Nome),
                             new Claim(ClaimTypes.DateOfBirth, user.DataNascimento.ToString()),
-                            new Claim(ClaimTypes.Role, _tipoUsuarioService.GetById(user.TipoUsuarioId).Descricao)
+                            new Claim(ClaimTypes.Role, tipoUsuario.Descricao)
                         };
 
-                        // Adicionando uma identidade as claims.
                         var identity = new ClaimsIdentity(claims, "login");
 
-                        // Propriedades da autenticação.
                         var claimProperty = new AuthenticationProperties
                         {
                             ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1) // Expira em 1 dia
                         };
 
-                        // Logando efetivamente.
                         await HttpContext.SignInAsync(new ClaimsPrincipal(identity), claimProperty);
 
-                        // Redirecionando, com usuario logado.
                         return RedirectToAction("Index", "Home");
                     }
                 }
             }
 
-            // usuario invalido.
             return RedirectToAction("Index", "Login", new { msg = "error" });
         }
 
