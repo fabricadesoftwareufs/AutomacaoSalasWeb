@@ -11,7 +11,7 @@ namespace Model.ViewModel
         [Display(Name = "Organização")]
         public OrganizacaoModel OrganizacaoModel { get; set; }
 
-        public UsuarioOrganizacaoModel UsuarioOrganizacaoModel { get; set; }
+        public UsuarioOrganizacaoModel ? UsuarioOrganizacaoModel { get; set; }
 
     }
 }

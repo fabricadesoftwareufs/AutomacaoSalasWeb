@@ -96,42 +96,77 @@ namespace SalasWeb.Controllers
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
             ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
 
-            usuarioViewModel.OrganizacaoModel = _organizacaoService.GetById(usuarioViewModel.OrganizacaoModel.Id);
-
-            if (ModelState.IsValid)
+            // Verificação inicial do ModelState
+            if (!ModelState.IsValid)
             {
-                if (!Methods.ValidarDataNascimento(usuarioViewModel.UsuarioModel.DataNascimento))
+                // Adicionar mensagens de erro específicas para cada campo que falhou na validação
+                foreach (var modelState in ModelState.Values)
                 {
-                    ModelState.AddModelError("UsuarioModel.DataNascimento", "Data de nascimento inválida.");
-                    return View(usuarioViewModel);
+                    foreach (var error in modelState.Errors)
+                    {
+                        TempData["mensagemErro"] += error.ErrorMessage + " ";
+                    }
                 }
-
-                if (!Methods.ValidarCpf(usuarioViewModel.UsuarioModel.Cpf))
-                {
-                    TempData["mensagemErro"] = "CPF inválido!";
-                    return View(usuarioViewModel);
-                }
-
-                var sucesso = new LoginViewModel { Login = usuarioViewModel.UsuarioModel.Cpf, Senha = usuarioViewModel.UsuarioModel.Senha };
-
-                usuarioViewModel.UsuarioModel.Cpf = Methods.CleanString(usuarioViewModel.UsuarioModel.Cpf);
-                usuarioViewModel.UsuarioModel.Senha = Criptography.GeneratePasswordHash(usuarioViewModel.UsuarioModel.Senha);
-
-                try
-                {
-                    _usuarioService.Insert(usuarioViewModel);
-                    TempData["mensagemSucesso"] = "Usuário criado com sucesso!";
-                }
-                catch (ServiceException se)
-                {
-                    TempData["mensagemErro"] = se.Message;
-                    return View(usuarioViewModel);
-                }
-
-                return RedirectToAction("Index", "Usuario");
+                return View(usuarioViewModel);
             }
 
-            return View(usuarioViewModel);
+            // Verificar se a organização existe
+            usuarioViewModel.OrganizacaoModel = _organizacaoService.GetById(usuarioViewModel.OrganizacaoModel.Id);
+            if (usuarioViewModel.OrganizacaoModel == null)
+            {
+                TempData["mensagemErro"] = "Organização não encontrada.";
+                return View(usuarioViewModel);
+            }
+
+            // Verificar se a data de nascimento é válida
+            if (!Methods.ValidarDataNascimento(usuarioViewModel.UsuarioModel.DataNascimento))
+            {
+                ModelState.AddModelError("UsuarioModel.DataNascimento", "Data de nascimento inválida.");
+                return View(usuarioViewModel);
+            }
+
+            // Verificar se o CPF é válido
+            if (!Methods.ValidarCpf(usuarioViewModel.UsuarioModel.Cpf))
+            {
+                TempData["mensagemErro"] = "CPF inválido!";
+                return View(usuarioViewModel);
+            }
+
+            // Verificar se o nome do usuário é válido
+            if (string.IsNullOrEmpty(usuarioViewModel.UsuarioModel.Nome))
+            {
+                ModelState.AddModelError("UsuarioModel.Nome", "Nome do usuário não pode ser vazio.");
+                return View(usuarioViewModel);
+            }
+
+            // Verificar se a senha é válida
+            if (string.IsNullOrEmpty(usuarioViewModel.UsuarioModel.Senha) || usuarioViewModel.UsuarioModel.Senha.Length < 8)
+            {
+                ModelState.AddModelError("UsuarioModel.Senha", "A senha deve ter pelo menos 8 caracteres.");
+                return View(usuarioViewModel);
+            }
+
+            // Verificar se o tipo de usuário é válido
+            if (usuarioViewModel.TipoUsuarioModel == null || usuarioViewModel.TipoUsuarioModel.Id <= 0)
+            {
+                ModelState.AddModelError("TipoUsuarioModel.Id", "Tipo de usuário inválido.");
+                return View(usuarioViewModel);
+            }
+
+            usuarioViewModel.UsuarioModel.Cpf = Methods.CleanString(usuarioViewModel.UsuarioModel.Cpf);
+            usuarioViewModel.UsuarioModel.Senha = Criptography.GeneratePasswordHash(usuarioViewModel.UsuarioModel.Senha);
+
+            try
+            {
+                _usuarioService.Insert(usuarioViewModel);
+                TempData["mensagemSucesso"] = "Usuário criado com sucesso!";
+            }
+            catch (ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
+                return View(usuarioViewModel);
+            }
+            return RedirectToAction("Index", "Usuario");
         }
 
         // GET: Usuario/Edit/5

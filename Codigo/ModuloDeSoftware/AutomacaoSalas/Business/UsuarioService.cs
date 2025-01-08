@@ -117,7 +117,9 @@ namespace Service
                         new UsuarioOrganizacaoModel
                         {
                             OrganizacaoId = entity.OrganizacaoModel.Id,
-                            UsuarioId = entity.UsuarioModel.Id
+                            UsuarioId = entity.UsuarioModel.Id,
+                            IdTipoUsuario = entity.UsuarioModel.TipoUsuarioId,
+                            DataCadastro = DateTime.Now
                         }
                      );
 
