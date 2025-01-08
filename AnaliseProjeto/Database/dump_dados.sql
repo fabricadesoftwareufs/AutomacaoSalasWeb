@@ -171,6 +171,3 @@ VALUES
     (1, 1),  -- Condicionador SAMSUNG no estado 'ligado'
     (0, 2),  -- Condicionador ELGIN no estado 'desligado'
     (1, 3);  -- Condicionador LG no estado 'ligado'
-
-
-select * from tipousuario;
