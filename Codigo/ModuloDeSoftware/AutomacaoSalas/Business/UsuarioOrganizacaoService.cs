@@ -57,8 +57,8 @@ namespace Service
         => new Usuarioorganizacao()
         {
             IdUsuario = model.UsuarioId,
-            IdOrganizacao = model.OrganizacaoId
-
+            IdOrganizacao = model.OrganizacaoId,
+            IdTipoUsuario = model.IdTipoUsuario,
         };
 
         public bool RemoveByUsuario(uint idUsuario)
