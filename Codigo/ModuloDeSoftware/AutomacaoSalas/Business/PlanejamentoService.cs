@@ -1,10 +1,10 @@
-﻿using Model;
-using Model.AuxModel;
+﻿using Model.AuxModel;
 using Model.ViewModel;
+using Model;
 using Persistence;
 using Service.Interface;
-using System;
 using System.Collections.Generic;
+using System;
 using System.Linq;
 
 namespace Service
@@ -12,11 +12,15 @@ namespace Service
     public class PlanejamentoService : IPlanejamentoService
     {
         private readonly SalasDBContext _context;
+
         public PlanejamentoService(SalasDBContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Retorna uma lista de todos os planejamentos cadastrados.
+        /// </summary>
         public List<PlanejamentoModel> GetAll()
             => _context.Planejamentos
                 .Select(pl => new PlanejamentoModel
@@ -28,11 +32,13 @@ namespace Service
                     HorarioFim = pl.HorarioFim,
                     DiaSemana = pl.DiaSemana,
                     Objetivo = pl.Objetivo,
-                    UsuarioId = pl.IdUsuario,
-                    SalaId = pl.IdSala
-
+                    UsuarioId = pl.Usuario,
+                    SalaId = pl.Sala
                 }).ToList();
 
+        /// <summary>
+        /// Retorna um planejamento específico pelo seu ID.
+        /// </summary>
         public PlanejamentoModel GetById(int id)
             => _context.Planejamentos
                 .Where(pl => pl.Id == id)
@@ -45,13 +51,16 @@ namespace Service
                     HorarioFim = pl.HorarioFim,
                     DiaSemana = pl.DiaSemana,
                     Objetivo = pl.Objetivo,
-                    UsuarioId = pl.IdUsuario,
-                    SalaId = pl.IdSala
+                    UsuarioId = pl.Usuario,
+                    SalaId = pl.Sala
                 }).FirstOrDefault();
 
+        /// <summary>
+        /// Retorna uma lista de planejamentos de uma sala específica.
+        /// </summary>
         public List<PlanejamentoModel> GetByIdSala(uint id)
             => _context.Planejamentos
-                .Where(pl => pl.IdSala == id)
+                .Where(pl => pl.Sala == id)
                 .Select(pl => new PlanejamentoModel
                 {
                     Id = pl.Id,
@@ -61,9 +70,13 @@ namespace Service
                     HorarioFim = pl.HorarioFim,
                     DiaSemana = pl.DiaSemana,
                     Objetivo = pl.Objetivo,
-                    UsuarioId = pl.IdUsuario,
-                    SalaId = pl.IdSala
+                    UsuarioId = pl.Usuario,
+                    SalaId = pl.Sala
                 }).ToList();
+
+        /// <summary>
+        /// Retorna uma lista de planejamentos filtrados pela organização.
+        /// </summary>
         public List<PlanejamentoModel> GetByIdOrganizacao(uint idOrganizacao)
         {
             var _blocoService = new BlocoService(_context);
@@ -83,12 +96,14 @@ namespace Service
                              SalaId = pl.SalaId,
                              UsuarioId = pl.UsuarioId,
                              BlocoNome = bl.Titulo
-
                          }).ToList();
 
             return query;
         }
 
+        /// <summary>
+        /// Insere um planejamento com uma lista de horários associados.
+        /// </summary>
         public bool InsertPlanejamentoWithListHorarios(PlanejamentoAuxModel model)
         {
             try
@@ -119,6 +134,9 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Insere um novo planejamento.
+        /// </summary>
         public bool Insert(PlanejamentoModel planejamentoModel)
         {
             using (var transcaction = _context.Database.BeginTransaction())
@@ -147,6 +165,9 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Remove um planejamento pelo seu ID.
+        /// </summary>
         public bool Remove(int id, bool excluiReservas)
         {
             using (var transaction = _context.Database.BeginTransaction())
@@ -172,11 +193,13 @@ namespace Service
                 {
                     transaction.Rollback();
                     throw e;
-
                 }
             }
         }
 
+        /// <summary>
+        /// Atualiza os dados de um planejamento existente.
+        /// </summary>
         public bool Update(PlanejamentoModel entity)
         {
             using (var transaction = _context.Database.BeginTransaction())
@@ -190,7 +213,6 @@ namespace Service
                     var save = _context.SaveChanges() == 1 ? true : false;
                     transaction.Commit();
                     return save;
-
                 }
                 catch (Exception e)
                 {
@@ -200,9 +222,12 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Retorna uma lista de planejamentos filtrados pelo ID do usuário.
+        /// </summary>
         public List<PlanejamentoModel> GetByIdUsuario(uint idUsuario)
          => _context.Planejamentos
-                .Where(pl => pl.IdUsuario == idUsuario)
+                .Where(pl => pl.Usuario == idUsuario)
                 .Select(pl => new PlanejamentoModel
                 {
                     Id = pl.Id,
@@ -212,17 +237,20 @@ namespace Service
                     HorarioFim = pl.HorarioFim,
                     DiaSemana = pl.DiaSemana,
                     Objetivo = pl.Objetivo,
-                    UsuarioId = pl.IdUsuario,
-                    SalaId = pl.IdSala
+                    UsuarioId = pl.Usuario,
+                    SalaId = pl.Sala
                 }).ToList();
 
+        /// <summary>
+        /// Remove todos os planejamentos de um usuário específico.
+        /// </summary>
         public bool RemoveByUsuario(uint id)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    var x = _context.Planejamentos.Where(th => th.IdUsuario == id);
+                    var x = _context.Planejamentos.Where(th => th.Usuario == id);
                     if (x != null)
                     {
                         _context.RemoveRange(x);
@@ -239,11 +267,13 @@ namespace Service
                 {
                     transaction.Rollback();
                     throw e;
-
                 }
             }
         }
 
+        /// <summary>
+        /// Converte um modelo de PlanejamentoModel para a entidade Planejamento.
+        /// </summary>
         private static Planejamento SetEntity(PlanejamentoModel model, Planejamento entity)
         {
             entity.Id = model.Id;
@@ -253,13 +283,14 @@ namespace Service
             entity.HorarioFim = model.HorarioFim;
             entity.DiaSemana = model.DiaSemana;
             entity.Objetivo = model.Objetivo;
-            entity.IdSala = model.SalaId;
-            entity.IdUsuario = model.UsuarioId;
-
-
+            entity.Sala = model.SalaId;
+            entity.Usuario = model.UsuarioId;
             return entity;
         }
 
+        /// <summary>
+        /// Valida uma lista de horários associados a um planejamento.
+        /// </summary>
         private void ValidaListaHorariosPlanejamento(List<HorarioPlanejamentoAuxModel> horarios)
         {
             try
@@ -277,6 +308,9 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Insere reservas de horário relacionadas ao planejamento.
+        /// </summary>
         private bool InsertReservasPlanejamento(PlanejamentoModel planejamento)
         {
             try
