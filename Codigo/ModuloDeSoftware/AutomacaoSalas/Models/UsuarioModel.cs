@@ -31,5 +31,8 @@ namespace Model
         [Display(Name = "Tipo")]
 
         public uint TipoUsuarioId { get; set; }
+
+        public uint IdOrganizacao { get; set; } = 0;
+        public uint IdTipoUsuario { get; set; } = 0; 
     }
 }

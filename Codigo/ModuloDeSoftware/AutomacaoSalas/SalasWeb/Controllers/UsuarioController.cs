@@ -96,10 +96,8 @@ namespace SalasWeb.Controllers
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
             ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
 
-            // Verificação inicial do ModelState
             if (!ModelState.IsValid)
             {
-                // Adicionar mensagens de erro específicas para cada campo que falhou na validação
                 foreach (var modelState in ModelState.Values)
                 {
                     foreach (var error in modelState.Errors)
@@ -110,7 +108,6 @@ namespace SalasWeb.Controllers
                 return View(usuarioViewModel);
             }
 
-            // Verificar se a organização existe
             usuarioViewModel.OrganizacaoModel = _organizacaoService.GetById(usuarioViewModel.OrganizacaoModel.Id);
             if (usuarioViewModel.OrganizacaoModel == null)
             {
@@ -118,35 +115,30 @@ namespace SalasWeb.Controllers
                 return View(usuarioViewModel);
             }
 
-            // Verificar se a data de nascimento é válida
             if (!Methods.ValidarDataNascimento(usuarioViewModel.UsuarioModel.DataNascimento))
             {
                 ModelState.AddModelError("UsuarioModel.DataNascimento", "Data de nascimento inválida.");
                 return View(usuarioViewModel);
             }
 
-            // Verificar se o CPF é válido
             if (!Methods.ValidarCpf(usuarioViewModel.UsuarioModel.Cpf))
             {
                 TempData["mensagemErro"] = "CPF inválido!";
                 return View(usuarioViewModel);
             }
 
-            // Verificar se o nome do usuário é válido
             if (string.IsNullOrEmpty(usuarioViewModel.UsuarioModel.Nome))
             {
                 ModelState.AddModelError("UsuarioModel.Nome", "Nome do usuário não pode ser vazio.");
                 return View(usuarioViewModel);
             }
 
-            // Verificar se a senha é válida
             if (string.IsNullOrEmpty(usuarioViewModel.UsuarioModel.Senha) || usuarioViewModel.UsuarioModel.Senha.Length < 8)
             {
                 ModelState.AddModelError("UsuarioModel.Senha", "A senha deve ter pelo menos 8 caracteres.");
                 return View(usuarioViewModel);
             }
 
-            // Verificar se o tipo de usuário é válido
             if (usuarioViewModel.TipoUsuarioModel == null || usuarioViewModel.TipoUsuarioModel.Id <= 0)
             {
                 ModelState.AddModelError("TipoUsuarioModel.Id", "Tipo de usuário inválido.");
@@ -191,15 +183,25 @@ namespace SalasWeb.Controllers
         public ActionResult Edit(int id, UsuarioViewModel usuarioView)
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
+            ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
+
+            usuarioView.UsuarioModel.IdOrganizacao = usuarioView.OrganizacaoModel.Id;
+            usuarioView.UsuarioModel.IdTipoUsuario = usuarioView.TipoUsuarioModel.Id;
 
             try
             {
+                ModelState.Remove("UsuarioModel.Senha");
+
                 if (ModelState.IsValid)
                 {
-                    usuarioView.UsuarioModel.TipoUsuarioId = usuarioView.TipoUsuarioModel.Id;
+                    //Pegar a senha atual do banco antes de atualizar
+                    var usuarioAtual = _usuarioService.GetById((uint)id);
+                    usuarioView.UsuarioModel.Senha = usuarioAtual.Senha;
+
                     if (_usuarioService.Update(usuarioView.UsuarioModel))
                     {
                         TempData["mensagemSucesso"] = "Usuário editado com sucesso!";
+                        return RedirectToAction(nameof(Index));
                     }
                     else
                     {
@@ -213,7 +215,7 @@ namespace SalasWeb.Controllers
                 TempData["mensagemErro"] = se.Message;
                 return View(usuarioView);
             }
-            return RedirectToAction(nameof(Index));
+            return View(usuarioView);
         }
 
         [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
