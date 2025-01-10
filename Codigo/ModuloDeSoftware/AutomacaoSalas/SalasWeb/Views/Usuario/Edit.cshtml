@@ -49,6 +49,15 @@
                             </div>
                             <span asp-validation-for="UsuarioModel.Cpf" class="text-danger"></span>
 
+                            <!-- Campo oculto para CPF -->
+                            <input type="hidden" asp-for="UsuarioModel.Cpf" />
+
+                            <!-- Campo oculto para senha -->
+                            <input type="hidden" asp-for="UsuarioModel.Senha" />
+
+                            <!-- Campo oculto para data de nascimento-->
+                            <input type="hidden" asp-for="UsuarioModel.DataNascimento" />
+
                             <div class="row col-md-2 mt-3">
                                 <label asp-for="OrganizacaoModel.Id" class="control-label select-label">Organização</label>
                             </div>
@@ -68,8 +77,10 @@
                                 <label asp-for="UsuarioModel.DataNascimento" class="control-label select-label">Data de Nascimento</label>
                             </div>
                             <div class="row">
-                                <div class="input-group col-md-3">
-                                    <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control" placeholder="Data de nascimento" />
+                                <div class="input-group col-md-3">                                  
+                                    <span class="form-control" style="background-color:#e9ecef">
+                                        @Html.DisplayFor(model => model.UsuarioModel.DataNascimento)
+                                    </span>
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-birthday-cake"></span>

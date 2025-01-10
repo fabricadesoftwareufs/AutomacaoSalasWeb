@@ -190,9 +190,23 @@ namespace Service
             if (usuario == null)
                 return false;
 
-            _context.Update(SetEntity(entity));
-            return _context.SaveChanges() == 1;
+            var _entity = SetEntity(entity);
 
+            var userOrganizacao = _context.Usuarioorganizacaos.Where(x => x.IdUsuario == entity.Id);
+            _context.Usuarioorganizacaos.RemoveRange(userOrganizacao);
+
+            _entity.Usuarioorganizacaos = [ new Usuarioorganizacao
+            {
+                IdOrganizacao = entity.IdOrganizacao,
+                IdTipoUsuario = entity.IdTipoUsuario,
+                IdUsuario = entity.Id,
+            }];
+
+            _context.Usuarioorganizacaos.AddRange(_entity.Usuarioorganizacaos);
+
+            var user = _context.Update(_entity);
+            var n = _context.SaveChanges();
+            return n > 0;
         }
 
         public UsuarioViewModel GetAuthenticatedUser(ClaimsIdentity claimsIdentity)
@@ -222,7 +236,7 @@ namespace Service
             Cpf = model.Cpf,
             Nome = model.Nome,
             DataNascimento = model.DataNascimento,
-            Senha = model.Senha
+            Senha = model.Senha,
         };
 
         public UsuarioModel GetByCpf(string cpf)
