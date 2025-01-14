@@ -88,6 +88,7 @@ namespace SalasWeb.Controllers
             return View();
         }
 
+        // POST: Usuario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
@@ -260,6 +261,89 @@ namespace SalasWeb.Controllers
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+        // GET: PublicUsuario/Create
+        public ActionResult PublicUsuarioCreate()
+        {
+            ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
+            ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
+            return View();
+        }
+
+        // POST: PublicUsuario/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult PublicUsuarioCreate(UsuarioViewModel usuarioViewModel)
+        {
+            ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
+            ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
+            //usuarioViewModel.TipoUsuarioModel = new TipoUsuarioModel { Id = 4 };  // Tipo "pendente"
+
+            if (!ModelState.IsValid)
+            {
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        TempData["mensagemErro"] += error.ErrorMessage + " ";
+                    }
+                }
+                return View(usuarioViewModel);
+            }
+
+            usuarioViewModel.OrganizacaoModel = _organizacaoService.GetById(usuarioViewModel.OrganizacaoModel.Id);
+            if (usuarioViewModel.OrganizacaoModel == null)
+            {
+                TempData["mensagemErro"] = "Organização não encontrada.";
+                return View(usuarioViewModel);
+            }
+
+
+            if (!Methods.ValidarDataNascimento(usuarioViewModel.UsuarioModel.DataNascimento))
+            {
+                ModelState.AddModelError("UsuarioModel.DataNascimento", "Data de nascimento inválida.");
+                return View(usuarioViewModel);
+            }
+
+            if (!Methods.ValidarCpf(usuarioViewModel.UsuarioModel.Cpf))
+            {
+                TempData["mensagemErro"] = "CPF inválido!";
+                return View(usuarioViewModel);
+            }
+
+            if (string.IsNullOrEmpty(usuarioViewModel.UsuarioModel.Nome))
+            {
+                ModelState.AddModelError("UsuarioModel.Nome", "Nome do usuário não pode ser vazio.");
+                return View(usuarioViewModel);
+            }
+
+            if (string.IsNullOrEmpty(usuarioViewModel.UsuarioModel.Senha) || usuarioViewModel.UsuarioModel.Senha.Length < 8)
+            {
+                ModelState.AddModelError("UsuarioModel.Senha", "A senha deve ter pelo menos 8 caracteres.");
+                return View(usuarioViewModel);
+            }
+
+            if (usuarioViewModel.TipoUsuarioModel == null || usuarioViewModel.TipoUsuarioModel.Id <= 0)
+            {
+                ModelState.AddModelError("TipoUsuarioModel.Id", "Tipo de usuário inválido.");
+                return View(usuarioViewModel);
+            }
+
+            usuarioViewModel.UsuarioModel.Cpf = Methods.CleanString(usuarioViewModel.UsuarioModel.Cpf);
+            usuarioViewModel.UsuarioModel.Senha = Criptography.GeneratePasswordHash(usuarioViewModel.UsuarioModel.Senha);
+
+            try
+            {
+                _usuarioService.Insert(usuarioViewModel);
+                TempData["mensagemSucesso"] = "Usuário criado com sucesso!";
+                return RedirectToAction("Index", "Usuario");
+            }
+            catch (ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
+                return View(usuarioViewModel);
+            }
         }
 
         // POST: Usuario/Delete/5
