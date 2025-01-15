@@ -59,7 +59,25 @@ namespace Service.Tests
         [TestMethod()]
         public void GetByIdTest()
         {
-            Assert.Fail();
+            // Act
+            var sala = salaService.GetById(1);
+
+            // Assert
+            Assert.IsNotNull(sala);
+            Assert.IsInstanceOfType(sala, typeof(SalaModel));
+            Assert.AreEqual((uint)1, sala.Id);
+            Assert.AreEqual("Sala 001", sala.Titulo);
+            Assert.AreEqual((uint)1, sala.BlocoId);
+        }
+
+        [TestMethod()]
+        public void GetByIdTest_NotFound()
+        {
+            // Act
+            var sala = salaService.GetById(999); // Um ID que não existe
+
+            // Assert
+            Assert.IsNull(sala);
         }
 
         [TestMethod()]
