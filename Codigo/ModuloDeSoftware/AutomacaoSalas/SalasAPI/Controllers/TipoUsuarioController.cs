@@ -36,6 +36,9 @@ namespace SalasAPI.Controllers
            
         }
 
+
+        /*
+        // TODO: M4RCOSVS0 - Revisar e corrigir o método public ActionResult. Há problemas que precisam ser ajustados, mas não serão feitos agora.
         // GET: api/TipoUsuario/5
         [HttpGet("{id}")]
         public ActionResult Get(uint id)
@@ -59,5 +62,6 @@ namespace SalasAPI.Controllers
             }
            
         }
+        */
     }
 }

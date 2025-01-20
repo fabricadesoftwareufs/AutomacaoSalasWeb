@@ -27,7 +27,10 @@ namespace SalasAPI.Controllers
             _usuarioService = usuarioService;
             _tipoUsuarioService = tipoUsuarioService;
         }
+        
+        // TODO: M4RCOSVS0 - Revisar e corrigir o método RequestToken. Há problemas que precisam ser ajustados, mas não serão feitos agora.
 
+        /*
         [AllowAnonymous]
         [HttpPost]
         public IActionResult RequestToken([FromBody] LoginViewModel request)
@@ -74,5 +77,6 @@ namespace SalasAPI.Controllers
 
             return BadRequest("Credenciais Invalidas");
         }
+        */
     }
 }
