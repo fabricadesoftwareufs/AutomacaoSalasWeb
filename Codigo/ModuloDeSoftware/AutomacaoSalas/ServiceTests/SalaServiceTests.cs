@@ -127,9 +127,9 @@ namespace Service.Tests
             // Assert
             Assert.IsNotNull(sala);
             Assert.IsInstanceOfType(sala, typeof(SalaModel));
-            Assert.AreEqual((uint)1, sala.Id); // Verifica o ID da sala
-            Assert.AreEqual("Sala 001", sala.Titulo); // Verifica o título da sala
-            Assert.AreEqual((uint)1, sala.BlocoId); // Verifica o ID do bloco
+            Assert.AreEqual((uint)1, sala.Id); 
+            Assert.AreEqual("Sala 001", sala.Titulo); 
+            Assert.AreEqual((uint)1, sala.BlocoId); 
         }
 
         [TestMethod()]
@@ -139,7 +139,7 @@ namespace Service.Tests
             var sala = salaService.GetByTitulo("Sala Inexistente");
 
             // Assert
-            Assert.IsNull(sala); // Deve retornar null para um título não encontrado
+            Assert.IsNull(sala); 
         }
 
         [TestMethod]
@@ -150,17 +150,17 @@ namespace Service.Tests
             {
                 Sala = new SalaModel { Titulo = "Sala Nova", BlocoId = 1 },
                 HardwaresSala = new List<HardwareAuxModel>
-        {
-            new HardwareAuxModel
-            {
-                MAC = "00:11:22:33:44:55",
-                Ip = "192.168.1.1",
-                TipoHardwareId = new TipoUsuarioModel
                 {
-                    Id = (uint)TipoHardwareModel.CONTROLADOR_DE_SALA
+                new HardwareAuxModel
+                {
+                    MAC = "00:11:22:33:44:55",
+                    Ip = "192.168.1.1",
+                    TipoHardwareId = new TipoUsuarioModel
+                    {
+                        Id = (uint)TipoHardwareModel.CONTROLADOR_DE_SALA
+                    }
                 }
-            }
-        }
+                }
             };
             uint idUsuario = 1;
 
@@ -210,12 +210,12 @@ namespace Service.Tests
             // Arrange
             var novaSala = new SalaModel
             {
-                Titulo = "Sala 001", // Título já existe no bloco 1
+                Titulo = "Sala 001", 
                 BlocoId = 1
             };
 
             // Act
-            salaService.Insert(novaSala); // Deve lançar exceção
+            salaService.Insert(novaSala); 
         }
 
         [TestMethod()]
@@ -239,17 +239,17 @@ namespace Service.Tests
             {
                 Sala = new SalaModel { Titulo = "Sala Com Hardware", BlocoId = 1 },
                 HardwaresSala = new List<HardwareAuxModel>
-        {
-            new HardwareAuxModel
-            {
-                MAC = "AA:BB:CC:DD:EE:FF",
-                Ip = "192.168.1.2",
-                TipoHardwareId = new TipoUsuarioModel
                 {
-                    Id = (uint)TipoHardwareModel.CONTROLADOR_DE_SALA
+                    new HardwareAuxModel
+                    {
+                        MAC = "AA:BB:CC:DD:EE:FF",
+                        Ip = "192.168.1.2",
+                        TipoHardwareId = new TipoUsuarioModel
+                        {
+                            Id = (uint)TipoHardwareModel.CONTROLADOR_DE_SALA
+                        }
+                    }
                 }
-            }
-        }
             };
             uint idUsuario = 1;
 

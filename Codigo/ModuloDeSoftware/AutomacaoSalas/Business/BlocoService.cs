@@ -7,15 +7,33 @@ using Persistence;
 
 namespace Service
 {
+    /// <summary>
+    /// Serviço responsável pela gestão de blocos.
+    /// </summary>
     public class BlocoService : IBlocoService
     {
         private readonly SalasDBContext _context;
+
+        /// <summary>
+        /// Inicializa uma nova instância do serviço BlocoService.
+        /// </summary>
+        /// <param name="context">Contexto do banco de dados.</param>
         public BlocoService(SalasDBContext context)
         {
             _context = context;
         }
+
+        /// <summary>
+        /// Obtém todos os blocos.
+        /// </summary>
+        /// <returns>Lista de blocos.</returns>
         public List<BlocoModel> GetAll() => _context.Blocos.Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.IdOrganizacao, Titulo = b.Titulo }).ToList();
 
+        /// <summary>
+        /// Obtém um bloco pelo ID.
+        /// </summary>
+        /// <param name="id">ID do bloco.</param>
+        /// <returns>Modelo do bloco correspondente.</returns>
         public BlocoModel GetById(uint id)
         {
             var blocoModel = (from b in _context.Blocos
@@ -26,17 +44,33 @@ namespace Service
                                   Id = b.Id,
                                   OrganizacaoId = b.IdOrganizacao,
                                   Titulo = b.Titulo,
-                                  NomeOrganizacao = o.RazaoSocial 
+                                  NomeOrganizacao = o.RazaoSocial
                               }).FirstOrDefault();
 
             return blocoModel;
         }
 
-
+        /// <summary>
+        /// Obtém blocos pelo ID da organização.
+        /// </summary>
+        /// <param name="id">ID da organização.</param>
+        /// <returns>Lista de blocos da organização.</returns>
         public List<BlocoModel> GetByIdOrganizacao(uint id) => _context.Blocos.Where(b => b.IdOrganizacao == id).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.IdOrganizacao, Titulo = b.Titulo }).ToList();
 
+        /// <summary>
+        /// Obtém um bloco pelo título e ID da organização.
+        /// </summary>
+        /// <param name="titulo">Título do bloco.</param>
+        /// <param name="idOrganizacao">ID da organização.</param>
+        /// <returns>Modelo do bloco correspondente.</returns>
         public BlocoModel GetByTitulo(string titulo, uint idOrganizacao) => _context.Blocos.Where(b => b.Titulo.ToUpper().Equals(titulo.ToUpper()) && b.IdOrganizacao == idOrganizacao).Select(b => new BlocoModel { Id = b.Id, OrganizacaoId = b.IdOrganizacao, Titulo = b.Titulo }).FirstOrDefault();
 
+        /// <summary>
+        /// Insere um bloco e associa com hardware.
+        /// </summary>
+        /// <param name="blocoModel">Modelo do bloco a ser inserido.</param>
+        /// <param name="idUsuario">ID do usuário responsável pela inserção.</param>
+        /// <returns>Retorna verdadeiro se o bloco foi inserido com sucesso.</returns>
         public bool InsertBlocoWithHardware(BlocoModel blocoModel, uint idUsuario)
         {
             var blocoInserido = new BlocoModel();
@@ -52,6 +86,12 @@ namespace Service
 
             return true;
         }
+
+        /// <summary>
+        /// Insere um novo bloco.
+        /// </summary>
+        /// <param name="blocoModel">Modelo do bloco a ser inserido.</param>
+        /// <returns>Bloco inserido.</returns>
         public BlocoModel Insert(BlocoModel blocoModel)
         {
             try
@@ -72,6 +112,11 @@ namespace Service
             catch (Exception e) { throw e; }
         }
 
+        /// <summary>
+        /// Remove um bloco pelo ID.
+        /// </summary>
+        /// <param name="id">ID do bloco a ser removido.</param>
+        /// <returns>Retorna verdadeiro se o bloco foi removido com sucesso.</returns>
         public bool Remove(uint id)
         {
             var _salaService = new SalaService(_context);
@@ -94,6 +139,11 @@ namespace Service
             return false;
         }
 
+        /// <summary>
+        /// Atualiza os dados de um bloco.
+        /// </summary>
+        /// <param name="entity">Modelo do bloco a ser atualizado.</param>
+        /// <returns>Retorna verdadeiro se o bloco foi atualizado com sucesso.</returns>
         public bool Update(BlocoModel entity)
         {
             try
@@ -114,6 +164,12 @@ namespace Service
             return false;
         }
 
+        /// <summary>
+        /// Configura uma entidade Bloco a partir de um modelo.
+        /// </summary>
+        /// <param name="model">Modelo do bloco.</param>
+        /// <param name="entity">Entidade do bloco.</param>
+        /// <returns>Entidade configurada.</returns>
         private static Bloco SetEntity(BlocoModel model, Bloco entity)
         {
             entity.Id = model.Id;
@@ -123,7 +179,11 @@ namespace Service
             return entity;
         }
 
-
+        /// <summary>
+        /// Obtém todos os blocos de uma organização associada a um usuário.
+        /// </summary>
+        /// <param name="idUsuario">ID do usuário.</param>
+        /// <returns>Lista de blocos.</returns>
         public List<BlocoModel> GetAllByIdUsuarioOrganizacao(uint idUsuario)
         {
             var queryUser = from usuario in _context.Usuarioorganizacaos
