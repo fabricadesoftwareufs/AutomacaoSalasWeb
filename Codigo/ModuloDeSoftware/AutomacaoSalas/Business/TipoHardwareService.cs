@@ -18,6 +18,19 @@ namespace Service
 
         public TipoHardwareModel GetById(uint id) => _context.Tipohardwares.Where(th => th.Id == id).Select(th => new TipoHardwareModel { Id = th.Id, Descricao = th.Descricao }).FirstOrDefault();
 
+        public List<TipoHardwareModel> GetByIdOrganizacao(uint organizacaoId)
+        {
+            return _context.Tipohardwares
+                .Where(th => th.IdOrganizacao == organizacaoId)
+                .Select(th => new TipoHardwareModel
+                {
+                    Id = th.Id,
+                    Descricao = th.Descricao,
+                    IdOrganizacao = th.IdOrganizacao
+                })
+                .ToList();
+        }
+
         public bool Insert(TipoHardwareModel entity)
         {
             _context.Add(SetEntity(entity, new Tipohardware()));

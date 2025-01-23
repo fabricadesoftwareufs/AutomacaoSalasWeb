@@ -235,10 +235,8 @@ namespace Service
             try
             {
                 var hardware = GetByMAC(entity.MAC, idUsuario);
-
                 if (hardware != null && hardware.Id != entity.Id)
                     throw new ServiceException("Já existe um dispositivo com esse endereço MAC");
-
                 if (entity.TipoHardwareId == TipoHardwareModel.CONTROLADOR_DE_SALA)
                 {
                     hardware = GetByIp(entity.Ip, idUsuario);
@@ -246,10 +244,14 @@ namespace Service
                         throw new ServiceException("Já existe um dispositivo com esse endereço IP");
                 }
 
-                var x = _context.Hardwaredesalas.Where(tu => tu.Id == entity.Id).FirstOrDefault();
-                if (x != null)
+                var hardwareExistente = _context.Hardwaredesalas.Where(tu => tu.Id == entity.Id).FirstOrDefault();
+                if (hardwareExistente != null)
                 {
-                    _context.Update(SetEntity(entity, x));
+                    // Preserva o token e UUID existentes
+                    entity.Token = hardwareExistente.Token;
+                    entity.Uuid = hardwareExistente.Uuid;
+
+                    _context.Update(SetEntity(entity, hardwareExistente));
                     return _context.SaveChanges() == 1;
                 }
             }
@@ -257,7 +259,6 @@ namespace Service
             {
                 throw e;
             }
-
             return false;
         }
 

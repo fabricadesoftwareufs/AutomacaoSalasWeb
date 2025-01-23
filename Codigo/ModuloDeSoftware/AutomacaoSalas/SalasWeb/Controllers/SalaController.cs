@@ -55,11 +55,13 @@ namespace SalasWeb.Controllers
         // GET: Sala/Create
         public ActionResult Create()
         {
-            var orgs = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            var usuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel;
+            var orgs = _organizacaoService.GetByIdUsuario(usuario.Id);
+            var organizacaoId = orgs.FirstOrDefault().Id;
 
             ViewBag.Organizacoes = orgs;
-            ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(orgs.FirstOrDefault().Id);
-            ViewBag.TipoHardware = _tipoHardwareService.GetAll();
+            ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(organizacaoId);
+            ViewBag.TipoHardware = _tipoHardwareService.GetByIdOrganizacao(organizacaoId);
 
             return View();
         }

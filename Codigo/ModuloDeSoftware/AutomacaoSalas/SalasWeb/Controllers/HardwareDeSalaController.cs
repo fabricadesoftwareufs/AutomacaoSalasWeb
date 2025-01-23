@@ -45,14 +45,15 @@ namespace SalasWeb.Controllers
 
         public IActionResult Create()
         {
-            var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
-            var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
+            var usuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel;
+            var organizacoes = _organizacaoService.GetByIdUsuario(usuario.Id);
+            var organizacaoId = organizacoes.FirstOrDefault().Id;
 
+            var blocos = _blocoService.GetByIdOrganizacao(organizacaoId);
             ViewBag.Organizacoes = organizacoes;
             ViewBag.Salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
             ViewBag.Blocos = blocos;
-            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
-
+            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetByIdOrganizacao(organizacaoId), "Id", "Descricao");
             return View();
         }
 
@@ -97,13 +98,14 @@ namespace SalasWeb.Controllers
         public IActionResult Edit(uint id)
         {
             var hardware = _hardwareService.GetById(id);
-            var bloco = _blocoService.GetById(_salaService.GetById(hardware.SalaId).BlocoId);
-            var idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var sala = _salaService.GetById(hardware.SalaId);
+            var bloco = _blocoService.GetById(sala.BlocoId);
+            var usuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel;
 
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(idUsuario);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(usuario.Id);
             ViewBag.Blocos = _blocoService.GetByIdOrganizacao(bloco.OrganizacaoId);
             ViewBag.Salas = _salaService.GetByIdBloco(bloco.Id);
-            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetAll(), "Id", "Descricao");
+            ViewBag.tipoHardware = new SelectList(_tipoHardwareService.GetByIdOrganizacao(bloco.OrganizacaoId), "Id", "Descricao");
 
             return View(hardware);
         }
