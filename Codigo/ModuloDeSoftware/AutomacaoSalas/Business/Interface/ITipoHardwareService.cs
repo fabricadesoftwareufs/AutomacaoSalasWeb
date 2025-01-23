@@ -6,6 +6,7 @@ namespace Service.Interface
     public interface ITipoHardwareService
     {
         List<TipoHardwareModel> GetAll();
+        List<TipoHardwareModel> GetByIdOrganizacao(uint organizacaoId);
         TipoHardwareModel GetById(uint id);
 
         bool Insert(TipoHardwareModel entity);

@@ -59,7 +59,7 @@
                             <div class="form-group col-md-4">
                                 <label asp-for="TipoHardwareId" class="control-label"></label>
                                 @Html.DropDownListFor(model => model.TipoHardwareId, ViewBag.tipoHardware as SelectList, new
-                           { @class = "form-control", @onchange = "mostraInputIP()", @id = "select-tipo-hardware" })
+                                    { @class = "form-control", @onchange = "mostraInputIP()", @id = "select-tipo-hardware" })
                                 <span asp-validation-for="TipoHardwareId" class="text-danger"></span>
                             </div>
                         </div>
@@ -121,6 +121,8 @@ else if (TempData["mensagemErro"] != null)
     <script src="~/plugins/inputmask/inputmask/jquery.mask.js"></script>
     <script src="~/js/mask.ip-input.js"></script>
 
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
 

@@ -12,5 +12,6 @@ namespace Model
         [Display(Name = "Descrição")]
         [StringLength(45, ErrorMessage = "Máximo são 45 caracteres")]
         public string Descricao { get; set; }
+        public uint? IdOrganizacao { get; set; }
     }
 }
