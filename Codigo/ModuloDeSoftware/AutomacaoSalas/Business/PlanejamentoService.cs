@@ -126,7 +126,7 @@ namespace Service
                 try
                 {
                     if (!(DateTime.Compare(planejamentoModel.DataFim, planejamentoModel.DataInicio) > 0) || TimeSpan.Compare(planejamentoModel.HorarioFim, planejamentoModel.HorarioInicio) != 1)
-                        throw new ServiceException("Sua Datas ou Horarios possuem inconsistências, corrija-os e tente novamente.");
+                        throw new ServiceException("As datas ou horários informados apresentam inconsistências. Por favor, corrija-os e tente novamente.");
 
                     var planejamentoInserido = new Planejamento();
                     _context.Add(SetEntity(planejamentoModel, planejamentoInserido));
@@ -166,7 +166,7 @@ namespace Service
                         transaction.Commit();
                         return save;
                     }
-                    else throw new ServiceException("Algo deu errado, tente novamente em alguns minutos.");
+                    else throw new ServiceException("Ocorreu um erro. Por favor, tente novamente em alguns minutos.");
                 }
                 catch (Exception e)
                 {
@@ -184,7 +184,7 @@ namespace Service
                 try
                 {
                     if (!(DateTime.Compare(entity.DataFim, entity.DataInicio) > 0 && TimeSpan.Compare(entity.HorarioFim, entity.HorarioInicio) == 1))
-                        throw new ServiceException("Suas Datas/Horarios possuem inconsistências, corrija-os e tente novamente");
+                        throw new ServiceException("As suas datas ou horários apresentam inconsistências. Por favor, corrija-os e tente novamente.");
 
                     _context.Update(SetEntity(entity, new Planejamento()));
                     var save = _context.SaveChanges() == 1 ? true : false;
@@ -232,7 +232,7 @@ namespace Service
                     }
                     else
                     {
-                        throw new ServiceException("Algo deu errado, tente novamente em alguns minutos.");
+                        throw new ServiceException("Ocorreu um erro. Por favor, tente novamente em alguns minutos.");
                     }
                 }
                 catch (Exception e)
