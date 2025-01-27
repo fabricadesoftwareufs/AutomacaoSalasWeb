@@ -96,7 +96,7 @@ namespace Service
         {
             var usuario = GetByCpf(entity.UsuarioModel.Cpf);
             if (usuario != null)
-                throw new ServiceException("Já existe um cpf cadastrado no sistema.");
+                throw new ServiceException("Este CPF já está cadastrado no sistema.");
 
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -179,7 +179,7 @@ namespace Service
             }
             else
             {
-                new ServiceException("Houve um erro ao remover o usuário!");
+                new ServiceException("Houve um erro ao remover o usuário.");
             }
             return false;
         }

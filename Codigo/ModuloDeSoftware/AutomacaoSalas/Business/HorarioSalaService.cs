@@ -247,10 +247,10 @@ namespace Service
             try
             {
                 if (VerificaSalaOcupada(entity.SalaId, entity.Data, entity.HorarioInicio, entity.HorarioFim) != null)
-                    throw new ServiceException("Essa sala já possui reserva nessa data e horários, por favor, tente outra data ou horário!  ");
+                    throw new ServiceException("Esta sala já possui uma reserva para a data e horários selecionados. Por favor, escolha outra data ou horário.");
 
                 if (TimeSpan.Compare(entity.HorarioFim, entity.HorarioInicio) != 1)
-                    throw new ServiceException("Os horários possuem inconsistências, corrija-os e tente novamente!");
+                    throw new ServiceException("Os horários possuem inconsistências, corrija-os e tente novamente.");
 
                 _context.Add(SetEntity(entity, new Horariosala()));
                 return _context.SaveChanges() == 1;
@@ -286,7 +286,7 @@ namespace Service
             }
             catch (Exception e)
             {
-                throw new ServiceException("Houve um problema ao remover reservas associadas ao planejamento, por favor tente novamente mais tarde!");
+                throw new ServiceException("Houve um problema ao remover reservas associadas ao planejamento, por favor tente novamente mais tarde.");
             }
 
             return false;
@@ -317,7 +317,7 @@ namespace Service
             }
             catch (Exception e)
             {
-                throw new ServiceException("Houve um problema ao atualizar reservas associadas ao planejamento, por favor tente novamente mais tarde!");
+                throw new ServiceException("Houve um problema ao atualizar reservas associadas ao planejamento, por favor tente novamente mais tarde.");
             }
 
             return false;

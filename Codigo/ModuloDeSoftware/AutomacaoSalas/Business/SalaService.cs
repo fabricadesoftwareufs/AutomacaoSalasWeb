@@ -106,7 +106,7 @@ namespace Service
             {
                 var sala = GetByTitulo(salaModel.Titulo);
                 if (sala != null && sala.BlocoId == salaModel.BlocoId)
-                    throw new ServiceException("Uma sala com o mesmo Titulo já está associada a este bloco!");
+                    throw new ServiceException("Já existe uma sala com o mesmo título associada a este bloco.");
 
                 var entity = new Sala();
                 _context.Add(SetEntity(salaModel, entity));
@@ -146,7 +146,7 @@ namespace Service
                         return _context.SaveChanges() == 1;
                     }
                 }
-                else throw new ServiceException("Essa sala nao pode ser removida pois existem outros registros associados a ela!");
+                else throw new ServiceException("Esta sala não pode ser removida, pois existem outros registros associados a ela.");
             }
             catch (Exception e) { throw e; }
 

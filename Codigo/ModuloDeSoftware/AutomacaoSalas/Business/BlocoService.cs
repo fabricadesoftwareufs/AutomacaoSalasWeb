@@ -97,7 +97,7 @@ namespace Service
             try
             {
                 if (GetByTitulo(blocoModel.Titulo, blocoModel.OrganizacaoId) != null)
-                    throw new ServiceException("Essa organização já possui um bloco com esse nome");
+                    throw new ServiceException("Já existe um bloco registrado com esse nome para esta organização.");
 
                 var entity = new Bloco();
                 _context.Add(SetEntity(blocoModel, entity));
@@ -131,7 +131,7 @@ namespace Service
                         return _context.SaveChanges() == 1;
                     }
                 }
-                else throw new ServiceException("Esse Bloco não pode ser removido pois possui hardwares e salas associados a ele!");
+                else throw new ServiceException("Este bloco não pode ser removido, pois possui hardwares e salas associados a ele.");
 
             }
             catch (Exception e) { throw e; }
@@ -150,7 +150,7 @@ namespace Service
             {
                 var bloco = GetByTitulo(entity.Titulo, entity.OrganizacaoId);
                 if (bloco != null && bloco.Id != entity.Id)
-                    throw new ServiceException("Essa organização já possui um bloco com esse nome");
+                    throw new ServiceException("Já existe um bloco registrado com esse nome para esta organização.");
 
                 var x = _context.Blocos.Where(b => b.Id == entity.Id).FirstOrDefault();
                 if (x != null)

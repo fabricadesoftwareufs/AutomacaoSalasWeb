@@ -62,7 +62,7 @@ namespace Service
             try
             {
                 if (GetByCnpj(entity.Cnpj) != null)
-                    throw new ServiceException("Uma organização com esse cnpj já está cadastrada!");
+                    throw new ServiceException("Uma organização com este CNPJ já está cadastrada.");
 
                 _context.Add(SetEntity(entity, new Organizacao()));
 
@@ -93,7 +93,7 @@ namespace Service
 
                 if (blocos.Count > 0 || usuarios.Count > 0)
                 {
-                    throw new ServiceException("Organização não pode ser removida pois ainda existem usuários ou blocos associados a ela!");
+                    throw new ServiceException("A organização não pode ser removida, pois ainda existem usuários ou blocos associados a ela.");
                 }
 
                 var organizacao = _context.Organizacaos.FirstOrDefault(o => o.Id == id);
@@ -109,7 +109,7 @@ namespace Service
                     {
                         if (ex.Message.Contains("Cannot delete or update a parent row: a foreign key constraint fails"))
                         {
-                            throw new ServiceException("Não é possível excluir a organização pois existem usuários ou blocos associados a ela.");
+                            throw new ServiceException("A exclusão da organização não é possível, pois existem usuários ou blocos associados a ela.");
                         }
                         else
                         {
@@ -138,7 +138,7 @@ namespace Service
             {
                 var empresa = GetByCnpj(entity.Cnpj);
                 if (empresa != null && empresa.Id != entity.Id)
-                    throw new ServiceException("Organização não pode ser removida pois ainda existem usuários ou blocos associados a ela!");
+                    throw new ServiceException("A organização não pode ser removida, pois ainda existem usuários ou blocos associados a ela.");
 
                 var x = _context.Organizacaos.Where(o => o.Id == entity.Id).FirstOrDefault();
                 if (x != null)

@@ -59,7 +59,7 @@ namespace Service
         public bool InsertListSalasParticulares(SalaParticularAuxModel entity)
         {
             if (entity.Responsaveis.Count == 0)
-                throw new ServiceException("Você não adicionou nenhum responsável da sala!.");
+                throw new ServiceException("Você não adicionou nenhum responsável da sala.");
 
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -139,7 +139,7 @@ namespace Service
         public bool Update(SalaParticularModel entity)
         {
             if (VerificaSalaExclusivaExistente(entity.Id, entity.UsuarioId, entity.SalaId))
-                throw new ServiceException("Atualização não pode ser concluida pois este usuário já esta associado a essa sala em outro registro!.");
+                throw new ServiceException("A atualização não pode ser concluída, pois este usuário já está associado a esta sala em outro registro.");
 
             try
             {

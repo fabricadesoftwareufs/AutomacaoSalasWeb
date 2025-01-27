@@ -94,13 +94,13 @@ namespace Service
                 {
                     var _salaParticular = new SalaParticularService(_context);
                     if (_salaParticular.GetByIdUsuarioAndIdSala(idUsuario, equipamento.Sala) == null)
-                        throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
+                        throw new ServiceException("Ocorreu um problema e o monitoramento não pôde ser concluído. Por favor, tente novamente mais tarde.");
                 }
                 else
                 {
                     var _horarioSalaService = new HorarioSalaService(_context);
                     if (!_horarioSalaService.VerificaSeEstaEmHorarioAula(idUsuario, equipamento.Sala))
-                        throw new ServiceException("Você não está no horário reservado para monitorar essa sala!");
+                        throw new ServiceException("Você não está no horário reservado para realizar o monitoramento desta sala.");
                 }
 
                 var monitoramentoModel = new MonitoramentoModel
@@ -112,7 +112,7 @@ namespace Service
                 };
 
                 if (!EnviarComandosMonitoramento(monitoramentoModel))
-                    throw new ServiceException("Houveram inconsistências no cadastro da solicitação de Monitoramento, confirme os dados do equioamento e hardware responsável e tente novamente!");
+                    throw new ServiceException("Houve inconsistências no cadastro da solicitação de Monitoramento. Verifique os dados do equipamento e hardware responsáveis e tente novamente.");
 
                 Update(monitoramentoModel);
             }
@@ -129,7 +129,7 @@ namespace Service
             {
                 var _salaParticular = new SalaParticularService(_context);
                 if (_salaParticular.GetByIdUsuarioAndIdSala(idUsuario, equipamento.Sala) == null)
-                    throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
+                    throw new ServiceException("Ocorreu um problema e o monitoramento não pôde ser concluído. Por favor, tente novamente mais tarde.");
             }
             else
             {
@@ -139,7 +139,7 @@ namespace Service
             }
 
             if (!EnviarComandosMonitoramento(model))
-                throw new ServiceException("Houve um problema e o monitoramento não pode ser finalizado, por favor tente novamente mais tarde!");
+                throw new ServiceException("Ocorreu um problema e o monitoramento não pôde ser concluído. Por favor, tente novamente mais tarde.");
 
             return Update(model);
         }
@@ -153,7 +153,7 @@ namespace Service
             }
             catch (Exception)
             {
-                throw new ServiceException("Houve um problema ao tentar fazer monitoramento da sala, por favor tente novamente em alguns minutos!");
+                throw new ServiceException("Houve um problema ao tentar realizar o monitoramento da sala. Por favor, tente novamente em alguns minutos.");
             }
         }
 
