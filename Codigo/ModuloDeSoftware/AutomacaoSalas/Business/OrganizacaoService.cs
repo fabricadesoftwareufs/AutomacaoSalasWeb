@@ -8,22 +8,55 @@ using System.Linq;
 
 namespace Service
 {
+    /// <summary>
+    /// Serviço responsável por gerenciar operações relacionadas a organizações no sistema.
+    /// </summary>
     public class OrganizacaoService : IOrganizacaoService
     {
         private readonly SalasDBContext _context;
+
+        /// <summary>
+        /// Construtor do serviço de organização.
+        /// </summary>
+        /// <param name="context">Contexto do banco de dados para operações de persistência.</param>
         public OrganizacaoService(SalasDBContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Recupera todas as organizações cadastradas no sistema.
+        /// </summary>
+        /// <returns>Lista de todas as organizações mapeadas para o modelo de organização.</returns>
         public List<OrganizacaoModel> GetAll() => _context.Organizacaos.Select(o => new OrganizacaoModel { Id = o.Id, Cnpj = o.Cnpj, RazaoSocial = o.RazaoSocial }).ToList();
 
+        /// <summary>
+        /// Recupera uma lista de organizações com base em uma lista de identificadores.
+        /// </summary>
+        /// <param name="ids">Lista de identificadores das organizações a serem recuperadas.</param>
+        /// <returns>Lista de organizações correspondentes aos identificadores fornecidos.</returns>
         public List<OrganizacaoModel> GetInList(List<uint> ids) => _context.Organizacaos.Where(o => ids.Contains(o.Id)).Select(o => new OrganizacaoModel { Id = o.Id, Cnpj = o.Cnpj, RazaoSocial = o.RazaoSocial }).ToList();
 
+        /// <summary>
+        /// Recupera uma organização pelo seu identificador único.
+        /// </summary>
+        /// <param name="id">Identificador da organização.</param>
+        /// <returns>Modelo da organização encontrada ou null se não existir.</returns>
         public OrganizacaoModel GetById(uint id) => _context.Organizacaos.Where(o => o.Id == id).Select(o => new OrganizacaoModel { Id = o.Id, Cnpj = o.Cnpj, RazaoSocial = o.RazaoSocial }).FirstOrDefault();
 
+        /// <summary>
+        /// Recupera uma organização pelo seu CNPJ.
+        /// </summary>
+        /// <param name="cnpj">CNPJ da organização.</param>
+        /// <returns>Modelo da organização encontrada ou null se não existir.</returns>
         public OrganizacaoModel GetByCnpj(string cnpj) => _context.Organizacaos.Where(o => o.Cnpj.Equals(cnpj)).Select(o => new OrganizacaoModel { Id = o.Id, Cnpj = o.Cnpj, RazaoSocial = o.RazaoSocial }).FirstOrDefault();
 
+        /// <summary>
+        /// Insere uma nova organização no sistema.
+        /// </summary>
+        /// <param name="entity">Modelo da organização a ser inserida.</param>
+        /// <returns>True se a inserção for bem-sucedida, false caso contrário.</returns>
+        /// <exception cref="ServiceException">Lançada se já existir uma organização com o mesmo CNPJ.</exception>
         public bool Insert(OrganizacaoModel entity)
         {
             try
@@ -42,6 +75,12 @@ namespace Service
 
         }
 
+        /// <summary>
+        /// Remove uma organização do sistema pelo seu identificador.
+        /// </summary>
+        /// <param name="id">Identificador da organização a ser removida.</param>
+        /// <returns>True se a remoção for bem-sucedida, false caso contrário.</returns>
+        /// <exception cref="ServiceException">Lançada se existirem blocos ou usuários associados à organização.</exception>
         public bool Remove(uint id)
         {
             var _blocoService = new BlocoService(_context);
@@ -87,6 +126,12 @@ namespace Service
             return false;
         }
 
+        /// <summary>
+        /// Atualiza os dados de uma organização existente.
+        /// </summary>
+        /// <param name="entity">Modelo da organização com os dados atualizados.</param>
+        /// <returns>True se a atualização for bem-sucedida, false caso contrário.</returns>
+        /// <exception cref="ServiceException">Lançada se o CNPJ já estiver sendo usado por outra organização.</exception>
         public bool Update(OrganizacaoModel entity)
         {
             try
@@ -110,6 +155,12 @@ namespace Service
             return false;
         }
 
+        /// <summary>
+        /// Método auxiliar para mapear um modelo de organização para uma entidade de organização.
+        /// </summary>
+        /// <param name="model">Modelo de organização de origem.</param>
+        /// <param name="entity">Entidade de organização de destino.</param>
+        /// <returns>Entidade de organização atualizada.</returns>
         private static Organizacao SetEntity(OrganizacaoModel model, Organizacao entity)
         {
             entity.Id = model.Id;
@@ -119,6 +170,11 @@ namespace Service
             return entity;
         }
 
+        /// <summary>
+        /// Recupera as organizações associadas a um usuário específico.
+        /// </summary>
+        /// <param name="idUsuario">Identificador do usuário.</param>
+        /// <returns>Lista de organizações associadas ao usuário.</returns>
         public List<OrganizacaoModel> GetByIdUsuario(uint idUsuario)
         {
             var _usuarioOrgService = new UsuarioOrganizacaoService(_context);
