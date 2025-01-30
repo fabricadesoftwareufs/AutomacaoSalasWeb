@@ -19,7 +19,6 @@ namespace Service.Tests
     {
         private SalasDBContext context;
         private ISalaService salaService;
-
         [TestInitialize]
         public void Initialize()
         {
@@ -31,7 +30,13 @@ namespace Service.Tests
             context = new SalasDBContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
+            AdicionarSalas();
 
+            salaService = new SalaService(context);
+        }
+
+        private void AdicionarSalas()
+        {
             // Adiciona os blocos
             var blocos = new List<Bloco>
             {
@@ -40,7 +45,6 @@ namespace Service.Tests
                 new() { Id = 3, Titulo = "Bloco C" }
             };
             context.AddRange(blocos);
-
             // Adiciona as salas
             var salas = new List<Sala>
             {
