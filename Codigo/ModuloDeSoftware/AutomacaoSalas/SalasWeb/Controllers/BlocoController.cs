@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using Model;
 using Model.ViewModel;
 using Service;
@@ -18,15 +19,15 @@ namespace SalasWeb.Controllers
         private readonly IOrganizacaoService _organizacaoService;
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
         private readonly IUsuarioService _usuarioService;
-        public BlocoController(IBlocoService blocoService,
-                               IOrganizacaoService organizacaoService,
-                               IUsuarioOrganizacaoService usuarioOrganizacaoService,
-                               IUsuarioService UsuarioService)
+        private readonly ILogger<BlocoController> logger;
+
+        public BlocoController(IBlocoService blocoService, IOrganizacaoService organizacaoService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, ILogger<BlocoController> logger)
         {
             _blocoService = blocoService;
             _organizacaoService = organizacaoService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
-            _usuarioService = UsuarioService;
+            _usuarioService = usuarioService;
+            this.logger = logger;
         }
 
         // GET: Bloco
@@ -62,6 +63,7 @@ namespace SalasWeb.Controllers
                 {
                     if (_blocoService.InsertBlocoWithHardware(blocoModel, _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id))
                     {
+                        logger.LogInformation($"Bloco {blocoModel.Titulo} cadastrado com sucesso");
                         TempData["mensagemSucesso"] = "Bloco adicionado com sucesso!"; return RedirectToAction(nameof(Index));
                     }
                     else TempData["mensagemErro"] = "Houve um problema ao adicionar bloco, tente novamente em alguns minutos!";
@@ -69,6 +71,8 @@ namespace SalasWeb.Controllers
             }
             catch (ServiceException se)
             {
+                logger.LogError("Erro ao cadastrar bloco");
+                logger.LogError(se, se.Message);
                 TempData["mensagemErro"] = se.Message;
             }
 
