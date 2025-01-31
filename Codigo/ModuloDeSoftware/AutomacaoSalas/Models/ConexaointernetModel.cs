@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    internal class ConexaointernetModel
+    public class ConexaointernetModel
     {
         public ConexaointernetModel()
         {
@@ -32,6 +32,8 @@ namespace Model
         [MinLength(8), MaxLength(63)]
         [StringLength(16, ErrorMessage = "A senha deve ter entre 8 e 63 caracteres")]
         public uint IdBloco { get; set; }
+
+        public string? NomeBloco { get; set; } 
 
     }
 }
