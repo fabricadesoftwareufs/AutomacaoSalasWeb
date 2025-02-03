@@ -9,14 +9,26 @@ using System.Linq;
 
 namespace Service
 {
+    /// <summary>
+    /// Serviço responsável por gerenciar operações relacionadas ao planejamento de salas.
+    /// </summary>
     public class PlanejamentoService : IPlanejamentoService
     {
         private readonly SalasDBContext _context;
+
+        /// <summary>
+        /// Construtor do serviço de planejamento.
+        /// </summary>
+        /// <param name="context">Contexto do banco de dados para operações de persistência.</param>
         public PlanejamentoService(SalasDBContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Recupera todos os planejamentos cadastrados no sistema.
+        /// </summary>
+        /// <returns>Lista de planejamentos existentes.</returns>
         public List<PlanejamentoModel> GetAll()
             => _context.Planejamentos
                 .Select(pl => new PlanejamentoModel
@@ -33,6 +45,11 @@ namespace Service
 
                 }).ToList();
 
+        /// <summary>
+        /// Recupera um planejamento pelo seu identificador único.
+        /// </summary>
+        /// <param name="id">Identificador do planejamento.</param>
+        /// <returns>Modelo do planejamento encontrado ou null se não existir.</returns>
         public PlanejamentoModel GetById(int id)
             => _context.Planejamentos
                 .Where(pl => pl.Id == id)
@@ -49,6 +66,11 @@ namespace Service
                     SalaId = pl.IdSala
                 }).FirstOrDefault();
 
+        /// <summary>
+        /// Recupera os planejamentos de uma sala específica.
+        /// </summary>
+        /// <param name="id">Identificador da sala.</param>
+        /// <returns>Lista de planejamentos da sala especificada.</returns>
         public List<PlanejamentoModel> GetByIdSala(uint id)
             => _context.Planejamentos
                 .Where(pl => pl.IdSala == id)
@@ -64,6 +86,13 @@ namespace Service
                     UsuarioId = pl.IdUsuario,
                     SalaId = pl.IdSala
                 }).ToList();
+
+
+        /// <summary>
+        /// Recupera os planejamentos de uma organização específica.
+        /// </summary>
+        /// <param name="idOrganizacao">Identificador da organização.</param>
+        /// <returns>Lista de planejamentos da organização especificada.</returns>
         public List<PlanejamentoModel> GetByIdOrganizacao(uint idOrganizacao)
         {
             var _blocoService = new BlocoService(_context);
@@ -89,6 +118,11 @@ namespace Service
             return query;
         }
 
+        /// <summary>
+        /// Insere um planejamento com uma lista de horários.
+        /// </summary>
+        /// <param name="model">Modelo auxiliar contendo o planejamento e os horários associados.</param>
+        /// <returns>True se a inserção for bem-sucedida, false caso contrário.</returns>
         public bool InsertPlanejamentoWithListHorarios(PlanejamentoAuxModel model)
         {
             try
@@ -119,6 +153,12 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Insere um novo planejamento no sistema.
+        /// </summary>
+        /// <param name="planejamentoModel">Modelo do planejamento a ser inserido.</param>
+        /// <returns>True se a inserção for bem-sucedida, false caso contrário.</returns>
+        /// <exception cref="ServiceException">Lançada se houver inconsistências nos horários ou datas.</exception>
         public bool Insert(PlanejamentoModel planejamentoModel)
         {
             using (var transcaction = _context.Database.BeginTransaction())
@@ -147,6 +187,12 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Remove um planejamento pelo seu identificador.
+        /// </summary>
+        /// <param name="id">Identificador do planejamento.</param>
+        /// <param name="excluiReservas">Indica se as reservas associadas devem ser excluídas.</param>
+        /// <returns>True se a remoção for bem-sucedida, false caso contrário.</returns>
         public bool Remove(int id, bool excluiReservas)
         {
             using (var transaction = _context.Database.BeginTransaction())
@@ -177,6 +223,11 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Atualiza os dados de um planejamento existente.
+        /// </summary>
+        /// <param name="entity">Modelo do planejamento com os dados atualizados.</param>
+        /// <returns>True se a atualização for bem-sucedida, false caso contrário.</returns>
         public bool Update(PlanejamentoModel entity)
         {
             using (var transaction = _context.Database.BeginTransaction())
@@ -200,6 +251,11 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Recupera os planejamentos de um usuário específico.
+        /// </summary>
+        /// <param name="idUsuario">Identificador do usuário.</param>
+        /// <returns>Lista de planejamentos do usuário especificado.</returns>
         public List<PlanejamentoModel> GetByIdUsuario(uint idUsuario)
          => _context.Planejamentos
                 .Where(pl => pl.IdUsuario == idUsuario)
@@ -216,6 +272,11 @@ namespace Service
                     SalaId = pl.IdSala
                 }).ToList();
 
+        /// <summary>
+        /// Remove todos os planejamentos de um usuário específico.
+        /// </summary>
+        /// <param name="id">Identificador do usuário.</param>
+        /// <returns>True se a remoção for bem-sucedida, false caso contrário.</returns>
         public bool RemoveByUsuario(uint id)
         {
             using (var transaction = _context.Database.BeginTransaction())
@@ -244,6 +305,12 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Método auxiliar para mapear um modelo de planejamento para uma entidade de planejamento.
+        /// </summary>
+        /// <param name="model">Modelo de planejamento de origem.</param>
+        /// <param name="entity">Entidade de planejamento de destino.</param>
+        /// <returns>Entidade de planejamento atualizada.</returns>
         private static Planejamento SetEntity(PlanejamentoModel model, Planejamento entity)
         {
             entity.Id = model.Id;
@@ -260,6 +327,11 @@ namespace Service
             return entity;
         }
 
+        /// <summary>
+        /// Valida a lista de horários do planejamento, verificando se há pelo menos um horário e se os horários de início e fim são válidos.
+        /// </summary>
+        /// <param name="horarios">Lista de horários a serem validados.</param>
+        /// <exception cref="ServiceException">Lançada se não houver horários ou se houver inconsistências nos horários.</exception>
         private void ValidaListaHorariosPlanejamento(List<HorarioPlanejamentoAuxModel> horarios)
         {
             try
@@ -277,6 +349,11 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Insere reservas de horários para o planejamento, associando os horários aprovados às datas corretas dentro do intervalo de tempo do planejamento.
+        /// </summary>
+        /// <param name="planejamento">Modelo de planejamento contendo as informações de horário e sala.</param>
+        /// <returns>True se as reservas forem inseridas com sucesso, false caso contrário.</returns>
         private bool InsertReservasPlanejamento(PlanejamentoModel planejamento)
         {
             try
