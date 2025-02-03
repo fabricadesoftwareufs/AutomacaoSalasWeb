@@ -170,3 +170,10 @@ VALUES
     (1, 1),  -- Condicionador SAMSUNG no estado 'ligado'
     (0, 2),  -- Condicionador ELGIN no estado 'desligado'
     (1, 3);  -- Condicionador LG no estado 'ligado'
+
+INSERT INTO `conexaointernet`(nome, senha, idBloco)
+VALUES
+    ('Lab2',12345678,1),
+    ('Lab1',12345678,1),
+    ('Lab3',12345678,1),
+    ('Lab4',12345678,6)

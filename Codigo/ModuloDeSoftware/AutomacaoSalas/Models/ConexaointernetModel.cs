@@ -16,11 +16,11 @@ namespace Model
         public uint Id { get; set; }
 
         [Required(ErrorMessage = "Campo obrigatório")]
-        [StringLength(100, MinimumLength = 4, ErrorMessage = "valor fora do intervalo")]
+        [StringLength(100, MinimumLength = 4, ErrorMessage = "O nome deve ter entre 4 e 100 caracteres")]
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "Campo obrigatório")]
-        [StringLength(100, MinimumLength = 8, ErrorMessage = "valor fora do intervalo")]
+        [StringLength(63, MinimumLength = 8, ErrorMessage = "A senha deve ter entre 8 e 63 caracteres")]
         public string Senha { get; set; }
 
         [Compare("Senha", ErrorMessage = "As senhas não conferem")]
@@ -28,12 +28,9 @@ namespace Model
         public string ConfirmarSenha { get; set; }
 
         [Required(ErrorMessage = "Campo obrigatório")]
-        [Display(Name = "Senha")]
-        [MinLength(8), MaxLength(63)]
-        [StringLength(16, ErrorMessage = "A senha deve ter entre 8 e 63 caracteres")]
         public uint IdBloco { get; set; }
 
-        public string? NomeBloco { get; set; } 
+        public string? NomeBloco { get; set; }
 
     }
 }
