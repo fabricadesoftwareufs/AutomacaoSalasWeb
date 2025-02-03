@@ -12,7 +12,7 @@ namespace Model
         public ConexaointernetModel()
         {
         }
-
+        [Key]
         public uint Id { get; set; }
 
         [Required(ErrorMessage = "Campo obrigatório")]
@@ -23,6 +23,7 @@ namespace Model
         [StringLength(63, MinimumLength = 8, ErrorMessage = "A senha deve ter entre 8 e 63 caracteres")]
         public string Senha { get; set; }
 
+        [Display(Name = "Confirmar Senha")]
         [Compare("Senha", ErrorMessage = "As senhas não conferem")]
         [Required(ErrorMessage = "Campo obrigatório")]
         public string ConfirmarSenha { get; set; }

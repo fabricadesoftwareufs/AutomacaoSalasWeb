@@ -64,7 +64,8 @@ namespace SalasWeb.Controllers
                     if (_blocoService.InsertBlocoWithHardware(blocoModel, _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id))
                     {
                         logger.LogInformation($"Bloco {blocoModel.Titulo} cadastrado com sucesso");
-                        TempData["mensagemSucesso"] = "Bloco adicionado com sucesso!"; return RedirectToAction(nameof(Index));
+                        TempData["mensagemSucesso"] = "Bloco adicionado com sucesso!"; 
+                        return RedirectToAction(nameof(Index));
                     }
                     else TempData["mensagemErro"] = "Houve um problema ao adicionar bloco, tente novamente em alguns minutos!";
                 }

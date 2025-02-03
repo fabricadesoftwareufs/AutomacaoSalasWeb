@@ -9,6 +9,7 @@ using Service.Interface;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace SalasWeb.Controllers
 {
@@ -19,17 +20,15 @@ namespace SalasWeb.Controllers
         private readonly IBlocoService _blocoService;
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
         private readonly IUsuarioService _usuarioService;
+        private readonly ILogger<ConexaoInternetController> logger;
 
-        public ConexaoInternetController(
-            IConexaoInternetService conexaoInternetService,
-            IBlocoService blocoService,
-            IUsuarioOrganizacaoService usuarioOrganizacaoService,
-            IUsuarioService usuarioService)
+        public ConexaoInternetController(IConexaoInternetService conexaoInternetService, IBlocoService blocoService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, ILogger<ConexaoInternetController> logger)
         {
             _conexaoInternetService = conexaoInternetService;
             _blocoService = blocoService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
             _usuarioService = usuarioService;
+            this.logger = logger;
         }
 
         // GET: ConexaoInternet
@@ -41,124 +40,112 @@ namespace SalasWeb.Controllers
         // GET: ConexaoInternet/Details/5
         public ActionResult Details(uint id)
         {
-            var conexao = _conexaoInternetService.GetById(id);
+            ConexaointernetModel conexao = _conexaoInternetService.GetById(id);
             return View(conexao);
         }
 
         // GET: ConexaoInternet/Create
         public ActionResult Create()
         {
-            var viewModel = new ConexaoInternetViewModel
-            {
-                Blocos = GetBlocos()
-            };
-            return View(viewModel);
+            ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
+            return View();
         }
 
         // POST: ConexaoInternet/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ConexaoInternetViewModel viewModel)
+        public ActionResult Create(ConexaointernetModel conexaoModel)
         {
+            ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
+
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var model = new ConexaointernetModel
+                    if (_conexaoInternetService.Insert(conexaoModel))
                     {
-                        Nome = viewModel.Nome,
-                        Senha = viewModel.Senha,
-                        ConfirmarSenha = viewModel.ConfirmarSenha,
-                        IdBloco = viewModel.IdBloco
-                    };
-
-                    if (_conexaoInternetService.Insert(model))
-                    {
-                        TempData["mensagemSucesso"] = "Conexão de Internet adicionada com sucesso!";
+                        logger.LogWarning("Conexão de Internet criada com sucesso!");
                         return RedirectToAction(nameof(Index));
                     }
                     else
                     {
-                        TempData["mensagemErro"] = "Houve um problema ao adicionar a conexão, tente novamente em alguns minutos!";
+                        logger.LogError("Houve um problema ao criar a conexão de Internet!");
                     }
                 }
             }
             catch (ServiceException se)
             {
-                TempData["mensagemErro"] = se.Message;
+                logger.LogError("Erro ao cadastrar conexão internet "+ se);
+                
             }
 
-            viewModel.Blocos = GetBlocos();
-            return View(viewModel);
+            return View(conexaoModel);
         }
 
         // GET: ConexaoInternet/Edit/5
         public ActionResult Edit(uint id)
         {
-            var conexao = _conexaoInternetService.GetById(id);
-            var viewModel = new ConexaoInternetViewModel
-            {
-                Id = conexao.Id,
-                Nome = conexao.Nome,
-                IdBloco = conexao.IdBloco,
-                Blocos = GetBlocos()
-            };
-            return View(viewModel);
+            ViewBag.Blocos = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
+            ConexaointernetModel conexaointernetModel = _conexaoInternetService.GetById(id);        
+            return View(conexaointernetModel);
         }
 
         // POST: ConexaoInternet/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ConexaoInternetViewModel viewModel)
+        public ActionResult Edit(ConexaointernetModel conexaointernetModel)
         {
+            ViewBag.Blocos = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
+
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var model = new ConexaointernetModel
+                    if (_conexaoInternetService.Update(conexaointernetModel))
                     {
-                        Id = viewModel.Id,
-                        Nome = viewModel.Nome,
-                        Senha = viewModel.Senha,
-                        ConfirmarSenha = viewModel.ConfirmarSenha,
-                        IdBloco = viewModel.IdBloco
-                    };
-
-                    if (_conexaoInternetService.Update(model))
-                    {
-                        TempData["mensagemSucesso"] = "Conexão de Internet atualizada com sucesso!";
+                        logger.LogWarning("Conexão de Internet editada com sucesso!");
                         return RedirectToAction(nameof(Index));
                     }
                     else
                     {
-                        TempData["mensagemErro"] = "Houve um problema ao atualizar a conexão, tente novamente em alguns minutos!";
+                        logger.LogError("Houve um problema ao criar a conexão de Internet!");
                     }
                 }
             }
             catch (ServiceException se)
             {
-                TempData["mensagemErro"] = se.Message;
+                logger.LogError("Erro ao editar conexão internet " + se);
             }
 
-            viewModel.Blocos = GetBlocos();
-            return View(viewModel);
+            
+            return View(conexaointernetModel);
+        }
+
+        [HttpGet]
+        public IActionResult Delete(uint id)
+        {
+            ViewBag.Blocos = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
+            ConexaointernetModel conexaointernetModel = _conexaoInternetService.GetById(id);
+            return View(conexaointernetModel);
         }
 
         // POST: ConexaoInternet/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(uint id)
+        public ActionResult Delete(ConexaointernetModel conexaointernetModel)
         {
             try
             {
-                if (_conexaoInternetService.Remove(id))
-                    TempData["mensagemSucesso"] = "Conexão de Internet removida com sucesso!";
+                if (_conexaoInternetService.Remove(conexaointernetModel.Id))
+                {
+                    logger.LogWarning("Conexão de Internet removida com sucesso!");
+                }                   
                 else
-                    TempData["mensagemErro"] = "Houve um problema ao tentar remover a conexão!";
+                    logger.LogError("Houve um problema ao tentar remover a conexão!");
             }
             catch (ServiceException se)
             {
-                TempData["mensagemErro"] = se.Message;
+                logger.LogError("Erro ao remover conexão internet " + se);
             }
             return RedirectToAction(nameof(Index));
         }
