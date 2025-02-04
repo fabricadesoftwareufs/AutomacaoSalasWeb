@@ -183,7 +183,3 @@ VALUES
     ('Lab1',12345678,1),
     ('Lab3',12345678,1),
     ('Lab4',12345678,6);
-
-select * from equipamento
-
-select * from monitoramento
