@@ -28,9 +28,7 @@ namespace SalasAPI.Controllers
             _tipoUsuarioService = tipoUsuarioService;
         }
         
-        // TODO: M4RCOSVS0 - Revisar e corrigir o método RequestToken. Há problemas que precisam ser ajustados, mas não serão feitos agora.
-
-        /*
+        
         [AllowAnonymous]
         [HttpPost]
         public IActionResult RequestToken([FromBody] LoginViewModel request)
@@ -38,8 +36,7 @@ namespace SalasAPI.Controllers
             var user = _usuarioService.GetByLoginAndPass(Methods.CleanString(request.Login), Criptography.GeneratePasswordHash(request.Senha));
             if (user != null)
             {
-                var userType = _tipoUsuarioService.GetById(user.TipoUsuarioId);
-
+                var userType = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(user.Id);
                 if (userType == null)
                 {
                     return BadRequest( new { message = "Houve um problema na autenticação, por favor tente novamente em alguns minutos!." } );
@@ -77,6 +74,6 @@ namespace SalasAPI.Controllers
 
             return BadRequest("Credenciais Invalidas");
         }
-        */
+        
     }
 }
