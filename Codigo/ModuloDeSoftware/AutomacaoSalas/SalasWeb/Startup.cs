@@ -62,6 +62,7 @@ namespace SalasUfsWeb
             services.AddScoped<ICodigoInfravermelhoService, CodigoInfravermelhoService>();
             services.AddScoped<IEquipamentoService, EquipamentoService>();
             services.AddScoped<ILogRequestService, LogRequestService>();
+            services.AddScoped<IConexaoInternetService, ConexaoInternetService>();
             services.AddMvc();
         }
 
