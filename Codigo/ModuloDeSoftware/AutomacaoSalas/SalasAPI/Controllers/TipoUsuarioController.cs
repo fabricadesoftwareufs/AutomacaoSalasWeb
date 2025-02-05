@@ -37,15 +37,14 @@ namespace SalasAPI.Controllers
         }
 
 
-        /*
-        // TODO: M4RCOSVS0 - Revisar e corrigir o método public ActionResult. Há problemas que precisam ser ajustados, mas não serão feitos agora.
+       
         // GET: api/TipoUsuario/5
         [HttpGet("{id}")]
         public ActionResult Get(uint id)
         {
             try
             {
-                var tipo = _service.GetById(id);
+                var tipo = _service.GetTipoUsuarioByUsuarioId(id);
                 if (tipo == null)
                     return Ok(new
                     {
@@ -62,6 +61,6 @@ namespace SalasAPI.Controllers
             }
            
         }
-        */
+        
     }
 }
