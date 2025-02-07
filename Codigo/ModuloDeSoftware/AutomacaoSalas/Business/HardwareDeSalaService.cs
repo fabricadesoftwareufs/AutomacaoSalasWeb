@@ -357,5 +357,25 @@ namespace Service
 
             return false;
         }
+
+        public IEnumerable<HardwareDeSalaModel> GetBySalaAndTipoEquipamento(int idSala, string tipoEquipamento)
+        {
+            // Define o tipo exato baseado no equipamento
+            string tipoHardware = tipoEquipamento.ToUpper() switch
+            {
+                "CONDICIONADOR" => "MODULO DE DISPOSITIVO",
+                "LUZES" => "MODULO DE SENSORIAMENTO",
+                _ => ""
+            };
+
+            return _context.Hardwaredesalas
+                .Where(x => x.IdSala == idSala &&
+                            x.IdTipoHardwareNavigation.Descricao == tipoHardware) 
+                .Select(x => new HardwareDeSalaModel
+                {
+                    MAC = x.Mac,
+                    Id = x.Id
+                });
+        }
     }
 }
