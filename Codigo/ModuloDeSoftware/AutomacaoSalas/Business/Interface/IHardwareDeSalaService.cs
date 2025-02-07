@@ -24,6 +24,7 @@ namespace Service.Interface
         HardwareDeSalaModel GetByUuid(string uuid);
 
         HardwareDeSalaModel GetControladorByIdSala(uint idSala);
+        IEnumerable<HardwareDeSalaModel> GetBySalaAndTipoEquipamento(int idSala, string tipoEquipamento);
 
         bool Insert(HardwareDeSalaModel entity, uint idUsuario);
         bool Remove(int id);

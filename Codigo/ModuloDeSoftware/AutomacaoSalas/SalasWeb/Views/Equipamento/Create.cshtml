@@ -69,6 +69,17 @@
                                 </div>
 
                                 <div class="form-group col-md-7">
+                                    <label asp-for="EquipamentoModel.TipoEquipamento" class="control-label"></label>
+                                    <select id="tipo" class="form-control" asp-for="EquipamentoModel.TipoEquipamento">
+                                        @foreach (var item in ViewBag.Tipos)
+                                        {
+                                            <option value="@item"> @item</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="EquipamentoModel.TipoEquipamento" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group col-md-7">
                                     <label asp-for="EquipamentoModel.HardwareDeSala" class="control-label">Selecione o Atuador associado</label>
                                     <select id="select-hardware" class="form-control" asp-for="EquipamentoModel.HardwareDeSala">
                                         @foreach (var item in ViewBag.Hardwares)
@@ -79,16 +90,7 @@
                                     <span asp-validation-for="EquipamentoModel.HardwareDeSala" class="text-danger"></span>
                                 </div>
 
-                                <div class="form-group col-md-7">
-                                    <label asp-for="EquipamentoModel.TipoEquipamento" class="control-label"></label>
-                                    <select id="tipo" class="form-control" asp-for="EquipamentoModel.TipoEquipamento">
-                                        @foreach (var item in ViewBag.Tipos)
-                                        {
-                                            <option value="@item"> @item</option>
-                                        }
-                                    </select>
-                                    <span asp-validation-for="EquipamentoModel.TipoEquipamento" class="text-danger"></span>
-                                </div>
+
                             </div>
                             <div class="ocupation col-md-10">
                                 <div id="ccodigo" class="form-group pr-2">
@@ -171,6 +173,48 @@ else if (TempData["mensagemErro"] != null)
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
         });
+
+
+        $("#select-sala").change(function(){
+
+            var tipoEquipamento = document.getElementById("tipo").value;
+            var idSala = $(this).val();
+            carregarMacs(idSala, tipoEquipamento);
+
+        });
+
+        $("#select-bloco").change(function(){
+
+            var tipoEquipamento = document.getElementById("tipo").value;
+            var idSala = $(this).val();
+            carregarMacs(idSala, tipoEquipamento);
+
+        });
+
+        $("#tipo").change(function(){
+
+            var idSala = document.getElementById("select-sala").value;
+            var tipoEquipamento = $(this).val();
+            carregarMacs(idSala, tipoEquipamento);
+
+        });
+
+        function carregarMacs(idSala, tipoEquipamento){
+            $.ajax({
+                url: '/MacSalaEquipamento/' + idSala + '/' + tipoEquipamento,
+                type: 'GET',
+                success: function(data){
+                    
+                    $('#select-hardware').empty();
+
+                    $.each(data, function(index, item) {
+                        $('#select-hardware').append('<option value="' + item.id + '">' + item.mac + '</option>');
+                    });
+                },
+            });
+        }
+
+
     </script>
     <script src="~/js/load-itens-script.js"></script>
     <script src="~/js/equipamento-script.js"></script>

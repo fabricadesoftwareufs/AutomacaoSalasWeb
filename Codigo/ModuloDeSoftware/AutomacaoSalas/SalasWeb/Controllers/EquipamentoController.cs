@@ -95,7 +95,7 @@ namespace SalasWeb.Controllers
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
-            var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();
+            var hardwares = _hardwareDeSalaService.GetBySalaAndTipoEquipamento((int)salas.First().Id, tiposEquipamento.First());
             var operacoes = _operacaoService.GetAll().ToList();
             ViewBag.Operacoes = operacoes;
             ViewBag.Organizacoes = organizacoes;
@@ -117,7 +117,7 @@ namespace SalasWeb.Controllers
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
-            var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();
+            var hardwares = _hardwareDeSalaService.GetBySalaAndTipoEquipamento((int)salas.First().Id, tiposEquipamento.First());
             var operacoes = _operacaoService.GetAll().ToList();
             ViewBag.Operacoes = operacoes;
             ViewBag.Organizacoes = organizacoes;
@@ -255,5 +255,14 @@ namespace SalasWeb.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        [Route("MacSalaEquipamento/{idSala}/{tipoEquipamento}")]
+        public IActionResult MacSalaEquipamento(int idSala, string tipoEquipamento)
+        {
+            var macs = _hardwareDeSalaService.GetBySalaAndTipoEquipamento(idSala, tipoEquipamento);
+            return Json(macs);
+        }
+
     }
 }
