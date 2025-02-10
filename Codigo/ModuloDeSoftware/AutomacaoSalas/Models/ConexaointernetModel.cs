@@ -15,6 +15,7 @@ namespace Model
         [Key]
         public uint Id { get; set; }
 
+        [Display(Name = "Nome da Rede")]
         [Required(ErrorMessage = "Campo obrigatório")]
         [StringLength(100, MinimumLength = 4, ErrorMessage = "O nome deve ter entre 4 e 100 caracteres")]
         public string Nome { get; set; }
@@ -31,7 +32,10 @@ namespace Model
         [Required(ErrorMessage = "Campo obrigatório")]
         public uint IdBloco { get; set; }
 
+        [Display(Name = "Nome do Bloco")]
         public string? NomeBloco { get; set; }
+        
+        public uint? OrganizacaoId { get; set; }
 
     }
 }

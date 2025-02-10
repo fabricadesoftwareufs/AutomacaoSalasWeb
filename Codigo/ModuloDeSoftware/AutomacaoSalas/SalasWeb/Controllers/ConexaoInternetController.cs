@@ -16,14 +16,16 @@ namespace SalasWeb.Controllers
     [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class ConexaoInternetController : Controller
     {
+        private readonly IOrganizacaoService _organizacaoService;
         private readonly IConexaoInternetService _conexaoInternetService;
         private readonly IBlocoService _blocoService;
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
         private readonly IUsuarioService _usuarioService;
         private readonly ILogger<ConexaoInternetController> logger;
 
-        public ConexaoInternetController(IConexaoInternetService conexaoInternetService, IBlocoService blocoService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, ILogger<ConexaoInternetController> logger)
+        public ConexaoInternetController(IOrganizacaoService organizacaoService, IConexaoInternetService conexaoInternetService, IBlocoService blocoService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, ILogger<ConexaoInternetController> logger)
         {
+            _organizacaoService = organizacaoService;
             _conexaoInternetService = conexaoInternetService;
             _blocoService = blocoService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
@@ -47,6 +49,7 @@ namespace SalasWeb.Controllers
         // GET: ConexaoInternet/Create
         public ActionResult Create()
         {
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
             ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
             return View();
         }
@@ -56,6 +59,7 @@ namespace SalasWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(ConexaointernetModel conexaoModel)
         {
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
             ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
 
             try
@@ -85,6 +89,7 @@ namespace SalasWeb.Controllers
         // GET: ConexaoInternet/Edit/5
         public ActionResult Edit(uint id)
         {
+            ViewBag.OrgList = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
             ViewBag.Blocos = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
             ConexaointernetModel conexaointernetModel = _conexaoInternetService.GetById(id);        
             return View(conexaointernetModel);
@@ -95,6 +100,7 @@ namespace SalasWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(ConexaointernetModel conexaointernetModel)
         {
+            ViewBag.OrgList = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
             ViewBag.Blocos = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
 
             try
@@ -191,6 +197,16 @@ namespace SalasWeb.Controllers
             }
 
             return viewModels;
+        }
+
+        private List<OrganizacaoModel> GetOrganizacaos()
+        {
+            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+
+            var organizacoesLotadas = new List<OrganizacaoModel>();
+            usuarioOrg.ForEach(uo => organizacoesLotadas.Add(_organizacaoService.GetById(uo.OrganizacaoId)));
+
+            return organizacoesLotadas;
         }
     }
 }
