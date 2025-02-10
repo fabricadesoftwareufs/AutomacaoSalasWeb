@@ -4,51 +4,46 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Detalhes do Ponto de Acesso Wi-fi</h2>
+                    </div>
 
-<div>
-    <h4>ConexaointernetModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Senha)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Senha)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ConfirmarSenha)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ConfirmarSenha)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdBloco)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdBloco)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeBloco)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeBloco)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+                    <div class="card-body">
+                        <div class="col-md-10">
+                            <dl class="dl-horizontal">
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Nome)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.Nome)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Senha)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.Senha)</p>
+                                </dd>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.NomeBloco)
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.NomeBloco)</p>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="@Url.Action("Edit", "ConexaoInternet", new { id = @Model.Id })" class="btn btn-info"> Editar </a> |
+                        <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
