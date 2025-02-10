@@ -142,6 +142,7 @@ namespace SalasWeb.Controllers
         {
             try
             {
+                h
                 if (_conexaoInternetService.Remove(conexaointernetModel.Id))
                 {
                     logger.LogWarning("Conexão de Internet removida com sucesso!");
