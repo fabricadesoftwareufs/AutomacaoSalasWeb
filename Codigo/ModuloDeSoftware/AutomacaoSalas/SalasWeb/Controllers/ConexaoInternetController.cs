@@ -79,8 +79,8 @@ namespace SalasWeb.Controllers
             }
             catch (ServiceException se)
             {
-                logger.LogError("Erro ao cadastrar conexão internet "+ se);
-                
+                logger.LogError("Erro ao cadastrar conexão internet " + se);
+
             }
 
             return View(conexaoModel);
@@ -89,9 +89,9 @@ namespace SalasWeb.Controllers
         // GET: ConexaoInternet/Edit/5
         public ActionResult Edit(uint id)
         {
-            ViewBag.OrgList = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
-            ViewBag.Blocos = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
-            ConexaointernetModel conexaointernetModel = _conexaoInternetService.GetById(id);        
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
+            ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
+            ConexaointernetModel conexaointernetModel = _conexaoInternetService.GetById(id);
             return View(conexaointernetModel);
         }
 
@@ -100,8 +100,8 @@ namespace SalasWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(ConexaointernetModel conexaointernetModel)
         {
-            ViewBag.OrgList = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
-            ViewBag.Blocos = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
+            ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
 
             try
             {
@@ -123,7 +123,7 @@ namespace SalasWeb.Controllers
                 logger.LogError("Erro ao editar conexão internet " + se);
             }
 
-            
+
             return View(conexaointernetModel);
         }
 
@@ -142,11 +142,11 @@ namespace SalasWeb.Controllers
         {
             try
             {
-                h
+
                 if (_conexaoInternetService.Remove(conexaointernetModel.Id))
                 {
                     logger.LogWarning("Conexão de Internet removida com sucesso!");
-                }                   
+                }
                 else
                     logger.LogError("Houve um problema ao tentar remover a conexão!");
             }
@@ -181,20 +181,37 @@ namespace SalasWeb.Controllers
         private List<ConexaoInternetViewModel> ReturnAllViewModels()
         {
             var usuarioId = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
-
             var conexoes = _conexaoInternetService.GetAll();
             var viewModels = new List<ConexaoInternetViewModel>();
 
+            // Obtém as organizações do usuário uma única vez
+            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(usuarioId);
+            var organizacoesDoUsuario = usuarioOrg.Select(uo => uo.OrganizacaoId).ToList();
+
             foreach (var conexao in conexoes)
             {
-                viewModels.Add(new ConexaoInternetViewModel
+                // Obtém o bloco específico desta conexão
+                var bloco = _blocoService.GetById(conexao.IdBloco);
+
+                // Verifica se o bloco pertence a uma das organizações do usuário
+                if (bloco != null && organizacoesDoUsuario.Contains(bloco.OrganizacaoId))
                 {
-                    Id = conexao.Id,
-                    Nome = conexao.Nome,
-                    Senha = conexao.Senha,
-                    IdBloco = conexao.IdBloco,
-                    Blocos = GetBlocos()
-                });
+                    viewModels.Add(new ConexaoInternetViewModel
+                    {
+                        Id = conexao.Id,
+                        Nome = conexao.Nome,
+                        Senha = conexao.Senha,
+                        IdBloco = conexao.IdBloco,
+                        Blocos = new List<BlocoViewModel>
+                {
+                    new BlocoViewModel
+                    {
+                        Id = bloco.Id,
+                        Titulo = bloco.Titulo
+                    }
+                }
+                    });
+                }
             }
 
             return viewModels;

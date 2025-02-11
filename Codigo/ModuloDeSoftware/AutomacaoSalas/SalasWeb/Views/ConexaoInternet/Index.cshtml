@@ -44,7 +44,7 @@
                                             @Html.DisplayFor(modelItem => item.Nome)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Blocos[0].Titulo)
+                                            @Html.DisplayFor(modelItem => item.Blocos.First().Titulo)
                                         </td>
                                         <td>
                                             <a href="@Url.Action("Details", "ConexaoInternet", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
