@@ -138,12 +138,12 @@ namespace SalasWeb.Controllers
         // POST: ConexaoInternet/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(ConexaointernetModel conexaointernetModel)
+        public ActionResult Delete(uint id, IFormCollection collection)
         {
             try
             {
 
-                if (_conexaoInternetService.Remove(conexaointernetModel.Id))
+                if (_conexaoInternetService.Remove(id))
                 {
                     logger.LogWarning("Conexão de Internet removida com sucesso!");
                 }
