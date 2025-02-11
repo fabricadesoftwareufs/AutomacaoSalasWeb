@@ -44,41 +44,39 @@
                                             @Html.DisplayFor(modelItem => item.Nome)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Blocos[0].Titulo)
+                                            @Html.DisplayFor(modelItem => item.Blocos.First().Titulo)
                                         </td>
                                         <td>
                                             <a href="@Url.Action("Details", "ConexaoInternet", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
                                             <a href="@Url.Action("Edit", "ConexaoInternet", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
-                                            <a href="@Url.Action("Delete", "ConexaoInternet", new { id = item.Id })" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
-                                            <!--
-                                                //TODO: M4RCOSVS0, Isso será implementado depois.
+                                            
                                             <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
 
-                                                                                        <div class="modal fade" id="modal-remover-@item.Id">
-                                                                                            <div class="modal-dialog modal-sm">
-                                                                                                <div class="modal-content card card-secondary">
-                                                                                                    <div class="modal-header card-header">
-                                                                                                        <h5 class="modal-title">Confirmar Remoção do Bloco ?</h5>
-                                                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                                            <span aria-hidden="true" class="text-white">&times;</span>
-                                                                                                        </button>
-                                                                                                    </div>
-                                                                                                    <div class="modal-body text-center">
-                                                                                                        <h5>@SID</h5> <p>@item.</p>
-                                                                                                        <h5>@Local</h5> <p>@item.Blocos[0].Titulo</p>
-                                                                                                    </div>
+                                            <div class="modal fade" id="modal-remover-@item.Id">
+                                                <div class="modal-dialog modal-sm">
+                                                    <div class="modal-content card card-secondary">
+                                                        <div class="modal-header card-header">
+                                                            <h5 class="modal-title">Confirmar Remoção do Bloco ?</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true" class="text-white">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body text-center">
+                                                            <h5>@SID</h5> <p>@item.Nome</p>
+                                                            <h5>@Local</h5> <p>@item.Blocos.First().Titulo</p>
+                                                        </div>
 
-                                            @using (Html.BeginForm("Delete", "ConexaoInternet", new { id = item.Id }, FormMethod.Post))
-                                            {
-                                                                                                                                                                        <div class="modal-footer justify-content-between">
-                                                                                                                                                                            <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
-                                                                                                                                                                            <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
-                                                                                                                                                                        </div>
-                                            }
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                            -->
+                                                        @using (Html.BeginForm("Delete", "ConexaoInternet", new { id = item.Id }, FormMethod.Post))
+                                                        {
+                                                            <div class="modal-footer justify-content-between">
+                                                                <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
+                                                                <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+
 
                                         </td>
                                     </tr>

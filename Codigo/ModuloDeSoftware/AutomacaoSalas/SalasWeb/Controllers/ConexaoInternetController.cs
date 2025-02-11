@@ -16,14 +16,16 @@ namespace SalasWeb.Controllers
     [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class ConexaoInternetController : Controller
     {
+        private readonly IOrganizacaoService _organizacaoService;
         private readonly IConexaoInternetService _conexaoInternetService;
         private readonly IBlocoService _blocoService;
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
         private readonly IUsuarioService _usuarioService;
         private readonly ILogger<ConexaoInternetController> logger;
 
-        public ConexaoInternetController(IConexaoInternetService conexaoInternetService, IBlocoService blocoService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, ILogger<ConexaoInternetController> logger)
+        public ConexaoInternetController(IOrganizacaoService organizacaoService, IConexaoInternetService conexaoInternetService, IBlocoService blocoService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, ILogger<ConexaoInternetController> logger)
         {
+            _organizacaoService = organizacaoService;
             _conexaoInternetService = conexaoInternetService;
             _blocoService = blocoService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
@@ -47,6 +49,7 @@ namespace SalasWeb.Controllers
         // GET: ConexaoInternet/Create
         public ActionResult Create()
         {
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
             ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
             return View();
         }
@@ -56,6 +59,7 @@ namespace SalasWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(ConexaointernetModel conexaoModel)
         {
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
             ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
 
             try
@@ -75,8 +79,8 @@ namespace SalasWeb.Controllers
             }
             catch (ServiceException se)
             {
-                logger.LogError("Erro ao cadastrar conexão internet "+ se);
-                
+                logger.LogError("Erro ao cadastrar conexão internet " + se);
+
             }
 
             return View(conexaoModel);
@@ -85,8 +89,9 @@ namespace SalasWeb.Controllers
         // GET: ConexaoInternet/Edit/5
         public ActionResult Edit(uint id)
         {
-            ViewBag.Blocos = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
-            ConexaointernetModel conexaointernetModel = _conexaoInternetService.GetById(id);        
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
+            ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
+            ConexaointernetModel conexaointernetModel = _conexaoInternetService.GetById(id);
             return View(conexaointernetModel);
         }
 
@@ -95,7 +100,8 @@ namespace SalasWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(ConexaointernetModel conexaointernetModel)
         {
-            ViewBag.Blocos = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
+            ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
+            ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
 
             try
             {
@@ -117,7 +123,7 @@ namespace SalasWeb.Controllers
                 logger.LogError("Erro ao editar conexão internet " + se);
             }
 
-            
+
             return View(conexaointernetModel);
         }
 
@@ -132,14 +138,15 @@ namespace SalasWeb.Controllers
         // POST: ConexaoInternet/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(ConexaointernetModel conexaointernetModel)
+        public ActionResult Delete(uint id, IFormCollection collection)
         {
             try
             {
-                if (_conexaoInternetService.Remove(conexaointernetModel.Id))
+
+                if (_conexaoInternetService.Remove(id))
                 {
                     logger.LogWarning("Conexão de Internet removida com sucesso!");
-                }                   
+                }
                 else
                     logger.LogError("Houve um problema ao tentar remover a conexão!");
             }
@@ -174,23 +181,50 @@ namespace SalasWeb.Controllers
         private List<ConexaoInternetViewModel> ReturnAllViewModels()
         {
             var usuarioId = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
-
             var conexoes = _conexaoInternetService.GetAll();
             var viewModels = new List<ConexaoInternetViewModel>();
 
+            // Obtém as organizações do usuário uma única vez
+            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(usuarioId);
+            var organizacoesDoUsuario = usuarioOrg.Select(uo => uo.OrganizacaoId).ToList();
+
             foreach (var conexao in conexoes)
             {
-                viewModels.Add(new ConexaoInternetViewModel
+                // Obtém o bloco específico desta conexão
+                var bloco = _blocoService.GetById(conexao.IdBloco);
+
+                // Verifica se o bloco pertence a uma das organizações do usuário
+                if (bloco != null && organizacoesDoUsuario.Contains(bloco.OrganizacaoId))
                 {
-                    Id = conexao.Id,
-                    Nome = conexao.Nome,
-                    Senha = conexao.Senha,
-                    IdBloco = conexao.IdBloco,
-                    Blocos = GetBlocos()
-                });
+                    viewModels.Add(new ConexaoInternetViewModel
+                    {
+                        Id = conexao.Id,
+                        Nome = conexao.Nome,
+                        Senha = conexao.Senha,
+                        IdBloco = conexao.IdBloco,
+                        Blocos = new List<BlocoViewModel>
+                {
+                    new BlocoViewModel
+                    {
+                        Id = bloco.Id,
+                        Titulo = bloco.Titulo
+                    }
+                }
+                    });
+                }
             }
 
             return viewModels;
+        }
+
+        private List<OrganizacaoModel> GetOrganizacaos()
+        {
+            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+
+            var organizacoesLotadas = new List<OrganizacaoModel>();
+            usuarioOrg.ForEach(uo => organizacoesLotadas.Add(_organizacaoService.GetById(uo.OrganizacaoId)));
+
+            return organizacoesLotadas;
         }
     }
 }
