@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
+using Service.Exceptions;
 
 namespace SalasWeb.Controllers
 {
@@ -21,16 +22,22 @@ namespace SalasWeb.Controllers
         private readonly IBlocoService _blocoService;
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
         private readonly IUsuarioService _usuarioService;
-        private readonly ILogger<ConexaoInternetController> logger;
+        private readonly ILogger<ConexaoInternetController> _logger;
 
-        public ConexaoInternetController(IOrganizacaoService organizacaoService, IConexaoInternetService conexaoInternetService, IBlocoService blocoService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, ILogger<ConexaoInternetController> logger)
+        public ConexaoInternetController(
+            IOrganizacaoService organizacaoService,
+            IConexaoInternetService conexaoInternetService,
+            IBlocoService blocoService,
+            IUsuarioOrganizacaoService usuarioOrganizacaoService,
+            IUsuarioService usuarioService,
+            ILogger<ConexaoInternetController> logger)
         {
             _organizacaoService = organizacaoService;
             _conexaoInternetService = conexaoInternetService;
             _blocoService = blocoService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
             _usuarioService = usuarioService;
-            this.logger = logger;
+            _logger = logger;
         }
 
         // GET: ConexaoInternet
@@ -42,8 +49,17 @@ namespace SalasWeb.Controllers
         // GET: ConexaoInternet/Details/5
         public ActionResult Details(uint id)
         {
-            ConexaointernetModel conexao = _conexaoInternetService.GetById(id);
-            return View(conexao);
+            try
+            {
+                ConexaointernetModel conexao = _conexaoInternetService.GetById(id);
+                return View(conexao);
+            }
+            catch (ConexaoInternetException ex)
+            {
+                _logger.LogError("Erro ao obter detalhes da conexão de internet: {0}", ex);
+                TempData["mensagemErro"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: ConexaoInternet/Create
@@ -68,19 +84,21 @@ namespace SalasWeb.Controllers
                 {
                     if (_conexaoInternetService.Insert(conexaoModel))
                     {
-                        logger.LogWarning("Conexão de Internet criada com sucesso!");
+                        _logger.LogWarning("Conexão de Internet criada com sucesso!");
+                        TempData["mensagemSucesso"] = "Ponto de Acesso adicionado com sucesso!";
                         return RedirectToAction(nameof(Index));
                     }
                     else
                     {
-                        logger.LogError("Houve um problema ao criar a conexão de Internet!");
+                        _logger.LogError("Houve um problema ao criar a conexão de Internet!");
+                        TempData["mensagemErro"] = "Houve um problema ao adicionar um ponto de conexao, tente novamente em alguns minutos!";
                     }
                 }
             }
-            catch (ServiceException se)
+            catch (ConexaoInternetException ex)
             {
-                logger.LogError("Erro ao cadastrar conexão internet " + se);
-
+                _logger.LogError("Erro ao cadastrar conexão internet: {0}", ex);
+                TempData["mensagemErro"] = ex.Message;
             }
 
             return View(conexaoModel);
@@ -91,14 +109,24 @@ namespace SalasWeb.Controllers
         {
             ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
             ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
-            ConexaointernetModel conexaointernetModel = _conexaoInternetService.GetById(id);
-            return View(conexaointernetModel);
+
+            try
+            {
+                ConexaointernetModel conexao = _conexaoInternetService.GetById(id);
+                return View(conexao);
+            }
+            catch (ConexaoInternetException ex)
+            {
+                _logger.LogError("Erro ao obter dados para edição da conexão de internet: {0}", ex);
+                TempData["mensagemErro"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: ConexaoInternet/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ConexaointernetModel conexaointernetModel)
+        public ActionResult Edit(ConexaointernetModel conexaoModel)
         {
             ViewBag.OrgList = new SelectList(GetOrganizacaos(), "Id", "RazaoSocial");
             ViewBag.Blocos = new SelectList(GetBlocos(), "Id", "Titulo");
@@ -107,32 +135,44 @@ namespace SalasWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (_conexaoInternetService.Update(conexaointernetModel))
+                    if (_conexaoInternetService.Update(conexaoModel))
                     {
-                        logger.LogWarning("Conexão de Internet editada com sucesso!");
+                        _logger.LogWarning("Conexão de Internet editada com sucesso!");
+                        TempData["mensagemSucesso"] = "Ponto de Acesso atualizado com sucesso!";
                         return RedirectToAction(nameof(Index));
                     }
                     else
                     {
-                        logger.LogError("Houve um problema ao criar a conexão de Internet!");
+                        _logger.LogError("Houve um problema ao atualizar a conexão de Internet!");
+                        TempData["mensagemErro"] = "Houve um problema ao atualizar o Ponto de Acesso, tente novamente em alguns minutos!";
                     }
                 }
             }
-            catch (ServiceException se)
+            catch (ConexaoInternetException ex)
             {
-                logger.LogError("Erro ao editar conexão internet " + se);
+                _logger.LogError("Erro ao editar conexão internet: {0}", ex);
+                TempData["mensagemErro"] = ex.Message;
             }
 
-
-            return View(conexaointernetModel);
+            return View(conexaoModel);
         }
 
         [HttpGet]
         public IActionResult Delete(uint id)
         {
             ViewBag.Blocos = new SelectList(_blocoService.GetAll(), "Id", "Titulo");
-            ConexaointernetModel conexaointernetModel = _conexaoInternetService.GetById(id);
-            return View(conexaointernetModel);
+
+            try
+            {
+                ConexaointernetModel conexao = _conexaoInternetService.GetById(id);
+                return View(conexao);
+            }
+            catch (ConexaoInternetException ex)
+            {
+                _logger.LogError("Erro ao obter dados para remoção da conexão de internet: {0}", ex);
+                TempData["mensagemErro"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: ConexaoInternet/Delete/5
@@ -142,17 +182,21 @@ namespace SalasWeb.Controllers
         {
             try
             {
-
                 if (_conexaoInternetService.Remove(id))
                 {
-                    logger.LogWarning("Conexão de Internet removida com sucesso!");
+                    _logger.LogWarning("Conexão de Internet removida com sucesso!");
+                    TempData["mensagemSucesso"] = "Ponto de Acesso removido com sucesso!";
                 }
                 else
-                    logger.LogError("Houve um problema ao tentar remover a conexão!");
+                {
+                    _logger.LogError("Houve um problema ao tentar remover a conexão!");
+                    TempData["mensagemErro"] = "Houve um problema ao tentar remover o Ponto de Acesso!";
+                }
             }
-            catch (ServiceException se)
+            catch (ConexaoInternetException ex)
             {
-                logger.LogError("Erro ao remover conexão internet " + se);
+                _logger.LogError("Erro ao remover conexão internet: {0}", ex);
+                TempData["mensagemErro"] = ex.Message;
             }
             return RedirectToAction(nameof(Index));
         }
@@ -203,13 +247,13 @@ namespace SalasWeb.Controllers
                         Senha = conexao.Senha,
                         IdBloco = conexao.IdBloco,
                         Blocos = new List<BlocoViewModel>
-                {
-                    new BlocoViewModel
-                    {
-                        Id = bloco.Id,
-                        Titulo = bloco.Titulo
-                    }
-                }
+                        {
+                            new BlocoViewModel
+                            {
+                                Id = bloco.Id,
+                                Titulo = bloco.Titulo
+                            }
+                        }
                     });
                 }
             }

@@ -38,6 +38,11 @@ namespace Service
                                NomeBloco = b.Titulo
                            }).AsNoTracking().FirstOrDefault();
 
+            if (conexao == null)
+            {
+                throw new ConexaoInternetException("Conexão de internet não encontrada.");
+            }
+
             return conexao;
         }
 
@@ -61,14 +66,19 @@ namespace Service
                 var conexao = _context.Conexaointernets.Find(id);
                 if (conexao == null)
                 {
-                    return false;
+                    throw new ConexaoInternetException("Conexão de internet não encontrada.");
                 }
+
                 _context.Conexaointernets.Remove(conexao);
                 return _context.SaveChanges() > 0;
             }
-            catch (Exception)
+            catch (DbUpdateException dbEx)
             {
-                throw new ConexaoInternetException();
+                throw new ConexaoInternetException("Erro ao remover a conexão de internet.", dbEx);
+            }
+            catch (Exception ex)
+            {
+                throw new ConexaoInternetException("Erro inesperado ao remover a conexão de internet.", ex);
             }
         }
 
@@ -84,9 +94,13 @@ namespace Service
                 });
                 return _context.SaveChanges() > 0;
             }
-            catch (Exception)
+            catch (DbUpdateException dbEx)
             {
-                throw new ConexaoInternetException();
+                throw new ConexaoInternetException("Erro ao inserir a conexão de internet.", dbEx);
+            }
+            catch (Exception ex)
+            {
+                throw new ConexaoInternetException("Erro inesperado ao inserir a conexão de internet.", ex);
             }
         }
 
@@ -97,18 +111,23 @@ namespace Service
                 var conexaoUpdate = _context.Conexaointernets.Find(conexao.Id);
                 if (conexaoUpdate == null)
                 {
-                    return false;
+                    throw new ConexaoInternetException("Conexão de internet não encontrada.");
                 }
+
                 conexaoUpdate.Nome = conexao.Nome;
                 conexaoUpdate.Senha = conexao.Senha;
                 conexaoUpdate.IdBloco = conexao.IdBloco;
                 return _context.SaveChanges() > 0;
             }
-            catch (Exception)
+            catch (DbUpdateException dbEx)
             {
-                throw new ConexaoInternetException();
+                throw new ConexaoInternetException("Erro ao atualizar a conexão de internet.", dbEx);
             }
+            catch (Exception ex)
+            {
+                throw new ConexaoInternetException("Erro inesperado ao atualizar a conexão de internet.", ex);
+            }
+ 
         }
-
     }
 }
