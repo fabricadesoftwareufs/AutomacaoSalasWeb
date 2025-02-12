@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Model;
 
-namespace Service
+namespace Service.Interface
 {
     public interface IConexaoInternetService
     {
