@@ -1,14 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Exceptions
 {
     public class ConexaoInternetException : Exception
     {
-        public ConexaoInternetException() : base() { }
-        public ConexaoInternetException(string message) : base(message) { }
+        public ConexaoInternetException() : base("Erro na conexão de internet.")
+        {
+        }
+
+        public ConexaoInternetException(string message) : base(message)
+        {
+        }
+
+        public ConexaoInternetException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }
