@@ -18,7 +18,7 @@ namespace Service.Interface
         bool RemoveByConexaoInternet(uint idConexaoInternet);
         bool Update(ConexaoInternetSalaModel entity);
         List<ConexaoInternetSalaModel> GetBySalaOrdenadoPorPrioridade(uint idSala);
-        bool MoverPrioridade(uint idSala, uint idConexaoInternet, uint novaPosicao);
+        bool MoverPrioridade(uint idSala, uint idConexaoInternet, int novaPosicao);
         bool TrocarPrioridade(uint idSala, uint idConexaoInternet1, uint idConexaoInternet2);
     }
 }
