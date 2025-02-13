@@ -27,7 +27,7 @@ namespace Service
         public List<ConexaoInternetSalaModel> GetByIdConexaoInternet(uint id) => _context.Conexaointernetsalas.Where(cis => cis.IdConexaoInternet == id).Select(cis => new ConexaoInternetSalaModel { ConexaoInternetId = cis.IdConexaoInternet, SalaId = cis.IdSala, Prioridade = cis.Prioridade }).ToList();
 
 
-        public List<ConexaoInternetSalaModel> GetByIdSala(uint id) => _context.Conexaointernetsalas.Where(cis => cis.IdSala == id).Select(cis => new ConexaoInternetSalaModel { SalaId = cis.IdSala, ConexaoInternetId = cis.IdSala, Prioridade = cis.Prioridade }).ToList();
+        public List<ConexaoInternetSalaModel> GetByIdSala(uint id) => _context.Conexaointernetsalas.Where(cis => cis.IdSala == id).Select(cis => new ConexaoInternetSalaModel { SalaId = cis.IdSala, ConexaoInternetId = cis.IdConexaoInternet, Prioridade = cis.Prioridade }).ToList();
 
         public List<ConexaoInternetSalaModel> GetBySalaOrdenadoPorPrioridade(uint idSala) => _context.Conexaointernetsalas.Where(cis => cis.IdSala == idSala).OrderBy(cis => cis.Prioridade).Select(cis => new ConexaoInternetSalaModel { ConexaoInternetId = cis.IdConexaoInternet, SalaId = cis.IdSala, Prioridade = cis.Prioridade}).ToList();
 

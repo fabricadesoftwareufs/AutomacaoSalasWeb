@@ -57,7 +57,7 @@ namespace Service
         /// <param name="sala">Modelo auxiliar de sala contendo sala e hardwares.</param>
         /// <param name="idUsuario">ID do usuário.</param>
         /// <returns>Verdadeiro se a operação for bem-sucedida.</returns>
-        public bool InsertSalaWithHardwares(SalaAuxModel sala, uint idUsuario)
+        public bool  InsertSalaWithHardwaresOrSalasWithPontosdeAcesso(SalaAuxModel sala, uint idUsuario)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -81,6 +81,18 @@ namespace Service
                                 throw new ServiceException("Já existe um dispositivo com o endereço IP " + item.Ip + " informado, corrija e tente novamente!");
 
                             _hardwareDeSalaService.Insert(new HardwareDeSalaModel { MAC = item.MAC, SalaId = salaInserida.Id, TipoHardwareId = item.TipoHardwareId.Id, Ip = item.Ip }, idUsuario);
+                        }
+                    }
+
+                    if(sala.ConexaoInternetSala.Count > 0)
+                    {
+                        var _conexaoInternetSalaService = new ConexaoInternetSalaService(_context);
+
+                        foreach (var item in sala.ConexaoInternetSala)
+                        {
+                            _conexaoInternetSalaService.Insert(new ConexaoInternetSalaModel { ConexaoInternetId = item.ConexaoInternetId, SalaId = salaInserida.Id, Prioridade = item.Prioridade });
+
+                            //tem q ter algma logica ainda de aumentar prioridade
                         }
                     }
 
