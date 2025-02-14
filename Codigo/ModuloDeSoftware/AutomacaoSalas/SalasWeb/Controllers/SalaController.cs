@@ -22,15 +22,9 @@ namespace SalasWeb.Controllers
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
         private readonly IUsuarioService _usuarioService;
         private readonly IOrganizacaoService _organizacaoService;
+        private readonly IConexaoInternetService _conexaoInternetService;
 
-
-        public SalaController(ISalaService salaService,
-                              IBlocoService blocoService,
-                              IHardwareDeSalaService hardwareDeSalaService,
-                              ITipoHardwareService tipoHardwareService,
-                              IUsuarioOrganizacaoService usuarioOrganizacaoService,
-                              IUsuarioService usuarioService,
-                              IOrganizacaoService organizacaoService)
+        public SalaController(ISalaService salaService, IBlocoService blocoService, IHardwareDeSalaService hardwareDeSalaService, ITipoHardwareService tipoHardwareService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, IOrganizacaoService organizacaoService, IConexaoInternetService conexaoInternetService)
         {
             _salaService = salaService;
             _blocoService = blocoService;
@@ -39,7 +33,9 @@ namespace SalasWeb.Controllers
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
             _usuarioService = usuarioService;
             _organizacaoService = organizacaoService;
+            _conexaoInternetService = conexaoInternetService;
         }
+
         // GET: Sala
         public ActionResult Index()
         {
@@ -59,33 +55,54 @@ namespace SalasWeb.Controllers
             var orgs = _organizacaoService.GetByIdUsuario(usuario.Id);
             var organizacaoId = orgs.FirstOrDefault().Id;
 
+            // Obtém as conexões de internet disponíveis para o usuário
+            var blocos = _blocoService.GetByIdOrganizacao(organizacaoId);
+            var conexoesDisponiveis = new List<ConexaointernetModel>();
+
+            // Para cada bloco da organização, busca suas conexões
+            foreach (var bloco in blocos)
+            {
+                var conexoesDoBloco = _conexaoInternetService.GetByIdBloco(bloco.Id);
+                conexoesDisponiveis.AddRange(conexoesDoBloco);
+            }
+
             ViewBag.Organizacoes = orgs;
-            ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(organizacaoId);
+            ViewBag.BlocoList = blocos;
             ViewBag.TipoHardware = _tipoHardwareService.GetByIdOrganizacao(organizacaoId);
+            ViewBag.ConexoesInternet = conexoesDisponiveis;
 
             return View();
         }
 
-        // POST: Sala/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(SalaAuxModel salaModel)
         {
             var usuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity);
+            var blocos = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
+
+            // Obtém as conexões de internet disponíveis
+            var conexoesDisponiveis = new List<ConexaointernetModel>();
+            foreach (var bloco in blocos)
+            {
+                var conexoesDoBloco = _conexaoInternetService.GetByIdBloco(bloco.Id);
+                conexoesDisponiveis.AddRange(conexoesDoBloco);
+            }
+
             ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(usuario.UsuarioModel.Id);
-            ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
+            ViewBag.BlocoList = blocos;
             ViewBag.TipoHardware = _tipoHardwareService.GetAll();
+            ViewBag.ConexoesInternet = conexoesDisponiveis;
 
             try
             {
                 if (ModelState.IsValid)
                 {
-                    bool salaInserida = _salaService.InsertSalaWithHardwares(salaModel, usuario.UsuarioModel.Id);
-
+                    bool salaInserida = _salaService.InsertSalaWithHardwaresOrSalasWithPontosdeAcesso(salaModel, usuario.UsuarioModel.Id);
                     if (salaInserida)
                     {
                         TempData["mensagemSucesso"] = "Sala inserida com sucesso!";
-                        return RedirectToAction(nameof(Index)); 
+                        return RedirectToAction(nameof(Index));
                     }
                     else
                     {
@@ -97,7 +114,6 @@ namespace SalasWeb.Controllers
             {
                 TempData["mensagemErro"] = se.Message;
             }
-
             return View(salaModel);
         }
 
