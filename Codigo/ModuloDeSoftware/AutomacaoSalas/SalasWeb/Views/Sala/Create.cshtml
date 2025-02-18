@@ -124,69 +124,69 @@
                                     </div>
                                 </div>
                             </section>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <h4>Conexões de Internet</h4>
-                            <div class="form-group align-element">
-                                <label class="control-label">Ponto de Acesso</label>
-                                <select class="form-control" id="select-conexao-internet">
-                                    @foreach (var item in ViewBag.ConexoesInternet)
-                                    {
-                                        <option value="@item.Id">@item.Nome</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="form-group align-element">
-                                <a id="add-nova-conexao" onclick="AdicionarConexao()" class="btn btn-primary text-white">
-                                    <i class="nav-icon fa fa-plus"></i>
-                                </a>
-                            </div>
-                        </div>
 
-                        <section class="content">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="card-title">Conexões Adicionadas</h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-                                                    <thead>
-                                                        <tr>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="container-conexoes">
-                                                        @if (Model != null)
-                                                        {
-                                                            var conexoes = ViewBag.ConexoesInternet as IEnumerable<ConexaointernetModel>;
-                                                            @for (var i = 0; i < Model.ConexaoInternetSala.Count; i++)
+                            <div class="col-md-6">
+                                <h4>Conexões de Internet</h4>
+                                <div class="form-group align-element">
+                                    <label class="control-label">Ponto de Acesso</label>
+                                    <select class="form-control" id="select-conexao-internet">
+                                        @foreach (var item in ViewBag.ConexoesInternet)
+                                        {
+                                            <option value="@item.Id">@item.Nome</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group align-element">
+                                    <a id="add-nova-conexao" onclick="AdicionarConexao()" class="btn btn-primary text-white">
+                                        <i class="nav-icon fa fa-plus"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <section class="content">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">Conexões Adicionadas</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="container-conexoes">
+                                                            @if (Model != null)
                                                             {
-                                                                <tr id="nova-conexao-@i" class="conexao-sala">
-                                                                    <td>
-                                                                        <input class="form-control" name="ConexaoInternetSala[@i].ConexaoInternetId" hidden value="@Model.ConexaoInternetSala[i].ConexaoInternetId" />
-                                                                        <p class="text-overflow form-control">
-                                                                            @conexoes.FirstOrDefault(c => c.Id == Model.ConexaoInternetSala[i].ConexaoInternetId)?.Nome
-                                                                        </p>
-                                                                    </td>
-                                                                    <td>
-                                                                        <a onclick="removeNovaConexao('nova-conexao-@i')" class="btn btn-danger">
-                                                                            <i class="nav-icon fa fa-trash text-white"></i>
-                                                                        </a>
-                                                                    </td>
-                                                                </tr>
+                                                                var conexoes = ViewBag.ConexoesInternet as IEnumerable<ConexaointernetModel>;
+                                                                @for (var i = 0; i < Model.ConexaoInternetSala.Count; i++)
+                                                                {
+                                                                    <tr id="nova-conexao-@i" class="conexao-sala">
+                                                                        <td>
+                                                                            <input class="form-control" name="ConexaoInternetSala[@i].ConexaoInternetId" hidden value="@Model.ConexaoInternetSala[i].ConexaoInternetId" />
+                                                                            <p class="text-overflow form-control">
+                                                                                @conexoes.FirstOrDefault(c => c.Id == Model.ConexaoInternetSala[i].ConexaoInternetId)?.Nome
+                                                                            </p>
+                                                                        </td>
+                                                                        <td>
+                                                                            <a onclick="removeNovaConexao('nova-conexao-@i')" class="btn btn-danger">
+                                                                                <i class="nav-icon fa fa-trash text-white"></i>
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
                                                             }
-                                                        }
-                                                    </tbody>
-                                                </table>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
+                            </section>
+                        </div>
                         <div class="card-footer">
                             <div class="col-md-4">
                                 <input type="submit" id="btn-create-nova-sala" value="Salvar" class="btn btn-success" /> |
@@ -213,69 +213,69 @@ else if (TempData["mensagemErro"] != null)
 @section Scripts {
 
     <script>
-        $(document).ready(function () {
-            if (document.querySelector('#mensagem-retorno'))
-                document.getElementById("mensagem-retorno").click();
+                $(document).ready(function () {
+                    if (document.querySelector('#mensagem-retorno'))
+                        document.getElementById("mensagem-retorno").click();
 
-            $('[ip-mask]').ipAddress();
-        });
+                    $('[ip-mask]').ipAddress();
+                });
 
-        function mostraInputIP() {
-            let texto = $("#select-tipo-hardware option:selected").text();
+                function mostraInputIP() {
+                    let texto = $("#select-tipo-hardware option:selected").text();
 
-            if (texto === "CONTROLADOR DE SALA") {
-                $('#div-input-ip').show();
-            } else {
-                $('#input-ip').val('');
-                $('#div-input-ip').hide();
-            }
+                    if (texto === "CONTROLADOR DE SALA") {
+                        $('#div-input-ip').show();
+                    } else {
+                        $('#input-ip').val('');
+                        $('#div-input-ip').hide();
+                    }
+                }
+
+                function AdicionarConexao() {
+            var select = document.getElementById('select-conexao-internet');
+            var conexaoId = select.value;
+            var conexaoNome = select.options[select.selectedIndex].text;
+
+            var container = document.getElementById('container-conexoes');
+            var novoIndex = document.getElementsByClassName('conexao-sala').length;
+
+            var novaLinha = document.createElement('tr');
+            novaLinha.id = 'nova-conexao-' + novoIndex;
+            novaLinha.className = 'conexao-sala';
+
+            var html = `
+                <td>
+                    <input class="form-control" name="ConexaoInternetSala[${novoIndex}].ConexaoInternetId" hidden value="${conexaoId}" />
+                    <p class="text-overflow form-control">${conexaoNome}</p>
+                </td>
+                <td>
+                    <a onclick="removeNovaConexao('nova-conexao-${novoIndex}')" class="btn btn-danger">
+                        <i class="nav-icon fa fa-trash text-white"></i>
+                    </a>
+                </td>
+            `;
+
+            novaLinha.innerHTML = html;
+            container.appendChild(novaLinha);
         }
 
-        function AdicionarConexao() {
-    var select = document.getElementById('select-conexao-internet');
-    var conexaoId = select.value;
-    var conexaoNome = select.options[select.selectedIndex].text;
-    
-    var container = document.getElementById('container-conexoes');
-    var novoIndex = document.getElementsByClassName('conexao-sala').length;
-    
-    var novaLinha = document.createElement('tr');
-    novaLinha.id = 'nova-conexao-' + novoIndex;
-    novaLinha.className = 'conexao-sala';
-    
-    var html = `
-        <td>
-            <input class="form-control" name="ConexaoInternetSala[${novoIndex}].ConexaoInternetId" hidden value="${conexaoId}" />
-            <p class="text-overflow form-control">${conexaoNome}</p>
-        </td>
-        <td>
-            <a onclick="removeNovaConexao('nova-conexao-${novoIndex}')" class="btn btn-danger">
-                <i class="nav-icon fa fa-trash text-white"></i>
-            </a>
-        </td>
-    `;
-    
-    novaLinha.innerHTML = html;
-    container.appendChild(novaLinha);
-}
+        function removeNovaConexao(id) {
+            document.getElementById(id).remove();
+            reorderConexoes();
+        }
 
-function removeNovaConexao(id) {
-    document.getElementById(id).remove();
-    reorderConexoes();
-}
-
-function reorderConexoes() {
-    var conexoes = document.getElementsByClassName('conexao-sala');
-    for (var i = 0; i < conexoes.length; i++) {
-        var inputs = conexoes[i].getElementsByTagName('input');
-        for (var j = 0; j < inputs.length; j++) {
-            var name = inputs[j].getAttribute('name');
-            if (name) {
-                inputs[j].setAttribute('name', name.replace(/\[\d+\]/, '[' + i + ']'));
+        function reorderConexoes() {
+            var conexoes = document.getElementsByClassName('conexao-sala');
+            for (var i = 0; i < conexoes.length; i++) {
+                var inputs = conexoes[i].getElementsByTagName('input');
+                for (var j = 0; j < inputs.length; j++) {
+                    var name = inputs[j].getAttribute('name');
+                    if (name) {
+                        inputs[j].setAttribute('name', name.replace(/\[\d+\]/, '[' + i + ']'));
+                    }
+                }
             }
         }
-    }
-}
     </script>
 
     <script src="~/js/load-itens-script.js"></script>
