@@ -12,7 +12,7 @@ namespace Service.Interface
         List<SalaModel> GetByIdBloco(uint id);
 
         List<SalaModel> GetAllByIdUsuarioOrganizacao(uint idUsuario);
-        bool InsertSalaWithHardwares(SalaAuxModel sala, uint idUsuario);
+        bool InsertSalaWithHardwaresOrSalasWithPontosdeAcesso(SalaAuxModel sala, uint idUsuario);
         SalaModel Insert(SalaModel salaModel);
         bool Remove(uint id);
         bool Update(SalaModel entity);
