@@ -1,19 +1,18 @@
 ---
-name: "Issue Template"
-about: "Template para relatar bugs"
-title: "[TIPO] Breve descrição do problema ou funcionalidade"
-labels: ''
+name: "Bug Report"
+about: "Reporte um bug para nos ajudar a melhorar"
+title: "[BUG] Descreva o problema"
+labels: 'bug'
 assignees: ''
 ---
 
-
 ## 📝 Descrição
 
-> Explique detalhadamente o problema ou a funcionalidade esperada.
+> Explique detalhadamente o problema.
 
 ---
 
-## 🔎 Passos para Reproduzir 
+## 🔎 Passos para Reproduzir
 
 1. Vá para '...'
 2. Clique em '...'
@@ -32,7 +31,6 @@ assignees: ''
 > Capturas de tela ou logs relevantes.
 
 ---
-
 
 ## 📷 Referências (se aplicável)
 
