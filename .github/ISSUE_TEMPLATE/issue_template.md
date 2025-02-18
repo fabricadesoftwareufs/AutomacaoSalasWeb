@@ -1,3 +1,11 @@
+---
+name: "Issue Template"
+about: "Template para relatar bugs ou solicitar funcionalidades"
+title: "[TIPO] Breve descrição do problema ou funcionalidade"
+labels: ''
+assignees: ''
+---
+
 ## 📌 Tipo de Issue
 
 - [ ] 🐞 Bug Report
