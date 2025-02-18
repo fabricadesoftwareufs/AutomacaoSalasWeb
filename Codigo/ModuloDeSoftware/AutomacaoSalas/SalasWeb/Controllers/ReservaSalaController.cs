@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.DependencyInjection;
 using Model;
 using Model.AuxModel;
@@ -54,10 +55,7 @@ namespace SalasWeb.Controllers
         [Authorize(Roles = "GESTOR, ADMIN")]
         public ActionResult Index()
         {
-            var reservas = _horarioSalaService.GetAll();
-            List<ReservaAuxModel> reservaSalas = new List<ReservaAuxModel>();
-            reservas.ForEach(s => reservaSalas.Add(new ReservaAuxModel { HorarioSalaModel = s, UsuarioModel = _usuarioService.GetById(s.UsuarioId), SalaModel = _salaService.GetById(s.SalaId) }));
-            return View(reservaSalas);
+            return View(ReturnAllViewModels());
         }
 
         // GET: ReservaSalaController/Details/5
@@ -274,5 +272,35 @@ namespace SalasWeb.Controllers
 
         public List<BlocoModel> GetBlocosByOrg(uint id) => _blocoService.GetByIdOrganizacao(id);
         public List<SalaModel> GetSalasByBloco(uint id) => _salaService.GetByIdBloco(id);
+
+        private List<ReservaAuxModel> ReturnAllViewModels()
+        {
+            var usuarioId = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var reservas = _horarioSalaService.GetAll();
+            List<ReservaAuxModel> reservaSalas = new List<ReservaAuxModel>();
+
+            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(usuarioId);
+            var organizacoesDoUsuario = usuarioOrg.Select(uo => uo.OrganizacaoId).ToList();
+
+            foreach (var reserva in reservas)
+            {
+                var sala = _salaService.GetById(reserva.SalaId);
+
+                var bloco = sala != null ? _blocoService.GetById(sala.BlocoId) : null;
+
+                if (bloco != null && organizacoesDoUsuario.Contains(bloco.OrganizacaoId))
+                {
+                    reservaSalas.Add(new ReservaAuxModel
+                    {
+                        HorarioSalaModel = reserva,
+                        UsuarioModel = _usuarioService.GetById(reserva.UsuarioId),
+                        SalaModel = _salaService.GetById(reserva.SalaId)
+                    });
+                }
+
+            }
+            return reservaSalas;
+        }
+
     }
 }
