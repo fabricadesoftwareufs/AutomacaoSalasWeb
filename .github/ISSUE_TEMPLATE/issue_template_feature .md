@@ -1,31 +1,16 @@
 ---
 name: "Issue Template"
-about: "Template para relatar bugs ou solicitar funcionalidades"
+about: "Template para solicitar funcionalidades"
 title: "[TIPO] Breve descrição do problema ou funcionalidade"
 labels: ''
 assignees: ''
 ---
 
-## 📌 Tipo de Issue
-
-- [ ] 🐞 Bug Report
-- [ ] 🚀 Feature Request
-
----
 
 ## 📝 Descrição
 
 > Explique detalhadamente o problema ou a funcionalidade esperada.
 
----
-
-## 🔎 Passos para Reproduzir (apenas para bugs)
-
-1. Vá para '...'
-2. Clique em '...'
-3. Veja o erro '...'
-
----
 
 ## ✅ Comportamento Esperado
 
