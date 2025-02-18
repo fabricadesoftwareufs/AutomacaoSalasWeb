@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Model;
 using Model.ViewModel;
+using Persistence;
 using Service;
 using Service.Interface;
 using System.Collections.Generic;
@@ -51,11 +52,7 @@ namespace SalasWeb.Controllers
         // GET: EquipamentoController
         public ActionResult Index()
         {
-            var equipamentosModel = _equipamentoService.GetAll();
-            List<EquipamentoViewModel> equipamentos = new List<EquipamentoViewModel>();
-            equipamentosModel.ForEach(e => equipamentos.Add(new EquipamentoViewModel { EquipamentoModel = e, SalaModel = _salaService.GetById(e.Sala), HardwareDeSalaModel = _hardwareDeSalaService.GetById(e.HardwareDeSala.Value) }));
-
-            return View(equipamentos);
+            return View(ReturnAllViewModels());
         }
 
         // GET: EquipamentoController/Details/5
@@ -262,6 +259,43 @@ namespace SalasWeb.Controllers
         {
             var macs = _hardwareDeSalaService.GetBySalaAndTipoEquipamento(idSala, tipoEquipamento);
             return Json(macs);
+        }
+
+        private List<EquipamentoViewModel> ReturnAllViewModels()
+        {
+            var usuarioId = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+            var equipamentosModel = _equipamentoService.GetAll();
+            var viewModels = new List<EquipamentoViewModel>();
+
+            // Obtém as organizações do usuário uma única vez
+            var usuarioOrg = _usuarioOrganizacaoService.GetByIdUsuario(usuarioId);
+            var organizacoesDoUsuario = usuarioOrg.Select(uo => uo.OrganizacaoId).ToList();
+
+            foreach (var equipamento in equipamentosModel)
+            {
+                // Obtém a sala e o hardware do equipamento
+                var sala = _salaService.GetById(equipamento.Sala);
+                var hardware = equipamento.HardwareDeSala.HasValue
+                    ? _hardwareDeSalaService.GetById(equipamento.HardwareDeSala.Value)
+                    : null;
+
+                // Obtém o bloco da sala
+                var bloco = sala != null ? _blocoService.GetById(sala.BlocoId) : null;
+
+                // Verifica se o bloco pertence a uma das organizações do usuário
+                if (bloco != null && organizacoesDoUsuario.Contains(bloco.OrganizacaoId))
+                {
+                    viewModels.Add(new EquipamentoViewModel
+                    {
+                        EquipamentoModel = equipamento,
+                        SalaModel = sala,
+                        HardwareDeSalaModel = hardware,
+                        BlocoModel = bloco 
+                    });
+                }
+            }
+
+            return viewModels;
         }
 
     }
