@@ -125,5 +125,37 @@ namespace SalasAPI.Controllers
             }
         }
 
+        // POST api/<InfravermelhoController>
+        [HttpPost]
+        public ActionResult Post([FromBody] CodigoInfravermelhoModel codigoInfravermelhoModel)
+        {
+            try
+            {
+                var codigo = _service.Insert(codigoInfravermelhoModel);
+                if (codigo != null)
+                    return Ok(new
+                    {
+                        result = codigo,
+                        httpCode = (int)HttpStatusCode.OK,
+                        message = "Código cadastrado com sucesso!"
+                    });
+                return BadRequest(new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.BadRequest,
+                    message = "Houve um problema no cadastro!"
+                });
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.InternalServerError,
+                    message = e.Message
+                });
+            }
+        }
+
     }
 }

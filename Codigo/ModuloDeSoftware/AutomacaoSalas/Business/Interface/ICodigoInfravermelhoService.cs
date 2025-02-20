@@ -13,5 +13,6 @@ namespace Service.Interface
         bool UpdateAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels);
         bool RemoveAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels);
         List<CodigoInfravermelhoModel> GetAllByUuidHardware(string uuid);
+        CodigoInfravermelhoModel Insert(CodigoInfravermelhoModel entity);
     }
 }
