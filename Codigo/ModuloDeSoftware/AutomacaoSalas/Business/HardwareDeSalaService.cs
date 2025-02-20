@@ -200,7 +200,7 @@ namespace Service
 
                 entity.Uuid = newUUID;
 
-                entity.Token = Methods.HashSHA256(Methods.RandomStr(64));
+                entity.Token = Methods.TOKEN_PADRAO;
                 _context.Add(SetEntity(entity, new Hardwaredesala()));
                 return _context.SaveChanges() == 1;
             }

@@ -109,5 +109,13 @@ namespace Service
             IdEquipamento = codigo.IdEquipamento,
             IdOperacao = codigo.IdOperacao
         };
+
+        public CodigoInfravermelhoModel Insert(CodigoInfravermelhoModel entity)
+        {
+            var codigo = SetEntity(entity);
+            _context.Add(codigo);
+            _context.SaveChanges();
+            return entity;
+        }
     }
 }
