@@ -32,7 +32,6 @@
                                     @Html.DisplayNameFor(model => model.HardwaresSala)
                                 </dt>
                                 <dd>
-
                                     <section class="content">
                                         <div class="container-fluid">
                                             <div class="row">
@@ -59,7 +58,7 @@
                                                                     {
                                                                         <tr>
                                                                             <td>
-                                                                                @item.MAC / @item.TipoHardwareId.Descricao
+                                                                                MAC: @item.MAC / Tipo: @item.TipoHardwareId.Descricao
                                                                             </td>
                                                                         </tr>
                                                                     }
@@ -72,6 +71,55 @@
                                         </div>
                                     </section>
                                 </dd>
+                                <dt>
+                                    Wi-Fi
+                                </dt>
+                                <dd>
+                                    <section class="content">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            <div class="row">
+                                                                <div class="col-md-8">
+                                                                    <h2 class="card-title">
+                                                                    </h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <table id="table-search" class="table table-bordered table-striped">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Pontos de Acesso Associados</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @if (Model.ConexaoSala == null || !Model.ConexaoSala.Any())
+                                                                    {
+                                                                        <tr>
+                                                                            <td class="text-center">Nenhum ponto de acesso cadastrado para esta sala.</td>
+                                                                        </tr>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @foreach (var item in Model.ConexaoSala.OrderBy(x => x.Prioridade))
+                                                                        {
+                                                                            <tr>
+                                                                                <td>Nome da Rede: @item.Ssid / Prioridade : @item.Prioridade</td>
+                                                                            </tr>
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                <dd>
                             </dl>
                         </div>
                     </div>

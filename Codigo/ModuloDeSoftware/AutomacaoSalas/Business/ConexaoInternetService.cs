@@ -26,24 +26,31 @@ namespace Service
 
         public ConexaointernetModel GetById(uint id)
         {
-            var conexao = (from c in _context.Conexaointernets
-                           join b in _context.Blocos on c.IdBloco equals b.Id
-                           where c.Id == id
-                           select new ConexaointernetModel
-                           {
-                               Id = c.Id,
-                               Nome = c.Nome,
-                               Senha = c.Senha,
-                               IdBloco = c.IdBloco,
-                               NomeBloco = b.Titulo
-                           }).AsNoTracking().FirstOrDefault();
-
-            if (conexao == null)
+            try
             {
-                throw new ConexaoInternetException("Conexão de internet não encontrada.");
-            }
+                var conexao = (from c in _context.Conexaointernets
+                               join b in _context.Blocos on c.IdBloco equals b.Id
+                               where c.Id == id
+                               select new ConexaointernetModel
+                               {
+                                   Id = c.Id,
+                                   Nome = c.Nome,
+                                   Senha = c.Senha,
+                                   IdBloco = c.IdBloco,
+                                   NomeBloco = b.Titulo
+                               }).AsNoTracking().FirstOrDefault();
 
-            return conexao;
+                if (conexao == null)
+                {
+                    throw new ConexaoInternetException($"Conexão de internet com ID {id} não encontrada.");
+                }
+
+                return conexao;
+            }
+            catch (Exception ex)
+            {
+                throw new ConexaoInternetException($"Erro ao buscar conexão de internet com ID {id}", ex);
+            }
         }
 
         public List<ConexaointernetModel> GetByIdBloco(uint idBloco)

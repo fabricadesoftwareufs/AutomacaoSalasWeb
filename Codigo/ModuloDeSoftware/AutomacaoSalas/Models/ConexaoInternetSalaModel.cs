@@ -8,5 +8,7 @@ namespace Model
         public uint ConexaoInternetId { get; set; }
         public uint SalaId { get; set; }
         public int Prioridade { get; set; }
+
+        public string? Ssid { get; set; }
     }
 }
