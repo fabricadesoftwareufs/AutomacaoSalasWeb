@@ -23,8 +23,9 @@ namespace SalasWeb.Controllers
         private readonly IUsuarioService _usuarioService;
         private readonly IOrganizacaoService _organizacaoService;
         private readonly IConexaoInternetService _conexaoInternetService;
+        private readonly IConexaoInternetSalaService _conexaoInternetSalaService;
 
-        public SalaController(ISalaService salaService, IBlocoService blocoService, IHardwareDeSalaService hardwareDeSalaService, ITipoHardwareService tipoHardwareService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, IOrganizacaoService organizacaoService, IConexaoInternetService conexaoInternetService)
+        public SalaController(ISalaService salaService, IBlocoService blocoService, IHardwareDeSalaService hardwareDeSalaService, ITipoHardwareService tipoHardwareService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, IOrganizacaoService organizacaoService, IConexaoInternetService conexaoInternetService, IConexaoInternetSalaService conexaoInternetSalaService)
         {
             _salaService = salaService;
             _blocoService = blocoService;
@@ -34,6 +35,7 @@ namespace SalasWeb.Controllers
             _usuarioService = usuarioService;
             _organizacaoService = organizacaoService;
             _conexaoInternetService = conexaoInternetService;
+            _conexaoInternetSalaService = conexaoInternetSalaService;
         }
 
         // GET: Sala
@@ -204,15 +206,30 @@ namespace SalasWeb.Controllers
         {
             var sala = _salaService.GetById(id);
             var hardwaresViewModel = new List<HardwareDeSalaViewModel>();
+            var conexaoInternetSalaModel = new List<ConexaoInternetSalaModel>();
 
             foreach (var item in _hardwareDeSalaService.GetByIdSala(id))
                 hardwaresViewModel.Add(new HardwareDeSalaViewModel { Id = item.Id, MAC = item.MAC, TipoHardwareId = _tipoHardwareService.GetById(item.TipoHardwareId) });
+
+            foreach (var item in _conexaoInternetSalaService.GetByIdSala(id))
+            {
+                var pontoAcesso = _conexaoInternetService.GetById(item.ConexaoInternetId); 
+                conexaoInternetSalaModel.Add(new ConexaoInternetSalaModel
+                {
+                    ConexaoInternetId = item.ConexaoInternetId,
+                    Prioridade = item.Prioridade,
+                    SalaId = item.SalaId,
+                    Ssid = pontoAcesso?.Nome
+                });
+            }
 
             return new SalaViewModel
             {
                 Sala = sala,
                 HardwaresSala = hardwaresViewModel,
-                BlocoSala = _blocoService.GetById(sala.BlocoId)
+                ConexaoSala = conexaoInternetSalaModel,
+                BlocoSala = _blocoService.GetById(sala.BlocoId),
+                
             };
         }
     }
