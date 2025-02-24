@@ -84,17 +84,19 @@ namespace Service
                         }
                     }
 
-                    if(sala.ConexaoInternetSala.Count > 0)
+                    if (sala.ConexaoInternetSala.Count > 0)
                     {
                         var _conexaoInternetSalaService = new ConexaoInternetSalaService(_context);
-                        int prioridade = 1;
                         foreach (var item in sala.ConexaoInternetSala)
                         {
                             if (_conexaoInternetSalaService.GetById(item.ConexaoInternetId, salaInserida.Id) != null)
                                 throw new ServiceException("Esta conexão já está associada a esta sala!");
-                            _conexaoInternetSalaService.Insert(new ConexaoInternetSalaModel { ConexaoInternetId = item.ConexaoInternetId, SalaId = salaInserida.Id, Prioridade = prioridade++ });
-
-                            
+                            _conexaoInternetSalaService.Insert(new ConexaoInternetSalaModel
+                            {
+                                ConexaoInternetId = item.ConexaoInternetId,
+                                SalaId = salaInserida.Id,
+                                Prioridade = item.Prioridade 
+                            });
                         }
                     }
 
