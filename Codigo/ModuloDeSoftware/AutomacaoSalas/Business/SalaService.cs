@@ -148,11 +148,13 @@ namespace Service
             var _minhaSalaService = new SalaParticularService(_context);
             var _horarioSalaService = new HorarioSalaService(_context);
             var _planejamentoService = new PlanejamentoService(_context);
+            var _conexaoInterntSalaService = new ConexaoInternetSalaService(_context);
 
             try
             {
                 if (_hardwareSalaService.GetByIdSala(id).Count == 0 && _minhaSalaService.GetByIdSala(id).Count == 0 &&
-                    _horarioSalaService.GetByIdSala(id).Count == 0 && _planejamentoService.GetByIdSala(id).Count == 0)
+                    _horarioSalaService.GetByIdSala(id).Count == 0 && _planejamentoService.GetByIdSala(id).Count == 0 && 
+                    _conexaoInterntSalaService.GetByIdSala(id).Count == 0)
                 {
 
                     var x = _context.Salas.Where(s => s.Id == id).FirstOrDefault();
