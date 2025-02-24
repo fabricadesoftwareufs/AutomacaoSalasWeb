@@ -84,17 +84,19 @@ namespace Service
                         }
                     }
 
-                    if(sala.ConexaoInternetSala.Count > 0)
+                    if (sala.ConexaoInternetSala.Count > 0)
                     {
                         var _conexaoInternetSalaService = new ConexaoInternetSalaService(_context);
-                        int prioridade = 1;
                         foreach (var item in sala.ConexaoInternetSala)
                         {
                             if (_conexaoInternetSalaService.GetById(item.ConexaoInternetId, salaInserida.Id) != null)
                                 throw new ServiceException("Esta conexão já está associada a esta sala!");
-                            _conexaoInternetSalaService.Insert(new ConexaoInternetSalaModel { ConexaoInternetId = item.ConexaoInternetId, SalaId = salaInserida.Id, Prioridade = prioridade++ });
-
-                            
+                            _conexaoInternetSalaService.Insert(new ConexaoInternetSalaModel
+                            {
+                                ConexaoInternetId = item.ConexaoInternetId,
+                                SalaId = salaInserida.Id,
+                                Prioridade = item.Prioridade 
+                            });
                         }
                     }
 
@@ -146,11 +148,13 @@ namespace Service
             var _minhaSalaService = new SalaParticularService(_context);
             var _horarioSalaService = new HorarioSalaService(_context);
             var _planejamentoService = new PlanejamentoService(_context);
+            var _conexaoInterntSalaService = new ConexaoInternetSalaService(_context);
 
             try
             {
                 if (_hardwareSalaService.GetByIdSala(id).Count == 0 && _minhaSalaService.GetByIdSala(id).Count == 0 &&
-                    _horarioSalaService.GetByIdSala(id).Count == 0 && _planejamentoService.GetByIdSala(id).Count == 0)
+                    _horarioSalaService.GetByIdSala(id).Count == 0 && _planejamentoService.GetByIdSala(id).Count == 0 && 
+                    _conexaoInterntSalaService.GetByIdSala(id).Count == 0)
                 {
 
                     var x = _context.Salas.Where(s => s.Id == id).FirstOrDefault();
