@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="form-group col-md-4" id="ListElements">
                                     <label asp-for="Sala.BlocoId" class="control-label"></label>
-                                    <select class="form-control" asp-for="Sala.BlocoId" id="select-bloco">
+                                    <select class="form-control" asp-for="Sala.BlocoId" id="select-bloco" onchange="loadConexoes()">
                                         @foreach (var item in ViewBag.BlocoList)
                                         {
                                             <option value="@item.Id"> @item.Titulo </option>
@@ -230,6 +230,11 @@ else if (TempData["mensagemErro"] != null)
                         document.getElementById("mensagem-retorno").click();
 
                     $('[ip-mask]').ipAddress();
+
+                    // Carregar conexões iniciais baseadas no bloco selecionado
+                    loadConexoes();
+                    // Mostrar/esconder input IP baseado no tipo de hardware
+                    mostraInputIP();
                 });
 
                 function mostraInputIP() {
@@ -242,12 +247,12 @@ else if (TempData["mensagemErro"] != null)
                         $('#div-input-ip').hide();
                     }
                 }
-
+        //M4RCOSVS0 TODO: Mover essas funçoes para seção de JS.
         $(document).ready(function() {
             atualizarBotoesPrioridade(); // Inicializa a visibilidade dos botões
         });
 
-                function AdicionarConexao() {
+        function AdicionarConexao() {
             var select = document.getElementById('select-conexao-internet');
             var conexaoId = select.value;
             var conexaoNome = select.options[select.selectedIndex].text;
@@ -382,6 +387,88 @@ else if (TempData["mensagemErro"] != null)
             atualizarPrioridades();
             atualizarBotoesPrioridade();
         });
+
+        //filtro
+        // Função para carregar conexões com base no bloco selecionado
+        function loadConexoes() {
+            var blocoId = $('#select-bloco').val();
+            if (blocoId) {
+                $.ajax({
+                    url: '/Sala/GetConexoesByBloco',
+                    type: 'GET',
+                    data: { idBloco: blocoId },
+                    success: function (data) {
+                        // Limpar o select de conexões
+                        var selectConexao = $('#select-conexao-internet');
+                        selectConexao.empty();
+
+                        // Verificar se existem conexões para este bloco
+                        if (data && data.length > 0) {
+                            // Preencher o select com as novas conexões
+                            $.each(data, function (index, item) {
+                                selectConexao.append($('<option>', {
+                                    value: item.id,
+                                    text: item.nome
+                                }));
+                            });
+
+                            // Habilitar o botão de adicionar
+                            $('#add-nova-conexao').removeClass('disabled');
+                            $('#add-nova-conexao').attr('onclick', 'AdicionarConexao()');
+                        } else {
+                            // Adicionar mensagem de aviso
+                            selectConexao.append($('<option>', {
+                                value: '',
+                                text: 'Não existem conexões no Bloco'
+                            }));
+
+                            // Desabilitar o botão de adicionar
+                            $('#add-nova-conexao').addClass('disabled');
+                            $('#add-nova-conexao').removeAttr('onclick');
+                        }
+
+                        // Limpar conexões já adicionadas
+                        clearConexoesAdicionadas();
+                    },
+                    error: function (error) {
+                        console.log('Erro ao carregar conexões:', error);
+                    }
+                });
+            }
+        }
+
+        // Função para limpar todas as conexões adicionadas
+        function clearConexoesAdicionadas() {
+            $('#container-conexoes').empty();
+        }
+
+        function loadBlocos() {
+            var organizacaoId = $('#select-organizacao').val();
+            if (organizacaoId) {
+                $.ajax({
+                    url: '/Sala/GetBlocosByOrganizacao',
+                    type: 'GET',
+                    data: { idOrganizacao: organizacaoId },
+                    success: function (data) {
+                        var selectBloco = $('#select-bloco');
+                        selectBloco.empty();
+
+                        $.each(data, function (index, item) {
+                            selectBloco.append($('<option>', {
+                                value: item.id,
+                                text: item.titulo
+                            }));
+                        });
+
+                        // Depois de carregar os blocos, carregue as conexões do primeiro bloco
+                        loadConexoes();
+                    },
+                    error: function (error) {
+                        console.log('Erro ao carregar blocos:', error);
+                    }
+                });
+            }
+        }
     </script>
 
     <script src="~/js/load-itens-script.js"></script>
