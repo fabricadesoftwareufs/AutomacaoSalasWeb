@@ -57,15 +57,14 @@ namespace SalasWeb.Controllers
             var orgs = _organizacaoService.GetByIdUsuario(usuario.Id);
             var organizacaoId = orgs.FirstOrDefault().Id;
 
-            // Obtém as conexões de internet disponíveis para o usuário
+            // Obtém os blocos
             var blocos = _blocoService.GetByIdOrganizacao(organizacaoId);
-            var conexoesDisponiveis = new List<ConexaointernetModel>();
 
-            // Para cada bloco da organização, busca suas conexões
-            foreach (var bloco in blocos)
+            // Obter conexões apenas do primeiro bloco (inicialmente selecionado)
+            var conexoesDisponiveis = new List<ConexaointernetModel>();
+            if (blocos.Any())
             {
-                var conexoesDoBloco = _conexaoInternetService.GetByIdBloco(bloco.Id);
-                conexoesDisponiveis.AddRange(conexoesDoBloco);
+                conexoesDisponiveis = _conexaoInternetService.GetByIdBloco(blocos.First().Id);
             }
 
             ViewBag.Organizacoes = orgs;
@@ -188,6 +187,20 @@ namespace SalasWeb.Controllers
                 TempData["mensagemErro"] = se.Message;
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Sala/GetConexoesByBloco
+        public JsonResult GetConexoesByBloco(uint idBloco)
+        {
+            var conexoes = _conexaoInternetService.GetByIdBloco(idBloco);
+            return Json(conexoes);
+        }
+
+        // GET: Sala/GetBlocosByOrganizacao
+        public JsonResult GetBlocosByOrganizacao(uint idOrganizacao)
+        {
+            var blocos = _blocoService.GetByIdOrganizacao(idOrganizacao);
+            return Json(blocos);
         }
 
         private List<SalaViewModel> GetAllSalasViewModel()
