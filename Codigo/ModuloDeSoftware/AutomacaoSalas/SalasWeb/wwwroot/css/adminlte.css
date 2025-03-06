@@ -11569,7 +11569,7 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .main-header::bef
   float: left;
   line-height: .8;
   margin-left: .8rem;
-  margin-right: .5rem;
+  margin-right: 1px;
   margin-top: -3px;
   max-height: 33px;
   width: auto;

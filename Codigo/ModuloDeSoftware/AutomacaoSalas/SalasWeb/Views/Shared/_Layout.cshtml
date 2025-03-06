@@ -66,18 +66,18 @@
         {
         <div class="login-box">
             <div class="container" style="display: flex; justify-content: center; width: 100%; margin: 0">
-                <img src="@Url.Content("~/img/1SS.png")" alt="Logo UFS" style="max-width: 350px; height: auto; margin-bottom: 10px;">
+                <img src="@Url.Content("~/img/1.png")" alt="Logo UFS" style="max-width: 350px; height: auto; margin-bottom: 10px;">
             </div>
             <div id="div-msg" class="div-msg" role="alert"></div>
             <!-- /.login-logo -->
             <div class="card" style="margin-top: 0;">
-                <div class="card-body login-card-body">
+                <div class="card-body login-card-body" style="border-radius: 5px">
                     @RenderBody()
                 </div>
                 <!-- /.login-card-body -->
             </div>
         </div>
-        <footer class="main-footer element-center transparent-background">
+        <footer class="main-footer element-center transparent-background" style="border-radius: 5px">
             <strong>
                 Copyright &copy;
                 <script>document.write(new Date().getFullYear());</script> <a href="#">SalaUFS</a>.
