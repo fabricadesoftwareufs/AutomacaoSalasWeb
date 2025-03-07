@@ -200,7 +200,7 @@ else if (TempData["mensagemErro"] != null)
                     <input class="form-control conexao-id-input" name="ConexaoInternetSala[${novoIndex}].ConexaoInternetId" hidden value="${conexaoId}" />
                     <input class="form-control prioridade-input" name="ConexaoInternetSala[${novoIndex}].Prioridade" hidden value="${novoIndex + 1}" />
                     <p class="text-overflow form-control conexao-text">
-                        Nome da rede: ${conexaoNome} / Prioridade: ${novoIndex + 1}
+                        Rede: ${conexaoNome} / Prioridade: ${novoIndex + 1}
                     </p>
                 </td>
                 <td>
@@ -290,8 +290,8 @@ else if (TempData["mensagemErro"] != null)
                 // Atualiza o texto visível
                 var texto = conexoes[i].querySelector('.conexao-text');
                 var textoCompleto = texto.textContent;
-                var nomeRede = textoCompleto.split(' / ')[0].replace('Nome da rede: ', '').trim();
-                texto.textContent = `Nome da rede: ${nomeRede} / Prioridade: ${prioridade}`;
+                var nomeRede = textoCompleto.split(' / ')[0].replace('Rede: ', '').trim();
+                texto.textContent = `Rede: ${nomeRede} / Prioridade: ${prioridade}`;
             }
         }
 
