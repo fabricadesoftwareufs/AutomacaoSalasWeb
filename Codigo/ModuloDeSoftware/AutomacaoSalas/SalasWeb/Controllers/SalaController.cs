@@ -121,7 +121,6 @@ namespace SalasWeb.Controllers
 
 
         // GET: Sala/Edit/5
-        [ResponseCache(NoStore = true, Duration = 0)]
         public ActionResult Edit(uint id)
         {
             var salaModel = _salaService.GetById(id);
