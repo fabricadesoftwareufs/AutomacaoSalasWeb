@@ -1,4 +1,6 @@
-﻿@model Model.AuxModel.SalaAuxModel
+﻿@using Model
+
+@model Model.AuxModel.SalaAuxModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -15,7 +17,7 @@
                     </div>
                     <form asp-action="Edit">
                         <div class="card-body">
-
+ 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="col-md-11">
                                 <div class="form-group col-md-7">
@@ -30,7 +32,7 @@
                                 </div>
                                 <div class="form-group col-md-4" id="ListElements">
                                     <label asp-for="Sala.BlocoId" class="control-label"></label>
-                                    <select class="form-control" asp-for="Sala.BlocoId" id="select-bloco">
+                                    <select class="form-control" asp-for="Sala.BlocoId" id="select-bloco" onchange="loadConexoes()">
                                         @foreach (var item in ViewBag.BlocoList)
                                         {
                                             <option value="@item.Id"> @item.Titulo </option>
@@ -48,6 +50,81 @@
                                 <div class="form-group" hidden>
                                     <input asp-for="Sala.Id" class="form-control" />
                                 </div>
+
+                                <!-- Conexões de Internet Section -->
+                                <div class="col-md-6">
+                                    <h4>Conexões de Internet</h4>
+                                    <div class="form-group align-element">
+                                        <label class="control-label">Ponto de Acesso</label>
+                                        <select class="form-control" id="select-conexao-internet">
+                                            @foreach (var item in ViewBag.ConexoesInternet)
+                                            {
+                                                <option value="@item.Id">@item.Nome</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-group align-element">
+                                        <a id="add-nova-conexao" onclick="AdicionarConexao()" class="btn btn-primary text-white">
+                                            <i class="nav-icon fa fa-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <section class="content">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title">Conexões Adicionadas</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Conexão</th>
+                                                                    <th>Ações</th>
+                                                                    <th>Prioridade</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="container-conexoes">
+                                                                @if (Model != null && Model.ConexaoInternetSala != null)
+                                                                {
+                                                                    var conexoes = ViewBag.ConexoesInternet as IEnumerable<ConexaointernetModel>;
+                                                                    @for (var i = 0; i < Model.ConexaoInternetSala.Count; i++)
+                                                                    {
+                                                                        <tr id="nova-conexao-@i" class="conexao-sala" data-prioridade="@(i + 1)">
+                                                                            <td>
+                                                                                <input class="form-control conexao-id-input" name="ConexaoInternetSala[@i].ConexaoInternetId" hidden value="@Model.ConexaoInternetSala[i].ConexaoInternetId" />
+                                                                                <input class="form-control prioridade-input" name="ConexaoInternetSala[@i].Prioridade" hidden value="@(i + 1)" />
+                                                                                <p class="text-overflow form-control conexao-text">
+                                                                                    @conexoes.FirstOrDefault(c => c.Id == Model.ConexaoInternetSala[i].ConexaoInternetId)?.Nome / Prioridade: @(i + 1)
+                                                                                </p>
+                                                                            </td>
+                                                                            <td>
+                                                                                <a class="btn btn-danger btn-remover">
+                                                                                    <i class="nav-icon fa fa-trash text-white"></i>
+                                                                                </a>
+                                                                            </td>
+                                                                            <td>
+                                                                                <button type="button" class="btn btn-sm btn-success btn-aumentar">
+                                                                                    <i class="fa fa-arrow-up"></i>
+                                                                                </button>
+                                                                                <button type="button" class="btn btn-sm btn-warning btn-diminuir">
+                                                                                    <i class="fa fa-arrow-down"></i>
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
                             </div>
                         </div>
 
@@ -79,10 +156,236 @@ else if (TempData["mensagemErro"] != null)
         $(document).ready(function () {
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
+
+            // Inicializar eventos para conexões existentes
+            var conexoes = document.getElementsByClassName('conexao-sala');
+            for (var i = 0; i < conexoes.length; i++) {
+                adicionarEventListeners(conexoes[i]);
+            }
+            atualizarPrioridades();
+            atualizarBotoesPrioridade();
+
+            // Carregar conexões iniciais baseadas no bloco selecionado
+            loadConexoes();
         });
+
+        $(document).ready(function () {
+            $('form').on('submit', function() {
+                localStorage.setItem('formSubmitted', 'true');
+            });
+
+            if (localStorage.getItem('formSubmitted') === 'true') {
+                localStorage.removeItem('formSubmitted');
+                // Forçar reload da página para atualizar os dados
+                if (window.location.href.includes('/Edit/')) {
+                    window.location.reload(true);
+                }
+            }
+        });
+
+        function AdicionarConexao() {
+            var select = document.getElementById('select-conexao-internet');
+            var conexaoId = select.value;
+            var conexaoNome = select.options[select.selectedIndex].text;
+
+            var container = document.getElementById('container-conexoes');
+            var novoIndex = document.getElementsByClassName('conexao-sala').length;
+
+            var novaLinha = document.createElement('tr');
+            novaLinha.className = 'conexao-sala';
+            // Não definimos o ID baseado em índice fixo, será atualizado depois
+
+            var html = `
+                <td>
+                    <input class="form-control conexao-id-input" name="ConexaoInternetSala[${novoIndex}].ConexaoInternetId" hidden value="${conexaoId}" />
+                    <input class="form-control prioridade-input" name="ConexaoInternetSala[${novoIndex}].Prioridade" hidden value="${novoIndex + 1}" />
+                    <p class="text-overflow form-control conexao-text">
+                        Nome da rede: ${conexaoNome} / Prioridade: ${novoIndex + 1}
+                    </p>
+                </td>
+                <td>
+                    <a class="btn btn-danger btn-remover">
+                        <i class="nav-icon fa fa-trash text-white"></i>
+                    </a>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-success btn-aumentar">
+                        <i class="fa fa-arrow-up"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-warning btn-diminuir">
+                        <i class="fa fa-arrow-down"></i>
+                    </button>
+                </td>
+            `;
+
+            novaLinha.innerHTML = html;
+            container.appendChild(novaLinha);
+
+            // Adiciona event listeners aos botões
+            adicionarEventListeners(novaLinha);
+
+            // Atualiza IDs e prioridades
+            atualizarPrioridades();
+            atualizarBotoesPrioridade();
+        }
+
+        // Função para adicionar event listeners aos botões
+        function adicionarEventListeners(linha) {
+            // Botão para aumentar prioridade
+            var btnAumentar = linha.querySelector('.btn-aumentar');
+            btnAumentar.addEventListener('click', function() {
+                var row = this.closest('.conexao-sala');
+                var prevRow = row.previousElementSibling;
+
+                if (!prevRow || !prevRow.classList.contains('conexao-sala')) {
+                    return; // Não faz nada se já estiver no topo
+                }
+
+                row.parentNode.insertBefore(row, prevRow);
+                atualizarPrioridades();
+                atualizarBotoesPrioridade();
+            });
+
+            // Botão para diminuir prioridade
+            var btnDiminuir = linha.querySelector('.btn-diminuir');
+            btnDiminuir.addEventListener('click', function() {
+                var row = this.closest('.conexao-sala');
+                var nextRow = row.nextElementSibling;
+
+                if (!nextRow || !nextRow.classList.contains('conexao-sala')) {
+                    return; // Não faz nada se já estiver no final
+                }
+
+                row.parentNode.insertBefore(nextRow, row);
+                atualizarPrioridades();
+                atualizarBotoesPrioridade();
+            });
+
+            // Botão para remover conexão
+            var btnRemover = linha.querySelector('.btn-remover');
+            btnRemover.addEventListener('click', function() {
+                var row = this.closest('.conexao-sala');
+                row.remove();
+                atualizarPrioridades();
+                atualizarBotoesPrioridade();
+            });
+        }
+
+        // Função para atualizar as prioridades e reordenar os índices
+        function atualizarPrioridades() {
+            var conexoes = document.getElementsByClassName('conexao-sala');
+            for (var i = 0; i < conexoes.length; i++) {
+                var prioridade = i + 1;
+                conexoes[i].id = 'nova-conexao-' + i;
+
+                // Atualiza o input hidden da prioridade
+                var prioridadeInput = conexoes[i].querySelector('.prioridade-input');
+                prioridadeInput.setAttribute('name', `ConexaoInternetSala[${i}].Prioridade`);
+                prioridadeInput.value = prioridade;
+
+                // Atualiza o input do ConexaoInternetId
+                var conexaoInput = conexoes[i].querySelector('.conexao-id-input');
+                conexaoInput.setAttribute('name', `ConexaoInternetSala[${i}].ConexaoInternetId`);
+
+                // Atualiza o texto visível
+                var texto = conexoes[i].querySelector('.conexao-text');
+                var textoCompleto = texto.textContent;
+                var nomeRede = textoCompleto.split(' / ')[0].replace('Nome da rede: ', '').trim();
+                texto.textContent = `Nome da rede: ${nomeRede} / Prioridade: ${prioridade}`;
+            }
+        }
+
+        // Função para mostrar/esconder botões de prioridade
+        function atualizarBotoesPrioridade() {
+            var conexoes = document.getElementsByClassName('conexao-sala');
+            for (var i = 0; i < conexoes.length; i++) {
+                var btnAumentar = conexoes[i].querySelector('.btn-aumentar');
+                var btnDiminuir = conexoes[i].querySelector('.btn-diminuir');
+
+                // Esconde o botão "Aumentar" na primeira linha
+                btnAumentar.style.display = (i === 0) ? 'none' : 'inline-block';
+                // Esconde o botão "Diminuir" na última linha
+                btnDiminuir.style.display = (i === conexoes.length - 1) ? 'none' : 'inline-block';
+            }
+        }
+
+        // Função para carregar conexões com base no bloco selecionado
+        function loadConexoes() {
+            var blocoId = $('#select-bloco').val();
+            if (blocoId) {
+                $.ajax({
+                    url: '/Sala/GetConexoesByBloco',
+                    type: 'GET',
+                    data: { idBloco: blocoId },
+                    success: function (data) {
+                        // Limpar o select de conexões
+                        var selectConexao = $('#select-conexao-internet');
+                        selectConexao.empty();
+
+                        // Verificar se existem conexões para este bloco
+                        if (data && data.length > 0) {
+                            // Preencher o select com as novas conexões
+                            $.each(data, function (index, item) {
+                                selectConexao.append($('<option>', {
+                                    value: item.id,
+                                    text: item.nome
+                                }));
+                            });
+
+                            // Habilitar o botão de adicionar
+                            $('#add-nova-conexao').removeClass('disabled');
+                            $('#add-nova-conexao').attr('onclick', 'AdicionarConexao()');
+                        } else {
+                            // Adicionar mensagem de aviso
+                            selectConexao.append($('<option>', {
+                                value: '',
+                                text: 'Não existem conexões no Bloco'
+                            }));
+
+                            // Desabilitar o botão de adicionar
+                            $('#add-nova-conexao').addClass('disabled');
+                            $('#add-nova-conexao').removeAttr('onclick');
+                        }
+                    },
+                    error: function (error) {
+                        console.log('Erro ao carregar conexões:', error);
+                    }
+                });
+            }
+        }
+
+        function loadBlocos() {
+            var organizacaoId = $('#select-organizacao').val();
+            if (organizacaoId) {
+                $.ajax({
+                    url: '/Sala/GetBlocosByOrganizacao',
+                    type: 'GET',
+                    data: { idOrganizacao: organizacaoId },
+                    success: function (data) {
+                        var selectBloco = $('#select-bloco');
+                        selectBloco.empty();
+
+                        $.each(data, function (index, item) {
+                            selectBloco.append($('<option>', {
+                                value: item.id,
+                                text: item.titulo
+                            }));
+                        });
+
+                        // Depois de carregar os blocos, carregue as conexões do primeiro bloco
+                        loadConexoes();
+                    },
+                    error: function (error) {
+                        console.log('Erro ao carregar blocos:', error);
+                    }
+                });
+            }
+        }
     </script>
     <script src="~/js/load-itens-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

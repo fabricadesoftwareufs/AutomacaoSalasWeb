@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.AuxModel;
 using Model.ViewModel;
+using Persistence;
 using Service;
 using Service.Interface;
 using System.Collections.Generic;
@@ -124,11 +125,34 @@ namespace SalasWeb.Controllers
         {
             var salaModel = _salaService.GetById(id);
             var idOrganizacao = _blocoService.GetById(salaModel.BlocoId).OrganizacaoId;
-
+            
             ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(idOrganizacao);
             ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
 
-            return View(new SalaAuxModel { Sala = new SalaModel { Id = salaModel.Id, Titulo = salaModel.Titulo, BlocoId = salaModel.BlocoId }, OrganizacaoId = idOrganizacao });
+            var conexoesSala = _conexaoInternetSalaService.GetByIdSala(id).OrderBy(c => c.Prioridade).ToList();
+
+            var blocos = _blocoService.GetByIdOrganizacao(idOrganizacao);
+            var conexoesDisponiveis = new List<ConexaointernetModel>();
+            foreach (var bloco in blocos)
+            {
+                var conexoesDoBloco = _conexaoInternetService.GetByIdBloco(bloco.Id);
+                conexoesDisponiveis.AddRange(conexoesDoBloco);
+            }
+            ViewBag.ConexoesInternet = conexoesDisponiveis;
+
+            var model = new SalaAuxModel
+            {
+                Sala = new SalaModel
+                {
+                    Id = salaModel.Id,
+                    Titulo = salaModel.Titulo,
+                    BlocoId = salaModel.BlocoId
+                },
+                OrganizacaoId = idOrganizacao,
+                ConexaoInternetSala = conexoesSala
+            };
+
+            return View(model);
         }
 
         // POST: Sala/Edit/5
@@ -136,14 +160,53 @@ namespace SalasWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, SalaAuxModel salaModel)
         {
+            var usuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity);
             ViewBag.BlocoList = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
-            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
+            ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(usuario.UsuarioModel.Id);
+
+            var blocos = _blocoService.GetByIdOrganizacao(salaModel.OrganizacaoId);
+            var conexoesDisponiveis = new List<ConexaointernetModel>();
+            foreach (var bloco in blocos)
+            {
+                var conexoesDoBloco = _conexaoInternetService.GetByIdBloco(bloco.Id);
+                conexoesDisponiveis.AddRange(conexoesDoBloco);
+            }
+            ViewBag.ConexoesInternet = conexoesDisponiveis;
+
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (_salaService.Update(new SalaModel { Id = salaModel.Sala.Id, BlocoId = salaModel.Sala.BlocoId, Titulo = salaModel.Sala.Titulo }))
+                    bool salaAtualizada = _salaService.Update(new SalaModel
                     {
+                        Id = salaModel.Sala.Id,
+                        BlocoId = salaModel.Sala.BlocoId,
+                        Titulo = salaModel.Sala.Titulo
+                    });
+
+                    if (salaAtualizada)
+                    {           
+                        var conexoesExistentes = _conexaoInternetSalaService.GetByIdSala(salaModel.Sala.Id);
+                        foreach (var conexao in conexoesExistentes)
+                        {
+                            _conexaoInternetSalaService.Remove(conexao.ConexaoInternetId, salaModel.Sala.Id);
+                        }
+
+                        if (salaModel.ConexaoInternetSala?.Count > 0)
+                        {
+                            foreach (var item in salaModel.ConexaoInternetSala)
+                            {
+                                if (_conexaoInternetSalaService.GetById(item.ConexaoInternetId, salaModel.Sala.Id) != null)
+                                    throw new ServiceException("Esta conexão já está associada a esta sala!");
+                                _conexaoInternetSalaService.Insert(new ConexaoInternetSalaModel
+                                {
+                                    ConexaoInternetId = item.ConexaoInternetId,
+                                    SalaId = salaModel.Sala.Id,
+                                    Prioridade = item.Prioridade
+                                });
+                            }
+                        }
+
                         TempData["mensagemSucesso"] = "Sala atualizada com sucesso!";
                         return RedirectToAction(nameof(Index));
                     }
