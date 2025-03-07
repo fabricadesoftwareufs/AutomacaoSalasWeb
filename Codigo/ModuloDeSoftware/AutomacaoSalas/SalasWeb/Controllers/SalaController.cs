@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.AuxModel;
 using Model.ViewModel;
+using Persistence;
 using Service;
 using Service.Interface;
 using System.Collections.Generic;
@@ -196,6 +197,8 @@ namespace SalasWeb.Controllers
                         {
                             foreach (var item in salaModel.ConexaoInternetSala)
                             {
+                                if (_conexaoInternetSalaService.GetById(item.ConexaoInternetId, salaModel.Sala.Id) != null)
+                                    throw new ServiceException("Esta conexão já está associada a esta sala!");
                                 _conexaoInternetSalaService.Insert(new ConexaoInternetSalaModel
                                 {
                                     ConexaoInternetId = item.ConexaoInternetId,
