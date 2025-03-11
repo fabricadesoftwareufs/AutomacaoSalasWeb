@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿$(function() {
     let codDia = new Date().getDay();
     loadSalasByDiaSemana(getDiaSemana(codDia));
     checkButtonByCodigoDia(codDia);
@@ -11,7 +11,7 @@ function submitForm(formId, idItem, salaParticular) {
         document.getElementById('tela-carregamento-reserva').hidden = false;
 
     setValueSwitch(idItem);
-    if (document.querySelector('#'+formId))
+    if (document.querySelector('#' + formId))
         document.getElementById(formId).submit();
 }
 
@@ -34,78 +34,121 @@ function loadSalasByDiaSemana(dia) {
     checkButtonByCodigoDia(getCodigoSemana(dia));
     document.getElementById('container-reservas').innerHTML = "";
     $.get(url, { diaSemana: dia }, function (data) {
+        console.log("Dados recebidos da API:", data);
         if (data.salasUsuario.length > 0) {
             for (var indice = 0; indice < data.salasUsuario.length; indice++)
-                addReserva(data.salasUsuario[indice], indice ,dia);
-
+                addReserva(data.salasUsuario[indice], indice, dia);
         } else $('#container-reservas').append('<p class="text-center"> Não há nenhuma reserva para este dia nessa semana! </p>');
     });
 }
 
-function addReserva(data, indice ,dia) {
+function addReserva(data, indice, dia) {
+    console.log("Dados da reserva:", data);
+    console.log("Data da reserva:", data.horarioSala.data);
+
+    // Format horários corretamente
+    let horarioInicio = formatarHorario(data.horarioSala.horarioInicio);
+    let horarioFim = formatarHorario(data.horarioSala.horarioFim);
+
     var item = '<div class="card">' +
         '<div class="card-header card-title">' +
         '<h5 class="align-element">' + data.bloco.titulo + '<br/>' + data.sala.titulo + '</h5>' +
         '<div class="align-element float-right">' +
-        '<h5 class="text-right">' + getDiaSemanaCompleto(dia) + '<br />' + moment(new Date(data.horarioSala.data), 'YYYY-MM-DD', true).format('DD/MM/YYYY')+'</h6>'+ 
+        '<h5 class="text-right">' + getDiaSemanaCompleto(dia) + '<br />' + moment(data.horarioSala.data).format('DD/MM/YYYY') + '</h5>' +
         '</div>' +
         '</div>' +
         '<div class="card-body">' +
         '<div class="align-element">' +
-        '<h5 class="card-text">' + convertMsToHM(data.horarioSala.horarioInicio.totalMilliseconds) + ' às ' + convertMsToHM(data.horarioSala.horarioFim.totalMilliseconds) + '</h5>' +
+        '<h5 class="card-text">' + horarioInicio + ' às ' + horarioFim + '</h5>' +
         '<form asp-controller="Home" asp-action="CancelarReserva" method="post" action="/Home/CancelarReserva">' +
         '<input class="form-control" name="idReserva" value="' + data.horarioSala.id + '" hidden>' +
         '<input type="submit" class="btn btn-danger" value="Cancelar" />' +
         '</form>' +
         '</div>' +
         '<div class="float-right">' +
-            '<div class="float-right">' + 
-                '<div class="align-element">' +   
-                    '<form method="post" action="/Home/MonitorarSala" asp-controller="Home" asp-action="MonitorarSala" id="form-' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '">' +
-                        '<div class="form-control" hidden>' +
-                            '<input class="form-control" name="SalaId" value="' + data.sala.id + '" />' +
-                            '<input class="form-control" name="Id" value="' + data.monitoramentoLuzes.id + '" />' +
-                            '<input class="form-control" name="EquipamentoId" value="' + data.monitoramentoLuzes.equipamentoId +'" />' +
-                            '<input class="form-control" name="SalaParticular" value="False" />' +
-                        '</div>' +
+        '<div class="float-right">' +
+        '<div class="align-element">' +
+        '<form method="post" action="/Home/MonitorarSala" asp-controller="Home" asp-action="MonitorarSala" id="form-' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '">' +
+        '<div class="form-control" hidden>' +
+        '<input class="form-control" name="SalaId" value="' + data.sala.id + '" />' +
+        '<input class="form-control" name="Id" value="' + data.monitoramentoLuzes.id + '" />' +
+        '<input class="form-control" name="EquipamentoId" value="' + data.monitoramentoLuzes.equipamentoId + '" />' +
+        '<input class="form-control" name="SalaParticular" value="False" />' +
+        '</div>' +
 
-                         '<div class="align-element">' +
-                             '<h5 class="card-text">Luzes</h5>' +
-                                    '<label class="switch" onchange="submitForm(\'form-' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '\',\'' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '\',false)">' +
-                                    '<input type="checkbox" name="Estado" id="luzes-' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '" value="' + data.monitoramentoLuzes.estado + '"' + new String(data.monitoramentoLuzes.estado ? "checked" : "") + '/>' +
-                                    '<span class="slider round"></span>' +
-                             '</label>' +
-                        '</div>' +
-                      '</form>' +
-                '</div>' +
-            '</div>' +
+        '<div class="align-element">' +
+        '<h5 class="card-text">Luzes</h5>' +
+        '<label class="switch" onchange="submitForm(\'form-' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '\',\'' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '\',false)">' +
+        '<input type="checkbox" name="Estado" id="luzes-' + indice + "-" + data.monitoramentoLuzes.id + "-" + data.horarioSala.id + '" value="' + data.monitoramentoLuzes.estado + '"' + new String(data.monitoramentoLuzes.estado ? "checked" : "") + '/>' +
+        '<span class="slider round"></span>' +
+        '</label>' +
+        '</div>' +
+        '</form>' +
+        '</div>' +
+        '</div>' +
 
-            '<div class="float-right">' + 
-                '<div class="align-element">' +    
-                    '<form method="post" action="/Home/MonitorarSala" asp-controller="Home" asp-action="MonitorarSala" id="form-' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '">' +
-                        '<div class="form-control" hidden>' +
-                            '<input class="form-control" name="SalaId" value="' + data.sala.id + '" />' +
-                            '<input class="form-control" name="Id" value="' + data.monitoramentoCondicionadores.id + '" />' +
-                            '<input class="form-control" name="EquipamentoId" value="' + data.monitoramentoCondicionadores.equipamentoId + '" />' +
-                            '<input class="form-control" name="SalaParticular" value="False" />' +
-                        '</div>' +
+        '<div class="float-right">' +
+        '<div class="align-element">' +
+        '<form method="post" action="/Home/MonitorarSala" asp-controller="Home" asp-action="MonitorarSala" id="form-' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '">' +
+        '<div class="form-control" hidden>' +
+        '<input class="form-control" name="SalaId" value="' + data.sala.id + '" />' +
+        '<input class="form-control" name="Id" value="' + data.monitoramentoCondicionadores.id + '" />' +
+        '<input class="form-control" name="EquipamentoId" value="' + data.monitoramentoCondicionadores.equipamentoId + '" />' +
+        '<input class="form-control" name="SalaParticular" value="False" />' +
+        '</div>' +
 
-                        '<div class="align-element">' +
-                                '<h5 class="card-text">Condicionadores</h5>' +
-                                '<label class="switch" onchange="submitForm(\'form-' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '\',\'' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '\',false)">' +
-                                '<input type="checkbox" name="Estado" id="arCondicionado-' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '" value="' + data.monitoramentoCondicionadores.estado + '"' + new String(data.monitoramentoCondicionadores.estado ? "checked" : "") +'/>' +
-                                '<span class="slider round"></span>' +
-                                '</label>' +
-                        '</div>' +
-                    '</form>' +
-                '</div>' +
-            '</div>' +
+        '<div class="align-element">' +
+        '<h5 class="card-text">Condicionadores</h5>' +
+        '<label class="switch" onchange="submitForm(\'form-' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '\',\'' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '\',false)">' +
+        '<input type="checkbox" name="Estado" id="arCondicionado-' + indice + "-" + data.monitoramentoCondicionadores.id + "-" + data.horarioSala.id + '" value="' + data.monitoramentoCondicionadores.estado + '"' + new String(data.monitoramentoCondicionadores.estado ? "checked" : "") + '/>' +
+        '<span class="slider round"></span>' +
+        '</label>' +
+        '</div>' +
+        '</form>' +
+        '</div>' +
+        '</div>' +
 
         '</div>'
-        '</div>' +
+    '</div>' +
         '</div>';
 
     $('#container-reservas').append(item);
+}
+
+// Nova função para tratar os diferentes formatos possíveis de horários
+function formatarHorario(horario) {
+    if (!horario) {
+        console.log("Horário indefinido");
+        return "00:00";
+    }
+
+    console.log("Tipo de horário:", typeof horario, horario);
+
+    // Se for um objeto com totalMilliseconds
+    if (typeof horario === 'object' && horario.totalMilliseconds !== undefined) {
+        return convertMsToHM(horario.totalMilliseconds);
+    }
+
+    // Se for uma string no formato "hh:mm:ss"
+    if (typeof horario === 'string') {
+        const partes = horario.split(':');
+        if (partes.length >= 2) {
+            return padTo2Digits(parseInt(partes[0])) + ':' + padTo2Digits(parseInt(partes[1]));
+        }
+    }
+
+    // Se for um número (total de milissegundos)
+    if (typeof horario === 'number') {
+        return convertMsToHM(horario);
+    }
+
+    // Se for um objeto com horas e minutos
+    if (typeof horario === 'object' && horario.hours !== undefined && horario.minutes !== undefined) {
+        return padTo2Digits(horario.hours) + ':' + padTo2Digits(horario.minutes);
+    }
+
+    // Se ainda não conseguiu interpretar, retorna como está
+    return String(horario);
 }
 
 function padTo2Digits(num) {
@@ -113,6 +156,11 @@ function padTo2Digits(num) {
 }
 
 function convertMsToHM(milliseconds) {
+    if (milliseconds === undefined) {
+        console.log("Milissegundos indefinidos");
+        return "00:00";
+    }
+
     let seconds = Math.floor(milliseconds / 1000);
     let minutes = Math.floor(seconds / 60);
     let hours = Math.floor(minutes / 60);
@@ -126,13 +174,14 @@ function convertMsToHM(milliseconds) {
 
     return `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`;
 }
+
 function checkButtonByCodigoDia(dia) {
     switch (dia) {
         case 0: document.getElementById("option_dom").checked = true;
             break;
         case 1: document.getElementById("option_seg").checked = true;
             break;
-        case 2: document.getElementById("option_ter").enable = true;
+        case 2: document.getElementById("option_ter").checked = true; // Corrigi de enable para checked
             break;
         case 3: document.getElementById("option_qua").checked = true;
             break;
@@ -173,7 +222,6 @@ function getCodigoSemana(dia) {
 }
 
 function getDiaSemanaCompleto(dia) {
-
     if (getDiaSemana(new Date().getDay()) == dia)
         return "Hoje";
 
@@ -187,7 +235,4 @@ function getDiaSemanaCompleto(dia) {
         case "SAB": return "Próximo Sábado";
         default: return "";
     }
-
-
-
 }
