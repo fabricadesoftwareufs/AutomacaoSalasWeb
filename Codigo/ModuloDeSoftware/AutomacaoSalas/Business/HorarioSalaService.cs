@@ -174,23 +174,41 @@ namespace Service
 
         public IEnumerable<HorarioSalaModel> GetProximasReservasByIdUsuarioAndDiaSemana(uint idUsuario, string diaSemana)
         {
-            var reservas = _context.Horariosalas
-               .Where(hs => hs.IdUsuario == idUsuario)
-               .Select(hs => new HorarioSalaModel
-               {
-                   Id = hs.Id,
-                   Data = hs.Data,
-                   SalaId = hs.IdSala,
-                   HorarioInicio = hs.HorarioInicio,
-                   HorarioFim = hs.HorarioFim,
-                   Situacao = hs.Situacao,
-                   Objetivo = hs.Objetivo,
-                   UsuarioId = hs.IdUsuario,
-                   Planejamento = hs.IdPlanejamento
-               }).ToList();
+            // Get today's date
+            DateTime today = DateTime.Now.Date;
 
-            return reservas.Where(hs => hs.Data >= DateTime.Now.Date && ((int)hs.Data.DayOfWeek) == PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper())
-              && !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA));
+            // Calculate the date of the next occurrence of the selected day
+            int selectedDayCode = PlanejamentoViewModel.GetCodigoDia(diaSemana.ToUpper());
+            int currentDayOfWeek = (int)today.DayOfWeek;
+
+            // Calculate days until next occurrence
+            int daysUntilNext = (selectedDayCode - currentDayOfWeek + 7) % 7;
+
+            // If today is the selected day and we want to include today, set daysUntilNext to 0
+            if (daysUntilNext == 0 && currentDayOfWeek != selectedDayCode)
+                daysUntilNext = 7;
+
+            // Calculate the next occurrence date
+            DateTime nextOccurrence = today.AddDays(daysUntilNext);
+
+            var reservas = _context.Horariosalas
+                .Where(hs => hs.IdUsuario == idUsuario &&
+                             hs.Data.Date == nextOccurrence.Date &&
+                             !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))
+                .Select(hs => new HorarioSalaModel
+                {
+                    Id = hs.Id,
+                    Data = hs.Data,
+                    SalaId = hs.IdSala,
+                    HorarioInicio = hs.HorarioInicio,
+                    HorarioFim = hs.HorarioFim,
+                    Situacao = hs.Situacao,
+                    Objetivo = hs.Objetivo,
+                    UsuarioId = hs.IdUsuario,
+                    Planejamento = hs.IdPlanejamento
+                }).ToList();
+
+            return reservas;
         }
 
         public bool ConcelarReserva(uint idReserva)
