@@ -1,10 +1,15 @@
-﻿using System.Security.Cryptography;
+﻿using System.IO;
+using System;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Utils
 {
     public class Criptography
     {
+        
+        private static readonly string key = "E546C8DF278CD5931069B522E695D4F2"; // Chave AES de 32 bytes
+        
         /// <summary>
         /// Enum AlgorithmS - Representa os tipos de Algorithms de hash disponíveis para geração de senhas.
         /// </summary>
@@ -54,5 +59,49 @@ namespace Utils
 
             return stringSenha.ToString();
         }
+
+        /// <summary>
+        /// Método Encrypt - Gera uma criptografia simétrica AES 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string Encrypt(string text)
+        {
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = new byte[16]; // Vetor de Inicialização (IV)
+
+                using (MemoryStream ms = new MemoryStream())
+                using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                {
+                    byte[] inputBytes = Encoding.UTF8.GetBytes(text);
+                    cs.Write(inputBytes, 0, inputBytes.Length);
+                    cs.FlushFinalBlock();
+                    return Convert.ToBase64String(ms.ToArray());
+                }
+            }
+        }
+
+        public static string Decrypt(string encryptedText)
+        {
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = new byte[16]; // Vetor de Inicialização (IV)
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    byte[] cipherBytes = Convert.FromBase64String(encryptedText);
+                    using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(cipherBytes, 0, cipherBytes.Length);
+                        cs.FlushFinalBlock();
+                        return Encoding.UTF8.GetString(ms.ToArray());
+                    }
+                }
+            }
+        }
     }
 }
+
