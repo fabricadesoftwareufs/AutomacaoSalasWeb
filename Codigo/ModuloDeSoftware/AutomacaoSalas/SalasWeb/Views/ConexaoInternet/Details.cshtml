@@ -28,15 +28,6 @@
                                 <dd>
                                     <p class="form-control">@Html.DisplayFor(model => model.NomeBloco)</p>
                                 </dd>
-                                <dt>
-                                    @Html.DisplayNameFor(model => model.Senha)
-                                </dt>
-                                <dd class="password-container">
-                                    <p class="form-control password-field" id="senhaEncriptada">@Html.DisplayFor(model => model.Senha)</p>
-                                    <p class="form-control password-field" id="senhaDecriptada" style="display: none;"></p>
-                                    <button type="button" class="btn btn-primary btn-sm mt-2" id="btnMostrarSenha">Mostrar Senha</button>
-                                </dd>
-
                             </dl>
                         </div>
                     </div>
@@ -49,63 +40,4 @@
         </div>
     </div>
 </section>
-@section Scripts {
-    <script>
-        $(document).ready(function() {
-        const btnMostrarSenha = document.getElementById('btnMostrarSenha');
-        const senhaEncriptada = document.getElementById('senhaEncriptada');
-        const senhaDecriptada = document.getElementById('senhaDecriptada');
-
-        // Variável para controlar se a senha já foi decriptada
-        let senhaJaDecriptada = false;
-
-        // Função para decriptar a senha
-        function decriptarSenha() {
-            if (!senhaJaDecriptada) {
-                const senhaCriptografada = '@Html.Raw(Model.Senha)';
-
-                // Chamada AJAX para o servidor para descriptografar
-                $.ajax({
-                    url: '@Url.Action("DecriptarSenha", "ConexaoInternet")',
-                    type: 'POST',
-                    data: { senhaCriptografada: senhaCriptografada },
-                    success: function(resultado) {
-                        senhaDecriptada.textContent = resultado;
-                        senhaJaDecriptada = true;
-                        mostrarSenhaDecriptada();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Erro:", error);
-                        console.error("Status:", status);
-                        console.error("Resposta:", xhr.responseText);
-                        alert('Erro ao descriptografar a senha.');
-                    }
-                });
-            } else {
-                mostrarSenhaDecriptada();
-            }
-        }
-
-        function mostrarSenhaDecriptada() {
-            senhaEncriptada.style.display = 'none';
-            senhaDecriptada.style.display = 'block';
-        }
-
-        function mostrarSenhaCriptografada() {
-            senhaEncriptada.style.display = 'block';
-            senhaDecriptada.style.display = 'none';
-        }
-
-        // Evento mousedown - Mostrar senha decriptada
-        btnMostrarSenha.addEventListener('mousedown', decriptarSenha);
-
-        // Evento mouseup - Esconder senha decriptada
-        btnMostrarSenha.addEventListener('mouseup', mostrarSenhaCriptografada);
-
-        // Evento mouseleave - Para caso o usuário mova o mouse para fora do botão enquanto pressiona
-        btnMostrarSenha.addEventListener('mouseleave', mostrarSenhaCriptografada);
-    });
-        
-    </script>
-}
 

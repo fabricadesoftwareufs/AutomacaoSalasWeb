@@ -206,14 +206,7 @@ namespace SalasWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost]
-        public JsonResult DecriptarSenha(string senhaCriptografada)
-        {
-            // Chamar o método de descriptografia
-            string senhaDecriptada = Criptography.Decrypt(senhaCriptografada);
-
-            return Json(senhaDecriptada);
-        }
+        
 
         [HttpPost]
         public JsonResult ValidarSenhaAtual(uint id, string senhaAtual)
