@@ -63,7 +63,7 @@ namespace Utils
         /// <summary>
         /// Método Encrypt - Gera uma criptografia simétrica AES 
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">senha em texto plano (sem aplicação de Hash ou Criptografia).</param>
         /// <returns></returns>
         public static string Encrypt(string text)
         {
@@ -81,27 +81,7 @@ namespace Utils
                     return Convert.ToBase64String(ms.ToArray());
                 }
             }
-        }
-
-        public static string Decrypt(string encryptedText)
-        {
-            using (Aes aes = Aes.Create())
-            {
-                aes.Key = Encoding.UTF8.GetBytes(key);
-                aes.IV = new byte[16]; // Vetor de Inicialização (IV)
-
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    byte[] cipherBytes = Convert.FromBase64String(encryptedText);
-                    using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write))
-                    {
-                        cs.Write(cipherBytes, 0, cipherBytes.Length);
-                        cs.FlushFinalBlock();
-                        return Encoding.UTF8.GetString(ms.ToArray());
-                    }
-                }
-            }
-        }
+        }    
     }
 }
 

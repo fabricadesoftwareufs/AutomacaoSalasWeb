@@ -179,7 +179,7 @@ VALUES
 
 INSERT INTO `conexaointernet`(nome, senha, idBloco)
 VALUES
-    ('Lab2',12345678,1),
-    ('Lab1',12345678,1),
-    ('Lab3',12345678,1),
-    ('Lab4',12345678,6);
+    ('Lab2','g522W28MTRFCpFo3pD/7rw==',1),
+    ('Lab1','/aTrZryt+D2WsDt82on5KA==',1),
+    ('Lab3','wjCM/P1LGWR9b007RJUnsQ==',1),
+    ('Lab4','g522W28MTRFCpFo3pD/7rw==',6);
