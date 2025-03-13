@@ -11,6 +11,8 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 using Service.Exceptions;
+using Utils;
+using System;
 
 namespace SalasWeb.Controllers
 {
@@ -82,6 +84,7 @@ namespace SalasWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    conexaoModel.Senha = Criptography.Encrypt(conexaoModel.Senha);
                     if (_conexaoInternetService.Insert(conexaoModel))
                     {
                         _logger.LogWarning("Conexão de Internet criada com sucesso!");
@@ -135,6 +138,8 @@ namespace SalasWeb.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    conexaoModel.Senha = Criptography.Encrypt(conexaoModel.Senha);
+
                     if (_conexaoInternetService.Update(conexaoModel))
                     {
                         _logger.LogWarning("Conexão de Internet editada com sucesso!");
@@ -199,6 +204,27 @@ namespace SalasWeb.Controllers
                 TempData["mensagemErro"] = ex.Message;
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        
+
+        [HttpPost]
+        public JsonResult ValidarSenhaAtual(uint id, string senhaAtual)
+        {
+            try
+            {
+                var conexao = _conexaoInternetService.GetById(id);
+                // Descriptografar a senha armazenada para comparar com a senha atual informada
+                string senhaDecriptada = Criptography.Decrypt(conexao.Senha);
+
+                // Compara a senha descriptografada com a senha atual informada
+                return Json(senhaDecriptada == senhaAtual);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erro ao validar senha atual: {0}", ex);
+                return Json(false);
+            }
         }
 
         private List<BlocoViewModel> GetBlocos()
