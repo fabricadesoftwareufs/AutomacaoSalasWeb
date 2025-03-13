@@ -25,8 +25,9 @@ namespace SalasWeb.Controllers
         private readonly IOrganizacaoService _organizacaoService;
         private readonly IConexaoInternetService _conexaoInternetService;
         private readonly IConexaoInternetSalaService _conexaoInternetSalaService;
+        private readonly IEquipamentoService _equipamentoService;
 
-        public SalaController(ISalaService salaService, IBlocoService blocoService, IHardwareDeSalaService hardwareDeSalaService, ITipoHardwareService tipoHardwareService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, IOrganizacaoService organizacaoService, IConexaoInternetService conexaoInternetService, IConexaoInternetSalaService conexaoInternetSalaService)
+        public SalaController(ISalaService salaService, IBlocoService blocoService, IHardwareDeSalaService hardwareDeSalaService, ITipoHardwareService tipoHardwareService, IUsuarioOrganizacaoService usuarioOrganizacaoService, IUsuarioService usuarioService, IOrganizacaoService organizacaoService, IConexaoInternetService conexaoInternetService, IConexaoInternetSalaService conexaoInternetSalaService, IEquipamentoService equipamentoService)
         {
             _salaService = salaService;
             _blocoService = blocoService;
@@ -37,7 +38,10 @@ namespace SalasWeb.Controllers
             _organizacaoService = organizacaoService;
             _conexaoInternetService = conexaoInternetService;
             _conexaoInternetSalaService = conexaoInternetSalaService;
+            _equipamentoService = equipamentoService;
         }
+
+
 
         // GET: Sala
         public ActionResult Index()
@@ -283,9 +287,13 @@ namespace SalasWeb.Controllers
             var sala = _salaService.GetById(id);
             var hardwaresViewModel = new List<HardwareDeSalaViewModel>();
             var conexaoInternetSalaModel = new List<ConexaoInternetSalaModel>();
+            var equipamentoModel = new List<EquipamentoModel>();
 
             foreach (var item in _hardwareDeSalaService.GetByIdSala(id))
                 hardwaresViewModel.Add(new HardwareDeSalaViewModel { Id = item.Id, MAC = item.MAC, TipoHardwareId = _tipoHardwareService.GetById(item.TipoHardwareId) });
+
+            foreach (var item in _equipamentoService.GetByIdSala(id))
+                equipamentoModel.Add(new EquipamentoModel {Id = item.Id, Descricao = item.Descricao, Marca = item.Marca, Modelo = item.Modelo, TipoEquipamento = item.TipoEquipamento });
 
             foreach (var item in _conexaoInternetSalaService.GetByIdSala(id))
             {
@@ -304,8 +312,8 @@ namespace SalasWeb.Controllers
                 Sala = sala,
                 HardwaresSala = hardwaresViewModel,
                 ConexaoSala = conexaoInternetSalaModel,
+                EquipamentoSala = equipamentoModel, 
                 BlocoSala = _blocoService.GetById(sala.BlocoId),
-                
             };
         }
     }

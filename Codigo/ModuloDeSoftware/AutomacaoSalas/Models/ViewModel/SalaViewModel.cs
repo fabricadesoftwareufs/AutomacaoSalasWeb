@@ -9,6 +9,7 @@ namespace Model.ViewModel
         {
             HardwaresSala = new List<HardwareDeSalaViewModel>();
             ConexaoSala = new List<ConexaoInternetSalaModel>();
+            EquipamentoSala = new List<EquipamentoModel>();
         }
         [Display(Name = "Sala")]
         public SalaModel Sala { get; set; }
@@ -16,6 +17,7 @@ namespace Model.ViewModel
         public BlocoModel BlocoSala { get; set; }
         [Display(Name = "Hardwares")]
         public List<HardwareDeSalaViewModel> HardwaresSala { get; set; }
-        public List<ConexaoInternetSalaModel> ConexaoSala{ get; set; }        
+        public List<ConexaoInternetSalaModel> ConexaoSala{ get; set; }
+        public List<EquipamentoModel> EquipamentoSala { get; set; }
     }
 }

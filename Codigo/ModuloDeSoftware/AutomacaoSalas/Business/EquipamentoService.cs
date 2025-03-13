@@ -68,7 +68,7 @@ namespace Service
         /// </summary>
         /// <param name="idSala">ID da sala.</param>
         /// <returns>Lista de equipamentos da sala.</returns>
-        public List<EquipamentoModel> GetByIdSala(int idSala)
+        public List<EquipamentoModel> GetByIdSala(uint idSala)
             => _context.Equipamentos
                    .Where(eq => eq.IdSala == idSala)
                    .Select(eq => new EquipamentoModel
