@@ -169,7 +169,7 @@ namespace Service.Tests
             uint idUsuario = 1;
 
             // Act
-            var result = salaService.InsertSalaWithHardwares(salaAux, idUsuario);
+            var result = salaService.InsertSalaWithHardwaresOrSalasWithPontosdeAcesso(salaAux, idUsuario);
 
             // Assert
             Assert.IsTrue(result);
@@ -258,7 +258,7 @@ namespace Service.Tests
             uint idUsuario = 1;
 
             // Insere a sala com hardware
-            salaService.InsertSalaWithHardwares(salaAux, idUsuario);
+            salaService.InsertSalaWithHardwaresOrSalasWithPontosdeAcesso(salaAux, idUsuario);
 
             // Recupera a sala inserida
             var salaInserida = salaService.GetByTitulo("Sala Com Hardware");

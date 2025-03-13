@@ -53,7 +53,7 @@ namespace SalasAPI.Controllers
         // GET: api/Equipamento/5
         [HttpGet("equipamentosSala/{id}")]
         [AllowAnonymous]
-        public ActionResult GetEquipamentosSala(int id)
+        public ActionResult GetEquipamentosSala(uint id)
         {
             try
             {
