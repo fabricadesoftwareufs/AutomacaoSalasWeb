@@ -134,9 +134,17 @@ namespace SalasWeb.Controllers
             ViewBag.Organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
 
             var conexoesSala = _conexaoInternetSalaService.GetByIdSala(id).OrderBy(c => c.Prioridade).ToList();
-
             var blocos = _blocoService.GetByIdOrganizacao(idOrganizacao);
             var conexoesDisponiveis = new List<ConexaointernetModel>();
+            var equipamentoModel = new List<EquipamentoModel>();
+            var hardwaresViewModel = new List<HardwareDeSalaViewModel>();
+
+            foreach (var item in _equipamentoService.GetByIdSala(id))
+                equipamentoModel.Add(new EquipamentoModel { Id = item.Id, Descricao = item.Descricao, Marca = item.Marca, Modelo = item.Modelo, TipoEquipamento = item.TipoEquipamento });
+
+            foreach (var item in _hardwareDeSalaService.GetByIdSala(id))
+                hardwaresViewModel.Add(new HardwareDeSalaViewModel { Id = item.Id, MAC = item.MAC, TipoHardwareId = _tipoHardwareService.GetById(item.TipoHardwareId) });
+
             foreach (var bloco in blocos)
             {
                 var conexoesDoBloco = _conexaoInternetService.GetByIdBloco(bloco.Id);
@@ -153,7 +161,9 @@ namespace SalasWeb.Controllers
                     BlocoId = salaModel.BlocoId
                 },
                 OrganizacaoId = idOrganizacao,
-                ConexaoInternetSala = conexoesSala
+                ConexaoInternetSala = conexoesSala,
+                EquipamentoSala = equipamentoModel,
+                HardwaresSala2 = hardwaresViewModel,
             };
 
             return View(model);
@@ -288,12 +298,12 @@ namespace SalasWeb.Controllers
             var hardwaresViewModel = new List<HardwareDeSalaViewModel>();
             var conexaoInternetSalaModel = new List<ConexaoInternetSalaModel>();
             var equipamentoModel = new List<EquipamentoModel>();
+            foreach (var item in _equipamentoService.GetByIdSala(id))
+                equipamentoModel.Add(new EquipamentoModel {Id = item.Id, Descricao = item.Descricao, Marca = item.Marca, Modelo = item.Modelo, TipoEquipamento = item.TipoEquipamento });
 
             foreach (var item in _hardwareDeSalaService.GetByIdSala(id))
                 hardwaresViewModel.Add(new HardwareDeSalaViewModel { Id = item.Id, MAC = item.MAC, TipoHardwareId = _tipoHardwareService.GetById(item.TipoHardwareId) });
 
-            foreach (var item in _equipamentoService.GetByIdSala(id))
-                equipamentoModel.Add(new EquipamentoModel {Id = item.Id, Descricao = item.Descricao, Marca = item.Marca, Modelo = item.Modelo, TipoEquipamento = item.TipoEquipamento });
 
             foreach (var item in _conexaoInternetSalaService.GetByIdSala(id))
             {
