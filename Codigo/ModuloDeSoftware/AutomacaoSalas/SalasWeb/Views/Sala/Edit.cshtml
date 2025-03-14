@@ -17,7 +17,7 @@
                     </div>
                     <form asp-action="Edit">
                         <div class="card-body">
- 
+
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="col-md-11">
                                 <div class="form-group col-md-7">
@@ -73,7 +73,7 @@
                                 <section class="content">
                                     <div class="container-fluid">
                                         <div class="row">
-                                            <div class="col-md-5">
+                                            <div class="col-md-7">
                                                 <div class="card">
                                                     <div class="card-header">
                                                         <h3 class="card-title">Conexões Adicionadas</h3>
@@ -113,6 +113,97 @@
                                                                                 <button type="button" class="btn btn-sm btn-warning btn-diminuir">
                                                                                     <i class="fa fa-arrow-down"></i>
                                                                                 </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title">Hardwares Associados</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <table class="table table-bordered table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Hardwares</th>
+                                                                    <th>Ações</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (Model.HardwaresSala2 == null || !Model.HardwaresSala2.Any())
+                                                                {
+                                                                    <tr>
+                                                                        <td colspan="2" class="text-center">Nenhum Hardware está associado a esta sala.</td>
+                                                                    </tr>
+                                                                }
+                                                                else
+                                                                {
+                                                                    @foreach (var item in Model.HardwaresSala2)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>
+                                                                                MAC: @item.MAC / Tipo: @item.TipoHardwareId.Descricao
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="d-flex">
+                                                                                    <a href="@Url.Action("Edit", "HardwareDeSala", new { id = item.Id })" class="btn btn-info" style="margin-right: 5px;" title="Editar o Hardware">Editar</a>
+                                                                                    @using (Html.BeginForm("Delete", "HardwareDeSala", new { id = item.Id }, FormMethod.Post))
+                                                                                    {
+                                                                                        <button type="submit" value="Remover" class="btn btn-danger " hidden="hidden">Excluir</button>
+                                                                                    }
+                                                                                    @using (Html.BeginForm("Delete", "HardwareDeSala", new { id = item.Id }, FormMethod.Post))
+                                                                                    {
+                                                                                        <a class="btn btn-danger text-white" hidden="hidden" data-dismiss="modal">Cancelar</a>
+                                                                                        <button type="submit" value="Remover" class="btn btn-danger">Excluir</button>
+                                                                                    }
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title">Equipamentos Associados</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <table class="table table-bordered table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Equipamentos</th>
+                                                                    <th>Ações</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (Model.EquipamentoSala == null || !Model.EquipamentoSala.Any())
+                                                                {
+                                                                    <tr>
+                                                                        <td colspan="2" class="text-center">Nenhum Equipamento esta Associado a esta sala.</td>
+                                                                    </tr>
+                                                                }
+                                                                else
+                                                                {
+                                                                    @foreach (var item in Model.EquipamentoSala)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>
+                                                                                Tipo: @item.TipoEquipamento / Marca: @item.Marca / Modelo: @item.Modelo
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="d-flex">
+                                                                                    <a href="@Url.Action("Edit", "Equipamento", new { id = item.Id })" class="btn btn-info" style="margin-right: 5px;" title="Editar o equipamento">Editar</a>
+                                                                                    @using (Html.BeginForm("Delete", "Equipamento", new { id = item.Id }, FormMethod.Post))
+                                                                                    {
+                                                                                        <button type="submit" value="Remover" class="btn btn-danger">Excluir</button>
+                                                                                    }
+                                                                                </div>
                                                                             </td>
                                                                         </tr>
                                                                     }

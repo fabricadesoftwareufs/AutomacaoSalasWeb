@@ -13,23 +13,7 @@
                         <h2 class="card-title">Cadastrar Novo Equipamento</h2>
                     </div>
                     <form asp-action="Create" id="form" name="form">
-                        <div class="card-body">                          
-                            <div class="form-group col-md-8">
-                                <label asp-for="EquipamentoModel.Modelo" class="control-label"></label>
-                                <textarea asp-for="EquipamentoModel.Modelo" class="form-control" rows="2"></textarea>
-                                <span asp-validation-for="EquipamentoModel.Modelo" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-8">
-                                <label asp-for="EquipamentoModel.Marca" class="control-label"></label>
-                                <textarea asp-for="EquipamentoModel.Marca" class="form-control" maxlength="100" rows="2"></textarea>
-                                <span asp-validation-for="EquipamentoModel.Marca" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-8">
-                                <label asp-for="EquipamentoModel.Descricao" class="control-label"></label>
-                                <textarea asp-for="EquipamentoModel.Descricao" class="form-control" maxlength="1000" rows="3"></textarea>
-                                <span asp-validation-for="EquipamentoModel.Descricao" class="text-danger"></span>
-                            </div>
-
+                        <div class="card-body">
                             <div class="form-group col-md-5">
                                 <label class="control-label">Selecione a Organização</label>
                                 <select class="form-control" asp-for="OrganizacaoModel" id="select-organizacao" onchange="loadBlocosAndUsuarios()">
@@ -61,6 +45,22 @@
                                     </select>
                                     <span asp-validation-for="EquipamentoModel.Sala" class="text-danger"></span>
                                 </div>
+                                <div class="form-group col-md-8">
+                                <label asp-for="EquipamentoModel.Modelo" class="control-label"></label>
+                                <textarea asp-for="EquipamentoModel.Modelo" class="form-control" rows="2"></textarea>
+                                <span asp-validation-for="EquipamentoModel.Modelo" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label asp-for="EquipamentoModel.Marca" class="control-label"></label>
+                                <textarea asp-for="EquipamentoModel.Marca" class="form-control" maxlength="100" rows="2"></textarea>
+                                <span asp-validation-for="EquipamentoModel.Marca" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label asp-for="EquipamentoModel.Descricao" class="control-label"></label>
+                                <textarea asp-for="EquipamentoModel.Descricao" class="form-control" maxlength="1000" rows="3"></textarea>
+                                <span asp-validation-for="EquipamentoModel.Descricao" class="text-danger"></span>
+                            </div>       
+                            
 
                                 <div class="form-group col-md-7">
                                     <label asp-for="EquipamentoModel.TipoEquipamento" class="control-label"></label>
@@ -163,9 +163,19 @@ else if (TempData["mensagemErro"] != null)
 @section Scripts {
 
     <script>
-        $(document).ready(function () {
+               $(document).ready(function () {
+            // Verifica se o documento tem mensagem de retorno
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
+
+            // Verifica se a URL contém o parâmetro idSala
+            const urlParams = new URLSearchParams(window.location.search);
+            const idSala = urlParams.get('idSala');
+
+            if (idSala) {
+                // Se a URL contém idSala, mostra o alerta
+                swtAlert('info', 'Atenção!', 'Lembre-se de Selecionar a sala e bloco onde voce deseja que o equipamento seja instalado.');        
+            }
         });
 
 

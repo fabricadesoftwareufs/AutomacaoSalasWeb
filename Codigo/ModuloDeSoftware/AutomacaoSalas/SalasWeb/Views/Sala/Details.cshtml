@@ -58,7 +58,7 @@
                                                                     {
                                                                         <tr>
                                                                             <td>
-                                                                                MAC: @item.MAC / Tipo: @item.TipoHardwareId.Descricao
+                                                                                MAC: @item.MAC / Tipo: @item.TipoHardwareId.Descricao                                                                                
                                                                             </td>
                                                                         </tr>
                                                                     }
@@ -157,7 +157,7 @@
                                                                         {
                                                                             <tr>
                                                                                 <td>
-                                                                                    Tipo: @item.TipoEquipamento / Marca: @item.Marca / Modelo: @item.Modelo
+                                                                                    Tipo: @item.TipoEquipamento / Marca: @item.Marca / Modelo: @item.Modelo                                                                                   
                                                                                 </td>
                                                                             </tr>
                                                                         }                                                                  
@@ -177,6 +177,9 @@
                     <div class="card-footer">
                         <a href="@Url.Action("Edit", "Sala", new { id = @Model.Sala.Id })" class="btn btn-info">Editar </a> |
                         <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                        <div class="float-right">
+                            <a href="@Url.Action("Create", "Equipamento", new { idSala = @Model.Sala.Id })" class="btn btn-success">Adicionar Equipamento</a>
+                        </div>
                     </div>
                 </div>
             </div>
