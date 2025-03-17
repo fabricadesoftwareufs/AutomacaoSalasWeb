@@ -167,15 +167,6 @@ else if (TempData["mensagemErro"] != null)
             // Verifica se o documento tem mensagem de retorno
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
-
-            // Verifica se a URL contém o parâmetro idSala
-            const urlParams = new URLSearchParams(window.location.search);
-            const idSala = urlParams.get('idSala');
-
-            if (idSala) {
-                // Se a URL contém idSala, mostra o alerta
-                swtAlert('info', 'Atenção!', 'Lembre-se de Selecionar a sala e bloco onde voce deseja que o equipamento seja instalado.');        
-            }
         });
 
 

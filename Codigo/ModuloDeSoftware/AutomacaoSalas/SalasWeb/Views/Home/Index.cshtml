@@ -30,7 +30,7 @@
                                                     @item.Bloco.Titulo <br />
                                                     @item.Sala.Titulo
                                                 </h4>
-                                            </div>                                          
+                                            </div>
                                             <div class="float-right">
                                                 <div class="float-right text-center">
                                                     <div class="align-element">
@@ -132,9 +132,6 @@
                         </div>
                         <div class="card-body">
                             <div class="btn-group btn-group-toggle col-md-12" data-toggle="buttons" style="overflow: auto">
-                                <label class="btn btn-primary active">
-                                    <input type="radio" name="options" onchange="loadSalasByDiaSemana('DOM')" id="option_dom" autocomplete="off"> Domingo
-                                </label>
                                 <label class="btn btn-primary">
                                     <input type="radio" name="options" onchange="loadSalasByDiaSemana('SEG')" id="option_seg" autocomplete="off"> Segunda
                                 </label>
@@ -158,8 +155,6 @@
                         <br />
 
                         <div id="container-reservas">
-
-
                         </div>
                     </div>
                 </div>
@@ -220,6 +215,9 @@ else if (TempData["mensagemErro"] != null)
             let url = "/Home/GetReservasUsuario";
 
             checkButtonByCodigoDia(getCodigoSemana(dia));
+
+            resetarRastreamentoData();
+
             document.getElementById('container-reservas').innerHTML = "";
             $.get(url, { diaSemana: dia }, function (data) {
                 console.log("Dados recebidos da API:", data);
@@ -230,6 +228,9 @@ else if (TempData["mensagemErro"] != null)
             });
         }
 
+                // Variável global para rastrear a última data mostrada
+        var ultimaDataMostrada = null;
+
         function addReserva(data, indice, dia) {
             console.log("Dados da reserva:", data);
             console.log("Data da reserva:", data.horarioSala.data);
@@ -238,14 +239,27 @@ else if (TempData["mensagemErro"] != null)
             let horarioInicio = formatarHorario(data.horarioSala.horarioInicio);
             let horarioFim = formatarHorario(data.horarioSala.horarioFim);
 
-            var item = '<div class="card">' +
-                '<div class="card-header card-title">' +
-                '<h5 class="align-element">' + data.bloco.titulo + '<br/>' + data.sala.titulo + '</h5>' +
+            // Verificar se esta data já foi mostrada
+            let dataAtual = moment(data.horarioSala.data).format('YYYY-MM-DD');
+            let mostrarData = false;
+
+            if (ultimaDataMostrada !== dataAtual) {
+                mostrarData = true;
+                ultimaDataMostrada = dataAtual;
+            }
+
+            // Elemento da data só será incluído se for a primeira ocorrência deste dia
+            let elementoData = mostrarData ?
                 '<div class="align-element float-right">' +
-                '<h5 class="text-right">' + getDiaSemanaCompleto(dia) + '<br />' + moment(data.horarioSala.data).format('DD/MM/YYYY') + '</h5>' +
+                '<h5 class="text-right">' + moment(data.horarioSala.data).format('DD/MM/YYYY') + '</h5>' +
+                '</div>' : '';
+
+            var item = '<div class="card">' +
+                '<div class="card-header card-title" style="border-bottom: none; padding-bottom: 0.0rem;">' +
+                '<h5 class="align-element">' + data.bloco.titulo + ' - ' + data.sala.titulo + '</h5>' +
+                elementoData +
                 '</div>' +
-                '</div>' +
-                '<div class="card-body">' +
+                '<div class="card-body" style="padding-top: 0.0rem;">' +
                 '<div class="align-element">' +
                 '<h5 class="card-text">' + horarioInicio + ' às ' + horarioFim + '</h5>' +
                 '<form asp-controller="Home" asp-action="CancelarReserva" method="post" action="/Home/CancelarReserva">' +
@@ -296,11 +310,16 @@ else if (TempData["mensagemErro"] != null)
                 '</div>' +
                 '</div>' +
 
-                '</div>'
-            '</div>' +
+                '</div>'+
+                '</div>' +
                 '</div>';
 
             $('#container-reservas').append(item);
+        }
+
+        // Função para reiniciar o rastreamento de data (chame quando mudar de página ou reiniciar a lista)
+        function resetarRastreamentoData() {
+            ultimaDataMostrada = null;
         }
 
         // Nova função para tratar os diferentes formatos possíveis de horários
@@ -428,5 +447,7 @@ else if (TempData["mensagemErro"] != null)
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
     <script type="text/javascript" src="~/js/moment.js"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

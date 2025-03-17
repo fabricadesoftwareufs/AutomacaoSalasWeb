@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using Microsoft.EntityFrameworkCore;
+using Model;
 using Persistence;
 using Service.Interface;
 using System;
@@ -214,7 +215,14 @@ namespace Service
         public bool Remove(int id)
         {
             try
-            {
+            {                
+                bool hardwareEmUso = _context.Solicitacaos.Any(s => s.IdHardware == id);
+
+                if (hardwareEmUso)
+                {
+                    throw new ServiceException("Este hardware não pode ser removido pois está associado a uma ou mais solicitações.");
+                }
+
                 var x = _context.Hardwaredesalas.Where(tu => tu.Id == id).FirstOrDefault();
                 if (x != null)
                 {
@@ -222,11 +230,14 @@ namespace Service
                     return _context.SaveChanges() == 1;
                 }
             }
+            catch (DbUpdateException e)
+            {
+                throw new ServiceException("Não é possível remover este hardware porque ele está sendo usado em solicitações.");
+            }
             catch (Exception e)
             {
-                throw e;
+                throw new ServiceException("Erro ao remover hardware: " + e.Message);
             }
-
             return false;
         }
 
