@@ -103,7 +103,8 @@ namespace WebAPI
             services.AddScoped<ICodigoInfravermelhoService, CodigoInfravermelhoService>();
             services.AddScoped<IEquipamentoService, EquipamentoService>();
             services.AddScoped<ILogRequestService, LogRequestService>();
-
+            services.AddScoped<IConexaoInternetService, ConexaoInternetService>();
+            services.AddScoped<IConexaoInternetSalaService, ConexaoInternetSalaService>();
             services.AddMvcCore(options =>
             {
                 options.RequireHttpsPermanent = true; //does not affect API requests
