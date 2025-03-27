@@ -68,6 +68,9 @@ namespace SalasAPI.Controllers
 
                 return Ok(new
                 {
+                    id = user.Id,
+                    cpf = user.Cpf,
+                    nome = user.Nome,
                     token = new JwtSecurityTokenHandler().WriteToken(token)
                 });
             }
