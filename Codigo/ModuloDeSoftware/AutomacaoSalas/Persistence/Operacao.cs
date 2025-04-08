@@ -12,4 +12,6 @@ public partial class Operacao
     public string? Descricao { get; set; }
 
     public virtual ICollection<Codigoinfravermelho> Codigoinfravermelhos { get; set; } = new List<Codigoinfravermelho>();
+
+    public virtual ICollection<Monitoramento> Monitoramentos { get; set; } = new List<Monitoramento>();
 }

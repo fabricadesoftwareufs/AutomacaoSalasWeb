@@ -31,6 +31,10 @@ public partial class SalasDBContext : DbContext
 
     public virtual DbSet<Logrequest> Logrequests { get; set; }
 
+    public virtual DbSet<Marcaequipamento> Marcaequipamentos { get; set; }
+
+    public virtual DbSet<Modeloequipamento> Modeloequipamentos { get; set; }
+
     public virtual DbSet<Monitoramento> Monitoramentos { get; set; }
 
     public virtual DbSet<Operacao> Operacaos { get; set; }
@@ -52,6 +56,11 @@ public partial class SalasDBContext : DbContext
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     public virtual DbSet<Usuarioorganizacao> Usuarioorganizacaos { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=123456;database=automacaosalas");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Bloco>(entity =>
@@ -80,7 +89,7 @@ public partial class SalasDBContext : DbContext
 
             entity.ToTable("codigoinfravermelho");
 
-            entity.HasIndex(e => e.IdEquipamento, "fk_CodigoInfravermelho_Equipamento1_idx");
+            entity.HasIndex(e => e.IdModeloEquipamento, "fk_CodigoInfravermelho_ModeloEquipamento1_idx");
 
             entity.HasIndex(e => e.IdOperacao, "fk_CodigoInfravermelho_Operacao1_idx");
 
@@ -88,13 +97,13 @@ public partial class SalasDBContext : DbContext
             entity.Property(e => e.Codigo)
                 .HasColumnType("mediumtext")
                 .HasColumnName("codigo");
-            entity.Property(e => e.IdEquipamento).HasColumnName("idEquipamento");
+            entity.Property(e => e.IdModeloEquipamento).HasColumnName("idModeloEquipamento");
             entity.Property(e => e.IdOperacao).HasColumnName("idOperacao");
 
-            entity.HasOne(d => d.IdEquipamentoNavigation).WithMany(p => p.Codigoinfravermelhos)
-                .HasForeignKey(d => d.IdEquipamento)
+            entity.HasOne(d => d.IdModeloEquipamentoNavigation).WithMany(p => p.Codigoinfravermelhos)
+                .HasForeignKey(d => d.IdModeloEquipamento)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_CodigoInfravermelho_Equipamento1");
+                .HasConstraintName("fk_CodigoInfravermelho_ModeloEquipamento1");
 
             entity.HasOne(d => d.IdOperacaoNavigation).WithMany(p => p.Codigoinfravermelhos)
                 .HasForeignKey(d => d.IdOperacao)
@@ -158,6 +167,8 @@ public partial class SalasDBContext : DbContext
 
             entity.HasIndex(e => e.IdHardwareDeSala, "fk_Equipamento_HardwareDeSala1_idx");
 
+            entity.HasIndex(e => e.IdModeloEquipamento, "fk_Equipamento_ModeloEquipamento1_idx");
+
             entity.HasIndex(e => e.IdSala, "fk_Equipamento_Sala1_idx");
 
             entity.Property(e => e.Id).HasColumnName("id");
@@ -165,13 +176,14 @@ public partial class SalasDBContext : DbContext
                 .HasMaxLength(1000)
                 .HasColumnName("descricao");
             entity.Property(e => e.IdHardwareDeSala).HasColumnName("idHardwareDeSala");
+            entity.Property(e => e.IdModeloEquipamento).HasColumnName("idModeloEquipamento");
             entity.Property(e => e.IdSala).HasColumnName("idSala");
-            entity.Property(e => e.Marca)
-                .HasMaxLength(100)
-                .HasColumnName("marca");
-            entity.Property(e => e.Modelo)
-                .HasMaxLength(200)
-                .HasColumnName("modelo");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'D'")
+                .HasComment("L - LIGADO\nD - DESLIGADO")
+                .HasColumnType("enum('L','D')")
+                .HasColumnName("status");
+            entity.Property(e => e.Temperatura).HasColumnName("temperatura");
             entity.Property(e => e.TipoEquipamento)
                 .HasDefaultValueSql("'CONDICIONADOR'")
                 .HasColumnType("enum('CONDICIONADOR','LUZES')")
@@ -180,6 +192,10 @@ public partial class SalasDBContext : DbContext
             entity.HasOne(d => d.IdHardwareDeSalaNavigation).WithMany(p => p.Equipamentos)
                 .HasForeignKey(d => d.IdHardwareDeSala)
                 .HasConstraintName("fk_Equipamento_HardwareDeSala1");
+
+            entity.HasOne(d => d.IdModeloEquipamentoNavigation).WithMany(p => p.Equipamentos)
+                .HasForeignKey(d => d.IdModeloEquipamento)
+                .HasConstraintName("fk_Equipamento_ModeloEquipamento1");
 
             entity.HasOne(d => d.IdSalaNavigation).WithMany(p => p.Equipamentos)
                 .HasForeignKey(d => d.IdSala)
@@ -301,6 +317,38 @@ public partial class SalasDBContext : DbContext
                 .HasColumnName("url");
         });
 
+        modelBuilder.Entity<Marcaequipamento>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("marcaequipamento");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Nome)
+                .HasMaxLength(100)
+                .HasColumnName("nome");
+        });
+
+        modelBuilder.Entity<Modeloequipamento>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("modeloequipamento");
+
+            entity.HasIndex(e => e.IdMarcaEquipamento, "fk_ModeloEquipamento_MarcaEquipamento1_idx");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.IdMarcaEquipamento).HasColumnName("idMarcaEquipamento");
+            entity.Property(e => e.Nome)
+                .HasMaxLength(300)
+                .HasColumnName("nome");
+
+            entity.HasOne(d => d.IdMarcaEquipamentoNavigation).WithMany(p => p.Modeloequipamentos)
+                .HasForeignKey(d => d.IdMarcaEquipamento)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_ModeloEquipamento_MarcaEquipamento1");
+        });
+
         modelBuilder.Entity<Monitoramento>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -309,14 +357,34 @@ public partial class SalasDBContext : DbContext
 
             entity.HasIndex(e => e.IdEquipamento, "fk_monitoramento_Equipamento1_idx");
 
+            entity.HasIndex(e => e.IdOperacao, "fk_monitoramento_Operacao1_idx");
+
+            entity.HasIndex(e => e.IdUsuario, "fk_monitoramento_Usuario1_idx");
+
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.DataHora)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("dataHora");
             entity.Property(e => e.IdEquipamento).HasColumnName("idEquipamento");
+            entity.Property(e => e.IdOperacao).HasColumnName("idOperacao");
+            entity.Property(e => e.IdUsuario).HasColumnName("idUsuario");
+            entity.Property(e => e.Temperatura).HasColumnName("temperatura");
 
             entity.HasOne(d => d.IdEquipamentoNavigation).WithMany(p => p.Monitoramentos)
                 .HasForeignKey(d => d.IdEquipamento)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_monitoramento_Equipamento1");
+
+            entity.HasOne(d => d.IdOperacaoNavigation).WithMany(p => p.Monitoramentos)
+                .HasForeignKey(d => d.IdOperacao)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_monitoramento_Operacao1");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Monitoramentos)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_monitoramento_Usuario1");
         });
 
         modelBuilder.Entity<Operacao>(entity =>
