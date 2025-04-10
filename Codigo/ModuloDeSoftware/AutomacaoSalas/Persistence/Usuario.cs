@@ -17,6 +17,8 @@ public partial class Usuario
 
     public virtual ICollection<Horariosala> Horariosalas { get; set; } = new List<Horariosala>();
 
+    public virtual ICollection<Monitoramento> Monitoramentos { get; set; } = new List<Monitoramento>();
+
     public virtual ICollection<Planejamento> Planejamentos { get; set; } = new List<Planejamento>();
 
     public virtual ICollection<Salaparticular> Salaparticulars { get; set; } = new List<Salaparticular>();

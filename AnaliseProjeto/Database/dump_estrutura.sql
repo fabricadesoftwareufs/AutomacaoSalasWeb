@@ -269,21 +269,54 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `automacaosalas`.`MarcaEquipamento`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `automacaosalas`.`MarcaEquipamento` ;
+
+CREATE TABLE IF NOT EXISTS `automacaosalas`.`MarcaEquipamento` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `automacaosalas`.`ModeloEquipamento`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `automacaosalas`.`ModeloEquipamento` ;
+
+CREATE TABLE IF NOT EXISTS `automacaosalas`.`ModeloEquipamento` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(300) NOT NULL,
+  `idMarcaEquipamento` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_ModeloEquipamento_MarcaEquipamento1_idx` (`idMarcaEquipamento` ASC) VISIBLE,
+  CONSTRAINT `fk_ModeloEquipamento_MarcaEquipamento1`
+    FOREIGN KEY (`idMarcaEquipamento`)
+    REFERENCES `automacaosalas`.`MarcaEquipamento` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `automacaosalas`.`Equipamento`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `automacaosalas`.`Equipamento` ;
 
 CREATE TABLE IF NOT EXISTS `automacaosalas`.`Equipamento` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `modelo` VARCHAR(200) NOT NULL,
-  `marca` VARCHAR(100) NOT NULL,
-  `descricao` VARCHAR(1000) NULL,
+  `idModeloEquipamento` INT UNSIGNED NULL,
   `idSala` INT UNSIGNED NOT NULL,
+  `descricao` VARCHAR(1000) NULL,
   `tipoEquipamento` ENUM('CONDICIONADOR', 'LUZES') NOT NULL DEFAULT 'CONDICIONADOR',
   `idHardwareDeSala` INT UNSIGNED NULL,
+  `status` ENUM('L', 'D') NOT NULL DEFAULT 'D' COMMENT 'L - LIGADO\nD - DESLIGADO',
+  `temperatura` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_Equipamento_Sala1_idx` (`idSala` ASC) VISIBLE,
   INDEX `fk_Equipamento_HardwareDeSala1_idx` (`idHardwareDeSala` ASC) VISIBLE,
+  INDEX `fk_Equipamento_ModeloEquipamento1_idx` (`idModeloEquipamento` ASC) VISIBLE,
   CONSTRAINT `fk_Equipamento_Sala1`
     FOREIGN KEY (`idSala`)
     REFERENCES `automacaosalas`.`Sala` (`id`)
@@ -292,6 +325,11 @@ CREATE TABLE IF NOT EXISTS `automacaosalas`.`Equipamento` (
   CONSTRAINT `fk_Equipamento_HardwareDeSala1`
     FOREIGN KEY (`idHardwareDeSala`)
     REFERENCES `automacaosalas`.`HardwareDeSala` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Equipamento_ModeloEquipamento1`
+    FOREIGN KEY (`idModeloEquipamento`)
+    REFERENCES `automacaosalas`.`ModeloEquipamento` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -317,20 +355,20 @@ DROP TABLE IF EXISTS `automacaosalas`.`CodigoInfravermelho` ;
 
 CREATE TABLE IF NOT EXISTS `automacaosalas`.`CodigoInfravermelho` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `idEquipamento` INT NOT NULL,
   `idOperacao` INT NOT NULL,
+  `idModeloEquipamento` INT UNSIGNED NOT NULL,
   `codigo` MEDIUMTEXT NOT NULL,
-  INDEX `fk_CodigoInfravermelho_Equipamento1_idx` (`idEquipamento` ASC) VISIBLE,
   INDEX `fk_CodigoInfravermelho_Operacao1_idx` (`idOperacao` ASC) VISIBLE,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_CodigoInfravermelho_Equipamento1`
-    FOREIGN KEY (`idEquipamento`)
-    REFERENCES `automacaosalas`.`Equipamento` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX `fk_CodigoInfravermelho_ModeloEquipamento1_idx` (`idModeloEquipamento` ASC) VISIBLE,
   CONSTRAINT `fk_CodigoInfravermelho_Operacao1`
     FOREIGN KEY (`idOperacao`)
     REFERENCES `automacaosalas`.`Operacao` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CodigoInfravermelho_ModeloEquipamento1`
+    FOREIGN KEY (`idModeloEquipamento`)
+    REFERENCES `automacaosalas`.`ModeloEquipamento` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -393,13 +431,28 @@ DROP TABLE IF EXISTS `automacaosalas`.`monitoramento` ;
 
 CREATE TABLE IF NOT EXISTS `automacaosalas`.`monitoramento` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `estado` TINYINT NOT NULL,
   `idEquipamento` INT NOT NULL,
+  `idOperacao` INT NOT NULL,
+  `dataHora` DATETIME NOT NULL DEFAULT NOW(),
+  `idUsuario` INT UNSIGNED NOT NULL,
+  `temperatura` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_monitoramento_Equipamento1_idx` (`idEquipamento` ASC) VISIBLE,
+  INDEX `fk_monitoramento_Operacao1_idx` (`idOperacao` ASC) VISIBLE,
+  INDEX `fk_monitoramento_Usuario1_idx` (`idUsuario` ASC) VISIBLE,
   CONSTRAINT `fk_monitoramento_Equipamento1`
     FOREIGN KEY (`idEquipamento`)
     REFERENCES `automacaosalas`.`Equipamento` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_monitoramento_Operacao1`
+    FOREIGN KEY (`idOperacao`)
+    REFERENCES `automacaosalas`.`Operacao` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_monitoramento_Usuario1`
+    FOREIGN KEY (`idUsuario`)
+    REFERENCES `automacaosalas`.`Usuario` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
