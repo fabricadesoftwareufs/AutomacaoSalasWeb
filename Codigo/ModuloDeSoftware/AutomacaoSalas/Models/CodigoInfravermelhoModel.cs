@@ -4,7 +4,7 @@
     {
 
         public int Id { get; set; }
-        public int IdEquipamento { get; set; }
+        public uint IdModeloEquipamento { get; set; }
         public int IdOperacao { get; set; }
         public string Codigo { get; set; }
     }

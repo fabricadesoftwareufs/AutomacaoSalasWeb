@@ -7,7 +7,7 @@ namespace Service.Interface
     {
         CodigoInfravermelhoModel GetByIdSalaAndIdOperacao(int idSala, int operacao);
         CodigoInfravermelhoModel GetById(int id);
-        CodigoInfravermelhoModel GetByIdOperacaoAndIdEquipamento(int idEquipamento, int idOperacao);
+        CodigoInfravermelhoModel GetByIdOperacaoAndIdModeloEquipamento(int idModeloEquipamento, int idOperacao);
         List<CodigoInfravermelhoModel> GetAllByEquipamento(int idEquipamento);
         bool AddAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels);
         bool UpdateAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels);
