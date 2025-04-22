@@ -20,7 +20,7 @@ namespace Service
             var equipamento = _equipamentoService.GetByIdSalaAndTipoEquipamento(idSala, EquipamentoModel.TIPO_CONDICIONADOR);
 
             // Precisamos pegar o IdModeloEquipamento do equipamento
-            return GetByIdOperacaoAndIdModeloEquipamento(equipamento.IdModeloEquipamento, operacao);
+            return GetByIdOperacaoAndIdModeloEquipamento((int)equipamento.IdModeloEquipamento, operacao);
         }
 
         public CodigoInfravermelhoModel GetById(int id)
@@ -63,7 +63,7 @@ namespace Service
                     IdOperacao = cs.IdOperacao
                 }).ToList();
         }
-
+        //possivelmente tá errado 
         public List<CodigoInfravermelhoModel> GetAllByUuidHardware(string uuid)
          => _context.Codigoinfravermelhos
           .Join(_context.Modeloequipamentos,

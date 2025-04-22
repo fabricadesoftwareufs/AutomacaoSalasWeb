@@ -75,7 +75,7 @@ namespace SalasWeb.Controllers
             {
                 Codigo = c.Codigo,
                 Id = c.Id,
-                IdEquipamento = c.IdEquipamento,
+                IdEquipamento = (int)c.IdModeloEquipamento,
                 IdOperacao = c.IdOperacao,
                 Operacao = _operacaoService.GetById(c.IdOperacao).Titulo
             }));
@@ -155,7 +155,7 @@ namespace SalasWeb.Controllers
             var codigos = _codigoInfravermelhoService.GetAllByEquipamento(equipamento.Id);
 
             List<CodigoInfravermelhoViewModel> codigosView = new List<CodigoInfravermelhoViewModel>();
-            codigos.ForEach(c => codigosView.Add(new CodigoInfravermelhoViewModel { Codigo = c.Codigo, Id = c.Id, IdEquipamento = c.IdEquipamento, IdOperacao = c.IdOperacao, Operacao = _operacaoService.GetById(c.IdOperacao).Titulo }));
+            codigos.ForEach(c => codigosView.Add(new CodigoInfravermelhoViewModel { Codigo = c.Codigo, Id = c.Id, IdEquipamento = (int)c.IdModeloEquipamento, IdOperacao = c.IdOperacao, Operacao = _operacaoService.GetById(c.IdOperacao).Titulo }));
 
             EquipamentoViewModel equipamentoViewModel = new EquipamentoViewModel
             {

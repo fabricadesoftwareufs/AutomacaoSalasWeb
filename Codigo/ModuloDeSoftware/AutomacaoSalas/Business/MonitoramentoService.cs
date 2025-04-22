@@ -22,11 +22,11 @@ namespace Service
             _context = context;
         }
 
-        public List<MonitoramentoModel> GetAll() => _context.Monitoramentos.Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.IdEquipamento, Estado = Convert.ToBoolean(m.Estado) }).ToList();
+        public List<MonitoramentoModel> GetAll() => _context.Monitoramentos.Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.IdEquipamento }).ToList();
 
-        public MonitoramentoModel GetById(int id) => _context.Monitoramentos.Where(m => m.Id == id).Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.IdEquipamento, Estado = Convert.ToBoolean(m.Estado) }).FirstOrDefault();
+        public MonitoramentoModel GetById(int id) => _context.Monitoramentos.Where(m => m.Id == id).Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.IdEquipamento }).FirstOrDefault();
 
-        public MonitoramentoModel GetByIdEquipamento(int idEquipamento) => _context.Monitoramentos.Where(m => m.IdEquipamento == idEquipamento).Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.IdEquipamento, Estado = Convert.ToBoolean(m.Estado) }).FirstOrDefault();
+        public MonitoramentoModel GetByIdEquipamento(int idEquipamento) => _context.Monitoramentos.Where(m => m.IdEquipamento == idEquipamento).Select(m => new MonitoramentoModel { Id = m.Id, EquipamentoId = m.IdEquipamento }).FirstOrDefault();
 
         public List<MonitoramentoModel> GetByIdSala(uint idSala)
         {
@@ -36,8 +36,7 @@ namespace Service
                                                               where e.IdSala == idSala
                                                               select new MonitoramentoModel
                                                               {
-                                                                  Id = m.Id,
-                                                                  Estado = Convert.ToBoolean(m.Estado),
+                                                                  Id = m.Id,                                                                 
                                                                   EquipamentoId = m.IdEquipamento,
                                                                   EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.IdSala },
                                                               });
@@ -55,8 +54,7 @@ namespace Service
                                                               where e.IdSala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
                                                               select new MonitoramentoModel
                                                               {
-                                                                  Id = m.Id,
-                                                                  Estado = Convert.ToBoolean(m.Estado),
+                                                                  Id = m.Id,                                                                 
                                                                   EquipamentoId = m.IdEquipamento,
                                                                   EquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.IdSala },
                                                               }
@@ -176,7 +174,7 @@ namespace Service
                     {
                         var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
                         var idOperacao = monitoramento.Estado ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
-                        var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdEquipamento(equipamento.Id, idOperacao);
+                        var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdModeloEquipamento(equipamento.Id, idOperacao);
 
                         if (codigosInfravermelho == null)
                             return false;
@@ -249,8 +247,7 @@ namespace Service
         {
             return new Monitoramento
             {
-                Id = model.Id,
-                Estado = Convert.ToSByte(model.Estado), 
+                Id = model.Id,                
                 IdEquipamento = model.EquipamentoId
             };
         }
