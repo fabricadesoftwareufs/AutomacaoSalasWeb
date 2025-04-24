@@ -31,16 +31,24 @@ namespace Service
         /// <returns>Equipamento correspondente ou null se não encontrado.</returns>
         public EquipamentoModel GetByIdEquipamento(int idEquipamento)
            => _context.Equipamentos
-                  .Where(eq => eq.Id == idEquipamento)
-                  .Select(eq => new EquipamentoModel
+                   .Join(_context.Modeloequipamentos,
+                       eq => eq.IdModeloEquipamento,
+                       modelo => modelo.Id,
+                       (eq, modelo) => new { Equipamento = eq, Modelo = modelo })
+                   .Join(_context.Marcaequipamentos,
+                        combinado => combinado.Modelo.IdMarcaEquipamento,
+                        marca => marca.Id,
+                        (combinado,marca) => new { Combinado = combinado, Marca = marca })
+                  .Where(resultado => resultado.Combinado.Equipamento.Id == idEquipamento)
+                  .Select(resultado => new EquipamentoModel
                   {
-                      Id = eq.Id,
-                      Modelo = eq.Modelo,
-                      Marca = eq.Marca,
-                      Descricao = eq.Descricao,
-                      Sala = eq.IdSala,
-                      TipoEquipamento = eq.TipoEquipamento,
-                      HardwareDeSala = (uint)eq.IdHardwareDeSala
+                      Id = resultado.Combinado.Equipamento.Id,
+                      Modelo = resultado.Combinado.Modelo.Nome,  
+                      Marca = resultado.Marca.Nome,             
+                      Descricao = resultado.Combinado.Equipamento.Descricao,
+                      Sala = resultado.Combinado.Equipamento.IdSala,
+                      TipoEquipamento = resultado.Combinado.Equipamento.TipoEquipamento,
+                      HardwareDeSala = (uint)resultado.Combinado.Equipamento.IdHardwareDeSala
                   }).FirstOrDefault();
 
         /// <summary>
@@ -50,18 +58,27 @@ namespace Service
         /// <param name="tipo">Tipo do equipamento.</param>
         /// <returns>Equipamento correspondente ou null se não encontrado.</returns>
         public EquipamentoModel GetByIdSalaAndTipoEquipamento(int idSala, string tipo)
-            => _context.Equipamentos
-                   .Where(eq => eq.IdSala == idSala && eq.TipoEquipamento.ToUpper().Equals(tipo.ToUpper()))
-                   .Select(eq => new EquipamentoModel
-                   {
-                       Id = eq.Id,
-                       Modelo = eq.Modelo,
-                       Marca = eq.Marca,
-                       Descricao = eq.Descricao,
-                       Sala = eq.IdSala,
-                       TipoEquipamento = eq.TipoEquipamento,
-                       HardwareDeSala = (uint)eq.IdHardwareDeSala
-                   }).FirstOrDefault();
+    => _context.Equipamentos
+           .Join(_context.Modeloequipamentos,
+               eq => eq.IdModeloEquipamento,
+               modelo => modelo.Id,
+               (eq, modelo) => new { Equipamento = eq, Modelo = modelo })
+           .Join(_context.Marcaequipamentos,
+                combinado => combinado.Modelo.IdMarcaEquipamento,
+                marca => marca.Id,
+                (combinado, marca) => new { Combinado = combinado, Marca = marca })
+           .Where(resultado => resultado.Combinado.Equipamento.IdSala == idSala &&
+                  resultado.Combinado.Equipamento.TipoEquipamento.ToUpper().Equals(tipo.ToUpper()))
+           .Select(resultado => new EquipamentoModel
+           {
+               Id = resultado.Combinado.Equipamento.Id,
+               Modelo = resultado.Combinado.Modelo.Nome,
+               Marca = resultado.Marca.Nome,
+               Descricao = resultado.Combinado.Equipamento.Descricao,
+               Sala = resultado.Combinado.Equipamento.IdSala,
+               TipoEquipamento = resultado.Combinado.Equipamento.TipoEquipamento,
+               HardwareDeSala = (uint)resultado.Combinado.Equipamento.IdHardwareDeSala
+           }).FirstOrDefault();
 
         /// <summary>
         /// Obtém todos os equipamentos de uma sala.
@@ -69,35 +86,52 @@ namespace Service
         /// <param name="idSala">ID da sala.</param>
         /// <returns>Lista de equipamentos da sala.</returns>
         public List<EquipamentoModel> GetByIdSala(uint idSala)
-            => _context.Equipamentos
-                   .Where(eq => eq.IdSala == idSala)
-                   .Select(eq => new EquipamentoModel
-                   {
-                       Id = eq.Id,
-                       Modelo = eq.Modelo,
-                       Marca = eq.Marca,
-                       Descricao = eq.Descricao,
-                       Sala = eq.IdSala,
-                       TipoEquipamento = eq.TipoEquipamento,
-                       HardwareDeSala = (uint)eq.IdHardwareDeSala
-                   }).ToList();
+    => _context.Equipamentos
+           .Join(_context.Modeloequipamentos,
+               eq => eq.IdModeloEquipamento,
+               modelo => modelo.Id,
+               (eq, modelo) => new { Equipamento = eq, Modelo = modelo })
+           .Join(_context.Marcaequipamentos,
+                combinado => combinado.Modelo.IdMarcaEquipamento,
+                marca => marca.Id,
+                (combinado, marca) => new { Combinado = combinado, Marca = marca })
+           .Where(resultado => resultado.Combinado.Equipamento.IdSala == idSala)
+           .Select(resultado => new EquipamentoModel
+           {
+               Id = resultado.Combinado.Equipamento.Id,
+               Modelo = resultado.Combinado.Modelo.Nome,
+               Marca = resultado.Marca.Nome,
+               Descricao = resultado.Combinado.Equipamento.Descricao,
+               Sala = resultado.Combinado.Equipamento.IdSala,
+               TipoEquipamento = resultado.Combinado.Equipamento.TipoEquipamento,
+               HardwareDeSala = (uint)resultado.Combinado.Equipamento.IdHardwareDeSala
+           }).ToList();
 
         /// <summary>
         /// Obtém todos os equipamentos registrados.
         /// </summary>
         /// <returns>Lista de todos os equipamentos.</returns>
         public List<EquipamentoModel> GetAll() =>
-            _context.Equipamentos
-                .Select(e => new EquipamentoModel
-                {
-                    Id = e.Id,
-                    Modelo = e.Modelo,
-                    Descricao = e.Descricao,
-                    TipoEquipamento = e.TipoEquipamento,
-                    Marca = e.Marca,
-                    Sala = e.IdSala,
-                    HardwareDeSala = e.IdHardwareDeSala != null ? (uint)e.IdHardwareDeSala : 0
-                }).ToList();
+    _context.Equipamentos
+        .Join(_context.Modeloequipamentos,
+            eq => eq.IdModeloEquipamento,
+            modelo => modelo.Id,
+            (eq, modelo) => new { Equipamento = eq, Modelo = modelo })
+        .Join(_context.Marcaequipamentos,
+            combinado => combinado.Modelo.IdMarcaEquipamento,
+            marca => marca.Id,
+            (combinado, marca) => new { Combinado = combinado, Marca = marca })
+        .Select(resultado => new EquipamentoModel
+        {
+            Id = resultado.Combinado.Equipamento.Id,
+            Modelo = resultado.Combinado.Modelo.Nome,
+            Marca = resultado.Marca.Nome,
+            Descricao = resultado.Combinado.Equipamento.Descricao,
+            Sala = resultado.Combinado.Equipamento.IdSala,
+            TipoEquipamento = resultado.Combinado.Equipamento.TipoEquipamento,
+            HardwareDeSala = resultado.Combinado.Equipamento.IdHardwareDeSala != null ?
+                            (uint)resultado.Combinado.Equipamento.IdHardwareDeSala : 0
+        }).ToList();
 
         /// <summary>
         /// Insere um novo equipamento.
@@ -119,7 +153,7 @@ namespace Service
                 var codigosEntity = new List<CodigoInfravermelhoModel>();
                 if (inserted == 1)
                 {
-                    entity.Codigos.ForEach(c => codigosEntity.Add(new CodigoInfravermelhoModel { Codigo = c.Codigo, IdEquipamento = equip.Id, IdOperacao = c.IdOperacao }));
+                    entity.Codigos.ForEach(c => codigosEntity.Add(new CodigoInfravermelhoModel { Codigo = c.Codigo, IdModeloEquipamento = (uint)equip.Id, IdOperacao = c.IdOperacao }));
                     codigoInfravermelhoService.AddAll(codigosEntity);
 
                     monitoramentoService.Insert(new MonitoramentoModel { Estado = false, EquipamentoId = equip.Id }); ;
@@ -151,7 +185,7 @@ namespace Service
                 var codigosEntity = new List<CodigoInfravermelhoModel>();
                 if (updated == 1)
                 {
-                    entity.Codigos.ForEach(c => codigosEntity.Add(new CodigoInfravermelhoModel { Codigo = c.Codigo, IdEquipamento = equip.Id, IdOperacao = c.IdOperacao }));
+                    entity.Codigos.ForEach(c => codigosEntity.Add(new CodigoInfravermelhoModel { Codigo = c.Codigo, IdModeloEquipamento = (uint)equip.Id, IdOperacao = c.IdOperacao }));
                     codigoInfravermelhoService.UpdateAll(codigosEntity);
                 }
                 return Convert.ToBoolean(updated);
@@ -177,8 +211,7 @@ namespace Service
             {
                 Id = model.Id,
                 Descricao = model.Descricao,
-                Marca = model.Marca,
-                Modelo = model.Modelo,
+                IdModeloEquipamento = model.IdModeloEquipamento,            
                 TipoEquipamento = model.TipoEquipamento,
                 IdSala = model.Sala,
                 IdHardwareDeSala = model.HardwareDeSala,
@@ -212,7 +245,7 @@ namespace Service
                         _context.SaveChanges();
                     }
 
-                    var codigosInfravermelho = _context.Codigoinfravermelhos.Where(ci => ci.IdEquipamento == id).ToList();
+                    var codigosInfravermelho = _context.Codigoinfravermelhos.Where(ci => ci.IdModeloEquipamento == id).ToList();
 
                     if (codigosInfravermelho.Any())
                     {

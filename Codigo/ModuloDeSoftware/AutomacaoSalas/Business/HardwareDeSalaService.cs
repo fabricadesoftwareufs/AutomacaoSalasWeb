@@ -304,12 +304,11 @@ namespace Service
             var equipamentos = _context.Equipamentos.Where(e => e.IdHardwareDeSala != null).Select(e => new EquipamentoModel
             {
                 Id = e.Id,
-                Descricao = e.Descricao,
-                Marca = e.Marca,
-                TipoEquipamento = e.TipoEquipamento,
-                Modelo = e.Modelo,
+                Descricao = e.Descricao,               
+                TipoEquipamento = e.TipoEquipamento,              
                 Sala = e.IdSala,
-                HardwareDeSala = (uint)e.IdHardwareDeSala
+                HardwareDeSala = (uint)e.IdHardwareDeSala,
+                IdModeloEquipamento = (uint)e.IdModeloEquipamento
             }).ToList();
 
             if (equipamentos == null)

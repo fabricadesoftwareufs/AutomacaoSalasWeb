@@ -22,5 +22,7 @@ namespace Model
         public uint Sala { get; set; }
         public string TipoEquipamento { get; set; }
         public uint? HardwareDeSala { get; set; }
+
+        public uint IdModeloEquipamento { get; set; }
     }
 }
