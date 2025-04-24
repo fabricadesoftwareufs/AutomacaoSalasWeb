@@ -23,6 +23,7 @@ namespace Service.Interface
         bool Remove(int id);
         bool RemoveByUsuario(uint id);
         bool ConcelarReserva(uint idReserva);
+        bool AprovarReserva(uint idReserva);
         bool Update(HorarioSalaModel entity);
     }
 }
