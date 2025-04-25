@@ -76,6 +76,23 @@ namespace SalasWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult AprovarReserva(uint idReserva)
+        {
+            try
+            {
+                if (_horarioSalaService.AprovarReserva(idReserva))
+                    TempData["mensagemSucesso"] = "Reserva aprovada com sucesso!";
+                else
+                    TempData["mensagemErro"] = "Houve um problema ao aprovar sua reserva, tente novamente em alguns minutos!";
+            }
+            catch (ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult Privacy()
         {
             return View();

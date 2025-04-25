@@ -193,8 +193,7 @@ namespace Service
 
             var reservas = _context.Horariosalas
                 .Where(hs => hs.IdUsuario == idUsuario &&
-                             hs.Data.Date == nextOccurrence.Date &&
-                             !hs.Situacao.Equals(HorarioSalaModel.SITUACAO_CANCELADA))
+                             hs.Data.Date == nextOccurrence.Date)
                 .Select(hs => new HorarioSalaModel
                 {
                     Id = hs.Id,
@@ -217,6 +216,21 @@ namespace Service
             {
                 var reserva = GetById(idReserva);
                 reserva.Situacao = HorarioSalaModel.SITUACAO_CANCELADA;
+
+                return Update(reserva);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public bool AprovarReserva(uint idReserva)
+        {
+            try
+            {
+                var reserva = GetById(idReserva);
+                reserva.Situacao = HorarioSalaModel.SITUACAO_APROVADA;  
 
                 return Update(reserva);
             }
