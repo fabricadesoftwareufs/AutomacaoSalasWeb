@@ -190,7 +190,7 @@ namespace SalasWeb.Controllers
                     TempData["mensagemErro"] = "Houve um problema ao tentar remover a Marca de Equipamento!";
                 }
             }
-            catch (ConexaoInternetException ex)
+            catch (MarcaEquipamentoException ex)
             {
                 _logger.LogError("Erro ao remover a Marca de Equipamento: {0}", ex);
                 TempData["mensagemErro"] = ex.Message;
