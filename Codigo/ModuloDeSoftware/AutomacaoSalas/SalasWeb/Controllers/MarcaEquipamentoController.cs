@@ -155,6 +155,49 @@ namespace SalasWeb.Controllers
             return View(marcaModel);
         }
 
+        //GET
+        [HttpGet]
+        public IActionResult Delete(uint id)
+        {           
+            try
+            {
+                MarcaEquipamentoModel marca = _marcaEquipamentoService.GetById(id);
+                return View(marca);
+            }
+            catch (MarcaEquipamentoException ex)
+            {
+                _logger.LogError("Erro ao obter dados para remoção da Marca do Equipamento: {0}", ex);
+                TempData["mensagemErro"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        // POST: MarcaEquipamento/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(uint id, IFormCollection collection)
+        {
+            try
+            {
+                if (_marcaEquipamentoService.Remove(id))
+                {
+                    _logger.LogWarning("Marca de equipamento removida com sucesso!");
+                    TempData["mensagemSucesso"] = "Marca de Equipamento removida com sucesso!";
+                }
+                else
+                {
+                    _logger.LogError("Houve um problema ao tentar remover a Marca de Equipamento!");
+                    TempData["mensagemErro"] = "Houve um problema ao tentar remover a Marca de Equipamento!";
+                }
+            }
+            catch (ConexaoInternetException ex)
+            {
+                _logger.LogError("Erro ao remover a Marca de Equipamento: {0}", ex);
+                TempData["mensagemErro"] = ex.Message;
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         private List<MarcaEquipamentoViewModel> ReturnAllViewModels()
         {
             var usuarioId = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
