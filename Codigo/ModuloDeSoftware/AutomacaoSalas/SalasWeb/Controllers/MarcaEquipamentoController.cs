@@ -23,14 +23,14 @@ namespace SalasWeb.Controllers
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
         private readonly IUsuarioService _usuarioService;
         private readonly IMarcaEquipamentoService _marcaEquipamentoService;
-        private readonly ILogger<ConexaoInternetController> _logger;
+        private readonly ILogger<MarcaEquipamentoController> _logger;
 
         public MarcaEquipamentoController(
             IOrganizacaoService organizacaoService,
             IUsuarioOrganizacaoService usuarioOrganizacaoService,
             IUsuarioService usuarioService,
             IMarcaEquipamentoService marcaEquipamentoService,
-            ILogger<ConexaoInternetController> logger)
+            ILogger<MarcaEquipamentoController> logger)
         {
             _organizacaoService = organizacaoService;
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
@@ -84,7 +84,7 @@ namespace SalasWeb.Controllers
 
                     if (_marcaEquipamentoService.Insert(marcaModel))
                     {
-                        _logger.LogWarning("Marca de Equipamento com sucesso!");
+                        _logger.LogWarning("Marca de Equipamento adiconado com sucesso!");
                         TempData["mensagemSucesso"] = "Marca de Equipamento adicionado com sucesso!";
                         return RedirectToAction(nameof(Index));
                     }
@@ -155,7 +155,7 @@ namespace SalasWeb.Controllers
             return View(marcaModel);
         }
 
-        //GET
+        //GET: MarcaEquipamento/Delete/5
         [HttpGet]
         public IActionResult Delete(uint id)
         {           
