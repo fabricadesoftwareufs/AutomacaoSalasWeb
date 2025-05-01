@@ -84,7 +84,7 @@ namespace SalasWeb.Controllers
 
                     if (_marcaEquipamentoService.Insert(marcaModel))
                     {
-                        _logger.LogWarning("Marca de Equipamento adiconado com sucesso!");
+                        _logger.LogWarning("Marca de Equipamento adicionado com sucesso!");
                         TempData["mensagemSucesso"] = "Marca de Equipamento adicionado com sucesso!";
                         return RedirectToAction(nameof(Index));
                     }
