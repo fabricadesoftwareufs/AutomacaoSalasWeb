@@ -206,7 +206,7 @@ namespace SalasWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        
+
 
         [HttpPost]
         public JsonResult ValidarSenhaAtual(uint id, string senhaAtual)

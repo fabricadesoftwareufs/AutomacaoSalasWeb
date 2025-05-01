@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Service.Exceptions
 {
-    internal class MarcaEquipamentoException : Exception
+    public class MarcaEquipamentoException : Exception
     {
 
         public MarcaEquipamentoException() : base("Erro na Marca do Equipamento.")

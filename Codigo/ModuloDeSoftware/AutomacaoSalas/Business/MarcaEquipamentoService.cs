@@ -12,7 +12,7 @@ namespace Service
     /// <summary>
     /// Serviço responsável por gerenciar operações relacionadas às marcas de equipamentos
     /// </summary>
-    internal class MarcaEquipamentoService : IMarcaEquipamentoService
+    public class MarcaEquipamentoService : IMarcaEquipamentoService
     {
         private readonly SalasDBContext _context;
 
