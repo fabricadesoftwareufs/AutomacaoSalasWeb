@@ -67,7 +67,7 @@ namespace Service
                 .Select(m => new ModeloEquipamentoModel { Id = m.Id, Nome = m.Nome, MarcaEquipamentoID = m.IdMarcaEquipamento })
                 .ToList();
 
-            if (modelo == null || !modelo.Any())
+            if (!modelo.Any())
             {
                 throw new ModeloEquipamentoException($"Nenhum modelo de equipamento encontrado para a marca com ID {idMarca}.");
             }
