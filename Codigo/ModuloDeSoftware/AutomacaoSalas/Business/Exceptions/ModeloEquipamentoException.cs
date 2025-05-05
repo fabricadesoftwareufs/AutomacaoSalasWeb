@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Service.Exceptions
 {
-    internal class ModeloEquipamentoException : Exception
+    public class ModeloEquipamentoException : Exception
     {
         public ModeloEquipamentoException() : base("Erro no Modelo do Equipamento.")
         {
