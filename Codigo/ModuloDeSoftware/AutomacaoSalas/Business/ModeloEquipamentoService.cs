@@ -14,7 +14,7 @@ namespace Service
     /// Implementa a interface IModeloEquipamentoService e fornece funcionalidades
     /// para realizar operações CRUD relacionadas aos modelos de equipamentos.
     /// </summary>
-    internal class ModeloEquipamentoService : IModeloEquipamentoService
+    public class ModeloEquipamentoService : IModeloEquipamentoService
     {
         private readonly SalasDBContext _context;
 

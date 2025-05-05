@@ -65,6 +65,7 @@ namespace SalasUfsWeb
             services.AddScoped<IConexaoInternetService, ConexaoInternetService>();
             services.AddScoped<IConexaoInternetSalaService, ConexaoInternetSalaService>();
             services.AddScoped<IMarcaEquipamentoService, MarcaEquipamentoService>();
+            services.AddScoped<IModeloEquipamentoService, ModeloEquipamentoService>();
             services.AddMvc();
         }
 
