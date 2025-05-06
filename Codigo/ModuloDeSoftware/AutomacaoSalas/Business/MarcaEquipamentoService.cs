@@ -15,7 +15,7 @@ namespace Service
     public class MarcaEquipamentoService : IMarcaEquipamentoService
     {
         private readonly SalasDBContext _context;
-
+        private readonly ModeloEquipamentoService _modeloService;
         /// <summary>
         /// Construtor do serviço de marcas de equipamentos
         /// </summary>
@@ -23,6 +23,7 @@ namespace Service
         public MarcaEquipamentoService(SalasDBContext context)
         {
             _context = context;
+            _modeloService = new ModeloEquipamentoService(context);
         }
 
         /// <summary>
@@ -102,17 +103,28 @@ namespace Service
         {
             try
             {
-                var marcaEquipamento = _context.Marcaequipamentos.FirstOrDefault(m => m.Id == id);
-                if (marcaEquipamento == null)
+                if (_modeloService.GetByMarca(id).Count == 0)
                 {
-                    throw new MarcaEquipamentoException($"Marca de Equipamento com ID {id} não encontrada.");
+                    var marcaEquipamento = _context.Marcaequipamentos.FirstOrDefault(m => m.Id == id);
+                    if (marcaEquipamento == null)
+                    {
+                        throw new MarcaEquipamentoException($"Marca de Equipamento com ID {id} não encontrada.");
+                    }
+                    _context.Remove(marcaEquipamento);
+                    return _context.SaveChanges() == 1;
                 }
-                _context.Remove(marcaEquipamento);
-                return _context.SaveChanges() == 1;
+                else
+                {
+                    throw new MarcaEquipamentoException("Esta marca não pode ser removida, pois possui modelos de equipamentos associados a ela.");
+                }
             }
             catch (DbUpdateException dbEx)
             {
                 throw new MarcaEquipamentoException("Erro ao remover a marca de equipamento.", dbEx);
+            }
+            catch (MarcaEquipamentoException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
