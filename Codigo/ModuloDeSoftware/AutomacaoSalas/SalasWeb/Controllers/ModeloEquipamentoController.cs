@@ -152,24 +152,52 @@ namespace SalasWeb.Controllers
         }
 
         // GET: ModeloEquipamentoController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(uint id)
         {
+            try
+            {
+                ModeloEquipamentoModel modelo = _modeloEquipamentoService.GetById(id);
+                if (modelo == null)
+                {
+                    return NotFound();
+                }
+                // Carrega a marca associada ao modelo
+                modelo.Marca = _marcaEquipamentoService.GetById(modelo.MarcaEquipamentoID);
+                return View(modelo);
+            }
+            catch (ModeloEquipamentoException ex)
+            {
+                _logger.LogError("Erro ao obter dados para exclusão do modelo de equipamentos: {0}", ex);
+                TempData["mensagemErro"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
             return View();
         }
 
         // POST: ModeloEquipamentoController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(uint id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (_modeloEquipamentoService.Remove(id))
+                {
+                    _logger.LogWarning("Modelo de Equipamento removido com sucesso!");
+                    TempData["mensagemSucesso"] = "Modelo de Equipamento removido com sucesso!";
+                }
+                else
+                {
+                    _logger.LogWarning("Modelo de Equipamento não removido!");
+                    TempData["mensagemErro"] = "Modelo de Equipamento não removido!";
+                }
             }
-            catch
+            catch (ModeloEquipamentoException ex)
             {
-                return View();
+                _logger.LogError("Erro ao remover modelo de equipamentos: {0}", ex);
+                TempData["mensagemErro"] = ex.Message;
             }
+            return RedirectToAction(nameof(Index));
         }
 
         private List<ModeloEquipamentoViewModel> ReturnAllViewModels()
@@ -186,13 +214,13 @@ namespace SalasWeb.Controllers
                     MarcaEquipamentoID = modelo.MarcaEquipamentoID,
                     MarcaEquipamentoNome = marca.Nome,
                     Marcas = new List<MarcaEquipamentoViewModel>
-            {
-                new MarcaEquipamentoViewModel
-                {
-                    Id = modelo.MarcaEquipamentoID,
-                    Nome = marca.Nome
-                }
-            }
+                    {
+                        new MarcaEquipamentoViewModel
+                        {
+                            Id = modelo.MarcaEquipamentoID,
+                            Nome = marca.Nome
+                        }
+                    }
                 });
             }
 
