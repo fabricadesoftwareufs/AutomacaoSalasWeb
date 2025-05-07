@@ -20,10 +20,10 @@ namespace Service
         /// Construtor do serviço de marcas de equipamentos
         /// </summary>
         /// <param name="context">Contexto do banco de dados</param>
-        public MarcaEquipamentoService(SalasDBContext context, ModeloEquipamentoService modeloService)
+        public MarcaEquipamentoService(SalasDBContext context)
         {
             _context = context;
-            _modeloService = modeloService;
+            _modeloService = new ModeloEquipamentoService(context);
         }
 
         /// <summary>
