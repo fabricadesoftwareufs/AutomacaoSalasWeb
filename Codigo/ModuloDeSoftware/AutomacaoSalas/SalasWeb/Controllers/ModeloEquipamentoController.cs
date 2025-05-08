@@ -6,9 +6,9 @@ using Model;
 using Model.ViewModel;
 using Service.Interface;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using Service.Exceptions;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
 namespace SalasWeb.Controllers
 {
     [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
@@ -17,14 +17,17 @@ namespace SalasWeb.Controllers
         private readonly IMarcaEquipamentoService _marcaEquipamentoService;
         private readonly IModeloEquipamentoService _modeloEquipamentoService;
         private readonly ILogger<ModeloEquipamentoController> _logger;
+        private readonly IOperacaoCodigoService _operacaoCodigoService;
 
         public ModeloEquipamentoController(
             IMarcaEquipamentoService marcaEquipamentoService,
             IModeloEquipamentoService modeloEquipamentoService,
+            IOperacaoCodigoService operacaoCodigoService,
             ILogger<ModeloEquipamentoController> logger)
         {
             _marcaEquipamentoService = marcaEquipamentoService;
             _modeloEquipamentoService = modeloEquipamentoService;
+            _operacaoCodigoService = operacaoCodigoService;
             _logger = logger;
         }
 
@@ -62,6 +65,8 @@ namespace SalasWeb.Controllers
         // GET: ModeloEquipamentoController/Create
         public ActionResult Create()
         {
+            var operacoes = _operacaoCodigoService.GetAll().ToList();
+            ViewBag.Operacoes = operacoes;
             ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome");
             return View();
         }
@@ -69,8 +74,10 @@ namespace SalasWeb.Controllers
         // POST: ModeloEquipamentoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ModeloEquipamentoModel modelo)
+        public ActionResult Create(ModeloEquipamentoViewModel modelo)
         {
+            var operacoes = _operacaoCodigoService.GetAll().ToList();
+            ViewBag.Operacoes = operacoes;
             ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome");
             try
             {
@@ -123,7 +130,7 @@ namespace SalasWeb.Controllers
         // POST: ModeloEquipamentoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ModeloEquipamentoModel modelo)
+        public ActionResult Edit(ModeloEquipamentoViewModel modelo)
         {
             ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome");
             try
@@ -171,7 +178,6 @@ namespace SalasWeb.Controllers
                 TempData["mensagemErro"] = ex.Message;
                 return RedirectToAction(nameof(Index));
             }
-            return View();
         }
 
         // POST: ModeloEquipamentoController/Delete/5
@@ -209,10 +215,7 @@ namespace SalasWeb.Controllers
                 var marca = _marcaEquipamentoService.GetById(modelo.MarcaEquipamentoID);
                 modelosViewModel.Add(new ModeloEquipamentoViewModel
                 {
-                    Id = modelo.Id,
-                    Nome = modelo.Nome,
-                    MarcaEquipamentoID = modelo.MarcaEquipamentoID,
-                    MarcaEquipamentoNome = marca.Nome,
+                    ModeloEquipamento = modelo,
                     Marcas = new List<MarcaEquipamentoViewModel>
                     {
                         new MarcaEquipamentoViewModel

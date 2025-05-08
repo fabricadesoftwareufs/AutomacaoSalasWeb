@@ -7,16 +7,17 @@ namespace Model.ViewModel
 {
     public class ModeloEquipamentoViewModel
     {
-        public uint Id { get; set; }
+        public ModeloEquipamentoViewModel()
+        {
+            Codigos = new List<CodigoInfravermelhoViewModel>();
+        }
 
-        [Display(Name = "Modelo do Equipamento")]
-        public string Nome { get; set; }
+        public ModeloEquipamentoModel ModeloEquipamento { get; set; }
 
-        [Display(Name = "Marca do Equipamento")]
-        public uint MarcaEquipamentoID { get; set; }
+        public List<ModeloEquipamentoModel> ModeloEquipamentoModels { get; set; } = new List<ModeloEquipamentoModel>();
 
-        [Display(Name = "Marca do Equipamento")]
-        public string MarcaEquipamentoNome { get; set; }
+        public List<CodigoInfravermelhoViewModel>? Codigos { get; set; } = new List<CodigoInfravermelhoViewModel>();
+
         public List<MarcaEquipamentoViewModel> Marcas { get; set; } = new List<MarcaEquipamentoViewModel>();
     }
 }

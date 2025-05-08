@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Model;
+using Model.ViewModel;
 using Persistence;
 using Service.Exceptions;
 using Service.Interface;
@@ -114,7 +115,7 @@ namespace Service
         /// <param name="modelo">Modelo de equipamento a ser inserido.</param>
         /// <returns>True se a inserção for bem-sucedida; caso contrário, False.</returns>
         /// <exception cref="ModeloEquipamentoException">Lançada quando ocorre um erro durante a inserção.</exception>
-        public bool Insert(ModeloEquipamentoModel modelo)
+        public bool Insert(ModeloEquipamentoViewModel modelo)
         {
             try
             {
@@ -167,7 +168,7 @@ namespace Service
         /// <param name="modelo">Modelo de equipamento com as informações atualizadas.</param>
         /// <returns>True se a atualização for bem-sucedida; caso contrário, False.</returns>
         /// <exception cref="ModeloEquipamentoException">Lançada quando o modelo não é encontrado ou ocorre um erro durante a atualização.</exception>
-        public bool Update(ModeloEquipamentoModel modelo)
+        public bool Update(ModeloEquipamentoViewModel modelo)
         {
             try
             {
