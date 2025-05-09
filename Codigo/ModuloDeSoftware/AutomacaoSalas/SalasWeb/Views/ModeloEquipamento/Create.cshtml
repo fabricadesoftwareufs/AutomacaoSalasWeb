@@ -102,7 +102,6 @@ else if (TempData["mensagemErro"] != null)
 }
 
 @section Scripts {
-
     <script>
         $(document).ready(function () {
             if (document.querySelector('#mensagem-retorno'))
@@ -111,6 +110,116 @@ else if (TempData["mensagemErro"] != null)
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
+
+    <!-- Adicione o script aqui -->
+    <script>
+        // Array para armazenar os códigos adicionados
+        let codigosAdicionados = [];
+
+        // Função para adicionar um novo código
+        function AdicionarNovoCodigo() {
+            const codigoInput = document.getElementById('codigo');
+            const operacaoSelect = document.getElementById('operacao');
+
+            const codigo = codigoInput.value.trim();
+            const operacaoId = operacaoSelect.value;
+            const operacaoTexto = operacaoSelect.options[operacaoSelect.selectedIndex].text;
+
+            // Validar se o código não está vazio
+            if (codigo === '') {
+                swtAlert('warning', 'Atenção!', 'Digite um código válido.');
+                return;
+            }
+
+            // Adicionar o código à lista
+            codigosAdicionados.push({
+                codigo: codigo,
+                operacaoId: operacaoId,
+                operacaoTexto: operacaoTexto
+            });
+
+            // Limpar o campo de código (já está sendo feito no onclick do botão)
+            // codigoInput.value = '';
+
+            // Atualizar a tabela de códigos
+            atualizarTabelaCodigos();
+
+            // Feedback visual
+            swtAlert('success', 'Sucesso!', 'Código adicionado com sucesso.');
+        }
+
+        // Função para atualizar a tabela de códigos
+        function atualizarTabelaCodigos() {
+            const containerCodigo = document.getElementById('container-codigo');
+            containerCodigo.innerHTML = '';
+
+            // Verificar se há códigos para exibir
+            if (codigosAdicionados.length === 0) {
+                containerCodigo.innerHTML = '<tr><td colspan="3" class="text-center">Nenhum código adicionado</td></tr>';
+                return;
+            }
+
+            // Adicionar cabeçalho à tabela se ainda não existir
+            const thead = document.querySelector('#datatable-responsive thead tr');
+            if (thead.children.length === 0) {
+                thead.innerHTML = `
+                    <th>Código</th>
+                    <th>Operação</th>
+                    <th>Ações</th>
+                `;
+            }
+
+            // Adicionar cada código à tabela
+            codigosAdicionados.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        ${item.codigo}
+                        <input type="hidden" name="CodigosOperacao[${index}].Codigo" value="${item.codigo}" />
+                        <input type="hidden" name="CodigosOperacao[${index}].OperacaoId" value="${item.operacaoId}" />
+                    </td>
+                    <td>${item.operacaoTexto}</td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removerCodigo(${index})">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                containerCodigo.appendChild(tr);
+            });
+        }
+
+        // Função para remover um código
+        function removerCodigo(index) {
+            codigosAdicionados.splice(index, 1);
+            atualizarTabelaCodigos();
+            swtAlert('info', 'Informação', 'Código removido com sucesso.');
+        }
+
+        // Inicializar a tabela quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            atualizarTabelaCodigos();
+
+            // Adicionar event listener para o formulário para incluir os códigos no envio
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                // Se não houver códigos adicionados, mostrar alerta
+                if (codigosAdicionados.length === 0) {
+                    event.preventDefault();
+                    swtAlert('warning', 'Atenção!', 'Adicione pelo menos um código de operação.');
+                }
+            });
+
+            // Permitir adicionar código ao pressionar Enter no campo de código
+            document.getElementById('codigo').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    AdicionarNovoCodigo();
+                    document.getElementById('codigo').value = '';
+                }
+            });
+        });
+    </script>
 
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

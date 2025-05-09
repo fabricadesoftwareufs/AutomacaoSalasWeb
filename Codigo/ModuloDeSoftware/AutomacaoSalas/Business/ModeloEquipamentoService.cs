@@ -119,10 +119,21 @@ namespace Service
         {
             try
             {
-                var entity = SetEntity(modelo);
-                _context.Modeloequipamentos.Add(entity);
-                _context.SaveChanges();
-                return true;
+                ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
+
+
+                var modeloEquipamento = SetEntity(modelo.ModeloEquipamento);
+
+                _context.Modeloequipamentos.Add(modeloEquipamento);
+                int inserted = _context.SaveChanges();
+                _context.Entry(modeloEquipamento).Reload();
+                var codigosEntity = new List<CodigoInfravermelhoModel>();
+                if (inserted == 1)
+                {
+                    modelo.Codigos.ForEach(m => codigosEntity.Add(new CodigoInfravermelhoModel { Codigo = m.Codigo, IdModeloEquipamento = (uint)modeloEquipamento.Id, IdOperacao = m.IdOperacao }));
+                    codigoInfravermelhoService.AddAll(codigosEntity);
+                }
+                return Convert.ToBoolean(inserted);
             }
             catch (DbUpdateException ex)
             {
@@ -142,24 +153,43 @@ namespace Service
         /// <exception cref="ModeloEquipamentoException">Lançada quando o modelo não é encontrado ou ocorre um erro durante a remoção.</exception>
         public bool Remove(uint id)
         {
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                var modelo = _context.Modeloequipamentos.FirstOrDefault(m => m.Id == id);
-                if (modelo == null)
+                try
                 {
-                    throw new ModeloEquipamentoException($"Modelo de Equipamento com ID {id} não encontrado.");
+                    var modeloEquipamento = _context.Modeloequipamentos.FirstOrDefault(m => m.Id == id);
+
+                    if (modeloEquipamento == null)
+                    {
+                        throw new ModeloEquipamentoException($"Modelo de Equipamento com ID {id} não encontrado.");
+                    }
+
+                    //TODO: Tratar o erro em caso de um modelo ter equipamentos associados e não deixar ser deletado.
+
+                    var codigoInfravermelho = _context.Codigoinfravermelhos.Where(m => m.IdModeloEquipamento == id).ToList();
+
+                    if (codigoInfravermelho.Any())
+                    {
+                        _context.Codigoinfravermelhos.RemoveRange(codigoInfravermelho);
+                        _context.SaveChanges();
+                    }
+
+                    _context.Modeloequipamentos.Remove(modeloEquipamento);
+                    var save = _context.SaveChanges() > 0;
+
+                    transaction.Commit();
+                    return save;
                 }
-                _context.Modeloequipamentos.Remove(modelo);
-                return _context.SaveChanges() == 1;
+                catch (DbUpdateException ex)
+                {
+                    throw new ModeloEquipamentoException("Erro ao remover o modelo de equipamento.", ex);
+                }
+                catch (Exception ex)
+                {
+                    throw new ModeloEquipamentoException("Erro inesperado ao remover o modelo de equipamento.", ex);
+                }
             }
-            catch (DbUpdateException ex)
-            {
-                throw new ModeloEquipamentoException("Erro ao remover o modelo de equipamento.", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new ModeloEquipamentoException("Erro inesperado ao remover o modelo de equipamento.", ex);
-            }
+
         }
 
         /// <summary>
@@ -172,14 +202,18 @@ namespace Service
         {
             try
             {
-                var modeloExistente = _context.Modeloequipamentos.Find(modelo.Id);
-                if (modeloExistente == null)
+                ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
+
+                var modeloEquipamento = SetEntity(modelo.ModeloEquipamento);
+                _context.Modeloequipamentos.Update(modeloEquipamento);
+                int updated = _context.SaveChanges();
+                var codigosEntity = new List<CodigoInfravermelhoModel>();
+                if (updated == 1)
                 {
-                    throw new ModeloEquipamentoException($"Modelo de Equipamento com ID {modelo.Id} não encontrado.");
+                    modelo.Codigos.ForEach(m => codigosEntity.Add(new CodigoInfravermelhoModel { Codigo = m.Codigo, IdModeloEquipamento = (uint)modeloEquipamento.Id, IdOperacao = m.IdOperacao }));
+                    codigoInfravermelhoService.UpdateAll(codigosEntity);
                 }
-                modeloExistente.Nome = modelo.Nome;
-                modeloExistente.IdMarcaEquipamento = modelo.MarcaEquipamentoID;
-                return _context.SaveChanges() == 1;
+                return Convert.ToBoolean(updated);
             }
             catch (DbUpdateException ex)
             {

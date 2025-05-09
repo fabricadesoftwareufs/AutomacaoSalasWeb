@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Index";
 }
-<!--
+
 
 
 <section class="content">
@@ -26,10 +26,10 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Nome)
+                                        @Html.DisplayNameFor(model => model.FirstOrDefault().ModeloEquipamento.Nome)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.MarcaEquipamentoNome)
+                                        @Html.DisplayNameFor(model => model.FirstOrDefault().ModeloEquipamento.MarcaEquipamentoID)
                                     </th>
 
                                     <th>Ações</th>
@@ -40,27 +40,27 @@
                                 {
                                     <tr>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Nome)
+                                            @Html.DisplayFor(modelItem => item.ModeloEquipamento.Nome)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.MarcaEquipamentoNome)
+                                            @Html.DisplayFor(modelItem => item.ModeloEquipamento.MarcaEquipamentoID)
                                         </td>
                                         
                                         <td>
-                                            <a href="@Url.Action("Details", "ModeloEquipamento", new { id = item.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
-                                            <a href="@Url.Action("Edit", "ModeloEquipamento", new { id = item.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
+                                            <a href="@Url.Action("Details", "ModeloEquipamento", new { id = item.ModeloEquipamento.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
+                                            <a href="@Url.Action("Edit", "ModeloEquipamento", new { id = item.ModeloEquipamento.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
 
-                                            <a data-toggle="modal" data-target="#modal-remover-@item.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
+                                            <a data-toggle="modal" data-target="#modal-remover-@item.ModeloEquipamento.Id" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
 
-                                            <div class="modal fade" id="modal-remover-@item.Id">
+                                            <div class="modal fade" id="modal-remover-@item.ModeloEquipamento.Id">
                                                 <div class="modal-dialog modal-sm">
                                                     <div class="modal-content card card-secondary">
                                                         <div class="modal-body text-center">
-                                                            <h5>Modelo: </h5> <p>@item.Nome</p>
-                                                            <h5>Marca: </h5> <p>@item.MarcaEquipamentoNome</p>
+                                                            <h5>Modelo: </h5> <p>@item.ModeloEquipamento.Nome</p>
+                                                            <h5>Marca: </h5> <p>@item.ModeloEquipamento.MarcaEquipamentoID</p>
                                                         </div>
 
-                                                        @using (Html.BeginForm("Delete", "ModeloEquipamento", new { id = item.Id }, FormMethod.Post))
+                                                        @using (Html.BeginForm("Delete", "ModeloEquipamento", new { id = item.ModeloEquipamento.Id }, FormMethod.Post))
                                                         {
                                                             <div class="modal-footer justify-content-between">
                                                                 <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
@@ -81,7 +81,7 @@
         </div>
     </div>
 </section>
--->
+
 @if (TempData["mensagemSucesso"] != null)
 {
     <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!','@TempData["mensagemSucesso"]')"></div>
