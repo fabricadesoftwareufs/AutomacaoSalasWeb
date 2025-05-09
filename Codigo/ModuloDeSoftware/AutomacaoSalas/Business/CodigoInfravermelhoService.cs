@@ -90,11 +90,14 @@ namespace Service
 
         public bool AddAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels)
         {
+            if (codigoInfravermelhoModels == null || !codigoInfravermelhoModels.Any())
+                return true; // Nada para adicionar, consideramos sucesso
+
             List<Codigoinfravermelho> codigos = new List<Codigoinfravermelho>();
             codigoInfravermelhoModels.ForEach(c => codigos.Add(SetEntity(c)));
 
             _context.AddRange(codigos);
-            return _context.SaveChanges() == 1;
+            return _context.SaveChanges() > 0; // Se salvou pelo menos um, é sucesso
         }
 
         public bool UpdateAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels)

@@ -38,7 +38,7 @@
 
                             <div id="coperacao" class="form-group d-inline-block">
                                 <label name="Operacao" class="control-label">Operação</label>
-                                <select name="operacao" id="operacao">
+                                <select name="operacao" id="operacao" class="form-control">
                                     @foreach (var item in ViewBag.Operacoes)
                                     {
                                         <option value="@item.Id"> @item.Titulo </option>
@@ -68,9 +68,13 @@
                                                 <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                                     <thead>
                                                         <tr>
+                                                            <th>Código</th>
+                                                            <th>Operação</th>
+                                                            <th>Ações</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="container-codigo">
+                                                        <tr><td colspan="3" class="text-center">Nenhum código adicionado</td></tr>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -91,7 +95,7 @@
         </div>
     </div>
 </section>
-            
+
 @if (TempData["mensagemSucesso"] != null)
 {
     <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!','@TempData["mensagemSucesso"]')"></div>
@@ -102,18 +106,12 @@ else if (TempData["mensagemErro"] != null)
 }
 
 @section Scripts {
-    <script>
-        $(document).ready(function () {
-            if (document.querySelector('#mensagem-retorno'))
-                document.getElementById("mensagem-retorno").click();
-        });
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
 
-    <!-- Adicione o script aqui -->
+    <!-- Script para manipulação dos códigos -->
     <script>
-        // Array para armazenar os códigos adicionados
+                // Array para armazenar os códigos adicionados
         let codigosAdicionados = [];
 
         // Função para adicionar um novo código
@@ -122,7 +120,7 @@ else if (TempData["mensagemErro"] != null)
             const operacaoSelect = document.getElementById('operacao');
 
             const codigo = codigoInput.value.trim();
-            const operacaoId = operacaoSelect.value;
+            const operacaoId = parseInt(operacaoSelect.value);
             const operacaoTexto = operacaoSelect.options[operacaoSelect.selectedIndex].text;
 
             // Validar se o código não está vazio
@@ -134,18 +132,27 @@ else if (TempData["mensagemErro"] != null)
             // Adicionar o código à lista
             codigosAdicionados.push({
                 codigo: codigo,
-                operacaoId: operacaoId,
-                operacaoTexto: operacaoTexto
+                idOperacao: operacaoId,
+                operacao: operacaoTexto
             });
-
-            // Limpar o campo de código (já está sendo feito no onclick do botão)
-            // codigoInput.value = '';
 
             // Atualizar a tabela de códigos
             atualizarTabelaCodigos();
 
             // Feedback visual
             swtAlert('success', 'Sucesso!', 'Código adicionado com sucesso.');
+        }
+
+        // Função para remover um código
+        function removerCodigo(index) {
+            // Remover o item do array
+            codigosAdicionados.splice(index, 1);
+
+            // Atualizar a tabela
+            atualizarTabelaCodigos();
+
+            // Feedback visual
+            swtAlert('info', 'Informação', 'Código removido com sucesso.');
         }
 
         // Função para atualizar a tabela de códigos
@@ -175,10 +182,11 @@ else if (TempData["mensagemErro"] != null)
                 tr.innerHTML = `
                     <td>
                         ${item.codigo}
-                        <input type="hidden" name="CodigosOperacao[${index}].Codigo" value="${item.codigo}" />
-                        <input type="hidden" name="CodigosOperacao[${index}].OperacaoId" value="${item.operacaoId}" />
+                        <input type="hidden" name="Codigos[${index}].Codigo" value="${item.codigo}" />
+                        <input type="hidden" name="Codigos[${index}].IdOperacao" value="${item.idOperacao}" />
+                        <input type="hidden" name="Codigos[${index}].Operacao" value="${item.operacao}" />
                     </td>
-                    <td>${item.operacaoTexto}</td>
+                    <td>${item.operacao}</td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm" onclick="removerCodigo(${index})">
                             <i class="fa fa-trash"></i>
@@ -188,37 +196,6 @@ else if (TempData["mensagemErro"] != null)
                 containerCodigo.appendChild(tr);
             });
         }
-
-        // Função para remover um código
-        function removerCodigo(index) {
-            codigosAdicionados.splice(index, 1);
-            atualizarTabelaCodigos();
-            swtAlert('info', 'Informação', 'Código removido com sucesso.');
-        }
-
-        // Inicializar a tabela quando a página carregar
-        document.addEventListener('DOMContentLoaded', function() {
-            atualizarTabelaCodigos();
-
-            // Adicionar event listener para o formulário para incluir os códigos no envio
-            const form = document.querySelector('form');
-            form.addEventListener('submit', function(event) {
-                // Se não houver códigos adicionados, mostrar alerta
-                if (codigosAdicionados.length === 0) {
-                    event.preventDefault();
-                    swtAlert('warning', 'Atenção!', 'Adicione pelo menos um código de operação.');
-                }
-            });
-
-            // Permitir adicionar código ao pressionar Enter no campo de código
-            document.getElementById('codigo').addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    AdicionarNovoCodigo();
-                    document.getElementById('codigo').value = '';
-                }
-            });
-        });
     </script>
 
     @{

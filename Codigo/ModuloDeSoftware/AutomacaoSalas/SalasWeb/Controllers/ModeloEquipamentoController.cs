@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Service.Exceptions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
+using System;
 namespace SalasWeb.Controllers
 {
     [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
@@ -81,6 +82,26 @@ namespace SalasWeb.Controllers
             ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome");
             try
             {
+                // Adicionando diagnóstico para verificar o que está sendo recebido
+                _logger.LogInformation($"Modelo recebido - Nome: {modelo.ModeloEquipamento?.Nome}, MarcaID: {modelo.ModeloEquipamento?.MarcaEquipamentoID}");
+                _logger.LogInformation($"Codigos recebidos: {modelo.Codigos?.Count ?? 0}");
+
+                if (modelo.Codigos == null || !modelo.Codigos.Any())
+                {
+                    _logger.LogWarning("Nenhum código foi recebido");
+                    ModelState.AddModelError("", "É necessário adicionar pelo menos um código de operação.");
+                    return View(modelo);
+                }
+
+                // Imprimir cada código recebido para diagnóstico
+                if (modelo.Codigos != null)
+                {
+                    foreach (var codigo in modelo.Codigos)
+                    {
+                        _logger.LogInformation($"Código: {codigo.Codigo}, OperacaoId: {codigo.IdOperacao}");
+                    }
+                }
+
                 if (ModelState.IsValid)
                 {
                     if (_modeloEquipamentoService.Insert(modelo))
@@ -95,11 +116,27 @@ namespace SalasWeb.Controllers
                         TempData["mensagemErro"] = "Modelo de Equipamento não adicionado!";
                     }
                 }
+                else
+                {
+                    // Listar erros de ModelState para diagnóstico
+                    foreach (var entry in ModelState)
+                    {
+                        foreach (var error in entry.Value.Errors)
+                        {
+                            _logger.LogWarning($"Erro de validação em {entry.Key}: {error.ErrorMessage}");
+                        }
+                    }
+                }
             }
-            catch(ModeloEquipamentoException ex)
+            catch (ModeloEquipamentoException ex)
             {
                 _logger.LogError("Erro ao adicionar modelo de equipamentos: {0}", ex);
                 TempData["mensagemErro"] = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erro inesperado: {0}", ex);
+                TempData["mensagemErro"] = "Ocorreu um erro inesperado ao adicionar o modelo.";
             }
             return View(modelo);
         }
