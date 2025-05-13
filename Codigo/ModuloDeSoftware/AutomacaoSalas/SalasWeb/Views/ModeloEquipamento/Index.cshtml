@@ -26,7 +26,7 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.FirstOrDefault().Marcas[0].Nome)
+                                        @Html.DisplayNameFor(model => model.FirstOrDefault()?.MarcaNome ?? "Marca")
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.FirstOrDefault().ModeloEquipamento.Nome)
