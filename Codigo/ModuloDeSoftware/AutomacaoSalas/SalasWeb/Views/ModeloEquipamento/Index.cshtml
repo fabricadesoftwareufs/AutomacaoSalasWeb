@@ -26,12 +26,11 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.FirstOrDefault().ModeloEquipamento.Nome)
+                                        @Html.DisplayNameFor(model => model.FirstOrDefault().Marcas[0].Nome)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.FirstOrDefault().ModeloEquipamento.MarcaEquipamentoID)
+                                        @Html.DisplayNameFor(model => model.FirstOrDefault().ModeloEquipamento.Nome)
                                     </th>
-
                                     <th>Ações</th>
                                 </tr>
                             </thead>
@@ -40,12 +39,12 @@
                                 {
                                     <tr>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.ModeloEquipamento.Nome)
+                                            @Html.DisplayFor(modelItem => item.ModeloEquipamento.Marca.Nome)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.ModeloEquipamento.MarcaEquipamentoID)
+                                            @Html.DisplayFor(modelItem => item.ModeloEquipamento.Nome)
                                         </td>
-                                        
+
                                         <td>
                                             <a href="@Url.Action("Details", "ModeloEquipamento", new { id = item.ModeloEquipamento.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
                                             <a href="@Url.Action("Edit", "ModeloEquipamento", new { id = item.ModeloEquipamento.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
@@ -57,7 +56,7 @@
                                                     <div class="modal-content card card-secondary">
                                                         <div class="modal-body text-center">
                                                             <h5>Modelo: </h5> <p>@item.ModeloEquipamento.Nome</p>
-                                                            <h5>Marca: </h5> <p>@item.ModeloEquipamento.MarcaEquipamentoID</p>
+                                                            <h5>Marca: </h5> <p>@item.ModeloEquipamento.Marca.Nome</p>
                                                         </div>
 
                                                         @using (Html.BeginForm("Delete", "ModeloEquipamento", new { id = item.ModeloEquipamento.Id }, FormMethod.Post))

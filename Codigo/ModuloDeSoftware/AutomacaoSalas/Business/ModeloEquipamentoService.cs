@@ -216,28 +216,62 @@ namespace Service
         /// <exception cref="ModeloEquipamentoException">Lançada quando o modelo não é encontrado ou ocorre um erro durante a atualização.</exception>
         public bool Update(ModeloEquipamentoViewModel modelo)
         {
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
-
-                var modeloEquipamento = SetEntity(modelo.ModeloEquipamento);
-                _context.Modeloequipamentos.Update(modeloEquipamento);
-                int updated = _context.SaveChanges();
-                var codigosEntity = new List<CodigoInfravermelhoModel>();
-                if (updated == 1)
+                try
                 {
-                    modelo.Codigos.ForEach(m => codigosEntity.Add(new CodigoInfravermelhoModel { Codigo = m.Codigo, IdModeloEquipamento = (uint)modeloEquipamento.Id, IdOperacao = m.IdOperacao }));
-                    codigoInfravermelhoService.UpdateAll(codigosEntity);
+                    var modeloEquipamento = SetEntity(modelo.ModeloEquipamento);
+                    _context.Modeloequipamentos.Update(modeloEquipamento);
+                    int updated = _context.SaveChanges();
+
+                    if (updated > 0)
+                    {
+                        // Primeiro, excluir todos os códigos existentes para este modelo
+                        var codigosExistentes = _context.Codigoinfravermelhos
+                            .Where(c => c.IdModeloEquipamento == modeloEquipamento.Id)
+                            .ToList();
+
+                        if (codigosExistentes.Any())
+                        {
+                            _context.Codigoinfravermelhos.RemoveRange(codigosExistentes);
+                            _context.SaveChanges();
+                        }
+
+                        // Agora, adicionar os novos códigos
+                        if (modelo.Codigos != null && modelo.Codigos.Any())
+                        {
+                            var codigosEntity = new List<Codigoinfravermelho>();
+
+                            foreach (var codigo in modelo.Codigos)
+                            {
+                                codigosEntity.Add(new Codigoinfravermelho
+                                {
+                                    Codigo = codigo.Codigo,
+                                    IdModeloEquipamento = modeloEquipamento.Id,
+                                    IdOperacao = codigo.IdOperacao
+                                });
+                            }
+
+                            _context.Codigoinfravermelhos.AddRange(codigosEntity);
+                            _context.SaveChanges();
+                        }
+
+                        transaction.Commit();
+                        return true;
+                    }
+
+                    return false;
                 }
-                return Convert.ToBoolean(updated);
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new ModeloEquipamentoException("Erro ao atualizar o modelo de equipamento.", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new ModeloEquipamentoException("Erro inesperado ao atualizar o modelo de equipamento.", ex);
+                catch (DbUpdateException ex)
+                {
+                    transaction.Rollback();
+                    throw new ModeloEquipamentoException("Erro ao atualizar o modelo de equipamento.", ex);
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new ModeloEquipamentoException("Erro inesperado ao atualizar o modelo de equipamento.", ex);
+                }
             }
         }
     }

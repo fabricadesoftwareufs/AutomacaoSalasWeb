@@ -29,64 +29,68 @@
                                     <span asp-validation-for="ModeloEquipamento.Nome" class="text-danger"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="ocupation col-md-10">
-                            <div id="ccodigo" class="form-group pr-2">
-                                <label title="Codigo" class="control-label">Código da Operação</label>
-                                <textarea id="codigo" class="form-control" type="text" name="codigo"></textarea>
+
+                            <div class="ocupation col-md-10">
+                                <div id="ccodigo" class="form-group pr-2">
+                                    <label title="Codigo" class="control-label">Código da Operação</label>
+                                    <textarea id="codigo" class="form-control" type="text" name="codigo" rows="3"></textarea>
+                                </div>
+
+                                <div id="coperacao" class="form-group d-inline-block">
+                                    <label name="Operacao" class="control-label">Operação</label>
+                                    <div class="d-flex">
+                                        <select name="operacao" id="operacao" class="form-control">
+                                            @foreach (var item in ViewBag.Operacoes)
+                                            {
+                                                <option value="@item.Id"> @item.Titulo </option>
+                                            }
+                                        </select>
+                                        <span name="operacao" class="ml-2 text-danger"></span>
+
+                                        <div id="cbotao" class="form-group align-element" title="Adicionar código">
+                                            <a id="add-novo-horario" onclick="AdicionarNovoCodigo();document.getElementById('codigo').value=''; " class="btn btn-primary text-white">
+                                                <i class="nav-icon fa fa-plus"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+
+
                             </div>
 
-                            <div id="coperacao" class="form-group d-inline-block">
-                                <label name="Operacao" class="control-label">Operação</label>
-                                <select name="operacao" id="operacao" class="form-control">
-                                    @foreach (var item in ViewBag.Operacoes)
-                                    {
-                                        <option value="@item.Id"> @item.Titulo </option>
-                                    }
-                                </select>
-                                <span name="operacao" class="ml-2 text-danger"></span>
-                            </div>
-
-
-                            <div id="cbotao" class="form-group align-element">
-                                <a id="add-novo-horario" onclick="AdicionarNovoCodigo();document.getElementById('codigo').value=''; " class="btn btn-primary text-white">
-                                    <i class="nav-icon fa fa-plus"></i>
-                                </a>
-                            </div>
-
-                        </div>
-
-                        <section id="codigos" class="content">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="card-title">Códigos Adicionados</h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Código</th>
-                                                            <th>Operação</th>
-                                                            <th>Ações</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="container-codigo">
-                                                        <tr><td colspan="3" class="text-center">Nenhum código adicionado</td></tr>
-                                                    </tbody>
-                                                </table>
+                            <section id="codigos" class="content">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">Códigos Adicionados</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Código</th>
+                                                                <th>Operação</th>
+                                                                <th>Ações</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="container-codigo">
+                                                            <tr><td colspan="3" class="text-center">Nenhum código adicionado</td></tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
-                        <div class="card-footer">
-                            <div class="col-md-4">
-                                <input type="submit" value="Salvar" class="btn btn-success" /> |
-                                <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                            </section>
+                            <div class="card-footer">
+                                <div class="col-md-4">
+                                    <input type="submit" value="Salvar" class="btn btn-success" /> |
+                                    <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -111,7 +115,7 @@ else if (TempData["mensagemErro"] != null)
 
     <!-- Script para manipulação dos códigos -->
     <script>
-                // Array para armazenar os códigos adicionados
+        // Array para armazenar os códigos adicionados
         let codigosAdicionados = [];
 
         // Função para adicionar um novo código
@@ -140,7 +144,7 @@ else if (TempData["mensagemErro"] != null)
             atualizarTabelaCodigos();
 
             // Feedback visual
-            swtAlert('success', 'Sucesso!', 'Código adicionado com sucesso.');
+            //swtAlert('success', 'Sucesso!', 'Código adicionado com sucesso.');
         }
 
         // Função para remover um código
@@ -152,7 +156,7 @@ else if (TempData["mensagemErro"] != null)
             atualizarTabelaCodigos();
 
             // Feedback visual
-            swtAlert('info', 'Informação', 'Código removido com sucesso.');
+            //swtAlert('info', 'Informação', 'Código removido com sucesso.');
         }
 
         // Função para atualizar a tabela de códigos

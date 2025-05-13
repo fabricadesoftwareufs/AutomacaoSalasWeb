@@ -48,9 +48,9 @@ namespace Service
         public List<CodigoInfravermelhoModel> GetAllByEquipamento(int idEquipamento)
         {
             // Precisamos obter o modelo do equipamento primeiro
-            var modeloEquipamento = _context.Equipamentos
+            var modeloEquipamento = _context.Modeloequipamentos
                 .Where(e => e.Id == idEquipamento)
-                .Select(e => e.IdModeloEquipamento)
+                .Select(e => e.Id)
                 .FirstOrDefault();
 
             return _context.Codigoinfravermelhos
