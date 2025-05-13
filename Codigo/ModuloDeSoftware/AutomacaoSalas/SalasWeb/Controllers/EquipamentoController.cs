@@ -261,7 +261,7 @@ namespace SalasWeb.Controllers
             return Json(macs);
         }
 
-        private List<EquipamentoViewModel> ReturnAllViewModels()
+        private List<EquipamentoViewModel>  ReturnAllViewModels()
         {
             var usuarioId = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
             var equipamentosModel = _equipamentoService.GetAll();

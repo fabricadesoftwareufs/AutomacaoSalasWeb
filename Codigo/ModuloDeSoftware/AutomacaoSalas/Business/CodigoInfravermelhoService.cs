@@ -48,9 +48,9 @@ namespace Service
         public List<CodigoInfravermelhoModel> GetAllByEquipamento(int idEquipamento)
         {
             // Precisamos obter o modelo do equipamento primeiro
-            var modeloEquipamento = _context.Equipamentos
+            var modeloEquipamento = _context.Modeloequipamentos
                 .Where(e => e.Id == idEquipamento)
-                .Select(e => e.IdModeloEquipamento)
+                .Select(e => e.Id)
                 .FirstOrDefault();
 
             return _context.Codigoinfravermelhos
@@ -90,11 +90,14 @@ namespace Service
 
         public bool AddAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels)
         {
+            if (codigoInfravermelhoModels == null || !codigoInfravermelhoModels.Any())
+                return true; // Nada para adicionar, consideramos sucesso
+
             List<Codigoinfravermelho> codigos = new List<Codigoinfravermelho>();
             codigoInfravermelhoModels.ForEach(c => codigos.Add(SetEntity(c)));
 
             _context.AddRange(codigos);
-            return _context.SaveChanges() == 1;
+            return _context.SaveChanges() > 0; // Se salvou pelo menos um, é sucesso
         }
 
         public bool UpdateAll(List<CodigoInfravermelhoModel> codigoInfravermelhoModels)

@@ -6,9 +6,11 @@ using Model;
 using Model.ViewModel;
 using Service.Interface;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using Service.Exceptions;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
+using System;
+using Service;
 namespace SalasWeb.Controllers
 {
     [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
@@ -17,14 +19,20 @@ namespace SalasWeb.Controllers
         private readonly IMarcaEquipamentoService _marcaEquipamentoService;
         private readonly IModeloEquipamentoService _modeloEquipamentoService;
         private readonly ILogger<ModeloEquipamentoController> _logger;
+        private readonly IOperacaoCodigoService _operacaoCodigoService;
+        private readonly ICodigoInfravermelhoService _codigoInfravermelhoService;
 
         public ModeloEquipamentoController(
             IMarcaEquipamentoService marcaEquipamentoService,
             IModeloEquipamentoService modeloEquipamentoService,
+            IOperacaoCodigoService operacaoCodigoService,
+            ICodigoInfravermelhoService codigoInfravermelhoService,
             ILogger<ModeloEquipamentoController> logger)
         {
             _marcaEquipamentoService = marcaEquipamentoService;
             _modeloEquipamentoService = modeloEquipamentoService;
+            _operacaoCodigoService = operacaoCodigoService;
+            _codigoInfravermelhoService = codigoInfravermelhoService;
             _logger = logger;
         }
 
@@ -37,31 +45,40 @@ namespace SalasWeb.Controllers
         // GET: ModeloEquipamentoController/Details/5
         public ActionResult Details(uint id)
         {
-            try
+            var modeloEquipamentoModel = _modeloEquipamentoService.GetById(id);
+            modeloEquipamentoModel.Marca = _marcaEquipamentoService.GetById(modeloEquipamentoModel.MarcaEquipamentoID);
+            var marca = _marcaEquipamentoService.GetAll();
+            var codigos = _codigoInfravermelhoService.GetAllByEquipamento((int)modeloEquipamentoModel.Id);
+            var modeloEquipamentoViewModel = new ModeloEquipamentoViewModel
             {
-                ModeloEquipamentoModel modelo = _modeloEquipamentoService.GetById(id);
-                if (modelo == null)
-                {
-                    return NotFound();
-                }
-
-                // Carrega a marca associada ao modelo
-                modelo.Marca = _marcaEquipamentoService.GetById(modelo.MarcaEquipamentoID);
-
-                return View(modelo);
-            }
-            catch (ModeloEquipamentoException ex)
+                ModeloEquipamento = modeloEquipamentoModel,
+            };
+            List<CodigoInfravermelhoViewModel> codigosView = new List<CodigoInfravermelhoViewModel>();
+            codigos.ForEach(c => codigosView.Add(new CodigoInfravermelhoViewModel
             {
-                _logger.LogError("Erro ao obter detalhes do modelo de equipamentos: {0}", ex);
-                TempData["mensagemErro"] = ex.Message;
-                return RedirectToAction(nameof(Index));
-            }
+                Codigo = c.Codigo,
+                Id = c.Id,
+                IdEquipamento = (int)c.IdModeloEquipamento,
+                IdOperacao = c.IdOperacao,
+                Operacao = _operacaoCodigoService.GetById(c.IdOperacao).Titulo
+            }));
+            List<MarcaEquipamentoViewModel> marcasView = new List<MarcaEquipamentoViewModel>();
+            marca.ForEach(m => marcasView.Add(new MarcaEquipamentoViewModel
+            {
+                Id = m.Id,
+                Nome = m.Nome
+            }));
+            modeloEquipamentoViewModel.Marcas = marcasView;
+            modeloEquipamentoViewModel.Codigos = codigosView;
+            return View(modeloEquipamentoViewModel);
         }
 
 
         // GET: ModeloEquipamentoController/Create
         public ActionResult Create()
         {
+            var operacoes = _operacaoCodigoService.GetAll().ToList();
+            ViewBag.Operacoes = operacoes;
             ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome");
             return View();
         }
@@ -69,8 +86,10 @@ namespace SalasWeb.Controllers
         // POST: ModeloEquipamentoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ModeloEquipamentoModel modelo)
+        public ActionResult Create(ModeloEquipamentoViewModel modelo)
         {
+            var operacoes = _operacaoCodigoService.GetAll().ToList();
+            ViewBag.Operacoes = operacoes;
             ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome");
             try
             {
@@ -89,10 +108,15 @@ namespace SalasWeb.Controllers
                     }
                 }
             }
-            catch(ModeloEquipamentoException ex)
+            catch (ModeloEquipamentoException ex)
             {
                 _logger.LogError("Erro ao adicionar modelo de equipamentos: {0}", ex);
                 TempData["mensagemErro"] = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erro inesperado: {0}", ex);
+                TempData["mensagemErro"] = "Ocorreu um erro inesperado ao adicionar o modelo.";
             }
             return View(modelo);
         }
@@ -100,7 +124,10 @@ namespace SalasWeb.Controllers
         // GET: ModeloEquipamentoController/Edit/5
         public ActionResult Edit(uint id)
         {
+            var operacoes = _operacaoCodigoService.GetAll().ToList();
+            ViewBag.Operacoes = operacoes;
             ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome");
+
             try
             {
                 ModeloEquipamentoModel modelo = _modeloEquipamentoService.GetById(id);
@@ -108,9 +135,29 @@ namespace SalasWeb.Controllers
                 {
                     return NotFound();
                 }
-                // Carrega a marca associada ao modelo
+
                 modelo.Marca = _marcaEquipamentoService.GetById(modelo.MarcaEquipamentoID);
-                return View(modelo);
+
+                var codigos = _codigoInfravermelhoService.GetAllByEquipamento((int)modelo.Id);
+
+                var modeloEquipamentoViewModel = new ModeloEquipamentoViewModel
+                {
+                    ModeloEquipamento = modelo
+                };
+
+                List<CodigoInfravermelhoViewModel> codigosView = new List<CodigoInfravermelhoViewModel>();
+                codigos.ForEach(c => codigosView.Add(new CodigoInfravermelhoViewModel
+                {
+                    Codigo = c.Codigo,
+                    Id = c.Id,
+                    IdEquipamento = (int)c.IdModeloEquipamento,
+                    IdOperacao = c.IdOperacao,
+                    Operacao = _operacaoCodigoService.GetById(c.IdOperacao).Titulo
+                }));
+
+                modeloEquipamentoViewModel.Codigos = codigosView;
+
+                return View(modeloEquipamentoViewModel);
             }
             catch (ModeloEquipamentoException ex)
             {
@@ -123,9 +170,12 @@ namespace SalasWeb.Controllers
         // POST: ModeloEquipamentoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ModeloEquipamentoModel modelo)
+        public ActionResult Edit(ModeloEquipamentoViewModel modelo)
         {
+            var operacoes = _operacaoCodigoService.GetAll().ToList();
+            ViewBag.Operacoes = operacoes;
             ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome");
+
             try
             {
                 if (ModelState.IsValid)
@@ -142,12 +192,35 @@ namespace SalasWeb.Controllers
                         TempData["mensagemErro"] = "Modelo de Equipamento não editado!";
                     }
                 }
+                else
+                {
+                    if (modelo.ModeloEquipamento != null && modelo.ModeloEquipamento.Id > 0)
+                    {
+                        var codigos = _codigoInfravermelhoService.GetAllByEquipamento((int)modelo.ModeloEquipamento.Id);
+                        List<CodigoInfravermelhoViewModel> codigosView = new List<CodigoInfravermelhoViewModel>();
+                        codigos.ForEach(c => codigosView.Add(new CodigoInfravermelhoViewModel
+                        {
+                            Codigo = c.Codigo,
+                            Id = c.Id,
+                            IdEquipamento = (int)c.IdModeloEquipamento,
+                            IdOperacao = c.IdOperacao,
+                            Operacao = _operacaoCodigoService.GetById(c.IdOperacao).Titulo
+                        }));
+                        modelo.Codigos = codigosView;
+                    }
+                }
             }
             catch (ModeloEquipamentoException ex)
             {
                 _logger.LogError("Erro ao editar modelo de equipamentos: {0}", ex);
                 TempData["mensagemErro"] = ex.Message;
             }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erro inesperado ao editar modelo de equipamento: {0}", ex);
+                TempData["mensagemErro"] = "Ocorreu um erro inesperado ao editar o modelo.";
+            }
+
             return View(modelo);
         }
 
@@ -171,7 +244,6 @@ namespace SalasWeb.Controllers
                 TempData["mensagemErro"] = ex.Message;
                 return RedirectToAction(nameof(Index));
             }
-            return View();
         }
 
         // POST: ModeloEquipamentoController/Delete/5
@@ -207,12 +279,13 @@ namespace SalasWeb.Controllers
             foreach (var modelo in modelos)
             {
                 var marca = _marcaEquipamentoService.GetById(modelo.MarcaEquipamentoID);
+
+                // Atribuir a marca ao modelo
+                modelo.Marca = marca; // Adicione esta linha
+
                 modelosViewModel.Add(new ModeloEquipamentoViewModel
                 {
-                    Id = modelo.Id,
-                    Nome = modelo.Nome,
-                    MarcaEquipamentoID = modelo.MarcaEquipamentoID,
-                    MarcaEquipamentoNome = marca.Nome,
+                    ModeloEquipamento = modelo,
                     Marcas = new List<MarcaEquipamentoViewModel>
                     {
                         new MarcaEquipamentoViewModel
@@ -223,7 +296,6 @@ namespace SalasWeb.Controllers
                     }
                 });
             }
-
             return modelosViewModel;
         }
 

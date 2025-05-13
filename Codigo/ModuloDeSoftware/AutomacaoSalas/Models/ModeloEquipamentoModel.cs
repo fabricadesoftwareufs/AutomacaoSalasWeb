@@ -14,7 +14,7 @@ namespace Model
         [Display(Name = "Marca do Equipamento")]
         public uint MarcaEquipamentoID { get; set; }
 
-        
+
         public MarcaEquipamentoModel? Marca { get; set; }
     }
 }

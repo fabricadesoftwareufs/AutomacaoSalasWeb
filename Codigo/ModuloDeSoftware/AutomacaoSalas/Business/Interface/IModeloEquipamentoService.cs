@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Model;
+using Model.ViewModel;
 
 namespace Service.Interface
 {
     public interface IModeloEquipamentoService
     {
-        bool Insert(ModeloEquipamentoModel modelo);
-        bool Update(ModeloEquipamentoModel modelo);
+        bool Insert(ModeloEquipamentoViewModel modelo);
+        bool Update(ModeloEquipamentoViewModel modelo);
         bool Remove(uint id);
         ModeloEquipamentoModel GetById(uint id);
         List<ModeloEquipamentoModel> GetAll();

@@ -150,5 +150,33 @@ namespace SalasAPI.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
+        // GET: api/Equipamento
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult GetAll()
+        {
+            try
+            {
+                var equipamentos = _service.GetAll();
+                if (equipamentos == null || equipamentos.Count == 0)
+                    return Ok(new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        message = "Nenhum equipamento encontrado na base de dados."
+                    });
+
+                return Ok(new
+                {
+                    result = equipamentos,
+                    httpCode = (int)HttpStatusCode.OK,
+                    message = "Equipamentos obtidos com sucesso!"
+                });
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
     }
 }

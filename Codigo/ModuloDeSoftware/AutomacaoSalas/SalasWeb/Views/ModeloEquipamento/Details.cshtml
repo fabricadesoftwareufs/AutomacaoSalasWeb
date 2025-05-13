@@ -1,4 +1,4 @@
-﻿@model Model.ModeloEquipamentoModel
+﻿@model Model.ViewModel.ModeloEquipamentoViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -17,22 +17,34 @@
                         <div class="col-md-10">
                             <dl class="dl-horizontal">
                                 <dt class="col-sm-2">
-                                    @Html.DisplayNameFor(model => model.Marca.Nome)
+                                    @Html.DisplayNameFor(model => model.ModeloEquipamento.Marca.Nome)
                                 </dt>
                                 <dd class="col-sm-10">
-                                    <p class="form-control">@Html.DisplayFor(model => model.Marca.Nome)</p>
+                                    <p class="form-control">@Html.DisplayFor(model => model.ModeloEquipamento.Marca.Nome)</p>
                                 </dd>
                                 <dt class="col-sm-2">
-                                    @Html.DisplayNameFor(model => model.Nome)
+                                    @Html.DisplayNameFor(model => model.ModeloEquipamento.Nome)
                                 </dt>
                                 <dd class="col-sm-10">
-                                    <p class="form-control">@Html.DisplayFor(model => model.Nome)</p>
+                                    <p class="form-control">@Html.DisplayFor(model => model.ModeloEquipamento.Nome)</p>
                                 </dd>
+                                @if (Model.Codigos != null)
+                                {
+                                    <dt>
+                                        Códigos Infravermelhos
+                                    </dt>
+                                    foreach (var item in Model.Codigos)
+                                    {
+                                        <dd>
+                                            <p class="form-control no-height">Operação: @item.Operacao <br />Código: @item.Codigo</p>
+                                        </dd>
+                                    }
+                                }
                             </dl>
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="@Url.Action("Edit", "ModeloEquipamento", new { id = @Model.Id })" class="btn btn-info"> Editar </a> |
+                        <a href="@Url.Action("Edit", "ModeloEquipamento", new { id = @Model.ModeloEquipamento.Id })" class="btn btn-info"> Editar </a> |
                         <a class="btn btn-primary" asp-action="Index">Voltar</a>
                     </div>
                 </div>

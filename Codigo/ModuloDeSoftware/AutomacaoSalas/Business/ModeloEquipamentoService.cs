@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Model;
+using Model.ViewModel;
 using Persistence;
 using Service.Exceptions;
 using Service.Interface;
@@ -114,13 +115,38 @@ namespace Service
         /// <param name="modelo">Modelo de equipamento a ser inserido.</param>
         /// <returns>True se a inserção for bem-sucedida; caso contrário, False.</returns>
         /// <exception cref="ModeloEquipamentoException">Lançada quando ocorre um erro durante a inserção.</exception>
-        public bool Insert(ModeloEquipamentoModel modelo)
+        // Trecho problemático em ModeloEquipamentoService.cs
+        public bool Insert(ModeloEquipamentoViewModel modelo)
         {
             try
             {
-                var entity = SetEntity(modelo);
-                _context.Modeloequipamentos.Add(entity);
-                _context.SaveChanges();
+                ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
+
+                var modeloEquipamento = SetEntity(modelo.ModeloEquipamento);
+
+                _context.Modeloequipamentos.Add(modeloEquipamento);
+                int inserted = _context.SaveChanges();
+                _context.Entry(modeloEquipamento).Reload(); // Recarregar para obter o ID gerado
+
+                if (inserted > 0 && modelo.Codigos != null && modelo.Codigos.Any())
+                {
+                    var codigosEntity = new List<CodigoInfravermelhoModel>();
+
+                    foreach (var codigo in modelo.Codigos)
+                    {
+                        codigosEntity.Add(new CodigoInfravermelhoModel
+                        {
+                            Codigo = codigo.Codigo,
+                            IdModeloEquipamento = modeloEquipamento.Id, // Usado o ID gerado automaticamente
+                            IdOperacao = codigo.IdOperacao
+                        });
+                    }
+
+                    bool codigosSalvos = codigoInfravermelhoService.AddAll(codigosEntity);
+                    if (!codigosSalvos)
+                        throw new ModeloEquipamentoException("Falha ao salvar os códigos de operação.");
+                }
+
                 return true;
             }
             catch (DbUpdateException ex)
@@ -141,25 +167,46 @@ namespace Service
         /// <exception cref="ModeloEquipamentoException">Lançada quando o modelo não é encontrado ou ocorre um erro durante a remoção.</exception>
         public bool Remove(uint id)
         {
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                var modelo = _context.Modeloequipamentos.FirstOrDefault(m => m.Id == id);
-                if (modelo == null)
+                try
                 {
-                    throw new ModeloEquipamentoException($"Modelo de Equipamento com ID {id} não encontrado.");
+                    var modeloEquipamento = _context.Modeloequipamentos.FirstOrDefault(m => m.Id == id);
+                    var marcaModelo = _context.Marcaequipamentos.FirstOrDefault(m => m.Id == modeloEquipamento.IdMarcaEquipamento);
+                    if (modeloEquipamento == null)
+                    {
+                        throw new ModeloEquipamentoException($"Modelo de Equipamento com ID {id} não encontrado.");
+                    }
+
+                    // Verificar se existem equipamentos associados a este modelo
+                    bool possuiEquipamentosAssociados = _context.Equipamentos.Any(e => e.IdModeloEquipamento == id);
+
+                    if (possuiEquipamentosAssociados)
+                    {
+                        throw new ModeloEquipamentoException($"Não é possível excluir o Modelo de equipamento {modeloEquipamento.Nome} da Marca {marcaModelo.Nome} pois ainda existem equipamentos associados a ele.");
+                    }
+
+                    var codigoInfravermelho = _context.Codigoinfravermelhos.Where(m => m.IdModeloEquipamento == id).ToList();
+
+                    if (codigoInfravermelho.Any())
+                    {
+                        _context.Codigoinfravermelhos.RemoveRange(codigoInfravermelho);
+                        _context.SaveChanges();
+                    }
+
+                    _context.Modeloequipamentos.Remove(modeloEquipamento);
+                    var save = _context.SaveChanges() > 0;
+
+                    transaction.Commit();
+                    return save;
                 }
-                _context.Modeloequipamentos.Remove(modelo);
-                return _context.SaveChanges() == 1;
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new ModeloEquipamentoException("Erro ao remover o modelo de equipamento.", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new ModeloEquipamentoException("Erro inesperado ao remover o modelo de equipamento.", ex);
+                catch (DbUpdateException ex)
+                {
+                    throw new DbUpdateException("Erro ao remover o modelo de equipamento.", ex);
+                }
             }
         }
+
 
         /// <summary>
         /// Atualiza as informações de um modelo de equipamento existente no sistema.
@@ -167,26 +214,64 @@ namespace Service
         /// <param name="modelo">Modelo de equipamento com as informações atualizadas.</param>
         /// <returns>True se a atualização for bem-sucedida; caso contrário, False.</returns>
         /// <exception cref="ModeloEquipamentoException">Lançada quando o modelo não é encontrado ou ocorre um erro durante a atualização.</exception>
-        public bool Update(ModeloEquipamentoModel modelo)
+        public bool Update(ModeloEquipamentoViewModel modelo)
         {
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                var modeloExistente = _context.Modeloequipamentos.Find(modelo.Id);
-                if (modeloExistente == null)
+                try
                 {
-                    throw new ModeloEquipamentoException($"Modelo de Equipamento com ID {modelo.Id} não encontrado.");
+                    var modeloEquipamento = SetEntity(modelo.ModeloEquipamento);
+                    _context.Modeloequipamentos.Update(modeloEquipamento);
+                    int updated = _context.SaveChanges();
+
+                    if (updated > 0)
+                    {
+                        // Primeiro, excluir todos os códigos existentes para este modelo
+                        var codigosExistentes = _context.Codigoinfravermelhos
+                            .Where(c => c.IdModeloEquipamento == modeloEquipamento.Id)
+                            .ToList();
+
+                        if (codigosExistentes.Any())
+                        {
+                            _context.Codigoinfravermelhos.RemoveRange(codigosExistentes);
+                            _context.SaveChanges();
+                        }
+
+                        // Agora, adicionar os novos códigos
+                        if (modelo.Codigos != null && modelo.Codigos.Any())
+                        {
+                            var codigosEntity = new List<Codigoinfravermelho>();
+
+                            foreach (var codigo in modelo.Codigos)
+                            {
+                                codigosEntity.Add(new Codigoinfravermelho
+                                {
+                                    Codigo = codigo.Codigo,
+                                    IdModeloEquipamento = modeloEquipamento.Id,
+                                    IdOperacao = codigo.IdOperacao
+                                });
+                            }
+
+                            _context.Codigoinfravermelhos.AddRange(codigosEntity);
+                            _context.SaveChanges();
+                        }
+
+                        transaction.Commit();
+                        return true;
+                    }
+
+                    return false;
                 }
-                modeloExistente.Nome = modelo.Nome;
-                modeloExistente.IdMarcaEquipamento = modelo.MarcaEquipamentoID;
-                return _context.SaveChanges() == 1;
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new ModeloEquipamentoException("Erro ao atualizar o modelo de equipamento.", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new ModeloEquipamentoException("Erro inesperado ao atualizar o modelo de equipamento.", ex);
+                catch (DbUpdateException ex)
+                {
+                    transaction.Rollback();
+                    throw new ModeloEquipamentoException("Erro ao atualizar o modelo de equipamento.", ex);
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new ModeloEquipamentoException("Erro inesperado ao atualizar o modelo de equipamento.", ex);
+                }
             }
         }
     }

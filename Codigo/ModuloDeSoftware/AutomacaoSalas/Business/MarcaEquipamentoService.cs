@@ -20,10 +20,10 @@ namespace Service
         /// Construtor do serviço de marcas de equipamentos
         /// </summary>
         /// <param name="context">Contexto do banco de dados</param>
-        public MarcaEquipamentoService(SalasDBContext context, ModeloEquipamentoService modeloService)
+        public MarcaEquipamentoService(SalasDBContext context)
         {
             _context = context;
-            _modeloService = modeloService;
+            _modeloService = new ModeloEquipamentoService(context);
         }
 
         /// <summary>
@@ -99,11 +99,20 @@ namespace Service
         /// <param name="id">ID da marca a ser removida</param>
         /// <returns>True se a remoção foi bem-sucedida, false caso contrário</returns>
         /// <exception cref="MarcaEquipamentoException">Lançada quando ocorre um erro na remoção ou a marca não é encontrada</exception>
+        /// <summary>
+        /// Remove uma marca de equipamento pelo ID
+        /// </summary>
+        /// <param name="id">ID da marca a ser removida</param>
+        /// <returns>True se a remoção foi bem-sucedida, false caso contrário</returns>
+        /// <exception cref="MarcaEquipamentoException">Lançada quando ocorre um erro na remoção ou a marca não é encontrada</exception>
         public bool Remove(uint id)
         {
             try
             {
-                if (_modeloService.GetByMarca(id).Count == 0)
+                // Verificar diretamente no banco se existem modelos associados
+                bool temModelosAssociados = _context.Modeloequipamentos.Any(m => m.IdMarcaEquipamento == id);
+
+                if (!temModelosAssociados)
                 {
                     var marcaEquipamento = _context.Marcaequipamentos.FirstOrDefault(m => m.Id == id);
                     if (marcaEquipamento == null)
@@ -131,6 +140,7 @@ namespace Service
                 throw new MarcaEquipamentoException("Erro inesperado ao remover a marca de equipamento.", ex);
             }
         }
+
 
         /// <summary>
         /// Atualiza uma marca de equipamento existente
