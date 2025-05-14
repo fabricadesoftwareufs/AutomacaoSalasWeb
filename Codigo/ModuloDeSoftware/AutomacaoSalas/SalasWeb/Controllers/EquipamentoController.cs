@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Model;
 using Model.ViewModel;
 using Persistence;
 using Service;
+using Service.Exceptions;
 using Service.Interface;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +19,8 @@ namespace SalasWeb.Controllers
     [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
     public class EquipamentoController : Controller
     {
+        private readonly IMarcaEquipamentoService _marcaEquipamentoService;
+        private readonly IModeloEquipamentoService _modeloEquipamentoService;
         private readonly IEquipamentoService _equipamentoService;
         private readonly ICodigoInfravermelhoService _codigoInfravermelhoService;
         private readonly ISalaService _salaService;
@@ -25,19 +30,24 @@ namespace SalasWeb.Controllers
         private readonly IBlocoService _blocoService;
         private readonly IOrganizacaoService _organizacaoService;
         private readonly IHardwareDeSalaService _hardwareDeSalaService;
+        private readonly ILogger<EquipamentoController> _logger;
 
         public EquipamentoController(
-                                        IEquipamentoService equipamentoService,
-                                        ICodigoInfravermelhoService codigoInfravermelhoService,
-                                        ISalaService salaService,
-                                        IOperacaoCodigoService operacaoService,
-                                        IUsuarioService usuarioService,
-                                        IUsuarioOrganizacaoService usuarioOrganizacaoService,
-                                        IBlocoService blocoService,
-                                        IOrganizacaoService organizacaoService,
-                                        IHardwareDeSalaService hardwareDeSalaService
-                                    )
+            IMarcaEquipamentoService marcaEquipamentoService,
+            IModeloEquipamentoService modeloEquipamentoService,
+            IEquipamentoService equipamentoService,
+            ICodigoInfravermelhoService codigoInfravermelhoService,
+            ISalaService salaService,
+            IOperacaoCodigoService operacaoService,
+            IUsuarioService usuarioService,
+            IUsuarioOrganizacaoService usuarioOrganizacaoService,
+            IBlocoService blocoService,
+            IOrganizacaoService organizacaoService,
+            IHardwareDeSalaService hardwareDeSalaService,
+            ILogger<EquipamentoController> logger)
         {
+            _marcaEquipamentoService = marcaEquipamentoService;
+            _modeloEquipamentoService = modeloEquipamentoService;
             _equipamentoService = equipamentoService;
             _codigoInfravermelhoService = codigoInfravermelhoService;
             _salaService = salaService;
@@ -47,7 +57,9 @@ namespace SalasWeb.Controllers
             _blocoService = blocoService;
             _organizacaoService = organizacaoService;
             _hardwareDeSalaService = hardwareDeSalaService;
+            _logger = logger;
         }
+
 
         // GET: EquipamentoController
         public ActionResult Index()
@@ -84,17 +96,30 @@ namespace SalasWeb.Controllers
             return View(equipamentoViewModel);
         }
 
-        // GET: EquipamentoController/Create
+        public JsonResult GetModelosByMarca(uint id)
+        {
+            try
+            {
+                var modelos = _modeloEquipamentoService.GetByMarca(id);
+                return Json(modelos.Select(m => new { id = m.Id, nome = m.Nome }));
+            }
+            catch (ModeloEquipamentoException ex)
+            {
+                // Retorna uma lista vazia e não um erro 500
+                return Json(new List<object>());
+            }
+        }
+
         public ActionResult Create()
         {
             string[] tiposEquipamento = { EquipamentoModel.TIPO_CONDICIONADOR, EquipamentoModel.TIPO_LUZES };
-
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
             var hardwares = _hardwareDeSalaService.GetBySalaAndTipoEquipamento((int)salas.First().Id, tiposEquipamento.First());
-            var operacoes = _operacaoService.GetAll().ToList();
-            ViewBag.Operacoes = operacoes;
+
+            ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome");
+
             ViewBag.Organizacoes = organizacoes;
             ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             ViewBag.Blocos = blocos;
@@ -110,25 +135,30 @@ namespace SalasWeb.Controllers
         public ActionResult Create(EquipamentoViewModel equipamentoViewModel)
         {
             string[] tiposEquipamento = { EquipamentoModel.TIPO_CONDICIONADOR, EquipamentoModel.TIPO_LUZES };
-
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
             var salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
             var hardwares = _hardwareDeSalaService.GetBySalaAndTipoEquipamento((int)salas.First().Id, tiposEquipamento.First());
-            var operacoes = _operacaoService.GetAll().ToList();
-            ViewBag.Operacoes = operacoes;
-            ViewBag.Organizacoes = organizacoes;
-            ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
-            ViewBag.Salas = salas;
-            ViewBag.Blocos = blocos;
-            ViewBag.Hardwares = hardwares;
-            ViewBag.Tipos = tiposEquipamento;
+
+            ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome", equipamentoViewModel.ModeloEquipamento?.MarcaEquipamentoID);
 
             try
             {
+                if (equipamentoViewModel.EquipamentoModel.TipoEquipamento == EquipamentoModel.TIPO_LUZES)
+                {
+                    if (ModelState.ContainsKey("ModeloEquipamento.MarcaEquipamentoID"))
+                        ModelState.Remove("ModeloEquipamento.MarcaEquipamentoID");
+
+                    if (ModelState.ContainsKey("ModeloEquipamento.Id"))
+                        ModelState.Remove("ModeloEquipamento.Id");
+
+                    if (ModelState.ContainsKey("ModeloEquipamento.Nome"))
+                        ModelState.Remove("ModeloEquipamento.Nome");
+                    equipamentoViewModel.ModeloEquipamento = null;
+                }
+
                 if (ModelState.IsValid)
                 {
-
                     if (_equipamentoService.Insert(equipamentoViewModel))
                     {
                         TempData["mensagemSucesso"] = "Equipamento cadastrado com sucesso!";
@@ -141,6 +171,13 @@ namespace SalasWeb.Controllers
             {
                 TempData["mensagemErro"] = se.Message;
             }
+
+            ViewBag.Organizacoes = organizacoes;
+            ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
+            ViewBag.Salas = salas;
+            ViewBag.Blocos = blocos;
+            ViewBag.Hardwares = hardwares;
+            ViewBag.Tipos = tiposEquipamento;
 
             return View(equipamentoViewModel);
         }

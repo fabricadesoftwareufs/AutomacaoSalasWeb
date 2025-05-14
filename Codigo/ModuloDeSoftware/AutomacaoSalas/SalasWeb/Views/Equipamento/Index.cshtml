@@ -36,7 +36,7 @@
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.FirstOrDefault().EquipamentoModel.Marca)
-                                    </th>                                                                
+                                    </th>
                                     <th>
                                         Atuador Associado
                                     </th>
@@ -57,12 +57,26 @@
                                             @Html.DisplayFor(modelItem => item.SalaModel.BlocoTitulo)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.EquipamentoModel.Modelo)
+                                            @if (item.EquipamentoModel.Modelo == null)
+                                            {
+                                                <p>Luzes</p>
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(modelItem => item.EquipamentoModel.Modelo)
+                                            }
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.EquipamentoModel.Marca)
-                                        </td>                                       
-                                        
+                                            @if (item.EquipamentoModel.Marca == null)
+                                            {
+                                                <p>Luzes</p>
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(modelItem => item.EquipamentoModel.Marca)
+                                            }
+                                        </td>
+
                                         <td>
                                             @if (@item.HardwareDeSalaModel != null)
                                             {
@@ -93,7 +107,7 @@
                                                                 <span aria-hidden="true" class="text-white">&times;</span>
                                                             </button>
                                                         </div>
-                                                        <div class="modal-body text-center">                                                            
+                                                        <div class="modal-body text-center">
                                                             <h5>Marca</h5><p>@item.EquipamentoModel.Marca</p>
                                                             <h5>Modelo</h5> <p>@item.EquipamentoModel.Modelo</p>
                                                             <h5>Descrição</h5> <p>@item.EquipamentoModel.Descricao</p>
