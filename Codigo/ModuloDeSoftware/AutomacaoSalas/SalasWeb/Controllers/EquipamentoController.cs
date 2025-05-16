@@ -10,6 +10,7 @@ using Persistence;
 using Service;
 using Service.Exceptions;
 using Service.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -96,6 +97,8 @@ namespace SalasWeb.Controllers
             return View(equipamentoViewModel);
         }
 
+        // Método para obter modelos por marca que deve ser implementado no seu controller
+        [HttpGet]
         public JsonResult GetModelosByMarca(uint id)
         {
             try
@@ -103,9 +106,8 @@ namespace SalasWeb.Controllers
                 var modelos = _modeloEquipamentoService.GetByMarca(id);
                 return Json(modelos.Select(m => new { id = m.Id, nome = m.Nome }));
             }
-            catch (ModeloEquipamentoException ex)
+            catch (Exception ex)
             {
-                // Retorna uma lista vazia e não um erro 500
                 return Json(new List<object>());
             }
         }
@@ -154,12 +156,24 @@ namespace SalasWeb.Controllers
 
                     if (ModelState.ContainsKey("ModeloEquipamento.Nome"))
                         ModelState.Remove("ModeloEquipamento.Nome");
+                    if (ModelState.ContainsKey("ModeloEquipamento"))
+                        ModelState.Remove("ModeloEquipamento");
                     equipamentoViewModel.ModeloEquipamento = null;
+                    equipamentoViewModel.EquipamentoModel.IdModeloEquipamento = null;  // Garantindo que para luzes o IdModeloEquipamento é null
+                }
+                else if (equipamentoViewModel.ModeloEquipamento != null)
+                {
+                    // Para outros tipos de equipamento, copie o ID do modelo para o EquipamentoModel
+                    equipamentoViewModel.EquipamentoModel.IdModeloEquipamento = equipamentoViewModel.ModeloEquipamento.Id;
                 }
 
                 if (ModelState.IsValid)
                 {
-                    if (_equipamentoService.Insert(equipamentoViewModel))
+                    // Obtém o ID do usuário autenticado
+                    var idUsuario = (uint)usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+
+                    // Passa o ID do usuário para o serviço de equipamento
+                    if (_equipamentoService.Insert(equipamentoViewModel, idUsuario))
                     {
                         TempData["mensagemSucesso"] = "Equipamento cadastrado com sucesso!";
                         return RedirectToAction(nameof(Index));

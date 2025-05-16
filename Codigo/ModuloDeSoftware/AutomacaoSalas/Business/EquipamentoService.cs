@@ -157,40 +157,58 @@ namespace Service
                 .ToList();
         }
 
+        /// <summary>
+        /// Mapeia os dados de um modelo para uma entidade de equipamento.
+        /// </summary>
+        /// <param name="model">Modelo com os dados do equipamento.</param>
+        /// <returns>Entidade preenchida com os dados do modelo.</returns>
+        private static Equipamento SetEntity(EquipamentoModel model)
+        {
+            Equipamento entity = new Equipamento
+            {
+                Id = model.Id,
+                Descricao = model.Descricao,
+                IdModeloEquipamento = model.IdModeloEquipamento,
+                TipoEquipamento = model.TipoEquipamento,
+                IdSala = model.Sala,
+                IdHardwareDeSala = model.HardwareDeSala,
+            };
+            return entity;
+        }
 
         /// <summary>
         /// Insere um novo equipamento.
         /// </summary>
         /// <param name="entity">Modelo do equipamento a ser inserido.</param>
         /// <returns>True se a inserção for bem-sucedida, caso contrário, false.</returns>
-        public bool Insert(EquipamentoViewModel entity)
+        // Método Insert com parâmetro idUsuario
+        public bool Insert(EquipamentoViewModel entity, uint idUsuario)
         {
             try
             {
-                ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
                 IMonitoramentoService monitoramentoService = new MonitoramentoService(_context);
-
                 var equip = SetEntity(entity.EquipamentoModel);
-
                 _context.Add(equip);
                 int inserted = _context.SaveChanges();
                 _context.Entry(equip).Reload();
-                var codigosEntity = new List<CodigoInfravermelhoModel>();
+
                 if (inserted == 1)
                 {
-                    entity.Codigos.ForEach(c => codigosEntity.Add(new CodigoInfravermelhoModel { Codigo = c.Codigo, IdModeloEquipamento = (uint)equip.Id, IdOperacao = c.IdOperacao }));
-                    codigoInfravermelhoService.AddAll(codigosEntity);
-
-                    monitoramentoService.Insert(new MonitoramentoModel { Estado = false, EquipamentoId = equip.Id }); ;
+                    monitoramentoService.Insert(new MonitoramentoModel
+                    {
+                        IdEquipamento = equip.Id,
+                        IdOperacao = 1, // Você deve definir qual operação representa o estado inicial
+                        IdUsuario = idUsuario,
+                        Temperatura = 0, // Valor padrão
+                        DataHora = DateTime.Now
+                    });
                 }
                 return Convert.ToBoolean(inserted);
             }
             catch (Exception e)
             {
-
                 throw e;
             }
-
         }
 
         /// <summary>
@@ -225,24 +243,6 @@ namespace Service
 
         }
 
-        /// <summary>
-        /// Mapeia os dados de um modelo para uma entidade de equipamento.
-        /// </summary>
-        /// <param name="model">Modelo com os dados do equipamento.</param>
-        /// <returns>Entidade preenchida com os dados do modelo.</returns>
-        private static Equipamento SetEntity(EquipamentoModel model)
-        {
-            Equipamento entity = new Equipamento
-            {
-                Id = model.Id,
-                Descricao = model.Descricao,
-                IdModeloEquipamento = model.IdModeloEquipamento,            
-                TipoEquipamento = model.TipoEquipamento,
-                IdSala = model.Sala,
-                IdHardwareDeSala = model.HardwareDeSala,
-            };
-            return entity;
-        }
 
         /// <summary>
         /// Remove um equipamento pelo ID.

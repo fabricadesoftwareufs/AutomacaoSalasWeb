@@ -70,9 +70,11 @@
                                     <div class="form-group col-md-8">
                                         <div class="form-group" id="ListElements">
                                             <label asp-for="ModeloEquipamento.Id" class="control-label">Modelo</label>
-                                            <select class="form-control" asp-for="ModeloEquipamento.Id" id="select-modelo">
+                                            <select class="form-control" asp-for="ModeloEquipamento.Id" id="select-modelo" onchange="updateModeloNome()">
                                                 <option value="">Selecione uma marca primeiro</option>
                                             </select>
+                                            <!-- Campo oculto para armazenar o nome do modelo -->
+                                            <input type="hidden" asp-for="ModeloEquipamento.Nome" id="modelo-nome" />
                                             <span asp-validation-for="ModeloEquipamento.Id" class="text-danger"></span>
                                         </div>
                                     </div>
@@ -129,20 +131,21 @@ else if (TempData["mensagemErro"] != null)
 
             // Carrega os modelos iniciais da marca selecionada
             loadModelos();
-            
+
             // Controla visibilidade dos campos marca/modelo
             toggleMarcaModeloFields();
         });
-        
+
         function toggleMarcaModeloFields() {
             var tipoEquipamento = $('#tipo').val();
             var container = $('#marca-modelo-container');
-            
+
             if (tipoEquipamento === '@EquipamentoModel.TIPO_LUZES') {
                 container.hide();
                 // Limpa os valores dos campos que estão ocultos
                 $('#select-marca').val('');
                 $('#select-modelo').val('');
+                $('#modelo-nome').val(''); // Também limpa o campo oculto do nome
             } else {
                 container.show();
             }
@@ -159,17 +162,37 @@ else if (TempData["mensagemErro"] != null)
 
                     if (data.length === 0) {
                         $('#select-modelo').append('<option value="">Nenhum modelo encontrado para esta marca</option>');
+                        $('#modelo-nome').val(''); // Limpa o nome do modelo
                     } else {
                         $.each(data, function(index, item) {
-                            $('#select-modelo').append('<option value="' + item.id + '">' + item.nome + '</option>');
+                            $('#select-modelo').append('<option value="' + item.id + '" data-nome="' + item.nome + '">' + item.nome + '</option>');
                         });
+                        // Define o nome do primeiro modelo como padrão se houver algum modelo
+                        if (data.length > 0) {
+                            $('#modelo-nome').val(data[0].nome);
+                        }
                     }
+
+                    // Atualiza o nome do modelo caso já exista uma seleção
+                    updateModeloNome();
                 },
                 error: function() {
                     $('#select-modelo').empty();
                     $('#select-modelo').append('<option value="">Erro ao carregar modelos</option>');
+                    $('#modelo-nome').val(''); // Limpa o nome do modelo em caso de erro
                 }
             });
+        }
+
+        // Função para atualizar o nome do modelo quando um modelo é selecionado
+        function updateModeloNome() {
+            var selectedOption = $('#select-modelo option:selected');
+            if (selectedOption.length > 0 && selectedOption.val() !== '') {
+                var nome = selectedOption.data('nome');
+                $('#modelo-nome').val(nome);
+            } else {
+                $('#modelo-nome').val('');
+            }
         }
 
         $("#select-sala").change(function(){
