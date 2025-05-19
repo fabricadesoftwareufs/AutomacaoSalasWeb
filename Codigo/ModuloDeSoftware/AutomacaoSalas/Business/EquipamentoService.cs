@@ -158,7 +158,7 @@ namespace Service
         }
 
         /// <summary>
-        /// Mapeia os dados de um modelo para uma entidade de equipamento.
+        //// Mapeia os dados de um modelo para uma entidade de equipamento.
         /// </summary>
         /// <param name="model">Modelo com os dados do equipamento.</param>
         /// <returns>Entidade preenchida com os dados do modelo.</returns>
@@ -172,6 +172,7 @@ namespace Service
                 TipoEquipamento = model.TipoEquipamento,
                 IdSala = model.Sala,
                 IdHardwareDeSala = model.HardwareDeSala,
+                Status = "D" 
             };
             return entity;
         }
@@ -197,10 +198,8 @@ namespace Service
                     monitoramentoService.Insert(new MonitoramentoModel
                     {
                         IdEquipamento = equip.Id,
-                        IdOperacao = 1, // Você deve definir qual operação representa o estado inicial
+                        IdOperacao = 2, // Você deve definir qual operação representa o estado inicial
                         IdUsuario = idUsuario,
-                        Temperatura = 0, // Valor padrão
-                        DataHora = DateTime.Now
                     });
                 }
                 return Convert.ToBoolean(inserted);
@@ -220,27 +219,15 @@ namespace Service
         {
             try
             {
-                ICodigoInfravermelhoService codigoInfravermelhoService = new CodigoInfravermelhoService(_context);
-
                 var equip = SetEntity(entity.EquipamentoModel);
                 _context.Equipamentos.Update(equip);
                 int updated = _context.SaveChanges();
-                var codigosEntity = new List<CodigoInfravermelhoModel>();
-                if (updated == 1)
-                {
-                    entity.Codigos.ForEach(c => codigosEntity.Add(new CodigoInfravermelhoModel { Codigo = c.Codigo, IdModeloEquipamento = (uint)equip.Id, IdOperacao = c.IdOperacao }));
-                    codigoInfravermelhoService.UpdateAll(codigosEntity);
-                }
                 return Convert.ToBoolean(updated);
-
-
             }
-            catch (Exception e)
+            catch (Exception)
             {
-
-                throw e;
+                throw; 
             }
-
         }
 
 

@@ -10,10 +10,12 @@ namespace Model
         public int IdEquipamento { get; set; }
         public int IdOperacao { get; set; }
         public DateTime DataHora { get; set; } = DateTime.Now;
-        public uint IdUsuario { get; set; }  // Alterado para uint conforme scaffold
+        public uint IdUsuario { get; set; }  
         public int Temperatura { get; set; } = 0;
+        public bool? Estado { get; set; }
 
-        // Navegações para objetos relacionados - nomes ajustados conforme scaffold
+        public bool? SalaParticular { get; set; }
+        
         public virtual EquipamentoModel IdEquipamentoNavigation { get; set; } = null!;
         public virtual OperacaoModel IdOperacaoNavigation { get; set; } = null!;
         public virtual UsuarioModel IdUsuarioNavigation { get; set; } = null!;

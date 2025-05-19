@@ -159,20 +159,17 @@ namespace SalasWeb.Controllers
                     if (ModelState.ContainsKey("ModeloEquipamento"))
                         ModelState.Remove("ModeloEquipamento");
                     equipamentoViewModel.ModeloEquipamento = null;
-                    equipamentoViewModel.EquipamentoModel.IdModeloEquipamento = null;  // Garantindo que para luzes o IdModeloEquipamento é null
+                    equipamentoViewModel.EquipamentoModel.IdModeloEquipamento = null;  
                 }
                 else if (equipamentoViewModel.ModeloEquipamento != null)
                 {
-                    // Para outros tipos de equipamento, copie o ID do modelo para o EquipamentoModel
                     equipamentoViewModel.EquipamentoModel.IdModeloEquipamento = equipamentoViewModel.ModeloEquipamento.Id;
                 }
 
                 if (ModelState.IsValid)
                 {
-                    // Obtém o ID do usuário autenticado
-                    var idUsuario = (uint)usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+                    var idUsuario = (uint)_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
 
-                    // Passa o ID do usuário para o serviço de equipamento
                     if (_equipamentoService.Insert(equipamentoViewModel, idUsuario))
                     {
                         TempData["mensagemSucesso"] = "Equipamento cadastrado com sucesso!";
@@ -199,40 +196,50 @@ namespace SalasWeb.Controllers
         // GET: EquipamentoController/Edit/5
         public ActionResult Edit(int id)
         {
-
             var equipamento = _equipamentoService.GetByIdEquipamento(id);
             var sala = _salaService.GetById(equipamento.Sala);
             var bloco = _blocoService.GetById(sala.BlocoId);
-            var codigos = _codigoInfravermelhoService.GetAllByEquipamento(equipamento.Id);
+            var organizacao = _organizacaoService.GetById(bloco.OrganizacaoId);
+            string[] tiposEquipamento = { EquipamentoModel.TIPO_CONDICIONADOR, EquipamentoModel.TIPO_LUZES };
 
-            List<CodigoInfravermelhoViewModel> codigosView = new List<CodigoInfravermelhoViewModel>();
-            codigos.ForEach(c => codigosView.Add(new CodigoInfravermelhoViewModel { Codigo = c.Codigo, Id = c.Id, IdEquipamento = (int)c.IdModeloEquipamento, IdOperacao = c.IdOperacao, Operacao = _operacaoService.GetById(c.IdOperacao).Titulo }));
-
+            // Preparar o ViewModel
             EquipamentoViewModel equipamentoViewModel = new EquipamentoViewModel
             {
                 EquipamentoModel = equipamento,
-                SalaModel = _salaService.GetById(equipamento.Sala),
+                SalaModel = sala,
                 BlocoModel = bloco,
-                OrganizacaoModel = _organizacaoService.GetById(bloco.OrganizacaoId),
-                Codigos = codigosView,
-
-                HardwareDeSalaModel = _hardwareDeSalaService.GetById(equipamento.HardwareDeSala.Value)
+                OrganizacaoModel = organizacao,
+                HardwareDeSalaModel = equipamento.HardwareDeSala.HasValue
+                    ? _hardwareDeSalaService.GetById(equipamento.HardwareDeSala.Value)
+                    : null
             };
 
-            string[] tiposEquipamento = { EquipamentoModel.TIPO_CONDICIONADOR, EquipamentoModel.TIPO_LUZES };
+            // Se não for do tipo luz, configurar o modelo e marca
+            if (equipamento.TipoEquipamento != EquipamentoModel.TIPO_LUZES && equipamento.IdModeloEquipamento.HasValue)
+            {
+                var modelo = _modeloEquipamentoService.GetById(equipamento.IdModeloEquipamento.Value);
+                if (modelo != null)
+                {
+                    equipamentoViewModel.ModeloEquipamento = modelo;
+                }
+            }
 
+            // Preparar as SelectLists
+            ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome",
+                equipamentoViewModel.ModeloEquipamento?.MarcaEquipamentoID);
+
+            // Configurar outros ViewBags necessários
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
-            var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
-            var operacoes = _operacaoService.GetAll().ToList();
-            var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();
+            var blocos = _blocoService.GetByIdOrganizacao(organizacao.Id);
+            var salas = _salaService.GetByIdBloco(bloco.Id);
+            var hardwares = _hardwareDeSalaService.GetBySalaAndTipoEquipamento((int)sala.Id, equipamento.TipoEquipamento);
+            hardwares = hardwares.Concat(_hardwareDeSalaService.GetAtuadorNotUsed()).ToList();
 
-            ViewBag.Operacoes = operacoes;
             ViewBag.Organizacoes = organizacoes;
-            ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
-            ViewBag.Salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
             ViewBag.Blocos = blocos;
-            ViewBag.Tipos = tiposEquipamento;
+            ViewBag.Salas = salas;
             ViewBag.Hardwares = hardwares;
+            ViewBag.Tipos = tiposEquipamento;
 
             return View(equipamentoViewModel);
         }
@@ -243,36 +250,58 @@ namespace SalasWeb.Controllers
         public ActionResult Edit(int id, EquipamentoViewModel equipamentoViewModel)
         {
             string[] tiposEquipamento = { EquipamentoModel.TIPO_CONDICIONADOR, EquipamentoModel.TIPO_LUZES };
-
             var organizacoes = _organizacaoService.GetByIdUsuario(_usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id);
             var blocos = _blocoService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
-            var operacoes = _operacaoService.GetAll().ToList();
-            var hardwares = _hardwareDeSalaService.GetAtuadorNotUsed();
-            ViewBag.Operacoes = operacoes;
-            ViewBag.Organizacoes = organizacoes;
-            ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
-            ViewBag.Salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
-            ViewBag.Blocos = blocos;
-            ViewBag.Tipos = tiposEquipamento;
-            ViewBag.Hardwares = hardwares;
+            var salas = _salaService.GetByIdBloco(blocos.FirstOrDefault().Id);
+            var hardwares = _hardwareDeSalaService.GetBySalaAndTipoEquipamento((int)salas.First().Id, tiposEquipamento.First());
+
+            ViewBag.MarcaEquipamento = new SelectList(_marcaEquipamentoService.GetAll(), "Id", "Nome", equipamentoViewModel.ModeloEquipamento?.MarcaEquipamentoID);
 
             try
             {
+                if (equipamentoViewModel.EquipamentoModel.TipoEquipamento == EquipamentoModel.TIPO_LUZES)
+                {
+                    if (ModelState.ContainsKey("ModeloEquipamento.MarcaEquipamentoID"))
+                        ModelState.Remove("ModeloEquipamento.MarcaEquipamentoID");
+
+                    if (ModelState.ContainsKey("ModeloEquipamento.Id"))
+                        ModelState.Remove("ModeloEquipamento.Id");
+
+                    if (ModelState.ContainsKey("ModeloEquipamento.Nome"))
+                        ModelState.Remove("ModeloEquipamento.Nome");
+                    if (ModelState.ContainsKey("ModeloEquipamento"))
+                        ModelState.Remove("ModeloEquipamento");
+
+                    equipamentoViewModel.ModeloEquipamento = null;
+                    equipamentoViewModel.EquipamentoModel.IdModeloEquipamento = null;
+                }
+                else if (equipamentoViewModel.ModeloEquipamento != null)
+                {
+                    equipamentoViewModel.EquipamentoModel.IdModeloEquipamento = equipamentoViewModel.ModeloEquipamento.Id;
+                }
+
                 if (ModelState.IsValid)
                 {
-
                     if (_equipamentoService.Update(equipamentoViewModel))
                     {
                         TempData["mensagemSucesso"] = "Equipamento atualizado com sucesso!";
                         return RedirectToAction(nameof(Index));
                     }
-                    else TempData["mensagemErro"] = "Houve um problema ao atualizar o equipamento, tente novamente em alguns minutos.";
+                    else
+                        TempData["mensagemErro"] = "Houve um problema ao atualizar o equipamento, tente novamente em alguns minutos.";
                 }
             }
             catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
             }
+
+            ViewBag.Organizacoes = organizacoes;
+            ViewBag.Usuarios = _usuarioService.GetByIdOrganizacao(organizacoes.FirstOrDefault().Id);
+            ViewBag.Salas = salas;
+            ViewBag.Blocos = blocos;
+            ViewBag.Hardwares = hardwares;
+            ViewBag.Tipos = tiposEquipamento;
 
             return View(equipamentoViewModel);
         }

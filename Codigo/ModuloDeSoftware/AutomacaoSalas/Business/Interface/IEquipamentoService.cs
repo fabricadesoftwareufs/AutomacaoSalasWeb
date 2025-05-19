@@ -10,7 +10,7 @@ namespace Service.Interface
         EquipamentoModel GetByIdSalaAndTipoEquipamento(int idSala, string tipo);
         List<EquipamentoModel> GetByIdSala(uint idSala);
         List<EquipamentoModel> GetAll();
-        bool Insert(EquipamentoViewModel entity);
+        bool Insert(EquipamentoViewModel entity, uint idUsuario);
         bool Update(EquipamentoViewModel entity);
         bool Remove(int id);
     }
