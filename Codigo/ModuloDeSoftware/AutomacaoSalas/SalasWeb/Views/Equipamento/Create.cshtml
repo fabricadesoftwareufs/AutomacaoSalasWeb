@@ -1,4 +1,5 @@
-﻿@model Model.ViewModel.EquipamentoViewModel
+﻿@using Model
+@model Model.ViewModel.EquipamentoViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -45,32 +46,44 @@
                                     </select>
                                     <span asp-validation-for="EquipamentoModel.Sala" class="text-danger"></span>
                                 </div>
-                                <div class="form-group col-md-8">
-                                <label asp-for="EquipamentoModel.Modelo" class="control-label"></label>
-                                <textarea asp-for="EquipamentoModel.Modelo" class="form-control" rows="2"></textarea>
-                                <span asp-validation-for="EquipamentoModel.Modelo" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-8">
-                                <label asp-for="EquipamentoModel.Marca" class="control-label"></label>
-                                <textarea asp-for="EquipamentoModel.Marca" class="form-control" maxlength="100" rows="2"></textarea>
-                                <span asp-validation-for="EquipamentoModel.Marca" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-8">
-                                <label asp-for="EquipamentoModel.Descricao" class="control-label"></label>
-                                <textarea asp-for="EquipamentoModel.Descricao" class="form-control" maxlength="1000" rows="3"></textarea>
-                                <span asp-validation-for="EquipamentoModel.Descricao" class="text-danger"></span>
-                            </div>       
-                            
 
-                                <div class="form-group col-md-7">
+                                <div class="form-group col-md-5">
                                     <label asp-for="EquipamentoModel.TipoEquipamento" class="control-label"></label>
-                                    <select id="tipo" class="form-control" asp-for="EquipamentoModel.TipoEquipamento">
+                                    <select id="tipo" class="form-control" asp-for="EquipamentoModel.TipoEquipamento" onchange="toggleMarcaModeloFields()">
                                         @foreach (var item in ViewBag.Tipos)
                                         {
                                             <option value="@item"> @item</option>
                                         }
                                     </select>
                                     <span asp-validation-for="EquipamentoModel.TipoEquipamento" class="text-danger"></span>
+                                </div>
+
+                                <div id="marca-modelo-container">
+                                    <div class="form-group col-md-8">
+                                        <div class="form-group" id="ListElements">
+                                            <label asp-for="ModeloEquipamento.MarcaEquipamentoID" class="control-label">Marca</label>
+                                            @Html.DropDownListFor(model => model.ModeloEquipamento.MarcaEquipamentoID, ViewBag.MarcaEquipamento as SelectList, new
+                                                { @class = "form-control", @id = "select-marca", @onchange = "loadModelos()" })
+                                            <span asp-validation-for="ModeloEquipamento.MarcaEquipamentoID" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-8">
+                                        <div class="form-group" id="ListElements">
+                                            <label asp-for="ModeloEquipamento.Id" class="control-label">Modelo</label>
+                                            <select class="form-control" asp-for="ModeloEquipamento.Id" id="select-modelo" onchange="updateModeloNome()">
+                                                <option value="">Selecione uma marca primeiro</option>
+                                            </select>
+                                            <!-- Campo oculto para armazenar o nome do modelo -->
+                                            <input type="hidden" asp-for="ModeloEquipamento.Nome" id="modelo-nome" />
+                                            <span asp-validation-for="ModeloEquipamento.Id" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-8">
+                                    <label asp-for="EquipamentoModel.Descricao" class="control-label"></label>
+                                    <textarea asp-for="EquipamentoModel.Descricao" class="form-control" maxlength="1000" rows="3"></textarea>
+                                    <span asp-validation-for="EquipamentoModel.Descricao" class="text-danger"></span>
                                 </div>
 
                                 <div class="form-group col-md-7">
@@ -83,59 +96,7 @@
                                     </select>
                                     <span asp-validation-for="EquipamentoModel.HardwareDeSala" class="text-danger"></span>
                                 </div>
-
-
                             </div>
-                            <div class="ocupation col-md-10">
-                                <div id="ccodigo" class="form-group pr-2">
-                                    <label title="Codigo" class="control-label">Código da Operação</label>
-                                    <textarea id="codigo" class="form-control" type="text" name="codigo"></textarea>
-                                </div>
-
-                                <div id="coperacao" class="form-group d-inline-block">
-                                    <label name="Operacao" class="control-label">Operação</label>
-                                    <select name="operacao" id="operacao">
-                                        @foreach (var item in ViewBag.Operacoes)
-                                        {
-                                            <option value="@item.Id"> @item.Titulo </option>
-                                        }
-                                    </select>
-                                    <span name="operacao" class="ml-2 text-danger"></span>
-                                </div>
-
-
-                                <div id="cbotao" class="form-group align-element">
-                                    <a id="add-novo-horario" onclick="AdicionarNovoCodigo();document.getElementById('codigo').value=''; " class="btn btn-primary text-white">
-                                        <i class="nav-icon fa fa-plus"></i>
-                                    </a>
-                                </div>
-
-                            </div>
-
-                            <section id="codigos" class="content">
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-md-5">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h3 class="card-title">Códigos Adicionados</h3>
-                                                </div>
-                                                <div class="card-body">
-                                                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-                                                        <thead>
-                                                            <tr>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="container-codigo">
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-
                         </div>
                         <div class="card-footer">
                             <div class="col-md-4">
@@ -163,35 +124,93 @@ else if (TempData["mensagemErro"] != null)
 @section Scripts {
 
     <script>
-               $(document).ready(function () {
+        $(document).ready(function () {
             // Verifica se o documento tem mensagem de retorno
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
+
+            // Carrega os modelos iniciais da marca selecionada
+            loadModelos();
+
+            // Controla visibilidade dos campos marca/modelo
+            toggleMarcaModeloFields();
         });
 
+        function toggleMarcaModeloFields() {
+            var tipoEquipamento = $('#tipo').val();
+            var container = $('#marca-modelo-container');
+
+            if (tipoEquipamento === '@EquipamentoModel.TIPO_LUZES') {
+                container.hide();
+                // Limpa os valores dos campos que estão ocultos
+                $('#select-marca').val('');
+                $('#select-modelo').val('');
+                $('#modelo-nome').val(''); // Também limpa o campo oculto do nome
+            } else {
+                container.show();
+            }
+        }
+
+        function loadModelos() {
+            var marcaId = $('#select-marca').val();
+
+            $.ajax({
+                url: '/Equipamento/GetModelosByMarca/' + marcaId,
+                type: 'GET',
+                success: function(data) {
+                    $('#select-modelo').empty();
+
+                    if (data.length === 0) {
+                        $('#select-modelo').append('<option value="">Nenhum modelo encontrado para esta marca</option>');
+                        $('#modelo-nome').val(''); // Limpa o nome do modelo
+                    } else {
+                        $.each(data, function(index, item) {
+                            $('#select-modelo').append('<option value="' + item.id + '" data-nome="' + item.nome + '">' + item.nome + '</option>');
+                        });
+                        // Define o nome do primeiro modelo como padrão se houver algum modelo
+                        if (data.length > 0) {
+                            $('#modelo-nome').val(data[0].nome);
+                        }
+                    }
+
+                    // Atualiza o nome do modelo caso já exista uma seleção
+                    updateModeloNome();
+                },
+                error: function() {
+                    $('#select-modelo').empty();
+                    $('#select-modelo').append('<option value="">Erro ao carregar modelos</option>');
+                    $('#modelo-nome').val(''); // Limpa o nome do modelo em caso de erro
+                }
+            });
+        }
+
+        // Função para atualizar o nome do modelo quando um modelo é selecionado
+        function updateModeloNome() {
+            var selectedOption = $('#select-modelo option:selected');
+            if (selectedOption.length > 0 && selectedOption.val() !== '') {
+                var nome = selectedOption.data('nome');
+                $('#modelo-nome').val(nome);
+            } else {
+                $('#modelo-nome').val('');
+            }
+        }
 
         $("#select-sala").change(function(){
-
             var tipoEquipamento = document.getElementById("tipo").value;
             var idSala = $(this).val();
             carregarMacs(idSala, tipoEquipamento);
-
         });
 
         $("#select-bloco").change(function(){
-
             var tipoEquipamento = document.getElementById("tipo").value;
             var idSala = $(this).val();
             carregarMacs(idSala, tipoEquipamento);
-
         });
 
         $("#tipo").change(function(){
-
             var idSala = document.getElementById("select-sala").value;
             var tipoEquipamento = $(this).val();
             carregarMacs(idSala, tipoEquipamento);
-
         });
 
         function carregarMacs(idSala, tipoEquipamento){
@@ -199,7 +218,6 @@ else if (TempData["mensagemErro"] != null)
                 url: '/MacSalaEquipamento/' + idSala + '/' + tipoEquipamento,
                 type: 'GET',
                 success: function(data){
-                    
                     $('#select-hardware').empty();
 
                     $.each(data, function(index, item) {
@@ -208,8 +226,6 @@ else if (TempData["mensagemErro"] != null)
                 },
             });
         }
-
-
     </script>
     <script src="~/js/load-itens-script.js"></script>
     <script src="~/js/equipamento-script.js"></script>

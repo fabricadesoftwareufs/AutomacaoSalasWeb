@@ -14,8 +14,6 @@ namespace Model.ViewModel
 
         public ModeloEquipamentoModel ModeloEquipamento { get; set; }
 
-        public List<ModeloEquipamentoModel> ModeloEquipamentoModels { get; set; } = new List<ModeloEquipamentoModel>();
-
         public List<CodigoInfravermelhoViewModel>? Codigos { get; set; } = new List<CodigoInfravermelhoViewModel>();
 
         public List<MarcaEquipamentoViewModel> Marcas { get; set; } = new List<MarcaEquipamentoViewModel>();
