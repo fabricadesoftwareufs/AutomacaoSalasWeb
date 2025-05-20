@@ -20,7 +20,8 @@ namespace Model
         public uint Sala { get; set; }
         public string TipoEquipamento { get; set; }
         public uint? HardwareDeSala { get; set; }
-
+        
+        public string Status { get; set; } = "D";
         public uint? IdModeloEquipamento { get; set; }
     }
 }
