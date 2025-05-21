@@ -102,11 +102,11 @@ namespace SalasAPI.Controllers
 
         // POST: api/Equipamento
         [HttpPost]
-        public ActionResult Post([FromBody] EquipamentoViewModel equipamentoModel)
+        public ActionResult Post([FromBody] EquipamentoViewModel equipamentoModel, [FromQuery] uint idUsuario)
         {
             try
             {
-                if (_service.Insert(equipamentoModel))
+                if (_service.Insert(equipamentoModel, idUsuario))
                     return Ok();
 
                 return BadRequest();

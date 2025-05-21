@@ -24,7 +24,7 @@ namespace Service
 
         public List<MonitoramentoModel> GetAll() => _context.Monitoramentos.Select(m => new MonitoramentoModel { Id = m.Id, IdEquipamento = m.IdEquipamento }).ToList();
 
-        public MonitoramentoModel GetById(int id) => _context.Monitoramentos.Where(m => m.Id == id).Select(m => new MonitoramentoModel { Id = m.Id, IdEquipamento = m.IdEquipamento }).FirstOrDefault();
+        public MonitoramentoModel GetById(int id) => _context.Monitoramentos.Where(m => m.Id == id).Select(m => new MonitoramentoModel { Id = m.Id, IdEquipamento = m.IdEquipamento, IdOperacao = m.IdOperacao }).FirstOrDefault();
 
         public MonitoramentoModel GetByIdEquipamento(int idEquipamento) => _context.Monitoramentos.Where(m => m.IdEquipamento == idEquipamento).Select(m => new MonitoramentoModel { Id = m.Id, IdEquipamento = m.IdEquipamento }).FirstOrDefault();
 
@@ -41,7 +41,7 @@ namespace Service
                                                                   IdEquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.IdSala },
                                                               });
 
-             
+
             return monitoramentos;
         }
 
@@ -51,13 +51,13 @@ namespace Service
             var equip = _context.Equipamentos.ToList();
             var monitoramentos = (from m in moni
                                   join e in equip on m.IdEquipamento equals e.Id
-                                                              where e.IdSala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
-                                                              select new MonitoramentoModel
-                                                              {
-                                                                  Id = m.Id,                                                                 
-                                                                  IdEquipamento = m.IdEquipamento,
-                                                                  IdEquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.IdSala },
-                                                              }
+                                  where e.IdSala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
+                                  select new MonitoramentoModel
+                                  {
+                                      Id = m.Id,
+                                      IdEquipamento = m.IdEquipamento,
+                                      IdEquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.IdSala },
+                                  }
                                   ).FirstOrDefault();
 
 
@@ -80,6 +80,7 @@ namespace Service
                 throw e;
             }
         }
+
         //TODO: Ajeitar esse método depois
         public bool MonitorarSala(uint idUsuario, MonitoramentoViewModel monitoramento)
         {
@@ -103,10 +104,13 @@ namespace Service
 
                 var monitoramentoModel = new MonitoramentoModel
                 {
-                     IdEquipamento = monitoramento.EquipamentoId,
-                     Estado = monitoramento.Estado,
-                     Id = monitoramento.Id,
-                     SalaParticular = monitoramento.SalaParticular
+                    IdEquipamento = monitoramento.EquipamentoId,
+                    IdOperacao = monitoramento.OperacaoId,
+                    Id = monitoramento.Id,
+                    SalaParticular = monitoramento.SalaParticular,
+                    DataHora = DateTime.Now,
+                    IdUsuario = idUsuario,
+                    Temperatura = monitoramento.Temperatura,
                 };
 
                 if (!EnviarComandosMonitoramento(monitoramentoModel))
@@ -154,6 +158,7 @@ namespace Service
                 throw new ServiceException("Houve um problema ao tentar realizar o monitoramento da sala. Por favor, tente novamente em alguns minutos.");
             }
         }
+
         //TODO: Ajeitar esse método depois
         private bool EnviarComandosMonitoramento(MonitoramentoModel monitoramento)
         {
@@ -162,7 +167,7 @@ namespace Service
                 var modelDesatualizado = GetById(monitoramento.Id);
                 bool comandoEnviadoComSucesso = true;
 
-                if (monitoramento.Estado != modelDesatualizado.Estado)
+                if (monitoramento.IdOperacao != modelDesatualizado.IdOperacao)
                 {
                     var _hardwareDeSalaService = new HardwareDeSalaService(_context);
                     var _equipamentoServiceService = new EquipamentoService(_context);
@@ -173,21 +178,21 @@ namespace Service
                     if (equipamento.TipoEquipamento.Equals(EquipamentoModel.TIPO_CONDICIONADOR))
                     {
                         var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
-                        var idOperacao = (bool)monitoramento.Estado ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
+                        var idOperacao = monitoramento.IdOperacao == 1 ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
                         var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdModeloEquipamento(equipamento.Id, idOperacao);
 
                         if (codigosInfravermelho == null)
                             return false;
 
                         tipoEquipamento = EquipamentoModel.TIPO_CONDICIONADOR;
-                        operacao = codigosInfravermelho.Codigo.Replace(" ","");
-                        retornoEsperado = (bool)monitoramento.Estado ? AC_ON : AC_OFF;
+                        operacao = codigosInfravermelho.Codigo.Replace(" ", "");
+                        retornoEsperado = monitoramento.IdOperacao == 1 ? AC_ON : AC_OFF;
                     }
                     else
                     {
                         tipoEquipamento = EquipamentoModel.TIPO_LUZES;
-                        operacao = monitoramento.Estado.ToString();
-                        retornoEsperado = (bool)monitoramento.Estado ? L_ON : L_OFF;
+                        operacao = monitoramento.IdOperacao.ToString();
+                        retornoEsperado = monitoramento.IdOperacao == 1 ? L_ON : L_OFF;
                     }
 
                     var hardwareAtuador = _hardwareDeSalaService.GetById(equipamento.HardwareDeSala.GetValueOrDefault(0));
@@ -197,7 +202,7 @@ namespace Service
                           new
                           {
                               type = tipoEquipamento,
-                              acting = monitoramento.Estado.ToString(),
+                              acting = monitoramento.IdOperacao.ToString(),
                               code = operacao,
                               uuid = hardwareAtuador.Uuid
                           });
