@@ -47,8 +47,7 @@
 
                                                                 <h5 class="card-text">Luzes</h5>
                                                                 <label class="switch" onchange="submitForm('form-@item.MonitoramentoLuzes.Id',@item.SalaExclusiva.Id,true)">
-                                                                    <!-- TODO: esse negocio de estado ta no equipamento agr tem q mudar ainda
-                                                                        if (item.MonitoramentoLuzes.Estado)
+                                                                    @if (item.MonitoramentoLuzes.Estado)
                                                                     {
                                                                         <input type="checkbox" name="Estado" id="luzes-@item.SalaExclusiva.Id" value="@item.MonitoramentoLuzes.Estado" checked />
                                                                     }
@@ -83,8 +82,7 @@
 
                                                                 <h5 class="card-text">Condicionadores</h5>
                                                                 <label class="switch" onchange="submitForm('form-@item.MonitoramentoCondicionadores.Id',@item.SalaExclusiva.Id,true)">
-                                                                    <!-- TODO: esse negocio de estado ta no equipamento agr tem q mudar ainda
-                                                                    if (item.(bMonitoramentoCondicionadores.Estado)
+                                                                    @if (item.MonitoramentoCondicionadores.Estado)
                                                                     {
                                                                         <input type="checkbox" name="Estado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.MonitoramentoCondicionadores.Estado" checked />
                                                                     }
@@ -93,8 +91,6 @@
                                                                         <input type="checkbox" name="Estado" id="arCondicionado-@item.SalaExclusiva.Id" value="@item.MonitoramentoCondicionadores.Estado" />
                                                                     }
                                                                     <span class="slider round"></span>
-
-                                                                    -->
                                                                 </label>
                                                             </form>
                                                         }

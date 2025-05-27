@@ -435,7 +435,8 @@ CREATE TABLE IF NOT EXISTS `automacaosalas`.`monitoramento` (
   `idOperacao` INT NOT NULL,
   `dataHora` DATETIME NOT NULL DEFAULT NOW(),
   `idUsuario` INT UNSIGNED NOT NULL,
-  `temperatura` INT NOT NULL DEFAULT 0,
+  `temperatura` TINYINT NULL DEFAULT 0,
+  `estado` TINYINT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_monitoramento_Equipamento1_idx` (`idEquipamento` ASC) VISIBLE,
   INDEX `fk_monitoramento_Operacao1_idx` (`idOperacao` ASC) VISIBLE,
@@ -508,3 +509,7 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+UPDATE monitoramento
+SET estado = 1,idOperacao = 1
+WHERE id > 0
