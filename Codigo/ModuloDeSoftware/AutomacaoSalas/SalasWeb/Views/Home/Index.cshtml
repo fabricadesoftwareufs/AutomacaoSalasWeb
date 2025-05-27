@@ -200,15 +200,33 @@ else if (TempData["mensagemErro"] != null)
         }
 
         function setValueSwitch(idMonitoramento) {
-            if ($('#luzes-' + idMonitoramento).is(":checked"))
-                $('#luzes-' + idMonitoramento).val(true);
-            else
-                $('#luzes-' + idMonitoramento).val(false);
+            // Para salas particulares: idMonitoramento é um número
+            // Para reservas: idMonitoramento é uma string como "0-123-456"
 
-            if ($('#arCondicionado-' + idMonitoramento).is(":checked"))
-                $('#arCondicionado-' + idMonitoramento).val(true);
-            else
-                $('#arCondicionado-' + idMonitoramento).val(false);
+            var luzesId = 'luzes-' + idMonitoramento;
+            var arId = 'arCondicionado-' + idMonitoramento;
+
+            console.log('Procurando elementos:', luzesId, arId); // Para debug
+
+            var luzesElement = $('#' + luzesId);
+            if (luzesElement.length > 0) {
+                if (luzesElement.is(":checked"))
+                    luzesElement.val(true);
+                else
+                    luzesElement.val(false);
+            } else {
+                console.log('Elemento luzes não encontrado:', luzesId);
+            }
+
+            var arElement = $('#' + arId);
+            if (arElement.length > 0) {
+                if (arElement.is(":checked"))
+                    arElement.val(true);
+                else
+                    arElement.val(false);
+            } else {
+                console.log('Elemento ar não encontrado:', arId);
+            }
         }
 
 
@@ -232,7 +250,7 @@ else if (TempData["mensagemErro"] != null)
                 // Variável global para rastrear a última data mostrada
         var ultimaDataMostrada = null;
 
-                function addReserva(data, indice, dia) {
+        function addReserva(data, indice, dia) {
             console.log("Dados da reserva:", data);
             console.log("Data da reserva:", data.horarioSala.data);
 

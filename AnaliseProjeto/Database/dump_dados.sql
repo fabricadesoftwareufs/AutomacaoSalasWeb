@@ -182,9 +182,9 @@ INSERT INTO `codigoinfravermelho` (`idModeloEquipamento`, `idOperacao`, `codigo`
 
 INSERT INTO `monitoramento` (idEquipamento, idOperacao, idUsuario,estado)
 VALUES
-    (1, 1,5,0),  -- Condicionador SAMSUNG no estado 'ligado'
+    (1, 1,5,1),  -- Condicionador SAMSUNG no estado 'ligado'
     (2, 2,5,0),  -- Condicionador ELGIN no estado 'desligado'
-    (3, 1,5,0),  -- Condicionador LG no estado 'ligado'
+    (3, 1,5,1),  -- Condicionador LG no estado 'ligado'
     (4, 2,5,0);  -- Luzes estão no estado 'desligado'
 
 INSERT INTO `conexaointernet`(nome, senha, idBloco)

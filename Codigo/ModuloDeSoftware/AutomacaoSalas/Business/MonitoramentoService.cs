@@ -74,7 +74,7 @@ namespace Service
                 if (GetByIdEquipamento(model.IdEquipamento) != null)
                     return true;
 
-                _context.Add(SetEntity(model));
+                _context.Add(SetEntity(model, model.IdUsuario));
                 return _context.SaveChanges() == 1;
             }
             catch (Exception e)
@@ -114,7 +114,7 @@ namespace Service
                 if (!EnviarComandosMonitoramento(monitoramentoModel))
                     throw new ServiceException("Houve inconsistências no cadastro da solicitação de Monitoramento. Verifique os dados do equipamento e hardware responsáveis e tente novamente.");
 
-                Update(monitoramentoModel);
+                Update(monitoramentoModel, idUsuario);
             }
 
             return true;
@@ -141,16 +141,22 @@ namespace Service
             if (!EnviarComandosMonitoramento(model))
                 throw new ServiceException("Ocorreu um problema e o monitoramento não pôde ser concluído. Por favor, tente novamente mais tarde.");
 
-            return Update(model);
+            return Update(model, idUsuario);
         }
 
-        public bool Update(MonitoramentoModel model)
+        public bool Update(MonitoramentoModel model, uint idUsuario)
         {
-            SetEntity(model); // A entidade já será atualizada ou adicionada ao contexto
-            return _context.SaveChanges() == 1;
-
-
+            var monitoramento = SetEntity(model, idUsuario);
+            
+            var equipamento = _context.Equipamentos.FirstOrDefault(e => e.Id == model.IdEquipamento);
+            if (equipamento != null)
+            {
+                equipamento.Status = monitoramento.IdOperacao == 1 ? "L" : "D";
+            }
+            
+            return _context.SaveChanges() >= 1;
         }
+
         //TODO: Ajeitar esse método depois
         private bool EnviarComandosMonitoramento(MonitoramentoModel monitoramento)
         {
@@ -171,10 +177,10 @@ namespace Service
                     {
                         var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
                         var idOperacao = (bool)monitoramento.Estado ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
-                        var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdModeloEquipamento(equipamento.Id, idOperacao);
+                        var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdModeloEquipamento((int)equipamento.IdModeloEquipamento, idOperacao);
 
                         if (codigosInfravermelho == null)
-                            return false;
+                           return false;
 
                         tipoEquipamento = EquipamentoModel.TIPO_CONDICIONADOR;
                         operacao = codigosInfravermelho.Codigo.Replace(" ","");
@@ -240,37 +246,29 @@ namespace Service
             };
         }
 
-        private Monitoramento SetEntity(MonitoramentoModel model)
+        private Monitoramento SetEntity(MonitoramentoModel model, uint idUsuario)
         {
             var monitoramentoAtual = _context.Monitoramentos.FirstOrDefault(m => m.Id == model.Id);
 
             if (monitoramentoAtual == null)
             {
-                // Se não existe, cria um novo
                 return new Monitoramento
                 {
                     Id = model.Id,
                     IdEquipamento = model.IdEquipamento,
-                    IdOperacao = 1, // Operação padrão (ligar)
-                    IdUsuario = 2,
+                    IdOperacao = 2, 
+                    IdUsuario = model.IdUsuario,
                     DataHora =  DateTime.Now,
                     Estado = (sbyte)(model.Estado ? 1 : 0)
                 };
             }
             else
             {
-                // Se já existe, atualiza a entidade existente
                 monitoramentoAtual.IdEquipamento = model.IdEquipamento;
                 monitoramentoAtual.IdOperacao = monitoramentoAtual.IdOperacao == 1 ? 2 : 1;
                 monitoramentoAtual.DataHora = DateTime.Now;
-                if(monitoramentoAtual.IdOperacao == 1)
-                {
-                    monitoramentoAtual.Estado = 1;
-                }
-                else
-                {
-                    monitoramentoAtual.Estado = 0;
-                }
+                monitoramentoAtual.Estado = (sbyte)(monitoramentoAtual.IdOperacao == 1 ? 1 : 0);
+                monitoramentoAtual.IdUsuario = idUsuario;
 
                 return monitoramentoAtual;
             }
