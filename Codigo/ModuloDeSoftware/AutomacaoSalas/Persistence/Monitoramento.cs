@@ -15,7 +15,9 @@ public partial class Monitoramento
 
     public uint IdUsuario { get; set; }
 
-    public int Temperatura { get; set; }
+    public sbyte? Temperatura { get; set; }
+
+    public sbyte Estado { get; set; }
 
     public virtual Equipamento IdEquipamentoNavigation { get; set; } = null!;
 

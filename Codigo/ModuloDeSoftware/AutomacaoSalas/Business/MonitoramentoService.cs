@@ -22,11 +22,11 @@ namespace Service
             _context = context;
         }
 
-        public List<MonitoramentoModel> GetAll() => _context.Monitoramentos.Select(m => new MonitoramentoModel { Id = m.Id, IdEquipamento = m.IdEquipamento }).ToList();
+        public List<MonitoramentoModel> GetAll() => _context.Monitoramentos.Select(m => new MonitoramentoModel { Id = m.Id, IdEquipamento = m.IdEquipamento, Estado = Convert.ToBoolean(m.Estado) }).ToList();
 
-        public MonitoramentoModel GetById(int id) => _context.Monitoramentos.Where(m => m.Id == id).Select(m => new MonitoramentoModel { Id = m.Id, IdEquipamento = m.IdEquipamento }).FirstOrDefault();
+        public MonitoramentoModel GetById(int id) => _context.Monitoramentos.Where(m => m.Id == id).Select(m => new MonitoramentoModel { Id = m.Id, IdEquipamento = m.IdEquipamento, Estado = Convert.ToBoolean(m.Estado) }).FirstOrDefault();
 
-        public MonitoramentoModel GetByIdEquipamento(int idEquipamento) => _context.Monitoramentos.Where(m => m.IdEquipamento == idEquipamento).Select(m => new MonitoramentoModel { Id = m.Id, IdEquipamento = m.IdEquipamento }).FirstOrDefault();
+        public MonitoramentoModel GetByIdEquipamento(int idEquipamento) => _context.Monitoramentos.Where(m => m.IdEquipamento == idEquipamento).Select(m => new MonitoramentoModel { Id = m.Id, IdEquipamento = m.IdEquipamento, Estado = Convert.ToBoolean(m.Estado) }).FirstOrDefault();
 
         public List<MonitoramentoModel> GetByIdSala(uint idSala)
         {
@@ -37,11 +37,12 @@ namespace Service
                                                               select new MonitoramentoModel
                                                               {
                                                                   Id = m.Id,
+                                                                  Estado = Convert.ToBoolean(m.Estado),
                                                                   IdEquipamento = m.IdEquipamento,
                                                                   IdEquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.IdSala },
                                                               });
 
-             
+
             return monitoramentos;
         }
 
@@ -51,13 +52,14 @@ namespace Service
             var equip = _context.Equipamentos.ToList();
             var monitoramentos = (from m in moni
                                   join e in equip on m.IdEquipamento equals e.Id
-                                                              where e.IdSala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
-                                                              select new MonitoramentoModel
-                                                              {
-                                                                  Id = m.Id,                                                                 
-                                                                  IdEquipamento = m.IdEquipamento,
-                                                                  IdEquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.IdSala },
-                                                              }
+                                  where e.IdSala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
+                                  select new MonitoramentoModel
+                                  {
+                                      Id = m.Id,
+                                      Estado = Convert.ToBoolean(m.Estado),
+                                      IdEquipamento = m.IdEquipamento,
+                                      IdEquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.IdSala },
+                                  }
                                   ).FirstOrDefault();
 
 
@@ -72,7 +74,7 @@ namespace Service
                 if (GetByIdEquipamento(model.IdEquipamento) != null)
                     return true;
 
-                _context.Add(SetEntity(model));
+                _context.Add(SetEntity(model, model.IdUsuario));
                 return _context.SaveChanges() == 1;
             }
             catch (Exception e)
@@ -103,16 +105,16 @@ namespace Service
 
                 var monitoramentoModel = new MonitoramentoModel
                 {
-                     IdEquipamento = monitoramento.EquipamentoId,
-                     Estado = monitoramento.Estado,
-                     Id = monitoramento.Id,
-                     SalaParticular = monitoramento.SalaParticular
+                    IdEquipamento = monitoramento.EquipamentoId,
+                    Estado = monitoramento.Estado,
+                    Id = monitoramento.Id,
+                    SalaParticular = monitoramento.SalaParticular
                 };
 
                 if (!EnviarComandosMonitoramento(monitoramentoModel))
                     throw new ServiceException("Houve inconsistências no cadastro da solicitação de Monitoramento. Verifique os dados do equipamento e hardware responsáveis e tente novamente.");
 
-                Update(monitoramentoModel);
+                Update(monitoramentoModel, idUsuario);
             }
 
             return true;
@@ -139,21 +141,22 @@ namespace Service
             if (!EnviarComandosMonitoramento(model))
                 throw new ServiceException("Ocorreu um problema e o monitoramento não pôde ser concluído. Por favor, tente novamente mais tarde.");
 
-            return Update(model);
+            return Update(model, idUsuario);
         }
 
-        public bool Update(MonitoramentoModel model)
+        public bool Update(MonitoramentoModel model, uint idUsuario)
         {
-            try
+            var monitoramento = SetEntity(model, idUsuario);
+            
+            var equipamento = _context.Equipamentos.FirstOrDefault(e => e.Id == model.IdEquipamento);
+            if (equipamento != null)
             {
-                _context.Update(SetEntity(model));
-                return _context.SaveChanges() == 1;
+                equipamento.Status = monitoramento.IdOperacao == 1 ? "L" : "D";
             }
-            catch (Exception)
-            {
-                throw new ServiceException("Houve um problema ao tentar realizar o monitoramento da sala. Por favor, tente novamente em alguns minutos.");
-            }
+            
+            return _context.SaveChanges() >= 1;
         }
+
         //TODO: Ajeitar esse método depois
         private bool EnviarComandosMonitoramento(MonitoramentoModel monitoramento)
         {
@@ -174,10 +177,10 @@ namespace Service
                     {
                         var _codigosInfravermelhoService = new CodigoInfravermelhoService(_context);
                         var idOperacao = (bool)monitoramento.Estado ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
-                        var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdModeloEquipamento(equipamento.Id, idOperacao);
+                        var codigosInfravermelho = _codigosInfravermelhoService.GetByIdOperacaoAndIdModeloEquipamento((int)equipamento.IdModeloEquipamento, idOperacao);
 
                         if (codigosInfravermelho == null)
-                            return false;
+                           return false;
 
                         tipoEquipamento = EquipamentoModel.TIPO_CONDICIONADOR;
                         operacao = codigosInfravermelho.Codigo.Replace(" ","");
@@ -243,15 +246,32 @@ namespace Service
             };
         }
 
-        private Monitoramento SetEntity(MonitoramentoModel model)
+        private Monitoramento SetEntity(MonitoramentoModel model, uint idUsuario)
         {
-            return new Monitoramento
+            var monitoramentoAtual = _context.Monitoramentos.FirstOrDefault(m => m.Id == model.Id);
+
+            if (monitoramentoAtual == null)
             {
-                Id = model.Id,
-                IdEquipamento = model.IdEquipamento,
-                IdOperacao = model.IdOperacao,
-                IdUsuario = model.IdUsuario,
-            };
+                return new Monitoramento
+                {
+                    Id = model.Id,
+                    IdEquipamento = model.IdEquipamento,
+                    IdOperacao = 2, 
+                    IdUsuario = model.IdUsuario,
+                    DataHora =  DateTime.Now,
+                    Estado = (sbyte)(model.Estado ? 1 : 0)
+                };
+            }
+            else
+            {
+                monitoramentoAtual.IdEquipamento = model.IdEquipamento;
+                monitoramentoAtual.IdOperacao = monitoramentoAtual.IdOperacao == 1 ? 2 : 1;
+                monitoramentoAtual.DataHora = DateTime.Now;
+                monitoramentoAtual.Estado = (sbyte)(monitoramentoAtual.IdOperacao == 1 ? 1 : 0);
+                monitoramentoAtual.IdUsuario = idUsuario;
+
+                return monitoramentoAtual;
+            }
         }
     }
 }

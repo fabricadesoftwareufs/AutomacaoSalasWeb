@@ -362,10 +362,13 @@ public partial class SalasDBContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime")
                 .HasColumnName("dataHora");
+            entity.Property(e => e.Estado).HasColumnName("estado");
             entity.Property(e => e.IdEquipamento).HasColumnName("idEquipamento");
             entity.Property(e => e.IdOperacao).HasColumnName("idOperacao");
             entity.Property(e => e.IdUsuario).HasColumnName("idUsuario");
-            entity.Property(e => e.Temperatura).HasColumnName("temperatura");
+            entity.Property(e => e.Temperatura)
+                .HasDefaultValueSql("'0'")
+                .HasColumnName("temperatura");
 
             entity.HasOne(d => d.IdEquipamentoNavigation).WithMany(p => p.Monitoramentos)
                 .HasForeignKey(d => d.IdEquipamento)

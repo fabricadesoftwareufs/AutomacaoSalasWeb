@@ -106,7 +106,14 @@ namespace SalasAPI.Controllers
         {
             try
             {
-                if (_service.Insert(equipamentoModel))
+                // Obtém o ID do usuário do token de autenticação
+                uint idUsuario = 0;
+                if (User.Identity.IsAuthenticated && User.FindFirst("UserId") != null)
+                {
+                    uint.TryParse(User.FindFirst("UserId").Value, out idUsuario);
+                }
+
+                if (_service.Insert(equipamentoModel, idUsuario))
                     return Ok();
 
                 return BadRequest();

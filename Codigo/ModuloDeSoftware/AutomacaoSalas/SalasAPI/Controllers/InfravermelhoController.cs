@@ -156,6 +156,38 @@ namespace SalasAPI.Controllers
                 });
             }
         }
+        // GET api/<InfravermelhoController>/CodigosPorModeloOperacao/5/1
+        [HttpGet]
+        [Route("CodigosPorModeloOperacao/{idModeloEquipamento}/{idOperacao}")]
+        public ActionResult GetByModeloOperacao(int idModeloEquipamento, int idOperacao)
+        {
+            try
+            {
+                CodigoInfravermelhoModel codigo = _service.GetByIdOperacaoAndIdModeloEquipamento(idModeloEquipamento, idOperacao);
+                if (codigo == null)
+                    return Ok(new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.NoContent,
+                        message = "Nenhum código foi encontrado para a requisição!"
+                    });
 
+                return Ok(new
+                {
+                    result = codigo,
+                    httpCode = (int)HttpStatusCode.OK,
+                    message = "Código obtido com sucesso!"
+                });
+            }
+            catch (ServiceException e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.InternalServerError,
+                    message = e.Message
+                });
+            }
+        }
     }
 }
