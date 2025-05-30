@@ -140,17 +140,20 @@ namespace SalasAPI.Controllers
 
         // PUT: api/Monitoramento/5
         [HttpPut]
-        [AllowAnonymous]
+        [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
         public ActionResult Atualizar([FromBody] MonitoramentoModel monitoramento)
         {
             try
             {
-                if (_monitoramentoService.Update(monitoramento))
-                    return Ok(new {
+                uint idUsuario = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity).UsuarioModel.Id;
+
+                if (_monitoramentoService.Update(monitoramento, idUsuario))
+                    return Ok(new
+                    {
                         result = monitoramento,
                         httpCode = (int)HttpStatusCode.OK,
                         message = "Monitoramento atualizado!"
-                    }); 
+                    });
 
                 return BadRequest(new
                 {
@@ -161,7 +164,12 @@ namespace SalasAPI.Controllers
             }
             catch (ServiceException e)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.InternalServerError,
+                    message = e.Message
+                });
             }
         }
     }

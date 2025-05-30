@@ -78,7 +78,7 @@ namespace SalasAPI.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPut]
         [AllowAnonymous]
         [Route("cancelarReserva/{idReserva}")]
         public ActionResult CancelarReserva(uint idReserva)
@@ -111,6 +111,41 @@ namespace SalasAPI.Controllers
                 });
             }
         }
+
+        [HttpPut]
+        [AllowAnonymous]
+        [Route("aprovarReserva/{idReserva}")]
+        public ActionResult AprovarReserva(uint idReserva)
+        {
+            try
+            {
+                if (!_service.AprovarReserva(idReserva))
+                {
+                    return BadRequest(new
+                    {
+                        result = false,
+                        httpCode = (int)HttpStatusCode.BadRequest,
+                        message = "Sua requisição não pode ser processada"
+                    });
+                }
+                return Ok(new
+                {
+                    result = true,
+                    httpCode = (int)HttpStatusCode.OK,
+                    message = "Reserva Aprovada com sucesso"
+                });
+            }
+            catch (ServiceException se)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.InternalServerError,
+                    message = se.Message
+                });
+            }
+        }
+
 
         // GET: api/HorarioSala
         [HttpGet]
