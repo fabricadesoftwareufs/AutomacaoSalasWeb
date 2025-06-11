@@ -15,6 +15,7 @@ namespace Service.Interface
         bool MonitorarSala(uint idUsuario, MonitoramentoViewModel monitoramento);
         bool MonitorarEquipamento(uint idUsuario, MonitoramentoModel model);
         MonitoramentoModel GetByIdSalaAndTipoEquipamento(uint idSala, string tipoEquipamento);
+        MonitoramentoModel GetByIdSalaAndTipoEquipamento(uint idSala, string tipoEquipamento, uint idUsuario);
 
     }
 }

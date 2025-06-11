@@ -66,6 +66,26 @@ namespace Service
             return monitoramentos;
         }
 
+        public MonitoramentoModel GetByIdSalaAndTipoEquipamento(uint idSala, string tipoEquipamento, uint idUsuario)
+        {
+            var moni = _context.Monitoramentos.ToList();
+            var equip = _context.Equipamentos.ToList();
+            var monitoramentos = (from m in moni
+                                  join e in equip on m.IdEquipamento equals e.Id
+                                  where e.IdSala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
+                                  select new MonitoramentoModel
+                                  {
+                                      Id = m.Id,
+                                      Estado = Convert.ToBoolean(m.Estado),
+                                      IdEquipamento = m.IdEquipamento,
+                                      SalaParticular = _context.Salaparticulars.Any(sp => sp.IdUsuario == idUsuario && sp.IdSala == idSala),
+                                      IdEquipamentoNavigation = new EquipamentoModel { Id = e.Id, TipoEquipamento = e.TipoEquipamento, Sala = e.IdSala },
+                                  }
+                                  ).FirstOrDefault();
+
+
+            return monitoramentos;
+        }
 
         public bool Insert(MonitoramentoModel model)
         {

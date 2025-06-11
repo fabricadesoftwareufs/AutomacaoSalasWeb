@@ -56,8 +56,8 @@ namespace SalasAPI.Controllers
                         HorarioSala = item,
                         Sala = sala,
                         Bloco = bloco,
-                        MonitoramentoLuzes = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_LUZES),
-                        MonitoramentoCondicionadores = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_CONDICIONADOR)
+                        MonitoramentoLuzes = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_LUZES, idUsuario),
+                        MonitoramentoCondicionadores = _monitoramentoService.GetByIdSalaAndTipoEquipamento(sala.Id, EquipamentoModel.TIPO_CONDICIONADOR, idUsuario)
                     });
                 }
 
