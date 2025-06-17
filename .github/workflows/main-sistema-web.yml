@@ -1,63 +1,66 @@
-name: AutomacaoSalas-WEB CI
+name: AutomacaoSalas-WEB Deploy
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy'
-        type: environment
-        required: true
+  push:
+    branches: [ master ] # ou master
+  workflow_dispatch: # deploy manual
 
 jobs:
-  build-and-publish:
-    runs-on: ubuntu-latest
-    
-    environment:
-      name: ${{ github.event.inputs.environment }}
+  build-and-deploy:
+    runs-on: windows-latest # mudei para windows por causa do Web Deploy
     
     env:
       work-directory: Codigo/ModuloDeSoftware/WebAPI/SalasUfsWeb
-
-    steps:
-    - name: Execute checkout in repository
-      uses: actions/checkout@v2
     
-    - name: Configure .NET version
-      uses: actions/setup-dotnet@v1
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 3.1
-      
-    - name: Replace variables
+        dotnet-version: '8.0' # atualize conforme sua versão atual
+    
+    # Substitui a connection string do MySQL para produção
+    - name: Replace connection string
       uses: microsoft/variable-substitution@v1
       with:
         files: '${{env.work-directory}}/appsettings.json'
       env:
         ConnectionStrings.MySqlConnection: ${{secrets.CONNECTION_STRING}}
-
+    
     - name: Restore dependencies
       run: |
         cd ${{env.work-directory}}
         dotnet restore
-
+    
     - name: Build Application
       run: |
         cd ${{env.work-directory}}
-        dotnet build --no-restore
-      
+        dotnet build --configuration Release --no-restore
+    
     - name: Publish Application
       run: |
         cd ${{env.work-directory}}
-        dotnet publish -c --configuration Release --no-restore --output ./publishWEB
+        dotnet publish --configuration Release --no-build --output ./publishWEB
     
-    - name: Upload via FTP
-      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+    # Opção 1: Web Deploy (recomendado)
+    - name: Deploy via Web Deploy
+      uses: azure/webapps-deploy@v2
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USER_WEB }}
-        password: ${{ secrets.FTP_PASS_WEB }}
-        local-dir: '${{env.work-directory}}/publishWEB/'
-        remote-dir: ./
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/AnaliseProjeto
+        app-name: 'itetech-001-site2'
+        publish-profile: ${{ secrets.PUBLISH_PROFILE }}
+        package: '${{env.work-directory}}/publishWEB'
+    
+    # Opção 2: FTP (backup - descomente se Web Deploy não funcionar)
+    # - name: Deploy via FTP
+    #   uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+    #   with:
+    #     server: win8184.site4now.net
+    #     username: itetech-001
+    #     password: ${{ secrets.FTP_PASSWORD }}
+    #     local-dir: '${{env.work-directory}}/publishWEB/'
+    #     server-dir: /salasweb/
+    #     exclude: |
+    #       **/.git*
+    #       **/.git*/**
