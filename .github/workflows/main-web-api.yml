@@ -1,162 +1,63 @@
-name: AutomacaoSalas-API Deploy (FTP com App_Offline)
+name: AutomacaoSalas-API CI
+
 on:
-  push:
-    branches: [ master ]
-    paths: 
-      - 'Codigo/ModuloDeSoftware/AutomacaoSalas/SalasAPI/**'
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        type: environment
+        required: true
 
 jobs:
-  build-and-deploy-api:
-    runs-on: windows-latest
-    
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ github.event.inputs.environment }}
+
     env:
-      work-directory: Codigo/ModuloDeSoftware/AutomacaoSalas/SalasAPI
-    
+      work-directory: Codigo/ModuloDeSoftware/WebAPI/WebAPI
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - name: Execute checkout in repository
+      uses: actions/checkout@v2
     
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+    - name: Configure .NET version
+      uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '8.0'
-    
-    # Debug: Verificar estrutura de arquivos da API
-    - name: Debug - List API files
-      run: |
-        echo "=== Verificando estrutura da API ==="
-        echo "Work directory: ${{env.work-directory}}"
-        if (Test-Path "${{env.work-directory}}") {
-          echo "✅ Pasta da API existe!"
-          echo "Arquivos na pasta:"
-          Get-ChildItem "${{env.work-directory}}" | Select-Object Name, Length
-          echo "Procurando appsettings.json:"
-          Get-ChildItem "${{env.work-directory}}" -Filter "appsettings.json" | Select-Object FullName
-        } else {
-          echo "❌ Pasta da API não existe!"
-          echo "Procurando SalasAPI em todo o repositório:"
-          Get-ChildItem -Recurse -Include "SalasAPI" -Directory | Select-Object FullName
-        }
-    
-    # Substitui a connection string do MySQL para produção
-    - name: Replace connection string
+        dotnet-version: 3.1
+
+    - name: Replace variables
       uses: microsoft/variable-substitution@v1
       with:
         files: '${{env.work-directory}}/appsettings.json'
       env:
         ConnectionStrings.MySqlConnection: ${{secrets.CONNECTION_STRING}}
-    
+
     - name: Restore dependencies
       run: |
         cd ${{env.work-directory}}
         dotnet restore
-    
-    - name: Build API
+  
+    - name: Build Application
       run: |
         cd ${{env.work-directory}}
-        dotnet build --configuration Release --no-restore
-    
-    - name: Publish API
+        dotnet build --no-restore
+      
+    - name: Publish Application
       run: |
         cd ${{env.work-directory}}
-        dotnet publish --configuration Release --no-build --output ./publishAPI
-    
-    # ETAPA 1: App_Offline para parar a API
-    - name: Create and Deploy App_Offline for API
-      run: |
-        cd ${{env.work-directory}}/publishAPI
-        echo "<!DOCTYPE html><html><head><meta charset='utf-8'><title>API em Manutenção</title></head><body><h1>API em Manutenção</h1><p>A API está sendo atualizada. Voltaremos em instantes...</p></body></html>" > app_offline.htm
-        
-        # Upload apenas o app_offline.htm via PowerShell FTP
-        $ftpServer = "win8184.site4now.net"
-        $ftpUsername = "itetech-001"
-        $ftpPassword = "${{ secrets.FTP_PASSWORD }}"
-        $localFile = "app_offline.htm"
-        $remoteFile = "/salasapi/app_offline.htm"
-        
-        try {
-          $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$ftpServer$remoteFile")
-          $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile
-          $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($ftpUsername, $ftpPassword)
-          
-          $fileContent = Get-Content $localFile -Raw -Encoding UTF8
-          $data = [System.Text.Encoding]::UTF8.GetBytes($fileContent)
-          
-          $ftpRequest.ContentLength = $data.Length
-          $requestStream = $ftpRequest.GetRequestStream()
-          $requestStream.Write($data, 0, $data.Length)
-          $requestStream.Close()
-          
-          $response = $ftpRequest.GetResponse()
-          Write-Host "✅ App_Offline da API enviado com sucesso!"
-          $response.Close()
-        }
-        catch {
-          Write-Host "❌ Erro ao enviar App_Offline da API: $($_.Exception.Message)"
-          throw
-        }
-    
-    # ETAPA 2: Aguardar API parar
-    - name: Wait for API to stop
-      run: Start-Sleep -Seconds 20
-    
-    # ETAPA 3: Deploy da API
-    - name: Deploy API Files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: win8184.site4now.net
-        username: itetech-001
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: '${{env.work-directory}}/publishAPI/'
-        server-dir: /salasapi/
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/obj/**
-          **/bin/**
-          app_offline.htm
-    
-    # ETAPA 4: Remover App_Offline para reativar a API
-    - name: Remove App_Offline from API
-      run: |
-        $ftpServer = "win8184.site4now.net"
-        $ftpUsername = "itetech-001"
-        $ftpPassword = "${{ secrets.FTP_PASSWORD }}"
-        $remoteFile = "/salasapi/app_offline.htm"
-        
-        try {
-          $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$ftpServer$remoteFile")
-          $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::DeleteFile
-          $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($ftpUsername, $ftpPassword)
-          
-          $response = $ftpRequest.GetResponse()
-          Write-Host "✅ App_Offline da API removido com sucesso!"
-          $response.Close()
-        }
-        catch {
-          Write-Host "⚠️ Erro ao remover App_Offline da API (pode já ter sido removido): $($_.Exception.Message)"
-        }
-    
-    # ETAPA 5: Verificar se a API voltou
-    - name: Verify API is back online
-      run: |
-        Write-Host "🔍 Verificando se a API voltou ao normal..."
-        Start-Sleep -Seconds 10
-        try {
-          # Teste básico na API - pode ajustar a rota conforme sua API
-          $response = Invoke-WebRequest -Uri "http://itetech-001-site4.qtempurl.com" -TimeoutSec 30
-          Write-Host "✅ API está online - Status: $($response.StatusCode)"
-        }
-        catch {
-          Write-Host "⚠️ API ainda pode estar reiniciando: $($_.Exception.Message)"
-          Write-Host "Tentando endpoint específico da API..."
-          try {
-            # Tente um endpoint específico da sua API aqui, como /api/health ou /swagger
-            $healthResponse = Invoke-WebRequest -Uri "http://itetech-001-site4.qtempurl.com/swagger" -TimeoutSec 30
-            Write-Host "✅ Swagger da API está acessível - Status: $($healthResponse.StatusCode)"
-          }
-          catch {
-            Write-Host "⚠️ Endpoints da API ainda não estão respondendo. Isso pode ser normal durante o restart."
-          }
-        }
+        dotnet publish -c --configuration Release --no-restore --output ./publishAPI 
+      
+#    - name: Upload via FTP
+#      uses: SamKirkland/FTP-Deploy-Action@4.3.3
+#      with:
+#        server: ${{ secrets.FTP_SERVER }}
+#        username: ${{ secrets.FTP_USER }}
+#        password: ${{ secrets.FTP_PASS }}
+#        local-dir: '${{env.work-directory}}/publishAPI/'
+#        remote-dir: ./
+#        exclude: |
+#          **/.git*
+#          **/.git*/**
+#          **/AnaliseProjeto

@@ -1,12 +1,13 @@
-name: AutomacaoSalas-WEB Deploy (FTP com Retry)
+name: AutomacaoSalas-WEB Deploy
+
 on:
   push:
-    branches: [ master ]
-  workflow_dispatch:
+    branches: [ master ] # ou master
+  workflow_dispatch: # deploy manual
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: windows-latest # mudei para windows por causa do Web Deploy
     
     env:
       work-directory: Codigo/ModuloDeSoftware/AutomacaoSalas/SalasWeb
@@ -18,8 +19,26 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0'
+        dotnet-version: '8.0' # atualize conforme sua versão atual
     
+    # Debug: Verificar estrutura de arquivos (REMOVER depois que funcionar)
+    - name: Debug - List files
+      run: |
+        echo "=== Verificando caminho correto ==="
+        echo "Work directory: ${{env.work-directory}}"
+        if (Test-Path "${{env.work-directory}}") {
+          echo "✅ Pasta existe!"
+          echo "Arquivos na pasta:"
+          Get-ChildItem "${{env.work-directory}}" | Select-Object Name, Length
+          echo "Procurando appsettings.json:"
+          Get-ChildItem "${{env.work-directory}}" -Filter "appsettings.json" | Select-Object FullName
+        } else {
+          echo "❌ Pasta não existe!"
+          echo "Procurando em todo o repositório:"
+          Get-ChildItem -Recurse -Include "appsettings.json" | Select-Object FullName
+        }
+    
+    # Substitui a connection string do MySQL para produção
     - name: Replace connection string
       uses: microsoft/variable-substitution@v1
       with:
@@ -42,47 +61,8 @@ jobs:
         cd ${{env.work-directory}}
         dotnet publish --configuration Release --no-build --output ./publishWEB
     
-    # ETAPA 1: App_Offline para parar a aplicação
-    - name: Create and Deploy App_Offline
-      run: |
-        cd ${{env.work-directory}}/publishWEB
-        echo "<!DOCTYPE html><html><head><meta charset='utf-8'><title>Manutenção</title></head><body><h1>Site em Manutenção</h1><p>Voltaremos em instantes...</p></body></html>" > app_offline.htm
-        
-        # Upload apenas o app_offline.htm via PowerShell FTP
-        $ftpServer = "win8184.site4now.net"
-        $ftpUsername = "itetech-001"
-        $ftpPassword = "${{ secrets.FTP_PASSWORD }}"
-        $localFile = "app_offline.htm"
-        $remoteFile = "/salasweb/app_offline.htm"
-        
-        try {
-          $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$ftpServer$remoteFile")
-          $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile
-          $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($ftpUsername, $ftpPassword)
-          
-          $fileContent = Get-Content $localFile -Raw -Encoding UTF8
-          $data = [System.Text.Encoding]::UTF8.GetBytes($fileContent)
-          
-          $ftpRequest.ContentLength = $data.Length
-          $requestStream = $ftpRequest.GetRequestStream()
-          $requestStream.Write($data, 0, $data.Length)
-          $requestStream.Close()
-          
-          $response = $ftpRequest.GetResponse()
-          Write-Host "✅ App_Offline enviado com sucesso!"
-          $response.Close()
-        }
-        catch {
-          Write-Host "❌ Erro ao enviar App_Offline: $($_.Exception.Message)"
-          throw
-        }
-    
-    # ETAPA 2: Aguardar aplicação parar
-    - name: Wait for application to stop
-      run: Start-Sleep -Seconds 20
-    
-    # ETAPA 3: Deploy da aplicação
-    - name: Deploy Application Files
+    # Deploy via FTP (mais compatível com Site4Now)
+    - name: Deploy via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: win8184.site4now.net
@@ -95,38 +75,3 @@ jobs:
           **/.git*/**
           **/obj/**
           **/bin/**
-          app_offline.htm
-    
-    # ETAPA 4: Remover App_Offline para reativar o site
-    - name: Remove App_Offline
-      run: |
-        $ftpServer = "win8184.site4now.net"
-        $ftpUsername = "itetech-001"
-        $ftpPassword = "${{ secrets.FTP_PASSWORD }}"
-        $remoteFile = "/salasweb/app_offline.htm"
-        
-        try {
-          $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$ftpServer$remoteFile")
-          $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::DeleteFile
-          $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($ftpUsername, $ftpPassword)
-          
-          $response = $ftpRequest.GetResponse()
-          Write-Host "✅ App_Offline removido com sucesso!"
-          $response.Close()
-        }
-        catch {
-          Write-Host "⚠️ Erro ao remover App_Offline (pode já ter sido removido): $($_.Exception.Message)"
-        }
-    
-    # ETAPA 5: Verificar se o site voltou
-    - name: Verify site is back online
-      run: |
-        Write-Host "🔍 Verificando se o site voltou ao normal..."
-        Start-Sleep -Seconds 10
-        try {
-          $response = Invoke-WebRequest -Uri "http://itetech-001-site2.qtempurl.com" -TimeoutSec 30
-          Write-Host "✅ Site está online - Status: $($response.StatusCode)"
-        }
-        catch {
-          Write-Host "⚠️ Site ainda pode estar reiniciando: $($_.Exception.Message)"
-        }
