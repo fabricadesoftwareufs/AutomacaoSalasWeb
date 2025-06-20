@@ -1,13 +1,34 @@
-name: AutomacaoSalas-API Deploy (FTP com App_Offline)
+name: AutomacaoSalas-API Deploy (Release)
 on:
-  push:
-    branches: [ master ]
-    paths: 
-      - 'Codigo/ModuloDeSoftware/AutomacaoSalas/SalasAPI/**'
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
+  test:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0'
+    
+    - name: Restore test dependencies
+      run: |
+        cd Codigo\ModuloDeSoftware\AutomacaoSalas\ServiceTests
+        dotnet restore
+    
+    - name: Run tests
+      run: |
+        cd Codigo\ModuloDeSoftware\AutomacaoSalas\ServiceTests
+        dotnet test --configuration Release --no-restore --verbosity normal
+
   build-and-deploy-api:
+    needs: test
     runs-on: windows-latest
     
     env:
