@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Model.ViewModel;
+using Persistence;
+using Service;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -20,15 +22,18 @@ namespace SalasAPI.Controllers
         private readonly IConfiguration _configuration;
         private readonly IUsuarioService _usuarioService; 
         private readonly ITipoUsuarioService _tipoUsuarioService;
+        private readonly IOrganizacaoService _organizacaoService;
+        private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
 
-        public AuthController(IConfiguration configuration, IUsuarioService usuarioService, ITipoUsuarioService tipoUsuarioService)
+        public AuthController(IConfiguration configuration, IUsuarioService usuarioService, ITipoUsuarioService tipoUsuarioService, IOrganizacaoService organizacaoService, IUsuarioOrganizacaoService usuarioOrganizacaoService)
         {
             _configuration = configuration;
             _usuarioService = usuarioService;
             _tipoUsuarioService = tipoUsuarioService;
+            _organizacaoService = organizacaoService;
+            _usuarioOrganizacaoService = usuarioOrganizacaoService;
         }
-        
-        
+
         [AllowAnonymous]
         [HttpPost]
         public IActionResult RequestToken([FromBody] LoginViewModel request)
@@ -65,12 +70,17 @@ namespace SalasAPI.Controllers
                     expires: DateTime.Now.AddDays(1), // Expiração do token
                     signingCredentials: credentials
                 );
+                
+                var usuarioOrganizacao = _usuarioOrganizacaoService.GetByIdUsuario(user.Id);
+                var organizacao = _organizacaoService.GetById(usuarioOrganizacao[0].OrganizacaoId);
 
                 return Ok(new
                 {
                     id = user.Id,
                     cpf = user.Cpf,
                     nome = user.Nome,
+                    tipodeUsuario = userType.Descricao,
+                    organizacao = organizacao.RazaoSocial,
                     token = new JwtSecurityTokenHandler().WriteToken(token)
                 });
             }
