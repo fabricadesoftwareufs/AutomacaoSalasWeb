@@ -106,7 +106,7 @@ namespace SalasWeb.Controllers
                 var modelos = _modeloEquipamentoService.GetByMarca(id);
                 return Json(modelos.Select(m => new { id = m.Id, nome = m.Nome }));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Json(new List<object>());
             }
