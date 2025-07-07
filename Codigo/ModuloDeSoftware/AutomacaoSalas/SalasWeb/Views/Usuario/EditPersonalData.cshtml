@@ -78,11 +78,7 @@
                                 <label asp-for="UsuarioModel.DataNascimento" class="control-label"></label>
                                 <div class="input-group">
                                     <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control"
-                                           value="@if(@Model.UsuarioModel.DataNascimento != null){
-                                @Model.UsuarioModel.DataNascimento.ToString("yyyy-MM-dd")
-}else{
-                                @Model.UsuarioModel.DataNascimento
-}" />
+                                           value="@(Model.UsuarioModel.DataNascimento != DateTime.MinValue ? Model.UsuarioModel.DataNascimento.ToString("yyyy-MM-dd") : "")" />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-birthday-cake"></span>

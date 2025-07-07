@@ -219,6 +219,67 @@ namespace SalasWeb.Controllers
             return View(usuarioView);
         }
 
+        // GET: Usuario/EditPassword
+        [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
+        public ActionResult EditPassword()
+        {
+            var usuarioId = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity)?.UsuarioModel?.Id ?? 0;
+            var viewModel = new AlterarSenhaViewModel { UsuarioId = usuarioId };
+            return View(viewModel);
+        }
+
+        // POST: Usuario/EditPassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
+        public ActionResult EditPassword(AlterarSenhaViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    // Buscar o usuário atual
+                    var usuarioAtual = _usuarioService.GetById(model.UsuarioId);
+                    if (usuarioAtual == null)
+                    {
+                        TempData["mensagemErro"] = "Usuário não encontrado.";
+                        return View(model);
+                    }
+
+                    // Verificar se a senha atual está correta
+                    var senhaAtualHash = Criptography.GeneratePasswordHash(model.SenhaAtual);
+                    if (usuarioAtual.Senha != senhaAtualHash)
+                    {
+                        ModelState.AddModelError("SenhaAtual", "Senha atual incorreta.");
+                        return View(model);
+                    }
+
+                    // Atualizar com a nova senha
+                    usuarioAtual.Senha = Criptography.GeneratePasswordHash(model.NovaSenha);
+                    usuarioAtual.IdOrganizacao = _organizacaoService.GetByIdUsuario(model.UsuarioId).FirstOrDefault()?.Id ?? 0;
+                    usuarioAtual.IdTipoUsuario = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(model.UsuarioId)?.Id ?? 0;
+
+                    if (_usuarioService.Update(usuarioAtual))
+                    {
+                        TempData["mensagemSucesso"] = "Senha alterada com sucesso!";
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        TempData["mensagemErro"] = "Houve um problema ao alterar a senha, tente novamente em alguns minutos.";
+                        return View(model);
+                    }
+                }
+            }
+            catch (ServiceException se)
+            {
+                TempData["mensagemErro"] = se.Message;
+                return View(model);
+            }
+            return View(model);
+        }
+
+        // GET: Usuario/EditPersonalData
         [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
         public ActionResult EditPersonalData()
         {
@@ -232,7 +293,7 @@ namespace SalasWeb.Controllers
             return View(usuarioView);
         }
 
-        // POST: Usuario/Edit/5
+        // POST: Usuario/EditPersonalData
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
@@ -240,8 +301,13 @@ namespace SalasWeb.Controllers
         {
             try
             {
+                // Remove a validação da senha para edição de dados pessoais
+                ModelState.Remove("UsuarioModel.Senha");
+                
                 if (ModelState.IsValid)
                 {
+                    usuarioView.UsuarioModel.IdOrganizacao = usuarioView.OrganizacaoModel.Id;
+                    usuarioView.UsuarioModel.IdTipoUsuario = usuarioView.TipoUsuarioModel.Id;
                     usuarioView.UsuarioModel.TipoUsuarioId = usuarioView.TipoUsuarioModel.Id;
                     if (_usuarioService.Update(usuarioView.UsuarioModel))
                     {
