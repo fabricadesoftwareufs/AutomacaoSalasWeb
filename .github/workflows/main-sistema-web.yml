@@ -65,46 +65,7 @@ jobs:
         cd ${{env.work-directory}}
         dotnet publish --configuration Release --no-build --output ./publishWEB
     
-    # ETAPA 1: App_Offline para parar a aplicação
-    - name: Create and Deploy App_Offline
-      run: |
-        cd ${{env.work-directory}}/publishWEB
-        echo "<!DOCTYPE html><html><head><meta charset='utf-8'><title>Manutenção</title></head><body><h1>Site em Manutenção</h1><p>Voltaremos em instantes...</p></body></html>" > app_offline.htm
-        
-        # Upload apenas o app_offline.htm via PowerShell FTP
-        $ftpServer = "win8184.site4now.net"
-        $ftpUsername = "itetech-001"
-        $ftpPassword = "${{ secrets.FTP_PASSWORD }}"
-        $localFile = "app_offline.htm"
-        $remoteFile = "/salasweb/app_offline.htm"
-        
-        try {
-          $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$ftpServer$remoteFile")
-          $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile
-          $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($ftpUsername, $ftpPassword)
-          
-          $fileContent = Get-Content $localFile -Raw -Encoding UTF8
-          $data = [System.Text.Encoding]::UTF8.GetBytes($fileContent)
-          
-          $ftpRequest.ContentLength = $data.Length
-          $requestStream = $ftpRequest.GetRequestStream()
-          $requestStream.Write($data, 0, $data.Length)
-          $requestStream.Close()
-          
-          $response = $ftpRequest.GetResponse()
-          Write-Host "✅ App_Offline enviado com sucesso!"
-          $response.Close()
-        }
-        catch {
-          Write-Host "❌ Erro ao enviar App_Offline: $($_.Exception.Message)"
-          throw
-        }
-    
-    # ETAPA 2: Aguardar aplicação parar
-    - name: Wait for application to stop
-      run: Start-Sleep -Seconds 20
-    
-    # ETAPA 3: Deploy da aplicação
+    # Deploy direto da aplicação
     - name: Deploy Application Files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
@@ -118,38 +79,16 @@ jobs:
           **/.git*/**
           **/obj/**
           **/bin/**
-          app_offline.htm
     
-    # ETAPA 4: Remover App_Offline para reativar o site
-    - name: Remove App_Offline
+    # Verificar se o site está funcionando
+    - name: Verify site is online
       run: |
-        $ftpServer = "win8184.site4now.net"
-        $ftpUsername = "itetech-001"
-        $ftpPassword = "${{ secrets.FTP_PASSWORD }}"
-        $remoteFile = "/salasweb/app_offline.htm"
-        
-        try {
-          $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$ftpServer$remoteFile")
-          $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::DeleteFile
-          $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($ftpUsername, $ftpPassword)
-          
-          $response = $ftpRequest.GetResponse()
-          Write-Host "✅ App_Offline removido com sucesso!"
-          $response.Close()
-        }
-        catch {
-          Write-Host "⚠️ Erro ao remover App_Offline (pode já ter sido removido): $($_.Exception.Message)"
-        }
-    
-    # ETAPA 5: Verificar se o site voltou
-    - name: Verify site is back online
-      run: |
-        Write-Host "🔍 Verificando se o site voltou ao normal..."
-        Start-Sleep -Seconds 10
+        Write-Host "🔍 Verificando se o site está funcionando..."
+        Start-Sleep -Seconds 15
         try {
           $response = Invoke-WebRequest -Uri "http://itetech-001-site2.qtempurl.com" -TimeoutSec 30
           Write-Host "✅ Site está online - Status: $($response.StatusCode)"
         }
         catch {
-          Write-Host "⚠️ Site ainda pode estar reiniciando: $($_.Exception.Message)"
+          Write-Host "⚠️ Site pode estar reiniciando: $($_.Exception.Message)"
         }

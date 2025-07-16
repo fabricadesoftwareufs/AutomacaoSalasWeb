@@ -108,8 +108,10 @@ namespace Service
         {
             entity.Id = model.Id;
             entity.Descricao = model.Descricao;
+            entity.IdOrganizacao = (uint)model.IdOrganizacao; 
 
             return entity;
         }
+
     }
 }
