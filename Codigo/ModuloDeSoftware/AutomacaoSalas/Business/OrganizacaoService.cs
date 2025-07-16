@@ -52,79 +52,136 @@ namespace Service
         public OrganizacaoModel GetByCnpj(string cnpj) => _context.Organizacaos.Where(o => o.Cnpj.Equals(cnpj)).Select(o => new OrganizacaoModel { Id = o.Id, Cnpj = o.Cnpj, RazaoSocial = o.RazaoSocial }).FirstOrDefault();
 
         /// <summary>
-        /// Insere uma nova organização no sistema.
+        /// Insere uma nova organização no sistema e cria automaticamente os tipos de hardware padrão.
         /// </summary>
         /// <param name="entity">Modelo da organização a ser inserida.</param>
         /// <returns>True se a inserção for bem-sucedida, false caso contrário.</returns>
         /// <exception cref="ServiceException">Lançada se já existir uma organização com o mesmo CNPJ.</exception>
         public bool Insert(OrganizacaoModel entity)
         {
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                if (GetByCnpj(entity.Cnpj) != null)
-                    throw new ServiceException("Uma organização com este CNPJ já está cadastrada.");
+                try
+                {
+                    if (GetByCnpj(entity.Cnpj) != null)
+                        throw new ServiceException("Uma organização com este CNPJ já está cadastrada.");
 
-                _context.Add(SetEntity(entity, new Organizacao()));
+                    // Insere a organização
+                    var organizacaoEntity = SetEntity(entity, new Organizacao());
+                    _context.Add(organizacaoEntity);
 
-                return _context.SaveChanges() == 1 ? true : false;
-            }
-            catch (Exception e)
+                    if (_context.SaveChanges() != 1)
+                        throw new ServiceException("Erro ao inserir a organização.");
+
+                    // Cria os tipos de hardware padrão para a nova organização
+                    var tipoHardwareService = new TipoHardwareService(_context);
+
+                    var tiposHardwarePadrao = new List<TipoHardwareModel>
             {
-                throw e;
-            }
+                new TipoHardwareModel
+                {
+                    Descricao = "CONTROLADOR DE SALA",
+                    IdOrganizacao = organizacaoEntity.Id
+                },
+                new TipoHardwareModel
+                {
+                    Descricao = "MODULO DE SENSORIAMENTO",
+                    IdOrganizacao = organizacaoEntity.Id
+                },
+                new TipoHardwareModel
+                {
+                    Descricao = "MODULO DE DISPOSITIVO",
+                    IdOrganizacao = organizacaoEntity.Id
+                }
+            };
 
+                    foreach (var tipoHardware in tiposHardwarePadrao)
+                    {
+                        if (!tipoHardwareService.Insert(tipoHardware))
+                            throw new ServiceException($"Erro ao criar o tipo de hardware: {tipoHardware.Descricao}");
+                    }
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e;
+                }
+            }
         }
 
         /// <summary>
-        /// Remove uma organização do sistema pelo seu identificador.
+        /// Remove uma organização do sistema e todos os tipos de hardware associados.
         /// </summary>
         /// <param name="id">Identificador da organização a ser removida.</param>
         /// <returns>True se a remoção for bem-sucedida, false caso contrário.</returns>
         /// <exception cref="ServiceException">Lançada se existirem blocos ou usuários associados à organização.</exception>
         public bool Remove(uint id)
         {
-            var _blocoService = new BlocoService(_context);
-            var _usuarioOrganizacaoService = new UsuarioOrganizacaoService(_context);
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                // Verifica se ainda existem blocos ou usuários associados à organização
-                var blocos = _blocoService.GetByIdOrganizacao(id);
-                var usuarios = _usuarioOrganizacaoService.GetByIdOrganizacao(id);
-
-                if (blocos.Count > 0 || usuarios.Count > 0)
+                try
                 {
-                    throw new ServiceException("A organização não pode ser removida, pois ainda existem usuários ou blocos associados a ela.");
-                }
+                    var _blocoService = new BlocoService(_context);
+                    var _usuarioOrganizacaoService = new UsuarioOrganizacaoService(_context);
+                    var _tipoHardwareService = new TipoHardwareService(_context);
 
-                var organizacao = _context.Organizacaos.FirstOrDefault(o => o.Id == id);
-                if (organizacao != null)
-                {
-                    try
+                    // Verifica se ainda existem blocos ou usuários associados à organização
+                    var blocos = _blocoService.GetByIdOrganizacao(id);
+                    var usuarios = _usuarioOrganizacaoService.GetByIdOrganizacao(id);
+
+                    if (blocos.Count > 0 || usuarios.Count > 0)
+                    {
+                        throw new ServiceException("A organização não pode ser removida, pois ainda existem usuários ou blocos associados a ela.");
+                    }
+
+                    // Remove todos os tipos de hardware associados à organização
+                    var tiposHardware = _tipoHardwareService.GetByIdOrganizacao(id);
+                    foreach (var tipoHardware in tiposHardware)
+                    {
+                        if (!_tipoHardwareService.Remove((int)tipoHardware.Id))
+                            throw new ServiceException($"Erro ao remover o tipo de hardware: {tipoHardware.Descricao}");
+                    }
+
+                    // Remove a organização
+                    var organizacao = _context.Organizacaos.FirstOrDefault(o => o.Id == id);
+                    if (organizacao != null)
                     {
                         _context.Remove(organizacao);
-                        _context.SaveChanges();
-                        return true;
+                        if (_context.SaveChanges() != 1)
+                            throw new ServiceException("Erro ao remover a organização.");
                     }
-                    catch (MySqlException ex)
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (ServiceException)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+                catch (MySqlException ex)
+                {
+                    transaction.Rollback();
+                    if (ex.Message.Contains("Cannot delete or update a parent row: a foreign key constraint fails"))
                     {
-                        if (ex.Message.Contains("Cannot delete or update a parent row: a foreign key constraint fails"))
-                        {
-                            throw new ServiceException("A exclusão da organização não é possível, pois existem usuários ou blocos associados a ela.");
-                        }
-                        else
-                        {
-                            throw new ServiceException("Ocorreu um erro inesperado ao tentar remover a organização.");
-                        }
+                        throw new ServiceException("A exclusão da organização não é possível, pois existem usuários ou blocos associados a ela.");
+                    }
+                    else
+                    {
+                        throw new ServiceException("Ocorreu um erro inesperado ao tentar remover a organização.");
                     }
                 }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new ServiceException("Erro ao tentar remover a organização: " + ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                throw new ServiceException("Erro ao tentar remover a organização: " + ex.Message);
-            }
-
-            return false;
         }
+
 
         /// <summary>
         /// Atualiza os dados de uma organização existente.
