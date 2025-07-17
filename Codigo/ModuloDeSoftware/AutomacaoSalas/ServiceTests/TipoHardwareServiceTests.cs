@@ -105,7 +105,8 @@ namespace Service.Tests
             var novoTipoHardware = new TipoHardwareModel
             {
                 Id = 4,
-                Descricao = "Monitor de temperatura"
+                Descricao = "Monitor de temperatura",
+                IdOrganizacao = 1 
             };
 
             // Act
@@ -125,7 +126,8 @@ namespace Service.Tests
             var novoTipoHardware = new TipoHardwareModel
             {
                 Id = 4,
-                Descricao = "Sensor de presença"
+                Descricao = "Sensor de presença",
+                IdOrganizacao = 1 
             };
             tipoHardwareService.Insert(novoTipoHardware);
 
@@ -158,7 +160,8 @@ namespace Service.Tests
             var tipoHardwareExistente = new TipoHardwareModel
             {
                 Id = 2,
-                Descricao = "Modulo de sensoriamento avançado"
+                Descricao = "Modulo de sensoriamento avançado",
+                IdOrganizacao = 1 // Adicionado IdOrganizacao
             };
 
             // Act
