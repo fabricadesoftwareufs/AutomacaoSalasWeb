@@ -14,7 +14,7 @@ namespace SalasWeb.Controllers
     [AllowAnonymous]
     public class LoginController : Controller
     {
-        private readonly IUsuarioService _usuarioService;
+        private readonly IUsuarioService _usuarioService;//trocar pelo do identity e desenrolar é doido é.
         private readonly ITipoUsuarioService _tipoUsuarioService;
 
         public LoginController(IUsuarioService service,
@@ -42,7 +42,7 @@ namespace SalasWeb.Controllers
                         throw new InvalidOperationException("Serviço de usuário não foi inicializado");
                     }
 
-                    var user = _usuarioService.GetByLoginAndPass(Methods.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));
+                    var user = _usuarioService.GetByLoginAndPass(Methods.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));//vai mudar
                     if (user != null)
                     {
                         if (_tipoUsuarioService == null)
@@ -57,7 +57,7 @@ namespace SalasWeb.Controllers
                             throw new InvalidOperationException("Tipo de usuário não encontrado");
                         }
 
-                        var claims = new List<Claim>
+                        var claims = new List<Claim>//troca pela do identity
                         {
                             new Claim(ClaimTypes.SerialNumber, user.Id.ToString()),
                             new Claim(ClaimTypes.UserData, user.Cpf),

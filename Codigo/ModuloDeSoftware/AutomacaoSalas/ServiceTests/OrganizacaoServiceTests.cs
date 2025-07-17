@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Persistence;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Microsoft.EntityFrameworkCore.InMemory;
 namespace Service.Tests
 {
     [TestClass()]
@@ -21,12 +23,13 @@ namespace Service.Tests
         {
             // Arrange
             var builder = new DbContextOptionsBuilder<SalasDBContext>();
-            builder.UseInMemoryDatabase("automacaosalas");
+            builder.UseInMemoryDatabase("automacaosalas")
+                   .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning));
             var options = builder.Options;
             context = new SalasDBContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-    
+
             var organizacoes = new List<Organizacao>
             {
                 new() { Id = 1, Cnpj = "56287944000146", RazaoSocial = "UFS" },
@@ -45,6 +48,17 @@ namespace Service.Tests
                 new() { IdUsuario = 1, IdOrganizacao = 2, IdTipoUsuario = 1 }
             };
             context.AddRange(usuarioOrganizacao);
+           
+            var tiposHardware = new List<Tipohardware>
+            {
+                new() { Id = 1, Descricao = "CONTROLADOR DE SALA", IdOrganizacao = 1 },
+                new() { Id = 2, Descricao = "MODULO DE SENSORIAMENTO", IdOrganizacao = 1 },
+                new() { Id = 3, Descricao = "MODULO DE DISPOSITIVO", IdOrganizacao = 1 },
+                new() { Id = 4, Descricao = "CONTROLADOR DE SALA", IdOrganizacao = 2 },
+                new() { Id = 5, Descricao = "MODULO DE SENSORIAMENTO", IdOrganizacao = 2 },
+                new() { Id = 6, Descricao = "MODULO DE DISPOSITIVO", IdOrganizacao = 2 }
+            };
+            context.AddRange(tiposHardware);
 
             context.SaveChanges();
             organizacaoService = new OrganizacaoService(context);
@@ -122,6 +136,7 @@ namespace Service.Tests
             var organizacaoInserida = organizacaoService.GetByCnpj("65432198000145");
             Assert.IsNotNull(organizacaoInserida);
             Assert.AreEqual("Nova Universidade", organizacaoInserida.RazaoSocial);
+            Assert.AreEqual("65432198000145", organizacaoInserida.Cnpj);
         }
 
         [TestMethod()]
@@ -131,7 +146,7 @@ namespace Service.Tests
             // Arrange
             var organizacaoDuplicada = new OrganizacaoModel
             {
-                Cnpj = "56287944000146",
+                Cnpj = "56287944000146", // CNPJ já existente no setup
                 RazaoSocial = "Organização Duplicada"
             };
 
@@ -142,16 +157,19 @@ namespace Service.Tests
         [TestMethod()]
         public void RemoveTest()
         {
-            // Arrange
+            // Arrange 
             var novaOrganizacao = new OrganizacaoModel
             {
                 Cnpj = "98765432000156",
                 RazaoSocial = "Organização para Remoção"
             };
+
             organizacaoService.Insert(novaOrganizacao);
             var organizacaoInserida = organizacaoService.GetByCnpj("98765432000156");
 
-            // Act
+            Assert.IsNotNull(organizacaoInserida);
+
+            // Act - Remover a organização
             var resultado = organizacaoService.Remove(organizacaoInserida.Id);
 
             // Assert
@@ -163,9 +181,10 @@ namespace Service.Tests
         [ExpectedException(typeof(ServiceException))]
         public void RemoveTest_WithAssociatedData()
         {
-            // Act
+            // Act - Tentar remover organização com dependências
             organizacaoService.Remove(2);
         }
+
 
         [TestMethod()]
         public void UpdateTest()
