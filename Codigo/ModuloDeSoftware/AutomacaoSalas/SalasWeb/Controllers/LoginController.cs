@@ -41,16 +41,19 @@ namespace SalasWeb.Controllers
                 if (ValidaCpf(loginViewModel.Login))
                 {
                     var user = await userManager.Users.FirstOrDefaultAsync(u => u.Cpf == Methods.CleanString(loginViewModel.Login));
-                    var result = await signInManager.PasswordSignInAsync(user, loginViewModel.Senha, isPersistent: false, lockoutOnFailure: false);
-                    if (result.Succeeded)
+                    
+                    if (user != null)
                     {
-                        await userManager.AddClaimAsync(user, new Claim(ClaimTypes.UserData, user.Cpf));
-                        await signInManager.RefreshSignInAsync(user);
-                        return RedirectToAction("Index", "Home");
+                        var result = await signInManager.PasswordSignInAsync(user, loginViewModel.Senha, isPersistent: false, lockoutOnFailure: false);
+                        if (result.Succeeded)
+                        {
+                            await userManager.AddClaimAsync(user, new Claim(ClaimTypes.UserData, user.Cpf));
+                            await signInManager.RefreshSignInAsync(user);
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                 }
             }
-
             return RedirectToAction("Index", "Login", new { msg = "error" });
         }
 

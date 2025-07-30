@@ -17,5 +17,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Property(u => u.Cpf)
             .IsRequired()
             .HasMaxLength(14);
+
+        builder.Entity<ApplicationUser>()
+            .Property(u => u.BirthDate)
+            .IsRequired();
     }
 }
