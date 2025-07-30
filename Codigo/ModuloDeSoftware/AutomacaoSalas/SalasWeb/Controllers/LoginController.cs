@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Model.ViewModel;
+using SalasWeb.Data;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Utils;
@@ -14,14 +18,13 @@ namespace SalasWeb.Controllers
     [AllowAnonymous]
     public class LoginController : Controller
     {
-        private readonly IUsuarioService _usuarioService;//trocar pelo do identity e desenrolar é doido é.
-        private readonly ITipoUsuarioService _tipoUsuarioService;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public LoginController(IUsuarioService service,
-                               ITipoUsuarioService tipoUsuarioService)
+        public LoginController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
-            _usuarioService = service;
-            _tipoUsuarioService = tipoUsuarioService;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         public IActionResult Index() => View();
@@ -37,44 +40,12 @@ namespace SalasWeb.Controllers
             {
                 if (ValidaCpf(loginViewModel.Login))
                 {
-                    if (_usuarioService == null)
+                    var user = await userManager.Users.FirstOrDefaultAsync(u => u.Cpf == Methods.CleanString(loginViewModel.Login));
+                    var result = await signInManager.PasswordSignInAsync(user, loginViewModel.Senha, isPersistent: false, lockoutOnFailure: false);
+                    if (result.Succeeded)
                     {
-                        throw new InvalidOperationException("Serviço de usuário não foi inicializado");
-                    }
-
-                    var user = _usuarioService.GetByLoginAndPass(Methods.CleanString(loginViewModel.Login), Criptography.GeneratePasswordHash(loginViewModel.Senha));//vai mudar
-                    if (user != null)
-                    {
-                        if (_tipoUsuarioService == null)
-                        {
-                            throw new InvalidOperationException("Serviço de tipo de usuário não foi inicializado");
-                        }
-
-                        // Busca o tipo de usuário usando o novo método
-                        var tipoUsuario = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(user.Id);
-                        if (tipoUsuario == null || tipoUsuario.Descricao == null)
-                        {
-                            throw new InvalidOperationException("Tipo de usuário não encontrado");
-                        }
-
-                        var claims = new List<Claim>//troca pela do identity
-                        {
-                            new Claim(ClaimTypes.SerialNumber, user.Id.ToString()),
-                            new Claim(ClaimTypes.UserData, user.Cpf),
-                            new Claim(ClaimTypes.NameIdentifier, user.Nome),
-                            new Claim(ClaimTypes.DateOfBirth, user.DataNascimento.ToString()),
-                            new Claim(ClaimTypes.Role, tipoUsuario.Descricao)
-                        };
-
-                        var identity = new ClaimsIdentity(claims, "login");
-
-                        var claimProperty = new AuthenticationProperties
-                        {
-                            ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1) // Expira em 1 dia
-                        };
-
-                        await HttpContext.SignInAsync(new ClaimsPrincipal(identity), claimProperty);
-
+                        await userManager.AddClaimAsync(user, new Claim(ClaimTypes.UserData, user.Cpf));
+                        await signInManager.RefreshSignInAsync(user);
                         return RedirectToAction("Index", "Home");
                     }
                 }
