@@ -1,5 +1,7 @@
 create database usuarios;
 
+use usuarios;
+
 create table __efmigrationshistory
 (
     MigrationId    varchar(150) not null

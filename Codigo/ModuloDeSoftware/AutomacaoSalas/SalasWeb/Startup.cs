@@ -36,11 +36,8 @@ namespace SalasUfsWeb
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
-
             services.AddDbContext<SalasDBContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
             services.AddDbContext<ApplicationDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("UsuariosConnection")));
-
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
@@ -53,6 +50,14 @@ namespace SalasUfsWeb
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+            
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Login/Index"; 
+                options.LogoutPath = "/Login/Logout";
+                options.AccessDeniedPath = "/Login/AcessoNegado";
+            });
 
             services.AddScoped<IOrganizacaoService, OrganizacaoService>();
             services.AddScoped<IBlocoService, BlocoService>();
@@ -98,7 +103,6 @@ namespace SalasUfsWeb
             app.UseStaticFiles();
             app.UseRouting();
 
-
             // Forçando a utilizar autenticação.
             app.UseAuthentication();
             app.UseAuthorization();
@@ -114,7 +118,6 @@ namespace SalasUfsWeb
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 CriarRoles(roleManager).Wait();
             }
-
         }
 
         private static async Task CriarRoles(RoleManager<IdentityRole> roleManager)
