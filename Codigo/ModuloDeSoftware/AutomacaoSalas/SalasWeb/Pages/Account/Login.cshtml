@@ -1,0 +1,65 @@
+﻿@page "/Account/Login"
+@model SalasWeb.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<p class="login-box-msg">Login do Sistema</p>
+
+@if (ModelState.ErrorCount > 0)
+{
+    <div class="alert alert-danger">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </div>
+}
+
+<form id="account" method="post">
+    <div class="input-group mb-3">
+        <input asp-for="Input.Cpf" class="form-control" placeholder="CPF" autocomplete="off" />
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-user"></span>
+            </div>
+        </div>
+    </div>
+    <span asp-validation-for="Input.Cpf" class="text-danger"></span>
+
+    <div class="input-group mb-3">
+        <input asp-for="Input.Password" class="form-control" placeholder="Senha" />
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+            </div>
+        </div>
+    </div>
+    <span asp-validation-for="Input.Password" class="text-danger"></span>
+
+    <div class="row">
+        <div class="col-8">
+            <div class="icheck-primary">
+                <input asp-for="Input.RememberMe" />
+                <label asp-for="Input.RememberMe">
+                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                </label>
+            </div>
+        </div>
+        <div class="col-4">
+            <button id="login-submit" type="submit" class="btn btn-primary btn-block">Entrar</button>
+        </div>
+    </div>
+</form>
+
+<hr />
+<p class="mb-1">
+    <a href="#" onclick="alert('Funcionalidade em desenvolvimento')">Esqueceu a senha?</a>
+</p>
+<p class="mb-0">
+    <a asp-page="./Register" class="text-center">Criar conta</a>
+</p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/js/customLogin.js"></script>
+}

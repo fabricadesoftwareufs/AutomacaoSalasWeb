@@ -1,0 +1,148 @@
+﻿@page "/Account/Register"
+@model SalasWeb.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Criar Conta";
+    Layout = "_Layout";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h2 class="card-title">Criar Nova Conta</h2>
+                    </div>
+                    <form asp-page="./Register" method="post">
+                        <div class="card-body">
+                            @if (ModelState.ErrorCount > 0)
+                            {
+                                <div class="alert alert-danger">
+                                    <div asp-validation-summary="All" class="text-danger"></div>
+                                </div>
+                            }
+
+                            <div class="row col-md-2">
+                                <label asp-for="Input.FullName" class="control-label select-label"></label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-6">
+                                    <input asp-for="Input.FullName" class="form-control" placeholder="Nome completo" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Input.FullName" class="text-danger"></span>
+
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="Input.Cpf" class="control-label select-label"></label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-3">
+                                    <input asp-for="Input.Cpf" class="form-control" placeholder="CPF" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-id-card"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Input.Cpf" class="text-danger"></span>
+
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="Input.Email" class="control-label select-label"></label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-5">
+                                    <input asp-for="Input.Email" class="form-control" placeholder="Email" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-envelope"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+
+                            <div class="row col-md-4 mt-3">
+                                <label asp-for="Input.BirthDate" class="control-label select-label"></label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-3">
+                                    <input asp-for="Input.BirthDate" class="form-control" type="date" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-birthday-cake"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Input.BirthDate" class="text-danger"></span>
+
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="Input.OrganizacaoId" class="control-label select-label"></label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-6">
+                                    @Html.DropDownListFor(model => model.Input.OrganizacaoId, Model.Organizacoes, "Selecione uma organização", new { @class = "form-control" })
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fa fa-university"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Input.OrganizacaoId" class="text-danger"></span>
+
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="Input.Password" class="control-label select-label"></label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-4">
+                                    <input asp-for="Input.Password" class="form-control" placeholder="Senha" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="Input.ConfirmPassword" class="control-label select-label"></label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-4">
+                                    <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirmar senha" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="col-md-16">
+                                <button type="submit" class="btn btn-success">Criar Conta</button>
+                                <a class="btn btn-primary" asp-page="./Login">Voltar ao Login</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/js/customLogin.js"></script>
+}

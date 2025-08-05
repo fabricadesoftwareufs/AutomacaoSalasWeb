@@ -1,5 +1,6 @@
 ﻿@{  
-    var action = ViewContext.RouteData.Values["action"].ToString();  
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    // Para Razor Pages, o valor da página fica em ViewContext.RouteData.Values["page"]
 }  
 
 <!DOCTYPE html>  
@@ -44,7 +45,7 @@
 <body class="@(!User.Identity.IsAuthenticated ? "hold-transition login-page" : "hold-transition sidebar-mini layout-fixed")">  
     @if (!User.Identity.IsAuthenticated)  
     {  
-        @if (action == "PublicUsuarioCreate")  
+        @if (action == "PublicUsuarioCreate" || action == "/Account/Register")  
         {  
             <div class="login-box" style="width: 60%;">  
                 @RenderBody()  
