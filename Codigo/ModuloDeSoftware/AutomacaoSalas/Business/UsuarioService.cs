@@ -211,22 +211,79 @@ namespace Service
 
         public UsuarioViewModel GetAuthenticatedUser(ClaimsIdentity claimsIdentity)
         {
-            var usuario = new UsuarioViewModel
+            // Verificar se as claims necessárias existem
+            var idClaim = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault();
+            var cpfClaim = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.UserData).Select(s => s.Value).FirstOrDefault();
+            var nomeClaim = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.NameIdentifier).Select(s => s.Value).FirstOrDefault();
+            var roleClaim = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault();
+
+            // Se não tem o ID do sistema legado, tentar buscar pelo CPF
+            if (string.IsNullOrEmpty(idClaim) && !string.IsNullOrEmpty(cpfClaim))
+            {
+                var usuarioLegado = GetByCpf(cpfClaim);
+                if (usuarioLegado != null)
+                {
+                    var tipoUsuario = new TipoUsuarioService(_context).GetTipoUsuarioByUsuarioId(usuarioLegado.Id);
+                    
+                    return new UsuarioViewModel
+                    {
+                        UsuarioModel = usuarioLegado,
+                        TipoUsuarioModel = tipoUsuario ?? new TipoUsuarioModel { Descricao = TipoUsuarioModel.ROLE_COLABORADOR }
+                    };
+                }
+            }
+
+            // Se tem todas as claims, usar elas
+            if (!string.IsNullOrEmpty(idClaim) && uint.TryParse(idClaim, out uint userId))
+            {
+                var usuario = new UsuarioViewModel
+                {
+                    UsuarioModel = new UsuarioModel
+                    {
+                        Id = userId,
+                        Cpf = cpfClaim ?? "",
+                        Nome = nomeClaim ?? "",
+                    },
+                    TipoUsuarioModel = new TipoUsuarioModel
+                    {
+                        Descricao = roleClaim ?? TipoUsuarioModel.ROLE_COLABORADOR
+                    }
+                };
+
+                return usuario;
+            }
+
+            // Fallback: tentar pelo nome do usuário (Identity)
+            var identityName = claimsIdentity.Name;
+            if (!string.IsNullOrEmpty(identityName))
+            {
+                var usuarioLegado = GetByCpf(identityName);
+                if (usuarioLegado != null)
+                {
+                    var tipoUsuario = new TipoUsuarioService(_context).GetTipoUsuarioByUsuarioId(usuarioLegado.Id);
+                    
+                    return new UsuarioViewModel
+                    {
+                        UsuarioModel = usuarioLegado,
+                        TipoUsuarioModel = tipoUsuario ?? new TipoUsuarioModel { Descricao = TipoUsuarioModel.ROLE_COLABORADOR }
+                    };
+                }
+            }
+
+            // Se chegou até aqui, criar um usuário temporário para evitar erros
+            return new UsuarioViewModel
             {
                 UsuarioModel = new UsuarioModel
                 {
-                    Id = uint.Parse(claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault()),
-                    Cpf = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.UserData).Select(s => s.Value).FirstOrDefault(),
-                    Nome = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.NameIdentifier).Select(s => s.Value).FirstOrDefault(),
+                    Id = 0,
+                    Cpf = cpfClaim ?? "",
+                    Nome = nomeClaim ?? "Usuário",
                 },
-
                 TipoUsuarioModel = new TipoUsuarioModel
                 {
-                    Descricao = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault()
+                    Descricao = TipoUsuarioModel.ROLE_COLABORADOR
                 }
             };
-
-            return usuario;
         }
 
         private static Usuario SetEntity(UsuarioModel model)

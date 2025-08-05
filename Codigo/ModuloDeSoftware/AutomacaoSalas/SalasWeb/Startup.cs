@@ -51,12 +51,12 @@ namespace SalasUfsWeb
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            
+
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = "/Login/Index"; 
-                options.LogoutPath = "/Login/Logout";
-                options.AccessDeniedPath = "/Login/AcessoNegado";
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/AccessDenied";
             });
 
             services.AddScoped<IOrganizacaoService, OrganizacaoService>();
@@ -81,6 +81,11 @@ namespace SalasUfsWeb
             services.AddScoped<IConexaoInternetSalaService, ConexaoInternetSalaService>();
             services.AddScoped<IMarcaEquipamentoService, MarcaEquipamentoService>();
             services.AddScoped<IModeloEquipamentoService, ModeloEquipamentoService>();
+
+            services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
+
+            // Adicionar Razor Pages
+            services.AddRazorPages();
             services.AddMvc();
         }
 
@@ -109,6 +114,7 @@ namespace SalasUfsWeb
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages(); // Adicionar suporte a Razor Pages
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
