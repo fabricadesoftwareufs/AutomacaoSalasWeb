@@ -8,10 +8,13 @@
 
     if (claimsIdentity != null)
     {
-        nome = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.NameIdentifier).Select(s => s.Value).FirstOrDefault();
+        nome = nome = User.Claims
+        .Where(c => c.Type == ClaimTypes.NameIdentifier)
+        .LastOrDefault()?.Value ?? "";
         role = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault();
     }
 }
+
 <!-- Navbar -->
 <div class="top_nav">
     <div class="nav_menu main-header">

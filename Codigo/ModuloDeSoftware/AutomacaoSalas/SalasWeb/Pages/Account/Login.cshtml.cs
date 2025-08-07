@@ -92,20 +92,20 @@ namespace SalasWeb.Pages.Account
                             
                             // Adicionar claims se não existirem
                             var claimsToAdd = new List<Claim>();
-                            
-                            if (!existingClaims.Any(c => c.Type == ClaimTypes.SerialNumber))
-                            {
-                                claimsToAdd.Add(new Claim(ClaimTypes.SerialNumber, usuarioLegado.Id.ToString()));
-                            }
-                            
-                            if (!existingClaims.Any(c => c.Type == ClaimTypes.UserData))
-                            {
-                                claimsToAdd.Add(new Claim(ClaimTypes.UserData, usuarioLegado.Cpf));
-                            }
-                            
+
                             if (!existingClaims.Any(c => c.Type == ClaimTypes.NameIdentifier))
                             {
-                                claimsToAdd.Add(new Claim(ClaimTypes.NameIdentifier, usuarioLegado.Nome));
+                                claimsToAdd.Add(new Claim(ClaimTypes.NameIdentifier, usuarioLegado.Id.ToString())); // ID do usuário
+                            }
+
+                            if (!existingClaims.Any(c => c.Type == ClaimTypes.Name))
+                            {
+                                claimsToAdd.Add(new Claim(ClaimTypes.Name, usuarioLegado.Nome)); // Nome do usuário
+                            }
+
+                            if (!existingClaims.Any(c => c.Type == ClaimTypes.UserData))
+                            {
+                                claimsToAdd.Add(new Claim(ClaimTypes.UserData, usuarioLegado.Cpf)); // CPF
                             }
 
                             // Buscar tipo de usuário
