@@ -117,7 +117,7 @@ namespace SalasWeb.Pages.Account
                         },
                         TipoUsuarioModel = new TipoUsuarioModel
                         {
-                            Id = 3 // ID do COLABORADOR - ajuste conforme sua base de dados
+                            Id = 4 // ID do usuarioPendente 
                         },
                         OrganizacaoModel = _organizacaoService.GetById(Input.OrganizacaoId)
                     };
@@ -128,9 +128,9 @@ namespace SalasWeb.Pages.Account
                     // 2. Criar usuário no Identity - USAR EMAIL COMO USERNAME
                     var identityUser = new ApplicationUser
                     {
-                        UserName = Input.Email, // ✅ CORREÇÃO: Usar email como username
+                        UserName = Input.Email, 
                         Email = Input.Email,
-                        EmailConfirmed = true, // Marcar como confirmado
+                        EmailConfirmed = true, 
                         Cpf = cpfLimpo,
                         BirthDate = Input.BirthDate
                     };
@@ -142,7 +142,7 @@ namespace SalasWeb.Pages.Account
                         _logger.LogInformation("Usuário criou uma nova conta com senha.");
 
                         // 3. Adicionar role padrão de colaborador
-                        await _userManager.AddToRoleAsync(identityUser, TipoUsuarioModel.ROLE_COLABORADOR);
+                        await _userManager.AddToRoleAsync(identityUser, TipoUsuarioModel.ROLE_PENDENTE);
 
                         // 4. Adicionar claims personalizados para integração com sistema legado
                         var claims = new List<Claim>

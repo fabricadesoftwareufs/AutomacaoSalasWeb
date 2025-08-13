@@ -8,10 +8,8 @@
 
     if (claimsIdentity != null)
     {
-        nome = nome = User.Claims
-        .Where(c => c.Type == ClaimTypes.NameIdentifier)
-        .LastOrDefault()?.Value ?? "";
-        role = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault();
+        nome = User.Claims.Where(c => c.Type == ClaimTypes.Name).LastOrDefault()?.Value ?? "";
+        role = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault() ?? "";
     }
 }
 
@@ -77,7 +75,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
-                @if (role.Equals(TipoUsuarioModel.ROLE_COLABORADOR))
+                @if (string.Equals(role, TipoUsuarioModel.ROLE_COLABORADOR, StringComparison.OrdinalIgnoreCase))
                 {
                     <li class="nav-header">MINHAS SALAS</li>
                     <li class="nav-item">
@@ -98,7 +96,7 @@
                         </a>
                     </li>
                 }
-                else if (role.Equals(TipoUsuarioModel.ROLE_GESTOR))
+                else if (string.Equals(role, TipoUsuarioModel.ROLE_GESTOR, StringComparison.OrdinalIgnoreCase))
                 {
                     <li class="nav-header">MINHAS SALAS</li>
                     <li class="nav-item">
@@ -135,7 +133,7 @@
                         </a>
                     </li>
                 }
-                else if (role.Equals(TipoUsuarioModel.ROLE_ADMIN))
+                else if (string.Equals(role, TipoUsuarioModel.ROLE_ADMIN, StringComparison.OrdinalIgnoreCase))
                 {
                     <li class="nav-header">MINHAS SALAS</li>
                     <li class="nav-item">
@@ -235,6 +233,17 @@
                             <i class="nav-icon fa fa-users"></i>
                             <p>Usuários</p>
                         </a>
+                    </li>
+                }
+                else if (string.Equals(role, TipoUsuarioModel.ROLE_PENDENTE, StringComparison.OrdinalIgnoreCase))
+                {
+                    <!-- Usuário pendente - apenas mensagem informativa, sem menu -->
+                    <li class="nav-header">AGUARDANDO APROVAÇÃO</li>
+                    <li class="nav-item">
+                        <div class="nav-link text-warning">
+                            <i class="nav-icon fa fa-clock"></i>
+                            <p>Aguarde aprovação do administrador</p>
+                        </div>
                     </li>
                 }
             </ul>

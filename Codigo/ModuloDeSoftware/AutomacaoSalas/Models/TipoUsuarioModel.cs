@@ -9,7 +9,9 @@ namespace Model
         public const string ROLE_GESTOR = "GESTOR";
         public const string ROLE_COLABORADOR = "COLABORADOR";
         public const string ALL_ROLES = "ADMIN, GESTOR, COLABORADOR";
+        public const string ALL_ROLES2 = "ADMIN, GESTOR, COLABORADOR, PENDENTE";
         public const string ADMINISTRATIVE_ROLES = "ADMIN, GESTOR";
+        public const string ROLE_PENDENTE = "PENDENTE";
 
         [Display(Name = "Tipo")]
         public uint Id { get; set; }
