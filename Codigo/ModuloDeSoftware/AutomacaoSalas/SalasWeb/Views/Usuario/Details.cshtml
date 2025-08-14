@@ -2,8 +2,6 @@
 
 @{
     ViewData["Title"] = "Details";
-    string tipo = "Tipo do Usuário";
-    string org = "Organização";
 }
 
 <section class="content">
@@ -14,46 +12,30 @@
                     <div class="card-header">
                         <h2 class="card-title">Detalhes do Usuário</h2>
                     </div>
-
                     <div class="card-body">
-                        <div class="col-md-5">
-                            <dl class="dl-horizontal">
-                                <dt>
-                                    @Html.DisplayNameFor(model => model.UsuarioModel.Nome)
-                                </dt>
-                                <dd>
-                                    <p class="form-control">@Html.DisplayFor(model => model.UsuarioModel.Nome)</p>
-                                </dd>
-                                <dt>
-                                    @Html.DisplayNameFor(model => model.UsuarioModel.Cpf)
-                                </dt>
-                                <dd>
-                                    <p class="form-control">@Html.DisplayFor(model => model.UsuarioModel.Cpf, "Cpf")</p>
-                                </dd>
-                                <dt>
-                                    @org
-                                </dt>
-                                <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.OrganizacaoModel.RazaoSocial)</p>
-                                </dd>
-                                <dt>
-                                    @Html.DisplayNameFor(model => model.UsuarioModel.DataNascimento)
-                                </dt>
-                                <dd>
-                                    <p class="form-control">@Model.UsuarioModel.DataNascimento.ToString("dd/MM/yyyy")</p>
-                                </dd>
-                                <dt>
-                                    @tipo
-                                </dt>
-                                <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.TipoUsuarioModel.Descricao)</p>
-                                </dd>
-                            </dl>
-                        </div>
+                        <dl class="row">
+                            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.UsuarioModel.Nome)</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => model.UsuarioModel.Nome)</dd>
+
+                            <dt class="col-sm-2">Email</dt>
+                            <dd class="col-sm-10">@Model.Email</dd>
+
+                            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.UsuarioModel.Cpf)</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => model.UsuarioModel.Cpf, "Cpf")</dd>
+
+                            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.UsuarioModel.DataNascimento)</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => model.UsuarioModel.DataNascimento)</dd>
+
+                            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.TipoUsuarioModel.Descricao)</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => model.TipoUsuarioModel.Descricao)</dd>
+
+                            <dt class="col-sm-2">Organização</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => model.OrganizacaoModel.RazaoSocial)</dd>
+                        </dl>
                     </div>
                     <div class="card-footer">
-                        <a href="@Url.Action("Edit", "Usuario", new { id = @Model.UsuarioModel.Id })" class="btn btn-info"> Editar </a> |
-                        <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                        <a asp-action="Edit" asp-route-id="@Model.UsuarioModel.Id" class="btn btn-primary">Editar</a> |
+                        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
                     </div>
                 </div>
             </div>

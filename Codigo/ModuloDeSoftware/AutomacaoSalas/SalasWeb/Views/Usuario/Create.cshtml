@@ -2,8 +2,6 @@
 
 @{
     ViewData["Title"] = "Create";
-
-    //valores default por conta do SelectList
     var cnpj = "00000000";
     var razaoSocial = "Razao Social";
 }
@@ -18,6 +16,7 @@
                     </div>
                     <form asp-action="Create" asp-controller="Usuario">
                         <div class="card-body">
+                            <!-- Nome -->
                             <div class="row col-md-2">
                                 <label asp-for="UsuarioModel.Nome" class="control-label select-label">Nome</label>
                             </div>
@@ -33,16 +32,29 @@
                             </div>
                             <span asp-validation-for="UsuarioModel.Nome" class="text-danger"></span>
 
+                            <!-- Email -->
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="Email" class="control-label select-label">Email</label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-5">
+                                    <input asp-for="Email" type="email" class="form-control" placeholder="Email" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-envelope"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+
+                            <!-- CPF -->
                             <div class="row col-md-2 mt-3">
                                 <label asp-for="UsuarioModel.Cpf" class="control-label select-label">CPF</label>
                             </div>
                             <div class="row">
                                 <div class="input-group col-md-3">
-                                    <input id="login_auth"
-                                           asp-for="UsuarioModel.Cpf"
-                                           class="form-control"
-                                           placeholder="CPF"
-                                           oninput="validaCpf()">
+                                    <input id="login_auth" asp-for="UsuarioModel.Cpf" class="form-control" placeholder="CPF" oninput="validaCpf()">
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-id-card"></span>
@@ -50,35 +62,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <span id="span_cpf"
-                                  asp-validation-for="UsuarioModel.Cpf"
-                                  class="invalid-feedback"
-                                  style="color: red;">
-                            </span>
-                            <span asp-validation-for="UsuarioModel.Cpf" class="text-danger"> </span>
+                            <span asp-validation-for="UsuarioModel.Cpf" class="text-danger"></span>
 
-                            <div class="row col-md-2 mt-3">
-                                <label asp-for="TipoUsuarioModel.Id" class="control-label select-label">Organização</label>
-                            </div>
-                            <div class="row">
-                                <div class="input-group col-md-6">
-                                    @Html.DropDownListFor(model => model.OrganizacaoModel.Id, ViewBag.Organizacoes as SelectList, new
-                                        { @class = "form-control select2", @id = "select-organizacoes" })
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <span class="fa fa-university"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <span asp-validation-for="OrganizacaoModel.Id" class="text-danger"></span>
-
+                            <!-- Data de Nascimento -->
                             <div class="row col-md-4 mt-3">
                                 <label asp-for="UsuarioModel.DataNascimento" class="control-label select-label">Data de Nascimento</label>
                             </div>
                             <div class="row">
                                 <div class="input-group col-md-3">
-                                    <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control" placeholder="Data de nascimento" />
+                                    <input type="date" asp-for="UsuarioModel.DataNascimento" class="form-control" />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-birthday-cake"></span>
@@ -88,35 +80,49 @@
                             </div>
                             <span asp-validation-for="UsuarioModel.DataNascimento" class="text-danger"></span>
 
+                            <!-- Senha -->
                             <div class="row col-md-2 mt-3">
                                 <label asp-for="UsuarioModel.Senha" class="control-label select-label">Senha</label>
                             </div>
                             <div class="row">
                                 <div class="input-group col-md-3">
-                                    <input id="senha_auth" asp-for="UsuarioModel.Senha" class="form-control" placeholder="Senha" minlength="8" maxlength="16" />
+                                    <input id="senha_auth" asp-for="UsuarioModel.Senha" type="password" class="form-control" placeholder="Senha" minlength="6" />
                                     <div class="input-group-append">
                                         <div class="input-group-text">
-                                            <span class="fa fa-users"></span>
+                                            <span class="fa fa-lock"></span>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="icheck-primary d-inline-block">
                                     <input type="checkbox" id="show_pass" onchange="showPass(this)">
-                                    <label for="show_pass">
-                                        Mostrar Senha
-                                    </label>
+                                    <label for="show_pass">Mostrar Senha</label>
                                 </div>
                             </div>
                             <span asp-validation-for="UsuarioModel.Senha" class="text-danger"></span>
 
+                            <!-- Organização -->
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="OrganizacaoModel.Id" class="control-label select-label">Organização</label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-6">
+                                    @Html.DropDownListFor(model => model.OrganizacaoModel.Id, ViewBag.Organizacoes as SelectList, new { @class = "form-control", @id = "select-organizacoes" })
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fa fa-university"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="OrganizacaoModel.Id" class="text-danger"></span>
+
+                            <!-- Tipo de Usuário -->
                             <div class="row col-md-2 mt-3">
                                 <label asp-for="TipoUsuarioModel.Id" class="control-label select-label">Tipo de usuário</label>
                             </div>
                             <div class="row">
                                 <div class="input-group col-md-4">
-                                    @Html.DropDownListFor(model => model.TipoUsuarioModel.Id, ViewBag.TiposUsuario as SelectList, new
-                                        { @class = "form-control", @id = "select-tipoUsuario" })
+                                    @Html.DropDownListFor(model => model.TipoUsuarioModel.Id, ViewBag.TiposUsuario as SelectList, new { @class = "form-control", @id = "select-tipoUsuario" })
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-lock"></span>
@@ -130,13 +136,10 @@
                             <input hidden asp-for="OrganizacaoModel.RazaoSocial" class="form-control" value="@razaoSocial" />
                         </div>
                         <div class="card-footer">
-                            <row>
-                                <div class="col-md-16">
-                                    <input type="submit" value="Criar" class="btn btn-success" /> |
-                                    <a class="btn btn-primary" asp-action="Index">Voltar</a>
-                                    <a href="@Url.Action("Index", "Login")" class="text-center float-right">Já possui cadastrado?</a>
-                                </div>
-                            </row>
+                            <div class="col-md-16">
+                                <input type="submit" value="Criar" class="btn btn-success" /> |
+                                <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -155,17 +158,24 @@ else if (TempData["mensagemErro"] != null)
 }
 
 @section Scripts {
-    <!-- Scripts -->
     <script>
         $(document).ready(function () {
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
         });
+
+        function showPass(checkbox) {
+            var senhaField = document.getElementById("senha_auth");
+            if (checkbox.checked) {
+                senhaField.type = "text";
+            } else {
+                senhaField.type = "password";
+            }
+        }
     </script>
-    <script src="~/plugins/jquery/jquery.min.js"></script>
-    <script src="~/plugins/inputmask/min/inputmask/inputmask.min.js"></script>
-    <script src="~/plugins/inputmask/min/inputmask/jquery.inputmask.min.js"></script>
-    <script src="~/js/customLogin.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

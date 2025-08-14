@@ -149,7 +149,9 @@ namespace SalasWeb.Pages.Account
                         {
                             new Claim(ClaimTypes.NameIdentifier, usuarioLegado.UsuarioModel.Id.ToString()), // ID do sistema legado
                             new Claim(ClaimTypes.UserData, usuarioLegado.UsuarioModel.Cpf), // CPF
-                            new Claim(ClaimTypes.Name, usuarioLegado.UsuarioModel.Nome) // Nome
+                            new Claim(ClaimTypes.Name, usuarioLegado.UsuarioModel.Nome), // Nome
+                            new Claim(ClaimTypes.Role, TipoUsuarioModel.ROLE_PENDENTE) // Role inicial
+
                         };
 
                         await _userManager.AddClaimsAsync(identityUser, claims);

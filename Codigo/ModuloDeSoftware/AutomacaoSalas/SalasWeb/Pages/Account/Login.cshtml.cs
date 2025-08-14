@@ -75,53 +75,13 @@ namespace SalasWeb.Pages.Account
 
                 // Buscar usuário pelo CPF no Identity
                 var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == Methods.CleanString(Input.Cpf));
-                
+
                 if (user != null)
                 {
                     var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                    
+
                     if (result.Succeeded)
                     {
-                        // Buscar dados do usuário no sistema legado
-                        var usuarioLegado = _usuarioService.GetByCpf(Methods.CleanString(Input.Cpf));
-                        
-                        if (usuarioLegado != null)
-                        {
-                            // Verificar se as claims já existem
-                            var existingClaims = await _userManager.GetClaimsAsync(user);
-                            
-                            // Adicionar claims se não existirem
-                            var claimsToAdd = new List<Claim>();
-
-                            if (!existingClaims.Any(c => c.Type == ClaimTypes.NameIdentifier))
-                            {
-                                claimsToAdd.Add(new Claim(ClaimTypes.NameIdentifier, usuarioLegado.Id.ToString())); // ID do usuário
-                            }
-
-                            if (!existingClaims.Any(c => c.Type == ClaimTypes.Name))
-                            {
-                                claimsToAdd.Add(new Claim(ClaimTypes.Name, usuarioLegado.Nome)); // Nome do usuário
-                            }
-
-                            if (!existingClaims.Any(c => c.Type == ClaimTypes.UserData))
-                            {
-                                claimsToAdd.Add(new Claim(ClaimTypes.UserData, usuarioLegado.Cpf)); // CPF
-                            }
-
-                            // Buscar tipo de usuário
-                            var tipoUsuario = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(usuarioLegado.Id);
-                            if (tipoUsuario != null && !existingClaims.Any(c => c.Type == ClaimTypes.Role && c.Value == tipoUsuario.Descricao))
-                            {
-                                claimsToAdd.Add(new Claim(ClaimTypes.Role, tipoUsuario.Descricao));
-                            }
-
-                            if (claimsToAdd.Any())
-                            {
-                                await _userManager.AddClaimsAsync(user, claimsToAdd);
-                            }
-                        }
-                        
-                        await _signInManager.RefreshSignInAsync(user);
                         return LocalRedirect(returnUrl);
                     }
                     if (result.RequiresTwoFactor)
@@ -133,7 +93,7 @@ namespace SalasWeb.Pages.Account
                         return RedirectToPage("./Lockout");
                     }
                 }
-                
+
                 ModelState.AddModelError(string.Empty, "CPF ou senha inválidos.");
                 return Page();
             }
