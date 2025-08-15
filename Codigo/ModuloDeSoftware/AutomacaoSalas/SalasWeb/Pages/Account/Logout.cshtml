@@ -1,10 +1,48 @@
 ﻿@page "/Account/Logout"
 @model SalasWeb.Pages.Account.LogoutModel
 @{
-    ViewData["Title"] = "Log out";
+    ViewData["Title"] = "Logout";
+    Layout = null;
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
-    <p>Você foi desconectado da aplicação.</p>
-</header>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Saindo...</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .logout-container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-container">
+        <h2>Saindo do sistema...</h2>
+        <p>Você será redirecionado para a tela de login.</p>
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Carregando...</span>
+        </div>
+    </div>
+
+    <script>
+        // Redirecionar automaticamente após 2 segundos se não foi redirecionado
+        setTimeout(function() {
+            window.location.href = '/Account/Login';
+        }, 2000);
+    </script>
+</body>
+</html>

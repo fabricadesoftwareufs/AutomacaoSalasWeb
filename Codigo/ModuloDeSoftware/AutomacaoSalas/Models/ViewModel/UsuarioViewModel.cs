@@ -11,6 +11,10 @@ namespace Model.ViewModel
         [Display(Name = "Organização")]
         public OrganizacaoModel OrganizacaoModel { get; set; }
 
+        [Required(ErrorMessage = "Email é obrigatório")]
+        [EmailAddress(ErrorMessage = "Email inválido")]
+        public string Email { get; set; }
+
         public UsuarioOrganizacaoModel ? UsuarioOrganizacaoModel { get; set; }
 
     }

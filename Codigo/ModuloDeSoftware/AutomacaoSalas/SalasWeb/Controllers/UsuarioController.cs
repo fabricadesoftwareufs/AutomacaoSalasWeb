@@ -1,37 +1,45 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Model;
 using Model.AuxModel;
 using Model.ViewModel;
+using SalasWeb.Data;
 using Service;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Utils;
 
 namespace SalasWeb.Controllers
 {
     public class UsuarioController : Controller
     {
-        private readonly IUsuarioService _usuarioService;//por o user manager
+        private readonly IUsuarioService _usuarioService;
         private readonly ITipoUsuarioService _tipoUsuarioService;
         private readonly IOrganizacaoService _organizacaoService;
         private readonly IUsuarioOrganizacaoService _usuarioOrganizacaoService;
         private readonly IPlanejamentoService _planejamentoService;
         private readonly IHorarioSalaService _horarioSalaService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public UsuarioController(
-                                    IUsuarioService usuarioService,
-                                    ITipoUsuarioService tipoUsuarioService,
-                                    IOrganizacaoService organizacaoService,
-                                    IUsuarioOrganizacaoService usuarioOrganizacaoService,
-                                    IPlanejamentoService planejamentoService,
-                                    IHorarioSalaService horarioSalaService
-                                )
+            IUsuarioService usuarioService,
+            ITipoUsuarioService tipoUsuarioService,
+            IOrganizacaoService organizacaoService,
+            IUsuarioOrganizacaoService usuarioOrganizacaoService,
+            IPlanejamentoService planejamentoService,
+            IHorarioSalaService horarioSalaService,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager
+        )
         {
             _usuarioService = usuarioService;
             _tipoUsuarioService = tipoUsuarioService;
@@ -39,11 +47,13 @@ namespace SalasWeb.Controllers
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
             _planejamentoService = planejamentoService;
             _horarioSalaService = horarioSalaService;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: Usuario
         [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var usuarioLogado = _usuarioService.GetAuthenticatedUser(claimsIdentity);
@@ -51,29 +61,40 @@ namespace SalasWeb.Controllers
 
             List<UsuarioAuxModel> lista = new List<UsuarioAuxModel>();
 
-            usuarios.ForEach(s => lista.Add(new UsuarioAuxModel
+            foreach (var s in usuarios)
             {
-                UsuarioModel = s,
-                TipoUsuarioModel = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(s.Id),
-                OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.Id)
-            }));
+                // Buscar email no Identity
+                var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == s.Cpf);
+
+                lista.Add(new UsuarioAuxModel
+                {
+                    UsuarioModel = s,
+                    TipoUsuarioModel = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(s.Id),
+                    OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.Id),
+                    Email = identityUser?.Email ?? "Não informado"
+                });
+            }
 
             return View(lista);
         }
 
         // GET: Usuario/Details/5
         [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
-        public ActionResult Details(uint id)
+        public async Task<ActionResult> Details(uint id)
         {
             var usuario = _usuarioService.GetById(id);
             var tipoUsuario = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(id);
             var organizacao = _organizacaoService.GetByIdUsuario(id).FirstOrDefault();
 
+            // Buscar email no Identity
+            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuario.Cpf);
+
             var usuarioView = new UsuarioViewModel
             {
                 UsuarioModel = usuario,
                 TipoUsuarioModel = tipoUsuario,
-                OrganizacaoModel = organizacao
+                OrganizacaoModel = organizacao,
+                Email = identityUser?.Email ?? "Não informado"
             };
 
             return View(usuarioView);
@@ -92,7 +113,7 @@ namespace SalasWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
-        public ActionResult Create(UsuarioViewModel usuarioViewModel)
+        public async Task<ActionResult> Create(UsuarioViewModel usuarioViewModel)
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
             ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
@@ -109,6 +130,7 @@ namespace SalasWeb.Controllers
                 return View(usuarioViewModel);
             }
 
+            // Validações
             usuarioViewModel.OrganizacaoModel = _organizacaoService.GetById(usuarioViewModel.OrganizacaoModel.Id);
             if (usuarioViewModel.OrganizacaoModel == null)
             {
@@ -128,43 +150,87 @@ namespace SalasWeb.Controllers
                 return View(usuarioViewModel);
             }
 
-            if (string.IsNullOrEmpty(usuarioViewModel.UsuarioModel.Nome))
+            if (string.IsNullOrEmpty(usuarioViewModel.Email))
             {
-                ModelState.AddModelError("UsuarioModel.Nome", "Nome do usuário não pode ser vazio.");
+                ModelState.AddModelError("Email", "Email é obrigatório.");
                 return View(usuarioViewModel);
             }
 
-            if (string.IsNullOrEmpty(usuarioViewModel.UsuarioModel.Senha) || usuarioViewModel.UsuarioModel.Senha.Length < 8)
+            var cpfLimpo = Methods.CleanString(usuarioViewModel.UsuarioModel.Cpf);
+
+            // Verificar se já existe usuário com esse CPF no Identity
+            var existingIdentityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == cpfLimpo);
+            if (existingIdentityUser != null)
             {
-                ModelState.AddModelError("UsuarioModel.Senha", "A senha deve ter pelo menos 8 caracteres.");
+                TempData["mensagemErro"] = "Já existe um usuário cadastrado com este CPF.";
                 return View(usuarioViewModel);
             }
 
-            if (usuarioViewModel.TipoUsuarioModel == null || usuarioViewModel.TipoUsuarioModel.Id <= 0)
+            // Verificar se já existe usuário com esse email
+            var existingEmailUser = await _userManager.FindByEmailAsync(usuarioViewModel.Email);
+            if (existingEmailUser != null)
             {
-                ModelState.AddModelError("TipoUsuarioModel.Id", "Tipo de usuário inválido.");
+                TempData["mensagemErro"] = "Já existe um usuário cadastrado com este email.";
                 return View(usuarioViewModel);
             }
 
-            usuarioViewModel.UsuarioModel.Cpf = Methods.CleanString(usuarioViewModel.UsuarioModel.Cpf);
+            usuarioViewModel.UsuarioModel.Cpf = cpfLimpo;
             usuarioViewModel.UsuarioModel.Senha = Criptography.GeneratePasswordHash(usuarioViewModel.UsuarioModel.Senha);
 
             try
             {
-                _usuarioService.Insert(usuarioViewModel);
-                TempData["mensagemSucesso"] = "Usuário criado com sucesso!";
+                // 1. Criar no sistema legado
+                var usuarioLegado = _usuarioService.Insert(usuarioViewModel);
+
+                // 2. Criar no Identity
+                var identityUser = new ApplicationUser
+                {
+                    UserName = usuarioViewModel.Email,
+                    Email = usuarioViewModel.Email,
+                    EmailConfirmed = true,
+                    Cpf = cpfLimpo,
+                    BirthDate = usuarioViewModel.UsuarioModel.DataNascimento
+                };
+
+                var result = await _userManager.CreateAsync(identityUser, usuarioViewModel.UsuarioModel.Senha.Substring(0, Math.Min(usuarioViewModel.UsuarioModel.Senha.Length, 20)));
+
+                if (result.Succeeded)
+                {
+                    // 3. Adicionar role baseado no tipo de usuário
+                    var tipoUsuario = _tipoUsuarioService.GetAll().FirstOrDefault(t => t.Id == usuarioViewModel.TipoUsuarioModel.Id);
+                    string role = GetRoleByTipoUsuario(tipoUsuario?.Descricao);
+                    await _userManager.AddToRoleAsync(identityUser, role);
+
+                    // 4. Adicionar claims
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, usuarioLegado.UsuarioModel.Id.ToString()),
+                        new Claim(ClaimTypes.UserData, cpfLimpo),
+                        new Claim(ClaimTypes.Name, usuarioViewModel.UsuarioModel.Nome)
+                    };
+                    await _userManager.AddClaimsAsync(identityUser, claims);
+
+                    TempData["mensagemSucesso"] = "Usuário criado com sucesso!";
+                    return RedirectToAction("Index", "Usuario");
+                }
+                else
+                {
+                    // Rollback do sistema legado se Identity falhou
+                    _usuarioService.Remove((int)usuarioLegado.UsuarioModel.Id);
+                    TempData["mensagemErro"] = string.Join(", ", result.Errors.Select(e => e.Description));
+                    return View(usuarioViewModel);
+                }
             }
             catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
                 return View(usuarioViewModel);
             }
-            return RedirectToAction("Index", "Usuario");
         }
 
         // GET: Usuario/Edit/5
         [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
-        public ActionResult Edit(uint id)
+        public async Task<ActionResult> Edit(uint id)
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
             ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
@@ -172,7 +238,17 @@ namespace SalasWeb.Controllers
             var usuario = _usuarioService.GetById(id);
             var tipoUsuario = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(id);
             var organizacao = _organizacaoService.GetByIdUsuario(id);
-            var usuarioView = new UsuarioViewModel { UsuarioModel = usuario, TipoUsuarioModel = tipoUsuario, OrganizacaoModel = organizacao.FirstOrDefault() };
+
+            // Buscar email no Identity
+            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuario.Cpf);
+
+            var usuarioView = new UsuarioViewModel
+            {
+                UsuarioModel = usuario,
+                TipoUsuarioModel = tipoUsuario,
+                OrganizacaoModel = organizacao.FirstOrDefault(),
+                Email = identityUser?.Email ?? ""
+            };
 
             return View(usuarioView);
         }
@@ -181,7 +257,7 @@ namespace SalasWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
-        public ActionResult Edit(int id, UsuarioViewModel usuarioView)
+        public async Task<ActionResult> Edit(int id, UsuarioViewModel usuarioView)
         {
             ViewBag.TiposUsuario = new SelectList(_tipoUsuarioService.GetAll(), "Id", "Descricao");
             ViewBag.Organizacoes = new SelectList(_organizacaoService.GetAll(), "Id", "RazaoSocial");
@@ -195,12 +271,84 @@ namespace SalasWeb.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    //Pegar a senha atual do banco antes de atualizar
+                    // Pegar dados atuais antes da atualização
                     var usuarioAtual = _usuarioService.GetById((uint)id);
+                    var tipoUsuarioAtual = _tipoUsuarioService.GetTipoUsuarioByUsuarioId((uint)id);
+
                     usuarioView.UsuarioModel.Senha = usuarioAtual.Senha;
 
+                    // Atualizar sistema legado
                     if (_usuarioService.Update(usuarioView.UsuarioModel))
                     {
+                        // Buscar usuário no Identity
+                        var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuarioAtual.Cpf);
+                        if (identityUser != null)
+                        {
+                            // Atualizar email se necessário
+                            if (!string.IsNullOrEmpty(usuarioView.Email) && identityUser.Email != usuarioView.Email)
+                            {
+                                identityUser.Email = usuarioView.Email;
+                                identityUser.UserName = usuarioView.Email;
+                                await _userManager.UpdateAsync(identityUser);
+                            }
+
+                            // Verificar mudanças
+                            bool tipoUsuarioMudou = tipoUsuarioAtual.Id != usuarioView.TipoUsuarioModel.Id;
+                            bool nomeMudou = usuarioAtual.Nome != usuarioView.UsuarioModel.Nome;
+
+                            // Atualizar roles se tipo de usuário mudou
+                            if (tipoUsuarioMudou)
+                            {
+                                // Remover roles atuais
+                                var currentRoles = await _userManager.GetRolesAsync(identityUser);
+                                if (currentRoles.Any())
+                                {
+                                    await _userManager.RemoveFromRolesAsync(identityUser, currentRoles);
+                                }
+
+                                // Adicionar nova role
+                                var novoTipoUsuario = _tipoUsuarioService.GetAll().FirstOrDefault(t => t.Id == usuarioView.TipoUsuarioModel.Id);
+                                string newRole = GetRoleByTipoUsuario(novoTipoUsuario?.Descricao);
+                                await _userManager.AddToRoleAsync(identityUser, newRole);
+                            }
+
+                            // Atualizar claims se necessário
+                            if (tipoUsuarioMudou || nomeMudou)
+                            {
+                                // Remover claims atuais
+                                var currentClaims = await _userManager.GetClaimsAsync(identityUser);
+                                if (currentClaims.Any())
+                                {
+                                    await _userManager.RemoveClaimsAsync(identityUser, currentClaims);
+                                }
+
+                                // Preparar novos claims
+                                var newClaims = new List<Claim>
+                                {
+                                    new Claim(ClaimTypes.NameIdentifier, id.ToString()),
+                                    new Claim(ClaimTypes.UserData, usuarioAtual.Cpf),
+                                    new Claim(ClaimTypes.Name, usuarioView.UsuarioModel.Nome)
+                                };
+
+                                // Adicionar claim de role
+                                if (tipoUsuarioMudou)
+                                {
+                                    var novoTipoUsuario = _tipoUsuarioService.GetAll().FirstOrDefault(t => t.Id == usuarioView.TipoUsuarioModel.Id);
+                                    string newRole = GetRoleByTipoUsuario(novoTipoUsuario?.Descricao);
+                                    newClaims.Add(new Claim(ClaimTypes.Role, newRole));
+                                }
+
+                                await _userManager.AddClaimsAsync(identityUser, newClaims);
+                            }
+
+                            // Refresh do sign-in se o usuário atual está sendo editado
+                            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                            if (currentUserId == id.ToString())
+                            {
+                                await _signInManager.RefreshSignInAsync(identityUser);
+                            }
+                        }
+
                         TempData["mensagemSucesso"] = "Usuário editado com sucesso!";
                         return RedirectToAction(nameof(Index));
                     }
@@ -216,6 +364,12 @@ namespace SalasWeb.Controllers
                 TempData["mensagemErro"] = se.Message;
                 return View(usuarioView);
             }
+            catch (Exception ex)
+            {
+                TempData["mensagemErro"] = "Erro inesperado ao editar usuário.";
+                return View(usuarioView);
+            }
+
             return View(usuarioView);
         }
 
@@ -416,15 +570,30 @@ namespace SalasWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
-                if (_usuarioService.Remove(id))
-                    TempData["mensagemSucesso"] = "Usuário removido com sucesso!";
-                else
-                    TempData["mensagemErro"] = "Houve um problema ou remover usuário, tente novamente em alguns minutos";
+                var usuario = _usuarioService.GetById((uint)id);
+                if (usuario != null)
+                {
+                    // 1. Remover do Identity primeiro
+                    var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuario.Cpf);
+                    if (identityUser != null)
+                    {
+                        await _userManager.DeleteAsync(identityUser);
+                    }
 
+                    // 2. Remover do sistema legado
+                    if (_usuarioService.Remove(id))
+                    {
+                        TempData["mensagemSucesso"] = "Usuário removido com sucesso!";
+                    }
+                    else
+                    {
+                        TempData["mensagemErro"] = "Houve um problema ao remover usuário, tente novamente em alguns minutos";
+                    }
+                }
             }
             catch (ServiceException se)
             {
@@ -432,6 +601,18 @@ namespace SalasWeb.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private string GetRoleByTipoUsuario(string descricaoTipo)
+        {
+            return descricaoTipo?.ToUpper() switch
+            {
+                "ADMIN" => TipoUsuarioModel.ROLE_ADMIN,
+                "COLABORADOR" => TipoUsuarioModel.ROLE_COLABORADOR,
+                "GESTOR" => TipoUsuarioModel.ROLE_GESTOR,
+                "PENDENTE" => TipoUsuarioModel.ROLE_PENDENTE,
+                _ => TipoUsuarioModel.ROLE_PENDENTE
+            };
         }
     }
 }

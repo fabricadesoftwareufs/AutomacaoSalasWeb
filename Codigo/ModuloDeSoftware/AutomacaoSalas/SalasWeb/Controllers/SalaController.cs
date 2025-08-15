@@ -282,10 +282,10 @@ namespace SalasWeb.Controllers
 
         private List<SalaViewModel> GetAllSalasViewModel()
         {
-            var idUser = uint.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
+            var usuarioAutenticado = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity);
             var salasViewModel = new List<SalaViewModel>();
 
-            var salas = _salaService.GetAllByIdUsuarioOrganizacao(idUser);
+            var salas = _salaService.GetAllByIdUsuarioOrganizacao(usuarioAutenticado.UsuarioModel.Id);
             salas.ForEach(s => salasViewModel.Add(new SalaViewModel { BlocoSala = _blocoService.GetById(s.BlocoId), Sala = _salaService.GetById(s.Id) }));
 
 

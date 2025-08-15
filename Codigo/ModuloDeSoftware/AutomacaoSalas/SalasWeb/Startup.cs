@@ -128,7 +128,7 @@ namespace SalasUfsWeb
 
         private static async Task CriarRoles(RoleManager<IdentityRole> roleManager)
         {
-            string[] roleNames = TipoUsuarioModel.ALL_ROLES.Split(", ");
+            string[] roleNames = TipoUsuarioModel.ALL_ROLES2.Split(", ");
             foreach (var roleName in roleNames)
             {
                 var roleExist = await roleManager.RoleExistsAsync(roleName);

@@ -12,9 +12,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-12">
-                                <h2 class="card-title">
-                                    Usuários
-                                </h2>
+                                <h2 class="card-title">Usuários</h2>
                                 <a class="btn btn-primary" style="float:right" asp-controller="Usuario" asp-action="Create">Adicionar Usuário</a>
                             </div>
                         </div>
@@ -23,18 +21,11 @@
                         <table id="table-search" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.FirstOrDefault().UsuarioModel.Nome)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.FirstOrDefault().UsuarioModel.Cpf)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.FirstOrDefault().TipoUsuarioModel.Descricao)
-                                    </th>
-                                    <th>
-                                        Organização
-                                    </th>
+                                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().UsuarioModel.Nome)</th>
+                                    <th>Email</th>
+                                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().UsuarioModel.Cpf)</th>
+                                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().TipoUsuarioModel.Descricao)</th>
+                                    <th>Organização</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
@@ -42,15 +33,10 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.UsuarioModel.Nome)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.UsuarioModel.Cpf,"Cpf")
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.TipoUsuarioModel.Descricao)
-                                        </td>
+                                        <td>@Html.DisplayFor(modelItem => item.UsuarioModel.Nome)</td>
+                                        <td>@item.Email</td>
+                                        <td>@Html.DisplayFor(modelItem => item.UsuarioModel.Cpf, "Cpf")</td>
+                                        <td>@Html.DisplayFor(modelItem => item.TipoUsuarioModel.Descricao)</td>
                                         @{
                                             string org;
                                             var nomeCompleto = item.OrganizacaoModels[0].RazaoSocial;
@@ -62,7 +48,6 @@
                                             else if (nomeCompleto.Contains(" "))
                                             {
                                                 var palavrasIgnoradas = new[] { "de", "da", "do", "das", "dos", "e" };
-
                                                 org = string.Concat(
                                                 nomeCompleto
                                                 .Split(' ')
@@ -75,16 +60,19 @@
                                                 org = new string(nomeCompleto.Take(4).ToArray()).ToUpper();
                                             }
                                         }
+                                        <td><acronym title="@nomeCompleto">@org</acronym></td>
                                         <td>
-                                            <acronym title="@nomeCompleto">@org</acronym>
-                                        </td>
-                                        <td>
-                                            <a href="@Url.Action("Details", "Usuario", new { id = item.UsuarioModel.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> Detalhes </a>
-                                            <a href="@Url.Action("Edit", "Usuario", new { id = item.UsuarioModel.Id })" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Editar </a>
+                                            <a href="@Url.Action("Details", "Usuario", new { id = item.UsuarioModel.Id })" class="btn btn-primary btn-xs">
+                                                <i class="fa fa-folder"></i> Detalhes
+                                            </a>
+                                            <a href="@Url.Action("Edit", "Usuario", new { id = item.UsuarioModel.Id })" class="btn btn-info btn-xs">
+                                                <i class="fa fa-edit"></i> Editar
+                                            </a>
+                                            <a data-toggle="modal" data-target="#modal-remover-@item.UsuarioModel.Id" class="btn btn-danger btn-xs text-white">
+                                                <i class="fa fa-trash"></i> Remover
+                                            </a>
 
-                                            <a data-toggle="modal" data-target="#modal-remover-@item.UsuarioModel.Id" onclick="containsAssociacao(@item.UsuarioModel.Id)" class="btn btn-danger btn-xs text-white"><i class="fa fa-trash"></i> Remover </a>
-
-
+                                            <!-- Modal de confirmação -->
                                             <div class="modal fade" id="modal-remover-@item.UsuarioModel.Id">
                                                 <div class="modal-dialog modal-sm">
                                                     <div class="modal-content card card-secondary">
@@ -96,16 +84,15 @@
                                                         </div>
                                                         <div class="modal-body text-center">
                                                             <h5>Nome</h5><p>@item.UsuarioModel.Nome</p>
+                                                            <h5>Email</h5><p>@item.Email</p>
                                                             <h5>CPF</h5><p>***.@item.UsuarioModel.Cpf.Substring(3, 3).@item.UsuarioModel.Cpf.Substring(6, 3)-**</p>
-                                                            <h5>Tipo Usuário</h5> <p>@item.TipoUsuarioModel.Descricao</p>
-                                                            <h5>Obs: </h5><p class="obs"></p>
+                                                            <h5>Tipo Usuário</h5><p>@item.TipoUsuarioModel.Descricao</p>
                                                         </div>
-
                                                         @using (Html.BeginForm("Delete", "Usuario", new { id = item.UsuarioModel.Id }, FormMethod.Post))
                                                         {
                                                             <div class="modal-footer justify-content-between">
                                                                 <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
-                                                                <button type="submit" value="Remover" class="btn btn-success">Confimar</button>
+                                                                <button type="submit" value="Remover" class="btn btn-success">Confirmar</button>
                                                             </div>
                                                         }
                                                     </div>
@@ -123,7 +110,6 @@
     </div>
 </section>
 
-
 @if (TempData["mensagemSucesso"] != null)
 {
     <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!','@TempData["mensagemSucesso"]')"></div>
@@ -134,14 +120,12 @@ else if (TempData["mensagemErro"] != null)
 }
 
 @section Scripts {
-
     <script>
         $(document).ready(function () {
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
         });
     </script>
-
     <script src="~/js/usuario-script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="~/js/sweet-alert.js"></script>

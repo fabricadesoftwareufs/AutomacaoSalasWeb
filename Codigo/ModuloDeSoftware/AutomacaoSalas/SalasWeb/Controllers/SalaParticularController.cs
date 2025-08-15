@@ -172,8 +172,8 @@ namespace SalasWeb.Controllers
 
         private List<SalaParticularViewModel> GetAllSalasParticularesViewModel()
         {
-            var idUser = uint.Parse(((ClaimsIdentity)User.Identity).Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault());
-            var organizacoesLotadas = _usuarioOrganizacaoService.GetByIdUsuario(idUser).ToList();
+            var usuarioAutenticado = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity);
+            var organizacoesLotadas = _usuarioOrganizacaoService.GetByIdUsuario(usuarioAutenticado.UsuarioModel.Id).ToList();
 
             var salasParticularesViewModel = new List<SalaParticularViewModel>();
             organizacoesLotadas.ForEach(p =>

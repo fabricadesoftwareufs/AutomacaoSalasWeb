@@ -1,3 +1,5 @@
+DROP SCHEMA IF EXISTS `usuarios` ;
+
 create database usuarios;
 
 use usuarios;
