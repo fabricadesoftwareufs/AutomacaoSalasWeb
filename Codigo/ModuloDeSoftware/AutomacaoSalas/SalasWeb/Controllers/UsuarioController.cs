@@ -175,6 +175,11 @@ namespace SalasWeb.Controllers
             }
 
             usuarioViewModel.UsuarioModel.Cpf = cpfLimpo;
+
+            // Salvar a senha original antes de criptografar para o sistema legado
+            var senhaOriginal = usuarioViewModel.UsuarioModel.Senha;
+
+            // Criptografar apenas para o sistema legado
             usuarioViewModel.UsuarioModel.Senha = Criptography.GeneratePasswordHash(usuarioViewModel.UsuarioModel.Senha);
 
             try
@@ -182,7 +187,7 @@ namespace SalasWeb.Controllers
                 // 1. Criar no sistema legado
                 var usuarioLegado = _usuarioService.Insert(usuarioViewModel);
 
-                // 2. Criar no Identity
+                // 2. Criar no Identity usando a senha original (texto simples)
                 var identityUser = new ApplicationUser
                 {
                     UserName = usuarioViewModel.Email,
@@ -192,7 +197,7 @@ namespace SalasWeb.Controllers
                     BirthDate = usuarioViewModel.UsuarioModel.DataNascimento
                 };
 
-                var result = await _userManager.CreateAsync(identityUser, usuarioViewModel.UsuarioModel.Senha.Substring(0, Math.Min(usuarioViewModel.UsuarioModel.Senha.Length, 20)));
+                var result = await _userManager.CreateAsync(identityUser, senhaOriginal);
 
                 if (result.Succeeded)
                 {
@@ -206,7 +211,8 @@ namespace SalasWeb.Controllers
                     {
                         new Claim(ClaimTypes.NameIdentifier, usuarioLegado.UsuarioModel.Id.ToString()),
                         new Claim(ClaimTypes.UserData, cpfLimpo),
-                        new Claim(ClaimTypes.Name, usuarioViewModel.UsuarioModel.Nome)
+                        new Claim(ClaimTypes.Name, usuarioViewModel.UsuarioModel.Nome),
+                        new Claim(ClaimTypes.Role, role)
                     };
                     await _userManager.AddClaimsAsync(identityUser, claims);
 
@@ -448,6 +454,7 @@ namespace SalasWeb.Controllers
         }
 
         // POST: Usuario/EditPersonalData
+        //TODO: Inserir e-mail e possibilitar a edição
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
