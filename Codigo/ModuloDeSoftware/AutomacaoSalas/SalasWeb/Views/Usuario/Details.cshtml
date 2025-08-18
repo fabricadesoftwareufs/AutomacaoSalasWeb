@@ -2,8 +2,6 @@
 
 @{
     ViewData["Title"] = "Details";
-    string tipo = "Tipo do Usuário";
-    string org = "Organização";
 }
 
 <section class="content">
@@ -16,44 +14,56 @@
                     </div>
 
                     <div class="card-body">
-                        <div class="col-md-5">
+                        <div class="col-md-10">
                             <dl class="dl-horizontal">
+
                                 <dt>
                                     @Html.DisplayNameFor(model => model.UsuarioModel.Nome)
                                 </dt>
                                 <dd>
                                     <p class="form-control">@Html.DisplayFor(model => model.UsuarioModel.Nome)</p>
                                 </dd>
+
+                                <dt>
+                                    Email
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Model.Email</p>
+                                </dd>
+
                                 <dt>
                                     @Html.DisplayNameFor(model => model.UsuarioModel.Cpf)
                                 </dt>
                                 <dd>
                                     <p class="form-control">@Html.DisplayFor(model => model.UsuarioModel.Cpf, "Cpf")</p>
                                 </dd>
-                                <dt>
-                                    @org
-                                </dt>
-                                <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.OrganizacaoModel.RazaoSocial)</p>
-                                </dd>
+
                                 <dt>
                                     @Html.DisplayNameFor(model => model.UsuarioModel.DataNascimento)
                                 </dt>
                                 <dd>
-                                    <p class="form-control">@Model.UsuarioModel.DataNascimento.ToString("dd/MM/yyyy")</p>
+                                    <p class="form-control">@Html.DisplayFor(model => model.UsuarioModel.DataNascimento)</p>
                                 </dd>
+
                                 <dt>
-                                    @tipo
+                                    @Html.DisplayNameFor(model => model.TipoUsuarioModel.Descricao)
                                 </dt>
                                 <dd>
-                                    <p class="form-control"> @Html.DisplayFor(model => model.TipoUsuarioModel.Descricao)</p>
+                                    <p class="form-control">@Html.DisplayFor(model => model.TipoUsuarioModel.Descricao)</p>
+                                </dd>
+
+                                <dt>
+                                    Organização
+                                </dt>
+                                <dd>
+                                    <p class="form-control">@Html.DisplayFor(model => model.OrganizacaoModel.RazaoSocial)</p>
                                 </dd>
                             </dl>
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="@Url.Action("Edit", "Usuario", new { id = @Model.UsuarioModel.Id })" class="btn btn-info"> Editar </a> |
-                        <a class="btn btn-primary" asp-action="Index">Voltar</a>
+                        <a asp-action="Edit" asp-route-id="@Model.UsuarioModel.Id" class="btn btn-info">Editar</a> |
+                        <a asp-action="Index" class="btn btn-primary">Voltar</a>
                     </div>
                 </div>
             </div>
