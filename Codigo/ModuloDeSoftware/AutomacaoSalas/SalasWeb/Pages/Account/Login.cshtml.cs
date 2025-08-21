@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SalasWeb.Data;
-using SalasWeb.ViewModels;
+using SalasWeb.Models.ViewModels;
 using Service.Interface;
 using System.Collections.Generic;
 using System.Linq;

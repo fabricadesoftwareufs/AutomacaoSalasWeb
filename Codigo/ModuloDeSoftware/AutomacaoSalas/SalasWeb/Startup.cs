@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Model;
 using Persistence;
 using SalasWeb.Data;
+using SalasWeb.Helpers;
 using SalasWeb.Middlewares;
 using Service;
 using Service.Interface;
@@ -47,10 +49,12 @@ namespace SalasUfsWeb
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
+
+                // Configurações para reset de senha
+                options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -82,7 +86,8 @@ namespace SalasUfsWeb
             services.AddScoped<IMarcaEquipamentoService, MarcaEquipamentoService>();
             services.AddScoped<IModeloEquipamentoService, ModeloEquipamentoService>();
 
-            services.AddScoped<ITipoUsuarioService, TipoUsuarioService>();
+            
+            services.AddTransient<IEmailSender, EmailSender>();
 
             // Adicionar Razor Pages
             services.AddRazorPages();
