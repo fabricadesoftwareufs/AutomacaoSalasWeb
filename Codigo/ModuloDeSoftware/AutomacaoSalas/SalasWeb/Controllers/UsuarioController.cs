@@ -381,10 +381,20 @@ namespace SalasWeb.Controllers
 
         // GET: Usuario/EditPassword
         [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
-        public ActionResult EditPassword()
+        public async Task<ActionResult> EditPassword()
         {
-            var usuarioId = _usuarioService.GetAuthenticatedUser((ClaimsIdentity)User.Identity)?.UsuarioModel?.Id ?? 0;
-            var viewModel = new AlterarSenhaViewModel { UsuarioId = usuarioId };
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var usuarioLogado = _usuarioService.GetAuthenticatedUser(claimsIdentity);
+
+            // Buscar o usuário no Identity usando o CPF
+            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuarioLogado.UsuarioModel.Cpf);
+            if (identityUser == null)
+            {
+                TempData["mensagemErro"] = "Usuário não encontrado no sistema de autenticação.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var viewModel = new AlterarSenhaViewModel { UsuarioId = usuarioLogado.UsuarioModel.Id };
             return View(viewModel);
         }
 
@@ -392,48 +402,56 @@ namespace SalasWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
-        public ActionResult EditPassword(AlterarSenhaViewModel model)
+        public async Task<ActionResult> EditPassword(AlterarSenhaViewModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    // Buscar o usuário atual
-                    var usuarioAtual = _usuarioService.GetById(model.UsuarioId);
-                    if (usuarioAtual == null)
+                    var claimsIdentity = User.Identity as ClaimsIdentity;
+                    var usuarioLogado = _usuarioService.GetAuthenticatedUser(claimsIdentity);
+
+                    // Buscar o usuário no Identity usando o CPF
+                    var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuarioLogado.UsuarioModel.Cpf);
+                    if (identityUser == null)
                     {
-                        TempData["mensagemErro"] = "Usuário não encontrado.";
+                        TempData["mensagemErro"] = "Usuário não encontrado no sistema de autenticação.";
                         return View(model);
                     }
 
-                    // Verificar se a senha atual está correta
-                    var senhaAtualHash = Criptography.GeneratePasswordHash(model.SenhaAtual);
-                    if (usuarioAtual.Senha != senhaAtualHash)
+                    // Verificar se a senha atual está correta usando o Identity
+                    var passwordCheck = await _userManager.CheckPasswordAsync(identityUser, model.SenhaAtual);
+                    if (!passwordCheck)
                     {
                         ModelState.AddModelError("SenhaAtual", "Senha atual incorreta.");
                         return View(model);
                     }
 
-                    // Atualizar com a nova senha
-                    usuarioAtual.Senha = Criptography.GeneratePasswordHash(model.NovaSenha);
-                    usuarioAtual.IdOrganizacao = _organizacaoService.GetByIdUsuario(model.UsuarioId).FirstOrDefault()?.Id ?? 0;
-                    usuarioAtual.IdTipoUsuario = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(model.UsuarioId)?.Id ?? 0;
+                    // Alterar a senha usando o Identity
+                    var changePasswordResult = await _userManager.ChangePasswordAsync(identityUser, model.SenhaAtual, model.NovaSenha);
 
-                    if (_usuarioService.Update(usuarioAtual))
+                    if (changePasswordResult.Succeeded)
                     {
+                        // Atualizar o signin para manter o usuário logado com a nova senha
+                        await _signInManager.RefreshSignInAsync(identityUser);
+
                         TempData["mensagemSucesso"] = "Senha alterada com sucesso!";
                         return RedirectToAction("Index", "Home");
                     }
                     else
                     {
-                        TempData["mensagemErro"] = "Houve um problema ao alterar a senha, tente novamente em alguns minutos.";
+                        // Adicionar os erros do Identity ao ModelState
+                        foreach (var error in changePasswordResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
                         return View(model);
                     }
                 }
             }
             catch (ServiceException se)
             {
-                TempData["mensagemErro"] = se.Message;
+                TempData["mensagemErro"] = "Erro inesperado ao alterar a senha. Tente novamente.";
                 return View(model);
             }
             return View(model);

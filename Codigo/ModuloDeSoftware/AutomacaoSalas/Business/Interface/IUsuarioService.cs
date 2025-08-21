@@ -13,7 +13,7 @@ namespace Service.Interface
         UsuarioModel GetByCpf(string cpf);
         List<UsuarioModel> GetByIdOrganizacao(uint id);
         List<UsuarioModel> GetAllByIdsOrganizacao(List<uint> ids);
-        UsuarioModel GetByLoginAndPass(string login, string senha);
+        //UsuarioModel GetByLoginAndPass(string login, string senha);
         UsuarioViewModel Insert(UsuarioViewModel entity);
         bool Remove(int id);
         bool Update(UsuarioModel entity);

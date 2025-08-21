@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-
 namespace Model.ViewModel
 {
     public class AlterarSenhaViewModel
@@ -13,8 +12,7 @@ namespace Model.ViewModel
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Nova Senha")]
         [DataType(DataType.Password)]
-        [MinLength(8, ErrorMessage = "A senha deve ter pelo menos 8 caracteres")]
-        [MaxLength(16, ErrorMessage = "A senha deve ter no máximo 16 caracteres")]
+        [StringLength(100, ErrorMessage = "A {0} deve ter pelo menos {2} e no máximo {1} caracteres.", MinimumLength = 6)]
         public string NovaSenha { get; set; }
 
         [Required(ErrorMessage = "Campo obrigatório")]

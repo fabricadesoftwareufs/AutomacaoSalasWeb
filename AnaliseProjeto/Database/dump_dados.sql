@@ -73,12 +73,12 @@ INSERT INTO `tipousuario` (`descricao`) VALUES
 
 
 -- Copiando dados para a tabela automacaosalas.usuario: ~2 rows (aproximadamente)
-INSERT INTO `usuario` (`cpf`, `nome`, `dataNascimento`, `senha`) VALUES
-	('42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15', '071DC0F5B464E97A913E769863ECD11BE79533568ABF3212E15972308D35BE65'),
-	('57377766387', 'Rafael Kevin Teixeira', '1996-07-22', '071DC0F5B464E97A913E769863ECD11BE79533568ABF3212E15972308D35BE65'),
-	('07852892590', 'Igor bruno dos santos nascimento', '1996-07-22', '071DC0F5B464E97A913E769863ECD11BE79533568ABF3212E15972308D35BE65'),
-	('07334824571', 'Abraao Alves', '1998-06-06', '071DC0F5B464E97A913E769863ECD11BE79533568ABF3212E15972308D35BE65'),
-    ('12345678909',	'ADM Genérico',	'2001-01-01',	'071DC0F5B464E97A913E769863ECD11BE79533568ABF3212E15972308D35BE65');
+INSERT INTO `usuario` (`cpf`, `nome`, `dataNascimento`) VALUES
+	('42112664204', 'Lívia Benedita Rebeca Araújo', '1997-08-15'),
+	('57377766387', 'Rafael Kevin Teixeira', '1996-07-22'),
+	('07852892590', 'Igor bruno dos santos nascimento', '1996-07-22'),
+	('07334824571', 'Abraao Alves', '1998-06-06'),
+    ('12345678909',	'ADM Genérico',	'2001-01-01');
 
 -- Copiando dados para a tabela automacaosalas.usuarioorganizacao: ~0 rows (aproximadamente)
 INSERT INTO `usuarioorganizacao` (`idOrganizacao`, `idUsuario`,`idTipoUsuario`) VALUES
