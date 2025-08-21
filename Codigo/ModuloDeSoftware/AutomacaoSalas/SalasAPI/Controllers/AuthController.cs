@@ -34,6 +34,7 @@ namespace SalasAPI.Controllers
             _usuarioOrganizacaoService = usuarioOrganizacaoService;
         }
 
+        /*
         [AllowAnonymous]
         [HttpPost]
         public IActionResult RequestToken([FromBody] LoginViewModel request)
@@ -87,6 +88,7 @@ namespace SalasAPI.Controllers
 
             return BadRequest("Credenciais Invalidas");
         }
+        */
         
     }
 }

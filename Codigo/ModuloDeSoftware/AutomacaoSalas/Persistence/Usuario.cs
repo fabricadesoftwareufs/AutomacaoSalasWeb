@@ -13,8 +13,6 @@ public partial class Usuario
 
     public DateTime? DataNascimento { get; set; }
 
-    public string Senha { get; set; } = null!;
-
     public virtual ICollection<Horariosala> Horariosalas { get; set; } = new List<Horariosala>();
 
     public virtual ICollection<Monitoramento> Monitoramentos { get; set; } = new List<Monitoramento>();

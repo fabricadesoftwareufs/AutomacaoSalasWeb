@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS `automacaosalas`.`Usuario` (
   `cpf` VARCHAR(11) NOT NULL,
   `nome` VARCHAR(45) NOT NULL,
   `dataNascimento` DATE NULL,
-  `senha` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `Cpf_UNIQUE` (`cpf` ASC) VISIBLE)
 ENGINE = InnoDB;
