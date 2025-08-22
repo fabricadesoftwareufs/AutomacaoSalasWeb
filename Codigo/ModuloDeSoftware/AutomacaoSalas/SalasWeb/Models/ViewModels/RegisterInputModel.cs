@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace SalasWeb.ViewModels
+namespace SalasWeb.Models.ViewModels
 {
     public class RegisterInputModel
     {

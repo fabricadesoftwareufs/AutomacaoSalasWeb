@@ -44,9 +44,9 @@
 </head>  
 <body class="@(!User.Identity.IsAuthenticated ? "hold-transition login-page" : "hold-transition sidebar-mini layout-fixed")">  
     @if (!User.Identity.IsAuthenticated)  
-    {  
-        @if (action == "PublicUsuarioCreate" || action == "/Account/Register")  
-        {  
+    {
+        @if (action == "PublicUsuarioCreate" || action == "/Account/Register" || action == "/Account/ForgotPassword" || action == "/Account/ResetPassword" || action == "/Account/ResetPasswordConfirmation")
+        {
             <div class="login-box" style="width: 60%;">  
                 @RenderBody()  
             </div>  

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Model;
 using Model.ViewModel;
 using SalasWeb.Data;
-using SalasWeb.ViewModels;
+using SalasWeb.Models.ViewModels;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
