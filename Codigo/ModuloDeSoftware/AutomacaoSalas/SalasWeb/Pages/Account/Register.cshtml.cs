@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -26,19 +27,22 @@ namespace SalasWeb.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IOrganizacaoService _organizacaoService;
         private readonly IUsuarioService _usuarioService;
+        private readonly IEmailSender _emailSender;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IOrganizacaoService organizacaoService,
-            IUsuarioService usuarioService)
+            IUsuarioService usuarioService,
+            IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _organizacaoService = organizacaoService;
             _usuarioService = usuarioService;
+            _emailSender = emailSender;
         }
 
         [BindProperty]
@@ -125,12 +129,12 @@ namespace SalasWeb.Pages.Account
                     // Inserir no sistema legado
                     var usuarioLegado = _usuarioService.Insert(usuarioViewModel);
 
-                    // 2. Criar usuário no Identity - USAR EMAIL COMO USERNAME
+                    // 2. Criar usuário no Identity 
                     var identityUser = new ApplicationUser
                     {
-                        UserName = Input.Email, 
+                        UserName = Input.Email,
                         Email = Input.Email,
-                        EmailConfirmed = true, 
+                        EmailConfirmed = false, 
                         Cpf = cpfLimpo,
                         BirthDate = Input.BirthDate
                     };
@@ -141,23 +145,24 @@ namespace SalasWeb.Pages.Account
                     {
                         _logger.LogInformation("Usuário criou uma nova conta com senha.");
 
-                        // 3. Adicionar role padrão de colaborador
+                        // 3. Adicionar role padrão de pendente
                         await _userManager.AddToRoleAsync(identityUser, TipoUsuarioModel.ROLE_PENDENTE);
 
-                        // 4. Adicionar claims personalizados para integração com sistema legado
-                        var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.NameIdentifier, usuarioLegado.UsuarioModel.Id.ToString()), // ID do sistema legado
-                            new Claim(ClaimTypes.UserData, usuarioLegado.UsuarioModel.Cpf), // CPF
-                            new Claim(ClaimTypes.Name, usuarioLegado.UsuarioModel.Nome), // Nome
-                            new Claim(ClaimTypes.Role, TipoUsuarioModel.ROLE_PENDENTE) // Role inicial
+                        // 4. Gerar token de confirmação de email
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
 
-                        };
+                        // 5. Criar link de confirmação
+                        var callbackUrl = Url.Page(
+                            "/Account/ConfirmEmail",
+                            pageHandler: null,
+                            values: new { area = "", userId = identityUser.Id, code = code, returnUrl = returnUrl },
+                            protocol: Request.Scheme);
 
-                        await _userManager.AddClaimsAsync(identityUser, claims);
+                        // 6. Enviar email de confirmação
+                        await SendConfirmationEmailAsync(Input.Email, Input.FullName, callbackUrl);
 
-                        TempData["SuccessMessage"] = "Conta criada com sucesso! Você já pode fazer login com seu email e senha.";
-                        return RedirectToPage("./Login");
+                        // 7. Redirecionar para página de confirmação enviada
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
                     {
@@ -186,6 +191,54 @@ namespace SalasWeb.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        private async Task SendConfirmationEmailAsync(string email, string fullName, string callbackUrl)
+        {
+            var emailSubject = "Confirme sua conta - Smart Salas";
+            var emailBody = $@"
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                    <div style='padding: 30px; background-color: #ffffff;'>
+                        <img src=""https://smartsala.itatechjr.com.br/wp-content/uploads/2025/03/SmartSalas-2-WEBP.webp"" 
+                         alt=""Smart Salas"" 
+                         style=""max-width: 200px; height: auto; display: block; margin: 0 auto;"" />
+
+                        <h3 style='color: #333;'>Bem-vindo!</h3>
+                        
+                        <p>Olá <strong>{fullName}</strong>,</p>
+                        
+                        <p>Obrigado por se registrar no sistema Smart Salas. Para ativar sua conta, você precisa confirmar seu endereço de email.</p>
+                        
+                        <div style='text-align: center; margin: 30px 0;'>
+                            <a href='{callbackUrl}' 
+                               style='background-color: #28a745; color: white; padding: 12px 30px; 
+                                      text-decoration: none; border-radius: 5px; display: inline-block;'>
+                                Confirmar Email
+                            </a>
+                        </div>
+                        
+                        <p><strong>Importante:</strong></p>
+                        <ul>
+                            <li>Este link expira em 24 horas por motivos de segurança</li>
+                            <li>Você só poderá fazer login após confirmar seu email</li>
+                            <li>Se você não se registrou, ignore este email</li>
+                        </ul>
+                        
+                        <p>Após confirmar seu email, você poderá fazer login no sistema com:</p>
+                        <ul>
+                            <li><strong>Email:</strong> {email}</li>
+                            <li><strong>Senha:</strong> A senha que você criou durante o registro</li>
+                        </ul>
+                    </div>
+                    
+                    <div style='background-color: #f8f9fa; padding: 15px; text-align: center; 
+                                font-size: 12px; color: #666;'>
+                        <p>Este é um email automático, não responda.</p>
+                        <p>© Smart Salas - Sistema de Gerenciamento de Salas</p>
+                    </div>
+                </div>";
+
+            await _emailSender.SendEmailAsync(email, emailSubject, emailBody);
         }
 
         private void LoadOrganizacoes()
