@@ -94,11 +94,27 @@
                                     </div>
                                 </div>
                                 <div class="icheck-primary d-inline-block">
-                                    <input type="checkbox" id="show_pass" onchange="showPass(this)">
+                                    <input type="checkbox" id="show_pass" onchange="showPass(this, 'senha_auth')">
                                     <label for="show_pass">Mostrar Senha</label>
                                 </div>
                             </div>
                             <span asp-validation-for="UsuarioModel.Senha" class="text-danger"></span>
+
+                            <!-- ConfimarSenha -->
+                            <div class="row col-md-2 mt-3">
+                                <label asp-for="UsuarioModel.ConfirmarSenha" class="control-label select-label">Confirmar Senha</label>
+                            </div>
+                            <div class="row">
+                                <div class="input-group col-md-3">
+                                    <input id="confirmar_senha_auth" asp-for="UsuarioModel.ConfirmarSenha" type="password" class="form-control" placeholder="Confirmar Senha" minlength="6" />
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fa fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="UsuarioModel.ConfirmarSenha" class="text-danger"></span>
 
                             <!-- Organização -->
                             <div class="row col-md-2 mt-3">
@@ -166,6 +182,15 @@ else if (TempData["mensagemErro"] != null)
 
         function showPass(checkbox) {
             var senhaField = document.getElementById("senha_auth");
+            if (checkbox.checked) {
+                senhaField.type = "text";
+            } else {
+                senhaField.type = "password";
+            }
+        }
+
+        function showPass(checkbox, inputId) {
+            var senhaField = document.getElementById(inputId);
             if (checkbox.checked) {
                 senhaField.type = "text";
             } else {

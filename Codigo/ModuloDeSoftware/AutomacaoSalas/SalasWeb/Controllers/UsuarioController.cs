@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,7 @@ namespace SalasWeb.Controllers
         private readonly IHorarioSalaService _horarioSalaService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSender _emailSender;
 
         public UsuarioController(
             IUsuarioService usuarioService,
@@ -38,7 +40,8 @@ namespace SalasWeb.Controllers
             IPlanejamentoService planejamentoService,
             IHorarioSalaService horarioSalaService,
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager
+            SignInManager<ApplicationUser> signInManager,
+            IEmailSender emailSender 
         )
         {
             _usuarioService = usuarioService;
@@ -49,33 +52,7 @@ namespace SalasWeb.Controllers
             _horarioSalaService = horarioSalaService;
             _userManager = userManager;
             _signInManager = signInManager;
-        }
-
-        // GET: Usuario
-        [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
-        public async Task<ActionResult> Index()
-        {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var usuarioLogado = _usuarioService.GetAuthenticatedUser(claimsIdentity);
-            var usuarios = _usuarioService.GetAllExceptAuthenticatedUser(usuarioLogado.UsuarioModel.Id);
-
-            List<UsuarioAuxModel> lista = new List<UsuarioAuxModel>();
-
-            foreach (var s in usuarios)
-            {
-                // Buscar email no Identity
-                var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == s.Cpf);
-
-                lista.Add(new UsuarioAuxModel
-                {
-                    UsuarioModel = s,
-                    TipoUsuarioModel = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(s.Id),
-                    OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.Id),
-                    Email = identityUser?.Email ?? "Não informado"
-                });
-            }
-
-            return View(lista);
+            _emailSender = emailSender; 
         }
 
         // GET: Usuario/Details/5
@@ -98,6 +75,41 @@ namespace SalasWeb.Controllers
             };
 
             return View(usuarioView);
+        }
+
+        // GET: Usuario
+        [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
+        public async Task<ActionResult> Index()
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var usuarioLogado = _usuarioService.GetAuthenticatedUser(claimsIdentity);
+            var usuarios = _usuarioService.GetAllExceptAuthenticatedUser(usuarioLogado.UsuarioModel.Id);
+
+            List<UsuarioAuxModel> lista = new List<UsuarioAuxModel>();
+
+            foreach (var s in usuarios)
+            {
+                // Buscar email no Identity
+                var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == s.Cpf);
+
+                // Verificar se o email foi confirmado
+                bool emailConfirmado = false;
+                if (identityUser != null)
+                {
+                    emailConfirmado = await _userManager.IsEmailConfirmedAsync(identityUser);
+                }
+
+                lista.Add(new UsuarioAuxModel
+                {
+                    UsuarioModel = s,
+                    TipoUsuarioModel = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(s.Id),
+                    OrganizacaoModels = _organizacaoService.GetByIdUsuario(s.Id),
+                    Email = identityUser?.Email ?? "Não informado",
+                    EmailConfirmado = emailConfirmado 
+                });
+            }
+
+            return View(lista);
         }
 
         // GET: Usuario/Create
@@ -179,20 +191,17 @@ namespace SalasWeb.Controllers
             // Salvar a senha original antes de criptografar para o sistema legado
             var senhaOriginal = usuarioViewModel.UsuarioModel.Senha;
 
-            // Criptografar apenas para o sistema legado
-            usuarioViewModel.UsuarioModel.Senha = Criptography.GeneratePasswordHash(usuarioViewModel.UsuarioModel.Senha);
-
             try
             {
                 // 1. Criar no sistema legado
                 var usuarioLegado = _usuarioService.Insert(usuarioViewModel);
 
-                // 2. Criar no Identity usando a senha original (texto simples)
+                // 2. Criar no Identity com EmailConfirmed = false
                 var identityUser = new ApplicationUser
                 {
                     UserName = usuarioViewModel.Email,
                     Email = usuarioViewModel.Email,
-                    EmailConfirmed = true,
+                    EmailConfirmed = false, // Alterado para false - usuário precisa confirmar email
                     Cpf = cpfLimpo,
                     BirthDate = usuarioViewModel.UsuarioModel.DataNascimento
                 };
@@ -216,7 +225,10 @@ namespace SalasWeb.Controllers
                     };
                     await _userManager.AddClaimsAsync(identityUser, claims);
 
-                    TempData["mensagemSucesso"] = "Usuário criado com sucesso!";
+                    // 5. Enviar emails de confirmação e redefinição de senha
+                    await SendUserCreationEmailsAsync(identityUser, usuarioViewModel.UsuarioModel.Nome);
+
+                    TempData["mensagemSucesso"] = "Usuário criado com sucesso! Emails de confirmação e redefinição de senha foram enviados.";
                     return RedirectToAction("Index", "Usuario");
                 }
                 else
@@ -232,6 +244,144 @@ namespace SalasWeb.Controllers
                 TempData["mensagemErro"] = se.Message;
                 return View(usuarioViewModel);
             }
+        }
+
+        /// <summary>
+        /// Envia emails de confirmação de conta e redefinição de senha para usuário criado pelo admin
+        /// </summary>
+        private async Task SendUserCreationEmailsAsync(ApplicationUser user, string userName)
+        {
+            try
+            {
+                // 1. Gerar e enviar email de confirmação
+                var emailConfirmationCode = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var emailConfirmationUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "", userId = user.Id, code = emailConfirmationCode },
+                    protocol: Request.Scheme);
+
+                await SendEmailConfirmationEmailAsync(user.Email, userName, emailConfirmationUrl);
+
+                // 2. Gerar e enviar email de redefinição de senha
+                var passwordResetCode = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var passwordResetUrl = Url.Page(
+                    "/Account/ResetPassword",
+                    pageHandler: null,
+                    values: new { area = "", code = passwordResetCode, email = user.Email },
+                    protocol: Request.Scheme);
+
+                await SendPasswordResetEmailAsync(user.Email, userName, passwordResetUrl);
+            }
+            catch (Exception ex)
+            {
+                // Log do erro, mas não falhar a criação do usuário
+                // Em produção, você deveria usar um logger adequado
+                Console.WriteLine($"Erro ao enviar emails: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Envia email de confirmação de conta
+        /// </summary>
+        private async Task SendEmailConfirmationEmailAsync(string email, string userName, string confirmationUrl)
+        {
+            var emailSubject = "Confirme sua conta - Smart Salas";
+            var emailBody = $@"
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                    <div style='padding: 30px; background-color: #ffffff;'>
+                        <img src=""https://smartsala.itatechjr.com.br/wp-content/uploads/2025/03/SmartSalas-2-WEBP.webp"" 
+                             alt=""Smart Salas"" 
+                             style=""max-width: 200px; height: auto; display: block; margin: 0 auto;"" />
+
+                        <h3 style='color: #333;'>Bem-vindo ao Smart Salas!</h3>
+                        
+                        <p>Olá <strong>{userName}</strong>,</p>
+                        
+                        <p>Uma conta foi criada para você no sistema Smart Salas por um administrador. Para ativar sua conta, você precisa confirmar seu endereço de email.</p>
+                        
+                        <div style='text-align: center; margin: 30px 0;'>
+                            <a href='{confirmationUrl}' 
+                               style='background-color: #28a745; color: white; padding: 12px 30px; 
+                                      text-decoration: none; border-radius: 5px; display: inline-block;'>
+                                Confirmar Email
+                            </a>
+                        </div>
+                        
+                        <p><strong>Importante:</strong></p>
+                        <ul>
+                            <li>Este link expira em 24 horas por motivos de segurança</li>
+                            <li>Você só poderá fazer login após confirmar seu email</li>
+                            <li>Você também receberá um email separado para definir sua própria senha</li>
+                        </ul>
+                        
+                        <p><strong>Suas credenciais de login:</strong></p>
+                        <ul>
+                            <li><strong>Email:</strong> {email}</li>
+                            <li><strong>CPF:</strong> Use o CPF fornecido durante o cadastro</li>
+                        </ul>
+                    </div>
+                    
+                    <div style='background-color: #f8f9fa; padding: 15px; text-align: center; 
+                                font-size: 12px; color: #666;'>
+                        <p>Este é um email automático, não responda.</p>
+                        <p>© Smart Salas - Sistema de Gerenciamento de Salas</p>
+                    </div>
+                </div>";
+
+            await _emailSender.SendEmailAsync(email, emailSubject, emailBody);
+        }
+
+        /// <summary>
+        /// Envia email de redefinição de senha
+        /// </summary>
+        private async Task SendPasswordResetEmailAsync(string email, string userName, string resetUrl)
+        {
+            var emailSubject = "Defina sua senha - Smart Salas";
+            var emailBody = $@"
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                    <div style='padding: 30px; background-color: #ffffff;'>
+                        <img src=""https://smartsala.itatechjr.com.br/wp-content/uploads/2025/03/SmartSalas-2-WEBP.webp"" 
+                             alt=""Smart Salas"" 
+                             style=""max-width: 200px; height: auto; display: block; margin: 0 auto;"" />
+
+                        <h3 style='color: #333;'>Defina sua senha</h3>
+                        
+                        <p>Olá <strong>{userName}</strong>,</p>
+                        
+                        <p>Uma conta foi criada para você no sistema Smart Salas. Para completar o processo de ativação, você precisa definir sua própria senha de acesso.</p>
+                        
+                        <div style='text-align: center; margin: 30px 0;'>
+                            <a href='{resetUrl}' 
+                               style='background-color: #007bff; color: white; padding: 12px 30px; 
+                                      text-decoration: none; border-radius: 5px; display: inline-block;'>
+                                Definir Minha Senha
+                            </a>
+                        </div>
+                        
+                        <p><strong>Instruções:</strong></p>
+                        <ol>
+                            <li>Primeiro, confirme seu email (você deve ter recebido um email separado para isso)</li>
+                            <li>Depois, clique no link acima para definir sua senha</li>
+                            <li>Após definir a senha, você poderá fazer login normalmente</li>
+                        </ol>
+                        
+                        <p><strong>Informações importantes:</strong></p>
+                        <ul>
+                            <li>Este link expira em 24 horas por motivos de segurança</li>
+                            <li>Você pode usar tanto seu email quanto seu CPF para fazer login</li>
+                            <li>Entre em contato com o administrador se tiver dificuldades</li>
+                        </ul>
+                    </div>
+                    
+                    <div style='background-color: #f8f9fa; padding: 15px; text-align: center; 
+                                font-size: 12px; color: #666;'>
+                        <p>Este é um email automático, não responda.</p>
+                        <p>© Smart Salas - Sistema de Gerenciamento de Salas</p>
+                    </div>
+                </div>";
+
+            await _emailSender.SendEmailAsync(email, emailSubject, emailBody);
         }
 
         // GET: Usuario/Edit/5
@@ -379,6 +529,40 @@ namespace SalasWeb.Controllers
             return View(usuarioView);
         }
 
+        // Método para reenviar emails de ativação
+        [HttpPost]
+        [Authorize(Roles = TipoUsuarioModel.ROLE_ADMIN)]
+        public async Task<ActionResult> ResendActivationEmails(uint userId)
+        {
+            try
+            {
+                var usuario = _usuarioService.GetById(userId);
+                if (usuario == null)
+                {
+                    TempData["mensagemErro"] = "Usuário não encontrado.";
+                    return RedirectToAction("Index");
+                }
+
+                var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuario.Cpf);
+                if (identityUser == null)
+                {
+                    TempData["mensagemErro"] = "Usuário não encontrado no sistema de autenticação.";
+                    return RedirectToAction("Index");
+                }
+
+                // Reenviar emails
+                await SendUserCreationEmailsAsync(identityUser, usuario.Nome);
+
+                TempData["mensagemSucesso"] = "Emails de ativação reenviados com sucesso!";
+            }
+            catch (Exception ex)
+            {
+                TempData["mensagemErro"] = "Erro ao reenviar emails de ativação.";
+            }
+
+            return RedirectToAction("Index");
+        }
+
         // GET: Usuario/EditPassword
         [Authorize(Roles = TipoUsuarioModel.ALL_ROLES)]
         public async Task<ActionResult> EditPassword()
@@ -482,7 +666,7 @@ namespace SalasWeb.Controllers
             {
                 // Remove a validação da senha para edição de dados pessoais
                 ModelState.Remove("UsuarioModel.Senha");
-                
+
                 if (ModelState.IsValid)
                 {
                     usuarioView.UsuarioModel.IdOrganizacao = usuarioView.OrganizacaoModel.Id;
