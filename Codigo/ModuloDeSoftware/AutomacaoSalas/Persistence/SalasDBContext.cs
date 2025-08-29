@@ -57,16 +57,7 @@ public partial class SalasDBContext : DbContext
 
     public virtual DbSet<Usuarioorganizacao> Usuarioorganizacaos { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-    {
-        if (_configuration != null)
-        {
-            var connectionString = _configuration.GetConnectionString("SalasDB");
-            optionsBuilder.UseMySQL(connectionString);
-        }
-    }
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Bloco>(entity =>

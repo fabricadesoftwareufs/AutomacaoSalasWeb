@@ -1,0 +1,70 @@
+﻿@page "/Account/ConfirmEmail"
+@model ConfirmEmailModel
+@{
+    ViewData["Title"] = "Confirmação de Email";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                @if (ViewData["ShowSuccessMessage"] != null)
+                {
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-check-circle"></i>
+                            Email Confirmado com Sucesso!
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                        </div>
+
+                        <div class="alert alert-success">
+                            <h5>@Model.StatusMessage</h5>
+                            <p class="mb-0">Agora você pode fazer login no sistema com suas credenciais.</p>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <a asp-page="./Login" class="btn btn-success btn-lg">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Fazer Login
+                            </a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card-header bg-danger text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Erro na Confirmação
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-times-circle text-danger" style="font-size: 4rem;"></i>
+                        </div>
+
+                        <div class="alert alert-danger">
+                            <h5>@Model.StatusMessage</h5>
+                            <p class="mb-0">Tente solicitar um novo email de confirmação ou entre em contato com o suporte.</p>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <a asp-page="./Register" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i>
+                                Registrar Novamente
+                            </a>
+                            <a asp-page="./Login" class="btn btn-secondary ml-2">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Ir para Login
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

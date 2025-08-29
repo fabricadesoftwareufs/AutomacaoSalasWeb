@@ -14,6 +14,13 @@
     </div>
 }
 
+@if (TempData["StatusMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["StatusMessage"]
+    </div>
+}
+
 <form id="account" method="post">
     <div class="input-group mb-3">
         <input asp-for="Input.Cpf" class="form-control" placeholder="CPF" autocomplete="off" />
@@ -52,7 +59,7 @@
 
 <hr />
 <p class="mb-1">
-    <a href="#" onclick="alert('Funcionalidade em desenvolvimento')">Esqueceu a senha?</a>
+    <a asp-page="./ForgotPassword">Esqueceu a senha?</a>
 </p>
 <p class="mb-0">
     <a asp-page="./Register" class="text-center">Criar conta</a>

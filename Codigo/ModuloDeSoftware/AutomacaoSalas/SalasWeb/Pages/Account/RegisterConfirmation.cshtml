@@ -1,0 +1,60 @@
+﻿@page "/Account/RegisterConfirmation"
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Confirmação de Registro";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-envelope-open"></i>
+                        Email de Confirmação Enviado
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+
+                    <h5 class="text-center mb-4">Verifique seu email!</h5>
+
+                    <div class="alert alert-info">
+                        <p>
+                            <strong>Enviamos um email de confirmação para:</strong><br>
+                            <span class="text-primary">@Model.Email</span>
+                        </p>
+
+                        <p>Para completar seu registro e ativar sua conta, clique no link de confirmação que enviamos para seu email.</p>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Importante:</h6>
+                        <ul class="mb-0">
+                            <li>Verifique também sua caixa de spam/lixo eletrônico</li>
+                            <li>O link de confirmação expira em 24 horas</li>
+                            <li>Você só poderá fazer login após confirmar seu email</li>
+                        </ul>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <h6>Não recebeu o email?</h6>
+                        <p class="text-muted">Aguarde alguns minutos e verifique sua caixa de spam. Se ainda não recebeu, entre em contato com o suporte.</p>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-page="./Login" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Ir para Login
+                    </a>
+                    @if (!string.IsNullOrEmpty(Model.ReturnUrl))
+                    {
+                        <a href="@Model.ReturnUrl" class="btn btn-secondary ml-2">Continuar</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

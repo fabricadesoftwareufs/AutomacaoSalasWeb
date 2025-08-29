@@ -27,11 +27,16 @@ namespace Model
         [MinLength(8), MaxLength(16)]
         [StringLength(16, ErrorMessage = "A senha deve ter entre 8 e 16 caracteres")]
         public string Senha { get; set; }
+
+
+        [Display(Name = "Confirmar Senha")]
+        [Compare("Senha", ErrorMessage = "As senhas não conferem")]
+        [Required(ErrorMessage = "Campo obrigatório")]
+        public string ConfirmarSenha { get; set; }
+
         [Required(ErrorMessage = "Campo obrigatório")]
         [Display(Name = "Tipo")]
-
         public uint TipoUsuarioId { get; set; }
-
         public uint IdOrganizacao { get; set; } = 0;
         public uint IdTipoUsuario { get; set; } = 0; 
     }

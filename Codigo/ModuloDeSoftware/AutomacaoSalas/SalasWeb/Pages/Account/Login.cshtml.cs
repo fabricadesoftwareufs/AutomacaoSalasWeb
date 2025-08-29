@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SalasWeb.Data;
-using SalasWeb.ViewModels;
+using SalasWeb.Models.ViewModels;
 using Service.Interface;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,6 +78,13 @@ namespace SalasWeb.Pages.Account
 
                 if (user != null)
                 {
+
+                    if (!await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        ModelState.AddModelError(string.Empty, "Você deve confirmar seu email antes de fazer login.");
+                        return Page();
+                    }
+
                     var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
                     if (result.Succeeded)

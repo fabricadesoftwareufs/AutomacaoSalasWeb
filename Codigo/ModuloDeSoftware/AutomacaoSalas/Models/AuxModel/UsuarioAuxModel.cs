@@ -8,5 +8,7 @@ namespace Model.AuxModel
         public TipoUsuarioModel TipoUsuarioModel { get; set; }
         public List<OrganizacaoModel> OrganizacaoModels { get; set; }
         public string Email { get; set; }
+        public bool EmailConfirmado { get; set; } 
+
     }
 }

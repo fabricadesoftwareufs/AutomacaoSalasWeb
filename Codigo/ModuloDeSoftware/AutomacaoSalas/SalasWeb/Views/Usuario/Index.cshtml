@@ -12,97 +12,93 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-12">
-                                <h2 class="card-title">Usuários</h2>
-                                <a class="btn btn-primary" style="float:right" asp-controller="Usuario" asp-action="Create">Adicionar Usuário</a>
+                                <h2 class="card-title">
+                                    Usuários
+                                </h2>
+                                <a class="btn btn-primary" style="float:right" asp-action="Create"><i class="fas fa-plus"></i> Novo Usuário</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <table id="table-search" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().UsuarioModel.Nome)</th>
-                                    <th>Email</th>
-                                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().UsuarioModel.Cpf)</th>
-                                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().TipoUsuarioModel.Descricao)</th>
-                                    <th>Organização</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td>@Html.DisplayFor(modelItem => item.UsuarioModel.Nome)</td>
-                                        <td>@item.Email</td>
-                                        <td>@Html.DisplayFor(modelItem => item.UsuarioModel.Cpf, "Cpf")</td>
-                                        <td>@Html.DisplayFor(modelItem => item.TipoUsuarioModel.Descricao)</td>
-                                        @{
-                                            string org;
-                                            var nomeCompleto = item.OrganizacaoModels[0].RazaoSocial;
-
-                                            if (nomeCompleto.Contains("-"))
-                                            {
-                                                org = nomeCompleto.Split('-')[1].Trim();
-                                            }
-                                            else if (nomeCompleto.Contains(" "))
-                                            {
-                                                var palavrasIgnoradas = new[] { "de", "da", "do", "das", "dos", "e" };
-                                                org = string.Concat(
-                                                nomeCompleto
-                                                .Split(' ')
-                                                .Where(palavra => !palavrasIgnoradas.Contains(palavra.ToLower()))
-                                                .Select(palavra => palavra[0])
-                                                ).ToUpper();
-                                            }
-                                            else
-                                            {
-                                                org = new string(nomeCompleto.Take(4).ToArray()).ToUpper();
-                                            }
-                                        }
-                                        <td><acronym title="@nomeCompleto">@org</acronym></td>
-                                        <td>
-                                            <a href="@Url.Action("Details", "Usuario", new { id = item.UsuarioModel.Id })" class="btn btn-primary btn-xs">
-                                                <i class="fa fa-folder"></i> Detalhes
-                                            </a>
-                                            <a href="@Url.Action("Edit", "Usuario", new { id = item.UsuarioModel.Id })" class="btn btn-info btn-xs">
-                                                <i class="fa fa-edit"></i> Editar
-                                            </a>
-                                            <a data-toggle="modal" data-target="#modal-remover-@item.UsuarioModel.Id" class="btn btn-danger btn-xs text-white">
-                                                <i class="fa fa-trash"></i> Remover
-                                            </a>
-
-                                            <!-- Modal de confirmação -->
-                                            <div class="modal fade" id="modal-remover-@item.UsuarioModel.Id">
-                                                <div class="modal-dialog modal-sm">
-                                                    <div class="modal-content card card-secondary">
-                                                        <div class="modal-header card-header">
-                                                            <h5 class="modal-title">Confirmar Remoção do Usuário ?</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true" class="text-white">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body text-center">
-                                                            <h5>Nome</h5><p>@item.UsuarioModel.Nome</p>
-                                                            <h5>Email</h5><p>@item.Email</p>
-                                                            <h5>CPF</h5><p>***.@item.UsuarioModel.Cpf.Substring(3, 3).@item.UsuarioModel.Cpf.Substring(6, 3)-**</p>
-                                                            <h5>Tipo Usuário</h5><p>@item.TipoUsuarioModel.Descricao</p>
-                                                        </div>
-                                                        @using (Html.BeginForm("Delete", "Usuario", new { id = item.UsuarioModel.Id }, FormMethod.Post))
+                        @if (Model != null && Model.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>CPF</th>
+                                            <th>Email</th>
+                                            <th>Tipo</th>
+                                            <th>Organização</th>
+                                            <th>Status Email</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@item.UsuarioModel.Nome</td>
+                                                <td>@Html.DisplayFor(modelItem => item.UsuarioModel.Cpf, "Cpf")</td>
+                                                <td>@item.Email</td>
+                                                <td>@item.TipoUsuarioModel.Descricao</td>
+                                                <td>
+                                                    @if (item.OrganizacaoModels != null && item.OrganizacaoModels.Any())
+                                                    {
+                                                        @string.Join(", ", item.OrganizacaoModels.Select(o => o.RazaoSocial))
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">Nenhuma</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (string.IsNullOrEmpty(item.Email) || item.Email == "Não informado")
+                                                    {
+                                                        <span class="badge badge-secondary">Sem email</span>
+                                                    }
+                                                    else if (item.EmailConfirmado)
+                                                    {
+                                                        <span class="badge badge-success">Confirmado</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-warning">Pendente</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.UsuarioModel.Id">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.UsuarioModel.Id">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        @if (!string.IsNullOrEmpty(item.Email) && item.Email != "Não informado")
                                                         {
-                                                            <div class="modal-footer justify-content-between">
-                                                                <a class="btn btn-danger text-white" data-dismiss="modal">Cancelar</a>
-                                                                <button type="submit" value="Remover" class="btn btn-success">Confirmar</button>
-                                                            </div>
+                                                            <button type="button" class="btn btn-secondary btn-sm" onclick="resendEmails(@item.UsuarioModel.Id)" title="Reenviar emails de ativação">
+                                                                <i class="fas fa-envelope"></i>
+                                                            </button>
                                                         }
+                                                        <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(@item.UsuarioModel.Id)" title="Excluir usuário">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">
+                                <h5><i class="icon fas fa-info"></i> Nenhum usuário encontrado!</h5>
+                                Não há usuários cadastrados no sistema.
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -110,9 +106,19 @@
     </div>
 </section>
 
+<!-- Formulários ocultos para ações -->
+<form id="resendEmailsForm" asp-action="ResendActivationEmails" method="post" style="display: none;">
+    <input type="hidden" id="resendUserId" name="userId" />
+</form>
+
+<form id="deleteForm" asp-action="Delete" method="post" style="display: none;">
+    <input type="hidden" id="deleteUserId" name="id" />
+    @Html.AntiForgeryToken()
+</form>
+
 @if (TempData["mensagemSucesso"] != null)
 {
-    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!','@TempData["mensagemSucesso"]')"></div>
+    <div id="mensagem-retorno" onclick="swtAlert('success','Parabéns!', '@TempData["mensagemSucesso"]')"></div>
 }
 else if (TempData["mensagemErro"] != null)
 {
@@ -120,16 +126,49 @@ else if (TempData["mensagemErro"] != null)
 }
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="~/js/sweet-alert.js"></script>
+
     <script>
         $(document).ready(function () {
             if (document.querySelector('#mensagem-retorno'))
                 document.getElementById("mensagem-retorno").click();
         });
+
+        function resendEmails(userId) {
+            Swal.fire({
+                title: 'Reenviar Emails de Ativação?',
+                text: 'Isso enviará novamente os emails de confirmação e redefinição de senha para o usuário.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sim, reenviar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('resendUserId').value = userId;
+                    document.getElementById('resendEmailsForm').submit();
+                }
+            });
+        }
+
+        function confirmDelete(userId) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: 'Esta ação não pode ser desfeita! O usuário será removido permanentemente.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('deleteUserId').value = userId;
+                    document.getElementById('deleteForm').submit();
+                }
+            });
+        }
     </script>
-    <script src="~/js/usuario-script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script src="~/js/sweet-alert.js"></script>
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
 }
