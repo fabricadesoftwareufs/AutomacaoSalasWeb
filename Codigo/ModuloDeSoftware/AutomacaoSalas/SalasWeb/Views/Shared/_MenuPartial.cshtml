@@ -1,15 +1,35 @@
 ﻿@using System.Security.Claims;
 @using Model;
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "_MenuPartial";
     var claimsIdentity = User.Identity as ClaimsIdentity;
     string nome = "";
     string role = "";
 
-    if (claimsIdentity != null)
+    if (User.Identity.IsAuthenticated)
     {
-        nome = User.Claims.Where(c => c.Type == ClaimTypes.Name).LastOrDefault()?.Value ?? "";
-        role = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault() ?? "";
+        // Tentar obter o nome da session primeiro
+        nome = HttpContextAccessor.HttpContext.Session.GetString("UserName") ?? "";
+
+        // Se não encontrar na session, tentar obter do claim como fallback
+        if (string.IsNullOrEmpty(nome) && claimsIdentity != null)
+        {
+            nome = User.Claims.Where(c => c.Type == ClaimTypes.Name).LastOrDefault()?.Value ?? "";
+        }
+
+        // Para o role, primeiro verificar os claims (padrão do Identity)
+        if (claimsIdentity != null)
+        {
+            role = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault() ?? "";
+        }
+
+        // Se não encontrar role nos claims, tentar obter da session
+        if (string.IsNullOrEmpty(role))
+        {
+            role = HttpContextAccessor.HttpContext.Session.GetString("UserRole") ?? "";
+        }
     }
 }
 

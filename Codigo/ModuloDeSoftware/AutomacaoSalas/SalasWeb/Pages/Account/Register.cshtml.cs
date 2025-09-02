@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -84,7 +85,7 @@ namespace SalasWeb.Pages.Account
                 var cpfLimpo = Methods.CleanString(Input.Cpf);
 
                 // Verificar se já existe usuário com esse CPF no Identity
-                var existingIdentityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == cpfLimpo);
+                var existingIdentityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == cpfLimpo);
                 if (existingIdentityUser != null)
                 {
                     ModelState.AddModelError(nameof(Input.Cpf), "Já existe um usuário cadastrado com este CPF no sistema de autenticação.");
@@ -132,11 +133,9 @@ namespace SalasWeb.Pages.Account
                     // 2. Criar usuário no Identity 
                     var identityUser = new ApplicationUser
                     {
-                        UserName = Input.Email,
+                        UserName = cpfLimpo,
                         Email = Input.Email,
-                        EmailConfirmed = false, 
-                        Cpf = cpfLimpo,
-                        BirthDate = Input.BirthDate
+                        EmailConfirmed = false
                     };
 
                     var result = await _userManager.CreateAsync(identityUser, Input.Password);
@@ -145,23 +144,28 @@ namespace SalasWeb.Pages.Account
                     {
                         _logger.LogInformation("Usuário criou uma nova conta com senha.");
 
-                        // 3. Adicionar role padrão de pendente
+                        // 3. Adicionar role padrão de pendente 
                         await _userManager.AddToRoleAsync(identityUser, TipoUsuarioModel.ROLE_PENDENTE);
 
-                        // 4. Gerar token de confirmação de email
+                        // 4. Armazenar ID do usuário legado na session temporária
+                        HttpContext.Session.SetInt32("NewRegisteredUserId", (int)usuarioLegado.UsuarioModel.Id);
+                        HttpContext.Session.SetString("NewRegisteredUserName", Input.FullName);
+                        HttpContext.Session.SetString("NewRegisteredUserCpf", cpfLimpo);
+
+                        // 5. Gerar token de confirmação de email
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
 
-                        // 5. Criar link de confirmação
+                        // 6. Criar link de confirmação
                         var callbackUrl = Url.Page(
                             "/Account/ConfirmEmail",
                             pageHandler: null,
                             values: new { area = "", userId = identityUser.Id, code = code, returnUrl = returnUrl },
                             protocol: Request.Scheme);
 
-                        // 6. Enviar email de confirmação
+                        // 7. Enviar email de confirmação
                         await SendConfirmationEmailAsync(Input.Email, Input.FullName, callbackUrl);
 
-                        // 7. Redirecionar para página de confirmação enviada
+                        // 8. Redirecionar para página de confirmação enviada
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else

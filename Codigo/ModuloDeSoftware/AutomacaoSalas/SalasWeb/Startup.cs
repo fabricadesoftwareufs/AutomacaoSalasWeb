@@ -15,6 +15,7 @@ using SalasWeb.Helpers;
 using SalasWeb.Middlewares;
 using Service;
 using Service.Interface;
+using System;
 using System.Threading.Tasks;
 
 namespace SalasUfsWeb
@@ -63,6 +64,14 @@ namespace SalasUfsWeb
                 options.AccessDeniedPath = "/Account/AccessDenied";
             });
 
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             services.AddScoped<IOrganizacaoService, OrganizacaoService>();
             services.AddScoped<IBlocoService, BlocoService>();
             services.AddScoped<ISalaService, SalaService>();
@@ -85,8 +94,8 @@ namespace SalasUfsWeb
             services.AddScoped<IConexaoInternetSalaService, ConexaoInternetSalaService>();
             services.AddScoped<IMarcaEquipamentoService, MarcaEquipamentoService>();
             services.AddScoped<IModeloEquipamentoService, ModeloEquipamentoService>();
+            services.AddHttpContextAccessor();
 
-            
             services.AddTransient<IEmailSender, EmailSender>();
 
             // Adicionar Razor Pages
@@ -111,8 +120,11 @@ namespace SalasUfsWeb
             app.UseHttpsRedirection();
             app.UseLogRequestMiddleware();
             app.UseStaticFiles();
-            app.UseRouting();
 
+            // Adicionar middleware de session antes do routing
+            app.UseSession();
+
+            app.UseRouting();
             // Forçando a utilizar autenticação.
             app.UseAuthentication();
             app.UseAuthorization();

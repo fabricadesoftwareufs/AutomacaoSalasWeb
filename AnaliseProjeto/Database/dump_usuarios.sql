@@ -122,3 +122,11 @@ create table aspnetusertokens
             on delete cascade
 );
 
+SELECT
+    a.UserName,a2.Name
+FROM
+    aspnetuserroles
+JOIN
+    aspnetusers a on aspnetuserroles.UserId = a.Id
+JOIN
+    aspnetroles a2 on a2.Id = aspnetuserroles.RoleId
