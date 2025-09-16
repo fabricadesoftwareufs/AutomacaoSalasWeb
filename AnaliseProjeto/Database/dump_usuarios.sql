@@ -1,8 +1,8 @@
-DROP SCHEMA IF EXISTS `usuarios` ;
+DROP SCHEMA IF EXISTS `automacaosalasusuarios` ;
 
-create database usuarios;
+create database automacaosalasusuarios;
 
-use usuarios;
+use automacaosalasusuarios;
 
 create table __efmigrationshistory
 (
@@ -55,8 +55,6 @@ primary key,
     LockoutEnd           datetime                                         null,
     LockoutEnabled       tinyint(1)                                       not null,
     AccessFailedCount    int                                              not null,
-    Cpf                  varchar(14) default ''                           not null,
-    BirthDate            datetime(6) default '0001-01-01 00:00:00.000000' not null,
     constraint UserNameIndex
         unique (NormalizedUserName)
 );
@@ -122,11 +120,4 @@ create table aspnetusertokens
             on delete cascade
 );
 
-SELECT
-    a.UserName,a2.Name
-FROM
-    aspnetuserroles
-JOIN
-    aspnetusers a on aspnetuserroles.UserId = a.Id
-JOIN
-    aspnetroles a2 on a2.Id = aspnetuserroles.RoleId
+
