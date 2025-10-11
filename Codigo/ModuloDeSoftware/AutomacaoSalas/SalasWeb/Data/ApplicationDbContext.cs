@@ -13,13 +13,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<ApplicationUser>()
-            .Property(u => u.Cpf)
-            .IsRequired()
-            .HasMaxLength(14);
+        
 
-        builder.Entity<ApplicationUser>()
-            .Property(u => u.BirthDate)
-            .IsRequired();
+        
     }
 }

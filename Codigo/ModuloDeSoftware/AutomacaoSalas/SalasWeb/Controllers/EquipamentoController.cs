@@ -97,7 +97,7 @@ namespace SalasWeb.Controllers
             return View(equipamentoViewModel);
         }
 
-        // Método para obter modelos por marca que deve ser implementado no seu controller
+        
         [HttpGet]
         public JsonResult GetModelosByMarca(uint id)
         {

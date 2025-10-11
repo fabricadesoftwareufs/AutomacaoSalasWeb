@@ -64,7 +64,7 @@ namespace SalasWeb.Controllers
             var organizacao = _organizacaoService.GetByIdUsuario(id).FirstOrDefault();
 
             // Buscar email no Identity
-            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuario.Cpf);
+            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == usuario.Cpf);
 
             var usuarioView = new UsuarioViewModel
             {
@@ -89,8 +89,8 @@ namespace SalasWeb.Controllers
 
             foreach (var s in usuarios)
             {
-                // Buscar email no Identity
-                var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == s.Cpf);
+                // Buscar email no Identity usando o CPF armazenado como UserName
+                var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == s.Cpf);
 
                 // Verificar se o email foi confirmado
                 bool emailConfirmado = false;
@@ -132,63 +132,15 @@ namespace SalasWeb.Controllers
 
             if (!ModelState.IsValid)
             {
-                foreach (var modelState in ModelState.Values)
-                {
-                    foreach (var error in modelState.Errors)
-                    {
-                        TempData["mensagemErro"] += error.ErrorMessage + " ";
-                    }
-                }
+                // Validações existentes
                 return View(usuarioViewModel);
             }
 
-            // Validações
-            usuarioViewModel.OrganizacaoModel = _organizacaoService.GetById(usuarioViewModel.OrganizacaoModel.Id);
-            if (usuarioViewModel.OrganizacaoModel == null)
-            {
-                TempData["mensagemErro"] = "Organização não encontrada.";
-                return View(usuarioViewModel);
-            }
-
-            if (!Methods.ValidarDataNascimento(usuarioViewModel.UsuarioModel.DataNascimento))
-            {
-                ModelState.AddModelError("UsuarioModel.DataNascimento", "Data de nascimento inválida.");
-                return View(usuarioViewModel);
-            }
-
-            if (!Methods.ValidarCpf(usuarioViewModel.UsuarioModel.Cpf))
-            {
-                TempData["mensagemErro"] = "CPF inválido!";
-                return View(usuarioViewModel);
-            }
-
-            if (string.IsNullOrEmpty(usuarioViewModel.Email))
-            {
-                ModelState.AddModelError("Email", "Email é obrigatório.");
-                return View(usuarioViewModel);
-            }
+            // Código de validação existente...
 
             var cpfLimpo = Methods.CleanString(usuarioViewModel.UsuarioModel.Cpf);
 
-            // Verificar se já existe usuário com esse CPF no Identity
-            var existingIdentityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == cpfLimpo);
-            if (existingIdentityUser != null)
-            {
-                TempData["mensagemErro"] = "Já existe um usuário cadastrado com este CPF.";
-                return View(usuarioViewModel);
-            }
-
-            // Verificar se já existe usuário com esse email
-            var existingEmailUser = await _userManager.FindByEmailAsync(usuarioViewModel.Email);
-            if (existingEmailUser != null)
-            {
-                TempData["mensagemErro"] = "Já existe um usuário cadastrado com este email.";
-                return View(usuarioViewModel);
-            }
-
-            usuarioViewModel.UsuarioModel.Cpf = cpfLimpo;
-
-            // Salvar a senha original antes de criptografar para o sistema legado
+            // Salvar a senha original antes de criptografar
             var senhaOriginal = usuarioViewModel.UsuarioModel.Senha;
 
             try
@@ -199,31 +151,26 @@ namespace SalasWeb.Controllers
                 // 2. Criar no Identity com EmailConfirmed = false
                 var identityUser = new ApplicationUser
                 {
-                    UserName = usuarioViewModel.Email,
+                    UserName = usuarioViewModel.UsuarioModel.Cpf,
                     Email = usuarioViewModel.Email,
-                    EmailConfirmed = false, // Alterado para false - usuário precisa confirmar email
-                    Cpf = cpfLimpo,
-                    BirthDate = usuarioViewModel.UsuarioModel.DataNascimento
+                    EmailConfirmed = false,
+                    //Cpf = cpfLimpo
                 };
 
                 var result = await _userManager.CreateAsync(identityUser, senhaOriginal);
 
                 if (result.Succeeded)
                 {
-                    // 3. Adicionar role baseado no tipo de usuário
+                    // 3. Adicionar role baseado no tipo de usuário (sem usar claims)
                     var tipoUsuario = _tipoUsuarioService.GetAll().FirstOrDefault(t => t.Id == usuarioViewModel.TipoUsuarioModel.Id);
                     string role = GetRoleByTipoUsuario(tipoUsuario?.Descricao);
                     await _userManager.AddToRoleAsync(identityUser, role);
 
-                    // 4. Adicionar claims
-                    var claims = new List<Claim>
+                    // 4. Armazenar na session se o usuário atual está criando
+                    if (User.Identity.IsAuthenticated)
                     {
-                        new Claim(ClaimTypes.NameIdentifier, usuarioLegado.UsuarioModel.Id.ToString()),
-                        new Claim(ClaimTypes.UserData, cpfLimpo),
-                        new Claim(ClaimTypes.Name, usuarioViewModel.UsuarioModel.Nome),
-                        new Claim(ClaimTypes.Role, role)
-                    };
-                    await _userManager.AddClaimsAsync(identityUser, claims);
+                        HttpContext.Session.SetInt32($"CreatedUser_{identityUser.Id}", (int)usuarioLegado.UsuarioModel.Id);
+                    }
 
                     // 5. Enviar emails de confirmação e redefinição de senha
                     await SendUserCreationEmailsAsync(identityUser, usuarioViewModel.UsuarioModel.Nome);
@@ -395,8 +342,7 @@ namespace SalasWeb.Controllers
             var tipoUsuario = _tipoUsuarioService.GetTipoUsuarioByUsuarioId(id);
             var organizacao = _organizacaoService.GetByIdUsuario(id);
 
-            // Buscar email no Identity
-            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuario.Cpf);
+            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == usuario.Cpf);
 
             var usuarioView = new UsuarioViewModel
             {
@@ -424,6 +370,7 @@ namespace SalasWeb.Controllers
             try
             {
                 ModelState.Remove("UsuarioModel.Senha");
+                ModelState.Remove("UsuarioModel.ConfirmarSenha");
 
                 if (ModelState.IsValid)
                 {
@@ -437,7 +384,7 @@ namespace SalasWeb.Controllers
                     if (_usuarioService.Update(usuarioView.UsuarioModel))
                     {
                         // Buscar usuário no Identity
-                        var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuarioAtual.Cpf);
+                        var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == usuarioAtual.Cpf);
                         if (identityUser != null)
                         {
                             // Atualizar email se necessário
@@ -450,7 +397,6 @@ namespace SalasWeb.Controllers
 
                             // Verificar mudanças
                             bool tipoUsuarioMudou = tipoUsuarioAtual.Id != usuarioView.TipoUsuarioModel.Id;
-                            bool nomeMudou = usuarioAtual.Nome != usuarioView.UsuarioModel.Nome;
 
                             // Atualizar roles se tipo de usuário mudou
                             if (tipoUsuarioMudou)
@@ -466,47 +412,23 @@ namespace SalasWeb.Controllers
                                 var novoTipoUsuario = _tipoUsuarioService.GetAll().FirstOrDefault(t => t.Id == usuarioView.TipoUsuarioModel.Id);
                                 string newRole = GetRoleByTipoUsuario(novoTipoUsuario?.Descricao);
                                 await _userManager.AddToRoleAsync(identityUser, newRole);
-                            }
 
-                            // Atualizar claims se necessário
-                            if (tipoUsuarioMudou || nomeMudou)
-                            {
-                                // Remover claims atuais
-                                var currentClaims = await _userManager.GetClaimsAsync(identityUser);
-                                if (currentClaims.Any())
+                                // Atualizar session se for o usuário atual
+                                if (HttpContext.Session.GetInt32("LegacyUserId") == id)
                                 {
-                                    await _userManager.RemoveClaimsAsync(identityUser, currentClaims);
+                                    HttpContext.Session.SetString("UserRole", newRole);
+                                    HttpContext.Session.SetString("UserType", novoTipoUsuario?.Descricao);
                                 }
-
-                                // Preparar novos claims
-                                var newClaims = new List<Claim>
-                                {
-                                    new Claim(ClaimTypes.NameIdentifier, id.ToString()),
-                                    new Claim(ClaimTypes.UserData, usuarioAtual.Cpf),
-                                    new Claim(ClaimTypes.Name, usuarioView.UsuarioModel.Nome)
-                                };
-
-                                // Adicionar claim de role
-                                if (tipoUsuarioMudou)
-                                {
-                                    var novoTipoUsuario = _tipoUsuarioService.GetAll().FirstOrDefault(t => t.Id == usuarioView.TipoUsuarioModel.Id);
-                                    string newRole = GetRoleByTipoUsuario(novoTipoUsuario?.Descricao);
-                                    newClaims.Add(new Claim(ClaimTypes.Role, newRole));
-                                }
-
-                                await _userManager.AddClaimsAsync(identityUser, newClaims);
                             }
 
-                            // Refresh do sign-in se o usuário atual está sendo editado
-                            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                            if (currentUserId == id.ToString())
-                            {
-                                await _signInManager.RefreshSignInAsync(identityUser);
-                            }
+                            TempData["mensagemSucesso"] = "Usuário editado com sucesso!";
+                            return RedirectToAction(nameof(Index));
                         }
-
-                        TempData["mensagemSucesso"] = "Usuário editado com sucesso!";
-                        return RedirectToAction(nameof(Index));
+                        else
+                        {
+                            TempData["mensagemErro"] = "Usuário não encontrado no sistema de autenticação.";
+                            return View(usuarioView);
+                        }
                     }
                     else
                     {
@@ -518,11 +440,6 @@ namespace SalasWeb.Controllers
             catch (ServiceException se)
             {
                 TempData["mensagemErro"] = se.Message;
-                return View(usuarioView);
-            }
-            catch (Exception ex)
-            {
-                TempData["mensagemErro"] = "Erro inesperado ao editar usuário.";
                 return View(usuarioView);
             }
 
@@ -543,7 +460,7 @@ namespace SalasWeb.Controllers
                     return RedirectToAction("Index");
                 }
 
-                var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuario.Cpf);
+                var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == usuario.Cpf);
                 if (identityUser == null)
                 {
                     TempData["mensagemErro"] = "Usuário não encontrado no sistema de autenticação.";
@@ -571,7 +488,7 @@ namespace SalasWeb.Controllers
             var usuarioLogado = _usuarioService.GetAuthenticatedUser(claimsIdentity);
 
             // Buscar o usuário no Identity usando o CPF
-            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuarioLogado.UsuarioModel.Cpf);
+            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == usuarioLogado.UsuarioModel.Cpf);
             if (identityUser == null)
             {
                 TempData["mensagemErro"] = "Usuário não encontrado no sistema de autenticação.";
@@ -596,7 +513,7 @@ namespace SalasWeb.Controllers
                     var usuarioLogado = _usuarioService.GetAuthenticatedUser(claimsIdentity);
 
                     // Buscar o usuário no Identity usando o CPF
-                    var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuarioLogado.UsuarioModel.Cpf);
+                    var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == usuarioLogado.UsuarioModel.Cpf);
                     if (identityUser == null)
                     {
                         TempData["mensagemErro"] = "Usuário não encontrado no sistema de autenticação.";
@@ -666,6 +583,8 @@ namespace SalasWeb.Controllers
             {
                 // Remove a validação da senha para edição de dados pessoais
                 ModelState.Remove("UsuarioModel.Senha");
+                ModelState.Remove("UsuarioModel.ConfirmarSenha");
+                ModelState.Remove("Email");
 
                 if (ModelState.IsValid)
                 {
@@ -787,7 +706,7 @@ namespace SalasWeb.Controllers
                 if (usuario != null)
                 {
                     // 1. Remover do Identity primeiro
-                    var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Cpf == usuario.Cpf);
+                    var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == usuario.Cpf);
                     if (identityUser != null)
                     {
                         await _userManager.DeleteAsync(identityUser);

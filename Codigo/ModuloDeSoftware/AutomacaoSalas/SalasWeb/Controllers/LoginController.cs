@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -40,14 +41,14 @@ namespace SalasWeb.Controllers
             {
                 if (ValidaCpf(loginViewModel.Login))
                 {
-                    var user = await userManager.Users.FirstOrDefaultAsync(u => u.Cpf == Methods.CleanString(loginViewModel.Login));
+                    var user = await userManager.Users.FirstOrDefaultAsync(u => u.UserName == Methods.CleanString(loginViewModel.Login));
                     
                     if (user != null)
                     {
                         var result = await signInManager.PasswordSignInAsync(user, loginViewModel.Senha, isPersistent: false, lockoutOnFailure: false);
                         if (result.Succeeded)
                         {
-                            await userManager.AddClaimAsync(user, new Claim(ClaimTypes.UserData, user.Cpf));
+                            HttpContext.Session.SetString("UserCpf", user.UserName);
                             await signInManager.RefreshSignInAsync(user);
                             return RedirectToAction("Index", "Home");
                         }

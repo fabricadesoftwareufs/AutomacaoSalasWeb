@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Model;
 using Model.ViewModel;
 using Persistence;
@@ -7,16 +8,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Service
 {
     public class UsuarioService : IUsuarioService
     {
         private readonly SalasDBContext _context;
-        public UsuarioService(SalasDBContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public UsuarioService(SalasDBContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
+
         public List<UsuarioModel> GetAll()
             => _context.Usuarios
                 .Select(u => new UsuarioModel
@@ -208,20 +214,47 @@ namespace Service
 
         public UsuarioViewModel GetAuthenticatedUser(ClaimsIdentity claimsIdentity)
         {
-            // Verificar se as claims necessárias existem
-            var idClaim = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.SerialNumber).Select(s => s.Value).FirstOrDefault();
-            var cpfClaim = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.UserData).Select(s => s.Value).FirstOrDefault();
-            var nomeClaim = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.NameIdentifier).Select(s => s.Value).FirstOrDefault();
-            var roleClaim = claimsIdentity.Claims.Where(s => s.Type == ClaimTypes.Role).Select(s => s.Value).FirstOrDefault();
+            // Obter o nome de usuário (email) do Identity
+            var userName = claimsIdentity.Name;
 
-            // Se não tem o ID do sistema legado, tentar buscar pelo CPF
-            if (string.IsNullOrEmpty(idClaim) && !string.IsNullOrEmpty(cpfClaim))
+            // Usar o HttpContextAccessor injetado em vez de criar uma nova instância
+            string cpf = null;
+            uint userId = 0;
+
+            if (_httpContextAccessor.HttpContext != null)
             {
-                var usuarioLegado = GetByCpf(cpfClaim);
+                cpf = _httpContextAccessor.HttpContext.Session.GetString("UserCpf");
+                var legacyUserIdString = _httpContextAccessor.HttpContext.Session.GetInt32("LegacyUserId");
+                if (legacyUserIdString.HasValue)
+                {
+                    userId = (uint)legacyUserIdString.Value;
+                }
+            }
+
+            // Se temos o ID do usuário, buscar diretamente
+            if (userId > 0)
+            {
+                var usuario = GetById(userId);
+                if (usuario != null)
+                {
+                    var tipoUsuario = new TipoUsuarioService(_context).GetTipoUsuarioByUsuarioId(userId);
+
+                    return new UsuarioViewModel
+                    {
+                        UsuarioModel = usuario,
+                        TipoUsuarioModel = tipoUsuario ?? new TipoUsuarioModel { Descricao = TipoUsuarioModel.ROLE_COLABORADOR }
+                    };
+                }
+            }
+
+            // Se temos o CPF, buscar pelo CPF
+            if (!string.IsNullOrEmpty(cpf))
+            {
+                var usuarioLegado = GetByCpf(cpf);
                 if (usuarioLegado != null)
                 {
                     var tipoUsuario = new TipoUsuarioService(_context).GetTipoUsuarioByUsuarioId(usuarioLegado.Id);
-                    
+
                     return new UsuarioViewModel
                     {
                         UsuarioModel = usuarioLegado,
@@ -230,55 +263,18 @@ namespace Service
                 }
             }
 
-            // Se tem todas as claims, usar elas
-            if (!string.IsNullOrEmpty(idClaim) && uint.TryParse(idClaim, out uint userId))
-            {
-                var usuario = new UsuarioViewModel
-                {
-                    UsuarioModel = new UsuarioModel
-                    {
-                        Id = userId,
-                        Cpf = cpfClaim ?? "",
-                        Nome = nomeClaim ?? "",
-                    },
-                    TipoUsuarioModel = new TipoUsuarioModel
-                    {
-                        Descricao = roleClaim ?? TipoUsuarioModel.ROLE_COLABORADOR
-                    }
-                };
-
-                return usuario;
-            }
-
-            // Fallback: tentar pelo nome do usuário (Identity)
-            var identityName = claimsIdentity.Name;
-            if (!string.IsNullOrEmpty(identityName))
-            {
-                var usuarioLegado = GetByCpf(identityName);
-                if (usuarioLegado != null)
-                {
-                    var tipoUsuario = new TipoUsuarioService(_context).GetTipoUsuarioByUsuarioId(usuarioLegado.Id);
-                    
-                    return new UsuarioViewModel
-                    {
-                        UsuarioModel = usuarioLegado,
-                        TipoUsuarioModel = tipoUsuario ?? new TipoUsuarioModel { Descricao = TipoUsuarioModel.ROLE_COLABORADOR }
-                    };
-                }
-            }
-
-            // Se chegou até aqui, criar um usuário temporário para evitar erros
+            // Fallback: usuário default para evitar erros
             return new UsuarioViewModel
             {
                 UsuarioModel = new UsuarioModel
                 {
                     Id = 0,
-                    Cpf = cpfClaim ?? "",
-                    Nome = nomeClaim ?? "Usuário",
+                    Cpf = cpf ?? "",
+                    Nome = _httpContextAccessor.HttpContext?.Session.GetString("UserName") ?? "Usuário",
                 },
                 TipoUsuarioModel = new TipoUsuarioModel
                 {
-                    Descricao = TipoUsuarioModel.ROLE_COLABORADOR
+                    Descricao = _httpContextAccessor.HttpContext?.Session.GetString("UserRole") ?? TipoUsuarioModel.ROLE_COLABORADOR
                 }
             };
         }

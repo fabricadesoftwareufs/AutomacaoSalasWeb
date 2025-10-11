@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SalasWeb.Data;
-using System.Security.Claims;
+using Service.Interface;
 using System.Threading.Tasks;
 
 namespace SalasWeb.Pages.Account
@@ -12,10 +13,14 @@ namespace SalasWeb.Pages.Account
     public class ConfirmEmailModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUsuarioService _usuarioService;
 
-        public ConfirmEmailModel(UserManager<ApplicationUser> userManager)
+        public ConfirmEmailModel(
+            UserManager<ApplicationUser> userManager,
+            IUsuarioService usuarioService)
         {
             _userManager = userManager;
+            _usuarioService = usuarioService;
         }
 
         [TempData]
@@ -34,19 +39,22 @@ namespace SalasWeb.Pages.Account
                 return NotFound($"Não foi possível carregar o usuário com ID '{userId}'.");
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, code);//deixa true o confirma o Email
+            var result = await _userManager.ConfirmEmailAsync(user, code);
 
             if (result.Succeeded)
             {
-                // Adicionar claims personalizados após confirmação de email
-                // Buscar dados do usuário no sistema legado se necessário
-                var claims = new[]
-                {
-                    new Claim(ClaimTypes.UserData, user.Cpf),
-                    new Claim(ClaimTypes.Name, user.UserName)
-                };
+                // Adicionar usuário à role PENDENTE (apenas role, sem claims)
+                await _userManager.AddToRoleAsync(user, "PENDENTE");
 
-                await _userManager.AddClaimsAsync(user, claims);
+                // Buscar usuário no sistema legado pelo CPF para obter o ID
+                var usuarioLegado = _usuarioService.GetByCpf(user.UserName);
+                if (usuarioLegado != null)
+                {
+                    // Armazenar ID do usuário legado na session
+                    HttpContext.Session.SetInt32("LegacyUserId", (int)usuarioLegado.Id);
+                    HttpContext.Session.SetString("UserCpf", user.UserName);
+                    HttpContext.Session.SetString("UserName", usuarioLegado.Nome);
+                }
 
                 StatusMessage = "Obrigado por confirmar seu email. Sua conta foi ativada com sucesso!";
                 ViewData["ShowSuccessMessage"] = true;

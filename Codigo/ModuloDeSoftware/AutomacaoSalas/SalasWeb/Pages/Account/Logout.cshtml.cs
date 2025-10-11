@@ -25,6 +25,10 @@ namespace SalasWeb.Pages.Account
             {
                 await _signInManager.SignOutAsync();
                 await HttpContext.SignOutAsync();
+
+                // Limpar a session ao fazer logout
+                HttpContext.Session.Clear();
+
                 _logger.LogInformation("Usuário foi desconectado com sucesso.");
             }
 
@@ -35,6 +39,10 @@ namespace SalasWeb.Pages.Account
         {
             await _signInManager.SignOutAsync();
             await HttpContext.SignOutAsync();
+
+            // Limpar a session ao fazer logout
+            HttpContext.Session.Clear();
+
             _logger.LogInformation("Usuário foi desconectado com sucesso.");
 
             if (returnUrl != null)
