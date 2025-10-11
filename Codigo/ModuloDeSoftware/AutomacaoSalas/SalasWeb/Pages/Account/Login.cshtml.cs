@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Model;
 using SalasWeb.Data;
 using SalasWeb.Models.ViewModels;
 using Service.Interface;
@@ -62,7 +63,6 @@ namespace SalasWeb.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
@@ -103,13 +103,31 @@ namespace SalasWeb.Pages.Account
                             if (tipoUsuario != null)
                             {
                                 HttpContext.Session.SetString("UserType", tipoUsuario.Descricao);
-                            }
 
-                            // Obter roles do usuário no Identity
-                            var roles = await _userManager.GetRolesAsync(user);
-                            if (roles.Any())
-                            {
-                                HttpContext.Session.SetString("UserRole", roles.First());
+                                // Determinar a role esperada com base no tipo de usuário do sistema legado
+                                string roleEsperada = GetRoleByTipoUsuario(tipoUsuario.Descricao);
+
+                                // Verificar se o usuário tem a role correta no Identity
+                                var roles = await _userManager.GetRolesAsync(user);
+                                bool temRoleCorreta = roles.Contains(roleEsperada);
+
+                                // Se não tem a role correta, ajustar as roles
+                                if (!temRoleCorreta)
+                                {
+                                    if (roles.Any())
+                                    {
+                                        await _userManager.RemoveFromRolesAsync(user, roles);
+                                    }
+
+                                    await _userManager.AddToRoleAsync(user, roleEsperada);
+                                    await _signInManager.RefreshSignInAsync(user);
+
+                                    // Atualizar a lista de roles
+                                    roles = new List<string> { roleEsperada };
+                                }
+
+                                // Armazenar na sessão a role correta (que agora corresponde ao tipo de usuário)
+                                HttpContext.Session.SetString("UserRole", roleEsperada);
                             }
                         }
 
@@ -130,6 +148,19 @@ namespace SalasWeb.Pages.Account
             }
 
             return Page();
+        }
+
+        // Adicione este método para mapear entre o tipo de usuário e a role
+        private string GetRoleByTipoUsuario(string descricaoTipo)
+        {
+            return descricaoTipo?.ToUpper() switch
+            {
+                "ADMIN" => TipoUsuarioModel.ROLE_ADMIN,
+                "COLABORADOR" => TipoUsuarioModel.ROLE_COLABORADOR,
+                "GESTOR" => TipoUsuarioModel.ROLE_GESTOR,
+                "PENDENTE" => TipoUsuarioModel.ROLE_PENDENTE,
+                _ => TipoUsuarioModel.ROLE_PENDENTE
+            };
         }
     }
 }
