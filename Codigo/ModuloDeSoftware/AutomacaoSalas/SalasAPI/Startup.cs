@@ -85,6 +85,15 @@ namespace WebAPI
                 });
             });
 
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            services.AddHttpContextAccessor();
+
             // Injections
             services.AddAuthorization();
             services.AddScoped<IOrganizacaoService, OrganizacaoService>();
@@ -143,6 +152,7 @@ namespace WebAPI
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseHttpsRedirection();
+            app.UseSession();
 
             app.UseWhen(context => CheckRoutesHardware(context), appBuilder =>
              {
