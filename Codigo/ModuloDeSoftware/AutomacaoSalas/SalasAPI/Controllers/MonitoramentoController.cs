@@ -109,6 +109,14 @@ namespace SalasAPI.Controllers
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(tipoEquipamento))
+                    return BadRequest(new
+                    {
+                        result = "null",
+                        httpCode = (int)HttpStatusCode.BadRequest,
+                        message = "O parâmetro tipoEquipamento é obrigatório."
+                    });
+
                 var monitoramento = _monitoramentoService.GetByIdSalaAndTipoEquipamento(idSala, tipoEquipamento);
 
                 if (monitoramento == null)
@@ -133,6 +141,15 @@ namespace SalasAPI.Controllers
                     result = "null",
                     httpCode = (int)HttpStatusCode.InternalServerError,
                     message = e.Message
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                {
+                    result = "null",
+                    httpCode = (int)HttpStatusCode.InternalServerError,
+                    message = "Ocorreu um erro inesperado ao obter o monitoramento."
                 });
             }
 
