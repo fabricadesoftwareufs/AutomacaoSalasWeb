@@ -37,7 +37,7 @@ namespace Service.Tests
                 {
                     Id = 2,
                     IdSala = 10,
-                    TipoEquipamento = null!,
+                    TipoEquipamento = " ",
                     Status = "D"
                 }
             });
@@ -69,7 +69,7 @@ namespace Service.Tests
         }
 
         [TestMethod()]
-        public void GetByIdSalaAndTipoEquipamentoTest_DeveIgnorarTipoNuloNoBanco()
+        public void GetByIdSalaAndTipoEquipamentoTest_DeveIgnorarTipoEmBrancoNoBanco()
         {
             var monitoramento = monitoramentoService!.GetByIdSalaAndTipoEquipamento(10, " luzes ");
 
