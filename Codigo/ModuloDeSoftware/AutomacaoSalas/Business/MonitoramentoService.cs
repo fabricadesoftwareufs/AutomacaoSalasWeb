@@ -48,11 +48,20 @@ namespace Service
 
         public MonitoramentoModel GetByIdSalaAndTipoEquipamento(uint idSala, string tipoEquipamento)
         {
+            if (string.IsNullOrWhiteSpace(tipoEquipamento))
+                return null;
+
+            var tipoEquipamentoNormalizado = tipoEquipamento.Trim();
             var moni = _context.Monitoramentos.ToList();
             var equip = _context.Equipamentos.ToList();
             var monitoramentos = (from m in moni
                                   join e in equip on m.IdEquipamento equals e.Id
-                                  where e.IdSala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
+                                  where e.IdSala == idSala &&
+                                        !string.IsNullOrWhiteSpace(e.TipoEquipamento) &&
+                                        string.Equals(
+                                            tipoEquipamentoNormalizado,
+                                            e.TipoEquipamento.Trim(),
+                                            StringComparison.OrdinalIgnoreCase)
                                   select new MonitoramentoModel
                                   {
                                       Id = m.Id,
@@ -68,11 +77,20 @@ namespace Service
 
         public MonitoramentoModel GetByIdSalaAndTipoEquipamento(uint idSala, string tipoEquipamento, uint idUsuario)
         {
+            if (string.IsNullOrWhiteSpace(tipoEquipamento))
+                return null;
+
+            var tipoEquipamentoNormalizado = tipoEquipamento.Trim();
             var moni = _context.Monitoramentos.ToList();
             var equip = _context.Equipamentos.ToList();
             var monitoramentos = (from m in moni
                                   join e in equip on m.IdEquipamento equals e.Id
-                                  where e.IdSala == idSala && tipoEquipamento.ToUpper().Equals(e.TipoEquipamento.Trim().ToUpper())
+                                  where e.IdSala == idSala &&
+                                        !string.IsNullOrWhiteSpace(e.TipoEquipamento) &&
+                                        string.Equals(
+                                            tipoEquipamentoNormalizado,
+                                            e.TipoEquipamento.Trim(),
+                                            StringComparison.OrdinalIgnoreCase)
                                   select new MonitoramentoModel
                                   {
                                       Id = m.Id,
