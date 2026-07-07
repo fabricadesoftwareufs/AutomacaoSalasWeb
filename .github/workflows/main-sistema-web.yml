@@ -7,65 +7,110 @@ on:
 jobs:
   test:
     runs-on: windows-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0'
-    
+
     - name: Restore test dependencies
       run: |
         cd Codigo\ModuloDeSoftware\AutomacaoSalas\ServiceTests
         dotnet restore
-    
+
     - name: Run tests
       run: |
         cd Codigo\ModuloDeSoftware\AutomacaoSalas\ServiceTests
         dotnet test --configuration Release --no-restore --verbosity normal
-    
+
   build-and-deploy:
     needs: test
     runs-on: windows-latest
-    
+
     env:
       work-directory: Codigo/ModuloDeSoftware/AutomacaoSalas/SalasWeb
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0'
-    
+
     - name: Replace connection string
       uses: microsoft/variable-substitution@v1
       with:
         files: '${{env.work-directory}}/appsettings.json'
       env:
         ConnectionStrings.MySqlConnection: ${{secrets.CONNECTION_STRING}}
-    
+
     - name: Restore dependencies
       run: |
         cd ${{env.work-directory}}
         dotnet restore
-    
+
     - name: Build Application
       run: |
         cd ${{env.work-directory}}
         dotnet build --configuration Release --no-restore
-    
+
     - name: Publish Application
       run: |
         cd ${{env.work-directory}}
         dotnet publish --configuration Release --no-build --output ./publishWEB
-    
-    # Deploy direto da aplicação
+
+    - name: Create and Deploy App_Offline for WEB
+      run: |
+        cd ${{env.work-directory}}/publishWEB
+        @"
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Site em Manutencao</title>
+        </head>
+        <body>
+          <h1>Site em Manutencao</h1>
+          <p>O sistema esta sendo atualizado. Voltaremos em instantes...</p>
+        </body>
+        </html>
+        "@ | Out-File -FilePath app_offline.htm -Encoding utf8
+
+        $ftpServer = "win8184.site4now.net"
+        $ftpUsername = "itetech-001"
+        $ftpPassword = "${{ secrets.FTP_PASSWORD }}"
+        $remoteFile = "/salasweb/app_offline.htm"
+
+        try {
+          $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$ftpServer$remoteFile")
+          $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile
+          $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($ftpUsername, $ftpPassword)
+
+          $data = [System.Text.Encoding]::UTF8.GetBytes((Get-Content "app_offline.htm" -Raw -Encoding UTF8))
+          $ftpRequest.ContentLength = $data.Length
+
+          $requestStream = $ftpRequest.GetRequestStream()
+          $requestStream.Write($data, 0, $data.Length)
+          $requestStream.Close()
+
+          $response = $ftpRequest.GetResponse()
+          Write-Host "WEB offline enviado com sucesso."
+          $response.Close()
+        }
+        catch {
+          Write-Host "Erro ao enviar app_offline do WEB: $($_.Exception.Message)"
+          throw
+        }
+
+    - name: Wait for WEB to stop
+      run: Start-Sleep -Seconds 20
+
     - name: Deploy Application Files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
@@ -79,16 +124,36 @@ jobs:
           **/.git*/**
           **/obj/**
           **/bin/**
-    
-    # Verificar se o site está funcionando
+          app_offline.htm
+
+    - name: Remove App_Offline from WEB
+      run: |
+        $ftpServer = "win8184.site4now.net"
+        $ftpUsername = "itetech-001"
+        $ftpPassword = "${{ secrets.FTP_PASSWORD }}"
+        $remoteFile = "/salasweb/app_offline.htm"
+
+        try {
+          $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$ftpServer$remoteFile")
+          $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::DeleteFile
+          $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($ftpUsername, $ftpPassword)
+
+          $response = $ftpRequest.GetResponse()
+          Write-Host "WEB online novamente."
+          $response.Close()
+        }
+        catch {
+          Write-Host "Nao foi possivel remover o app_offline do WEB: $($_.Exception.Message)"
+        }
+
     - name: Verify site is online
       run: |
-        Write-Host "🔍 Verificando se o site está funcionando..."
+        Write-Host "Verificando se o site esta funcionando..."
         Start-Sleep -Seconds 15
         try {
           $response = Invoke-WebRequest -Uri "http://itetech-001-site2.qtempurl.com" -TimeoutSec 30
-          Write-Host "✅ Site está online - Status: $($response.StatusCode)"
+          Write-Host "Site esta online - Status: $($response.StatusCode)"
         }
         catch {
-          Write-Host "⚠️ Site pode estar reiniciando: $($_.Exception.Message)"
+          Write-Host "Site pode estar reiniciando: $($_.Exception.Message)"
         }
