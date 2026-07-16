@@ -285,7 +285,8 @@ namespace Service
             Id = model.Id,
             Cpf = model.Cpf,
             Nome = model.Nome,
-            DataNascimento = model.DataNascimento
+            DataNascimento = model.DataNascimento,
+            Senha = model.Senha
         };
 
         public UsuarioModel GetByCpf(string cpf)

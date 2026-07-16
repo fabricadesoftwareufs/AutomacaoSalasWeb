@@ -11,6 +11,8 @@ public partial class Usuario
 
     public string Nome { get; set; } = null!;
 
+    public string Senha { get; set; } = null!;
+
     public DateTime? DataNascimento { get; set; }
 
     public virtual ICollection<Horariosala> Horariosalas { get; set; } = new List<Horariosala>();
