@@ -49,7 +49,27 @@ jobs:
         files: '${{env.work-directory}}/appsettings.json'
       env:
         ConnectionStrings.MySqlConnection: ${{secrets.CONNECTION_STRING}}
-        ConnectionStrings.UsuarioConnection: ${{secrets.CONNECTION_USER_STRING}}
+        ConnectionStrings.UsuariosConnection: ${{secrets.CONNECTION_USER_STRING}}
+
+    - name: Validate production configuration
+      run: |
+        $config = Get-Content "${{env.work-directory}}/appsettings.json" -Raw | ConvertFrom-Json
+        $mainConnection = [string]$config.ConnectionStrings.MySqlConnection
+        $usersConnection = [string]$config.ConnectionStrings.UsuariosConnection
+
+        if ([string]::IsNullOrWhiteSpace($mainConnection)) {
+          throw "ConnectionStrings:MySqlConnection nao foi configurada."
+        }
+
+        if ([string]::IsNullOrWhiteSpace($usersConnection)) {
+          throw "ConnectionStrings:UsuariosConnection nao foi configurada."
+        }
+
+        if ($mainConnection -match "localhost|127\.0\.0\.1" -or $usersConnection -match "localhost|127\.0\.0\.1") {
+          throw "Uma connection string de producao ainda aponta para localhost."
+        }
+
+        Write-Host "Connection strings do WEB configuradas para producao."
 
     - name: Restore dependencies
       run: |
@@ -150,11 +170,39 @@ jobs:
     - name: Verify site is online
       run: |
         Write-Host "Verificando se o site esta funcionando..."
-        Start-Sleep -Seconds 15
-        try {
-          $response = Invoke-WebRequest -Uri "http://itetech-001-site2.qtempurl.com" -TimeoutSec 30
-          Write-Host "Site esta online - Status: $($response.StatusCode)"
+        $siteUrl = "http://itetech-001-site2.qtempurl.com"
+        $online = $false
+
+        for ($attempt = 1; $attempt -le 6; $attempt++) {
+          Start-Sleep -Seconds 10
+
+          try {
+            $response = Invoke-WebRequest -Uri $siteUrl -TimeoutSec 30
+
+            if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 500) {
+              Write-Host "Site esta online - Status: $($response.StatusCode)"
+              $online = $true
+              break
+            }
+
+            Write-Host "Tentativa $attempt/6 retornou status $($response.StatusCode)."
+          }
+          catch {
+            Write-Host "Tentativa $attempt/6 falhou: $($_.Exception.Message)"
+          }
         }
-        catch {
-          Write-Host "Site pode estar reiniciando: $($_.Exception.Message)"
+
+        if (-not $online) {
+          throw "WEB nao respondeu corretamente apos o deploy. Veja a etapa 'Collect WEB runtime logs'."
         }
+
+    - name: Collect WEB runtime logs
+      if: failure()
+      run: |
+        .\.github\scripts\collect-ftp-logs.ps1 `
+          -FtpServer "win8184.site4now.net" `
+          -FtpUsername "itetech-001" `
+          -FtpPassword "${{ secrets.FTP_PASSWORD }}" `
+          -RemoteDirectories "/salasweb/Logs","/salasweb/logs" `
+          -MaxFiles 6 `
+          -TailLines 220
