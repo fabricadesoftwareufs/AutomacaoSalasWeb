@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Logs\.keep" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
     <None Include="wwwroot\css\adminlte.css.map" />
     <None Include="wwwroot\css\adminlte.min.css.map" />
     <None Include="wwwroot\css\alt\adminlte.components.css.map" />
