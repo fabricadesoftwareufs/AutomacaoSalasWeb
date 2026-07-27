@@ -67,6 +67,62 @@ namespace SalasAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Atualiza o estado de um equipamento informado por hardware autenticado por token.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="monitoramento"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPut]
+        [Route("MonitorarSalaHardware/")]
+        public ActionResult MonitorarSalaHardware([FromQuery] string token, [FromBody] MonitoramentoViewModel monitoramento)
+        {
+            try
+            {
+                var apiToken = string.IsNullOrWhiteSpace(token)
+                    ? Request.Headers["X-Api-Token"].ToString()
+                    : token;
+
+                var monitoramentoRealizado = _monitoramentoService.MonitorarSalaHardware(apiToken, monitoramento);
+
+                if (!monitoramentoRealizado)
+                {
+                    return BadRequest(new
+                    {
+                        result = false,
+                        httpCode = (int)HttpStatusCode.BadRequest,
+                        message = "Houve um problema ao atualizar monitoramento!"
+                    });
+                }
+
+                return Ok(new
+                {
+                    result = true,
+                    httpCode = (int)HttpStatusCode.OK,
+                    message = "Monitoramento atualizado com sucesso!"
+                });
+            }
+            catch (ServiceException ex) when (ex.Message == MonitoramentoService.TOKEN_INVALIDO)
+            {
+                return StatusCode((int)HttpStatusCode.Unauthorized, new
+                {
+                    result = false,
+                    httpCode = (int)HttpStatusCode.Unauthorized,
+                    message = MonitoramentoService.TOKEN_INVALIDO
+                });
+            }
+            catch (ServiceException ex)
+            {
+                return BadRequest(new
+                {
+                    result = false,
+                    httpCode = (int)HttpStatusCode.BadRequest,
+                    message = ex.Message
+                });
+            }
+        }
+
         // GET: api/Monitoramento/5
         [HttpGet]
         [Route("ObterPorSala/{idSala}")]

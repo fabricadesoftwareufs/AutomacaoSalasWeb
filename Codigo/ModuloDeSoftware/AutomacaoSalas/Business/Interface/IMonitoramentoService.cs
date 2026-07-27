@@ -13,6 +13,7 @@ namespace Service.Interface
         bool Update(MonitoramentoModel model, uint idUsuario);
         List<MonitoramentoModel> GetByIdSala(uint idSala);
         bool MonitorarSala(uint idUsuario, MonitoramentoViewModel monitoramento);
+        bool MonitorarSalaHardware(string token, MonitoramentoViewModel monitoramento);
         bool MonitorarEquipamento(uint idUsuario, MonitoramentoModel model);
         MonitoramentoModel GetByIdSalaAndTipoEquipamento(uint idSala, string tipoEquipamento);
         MonitoramentoModel GetByIdSalaAndTipoEquipamento(uint idSala, string tipoEquipamento, uint idUsuario);
