@@ -12,6 +12,7 @@ namespace Service
     public class MonitoramentoService : IMonitoramentoService
     {
         private readonly SalasDBContext _context;
+        public const string TOKEN_INVALIDO = "Token inválido.";
         private const string AC_ON = "AC-ON";
         private const string L_ON = "LZ-ON";
         private const string AC_OFF = "AC-OFF";
@@ -156,6 +157,51 @@ namespace Service
             }
 
             return true;
+        }
+
+        public bool MonitorarSalaHardware(string token, MonitoramentoViewModel monitoramento)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+                throw new ServiceException(TOKEN_INVALIDO);
+
+            var tokenNormalizado = token.Trim();
+            var tokenExiste = _context.Hardwaredesalas
+                .Any(h => h.Token == tokenNormalizado);
+
+            if (!tokenExiste)
+                throw new ServiceException(TOKEN_INVALIDO);
+
+            if (monitoramento == null)
+                throw new ServiceException("Dados de monitoramento não informados.");
+
+            if (monitoramento.SalaId <= 0)
+                throw new ServiceException("Sala inválida.");
+
+            var hardware = _context.Hardwaredesalas
+                .FirstOrDefault(h => h.Token == tokenNormalizado && h.IdSala == (uint)monitoramento.SalaId);
+
+            if (hardware == null)
+                throw new ServiceException("Sala não autorizada para este hardware.");
+
+            var equipamento = _context.Equipamentos
+                .FirstOrDefault(e => e.Id == monitoramento.EquipamentoId);
+
+            if (equipamento == null || equipamento.IdSala != (uint)monitoramento.SalaId)
+                throw new ServiceException("Equipamento não pertence à sala informada.");
+
+            var monitoramentoAtual = _context.Monitoramentos
+                .FirstOrDefault(m => m.Id == monitoramento.Id && m.IdEquipamento == monitoramento.EquipamentoId);
+
+            if (monitoramentoAtual == null)
+                throw new ServiceException("Monitoramento não encontrado para o equipamento informado.");
+
+            monitoramentoAtual.DataHora = DateTime.Now;
+            monitoramentoAtual.Estado = (sbyte)(monitoramento.Estado ? 1 : 0);
+            monitoramentoAtual.IdOperacao = monitoramento.Estado ? OperacaoModel.OPERACAO_LIGAR : OperacaoModel.OPERACAO_DESLIGAR;
+
+            equipamento.Status = monitoramento.Estado ? "L" : "D";
+
+            return _context.SaveChanges() >= 1;
         }
 
         public bool MonitorarEquipamento(uint idUsuario, MonitoramentoModel model)
