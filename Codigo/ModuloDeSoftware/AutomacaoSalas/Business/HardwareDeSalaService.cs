@@ -373,8 +373,7 @@ namespace Service
             // Define o tipo exato baseado no equipamento
             string tipoHardware = tipoEquipamento.ToUpper() switch
             {
-                "CONDICIONADOR" => "MODULO DE DISPOSITIVO",
-                "LUZES" => "MODULO DE SENSORIAMENTO",
+                "CONDICIONADOR" or "LUZES" => "MODULO DE DISPOSITIVO",
                 _ => ""
             };
 
